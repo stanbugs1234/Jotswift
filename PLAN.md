@@ -140,6 +140,8 @@ skins/{skinId}                                       # public catalog, read-only
 
 ## 6. Skins system
 
+> **Changing:** Notely is moving to a Noteshelf-style model: covers, paper, templates and stickers on each notebook, with a plain light/dark interface. See [docs/skins-plan.md](docs/skins-plan.md). This section describes the current skins.
+
 A skin is **data, not code**, so new skins can be sold without shipping an app update.
 
 **Skin manifest:** a JSON file per skin with colors, paper style, ink palette, fonts and corner radius. Each skin has one brightness, so a dark look is its own skin (e.g. *Minimal Dark*). The full format and how to make a skin are in [docs/skins.md](docs/skins.md).
@@ -180,6 +182,8 @@ A skin is **data, not code**, so new skins can be sold without shipping an app u
 | Basic planner + to-do + calendar | Recurring events, reminders, calendar templates, habit tracker |
 | 4 free skins | Per-notebook skins, all "Pro-included" skins, sticker packs |
 | Sync across devices | PDF import/annotate, PDF export, handwriting search (later) |
+
+Sticker packs, collection packs and dated planners are sold too; see [docs/skins-plan.md](docs/skins-plan.md) §7.
 
 **How purchases flow**
 - **iOS / Android:** purchases must go through Apple / Google in-app purchase for digital goods. Use the `purchases_flutter` (RevenueCat) SDK.
