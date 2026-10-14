@@ -222,7 +222,8 @@ You can handwrite anywhere on the page, and the structured widgets stay interact
   - [x] Sign-in and settings screens, auth interface, stand-in auth for development
   - [x] Firebase Auth implementation (email, Google, Apple)
   - [ ] Google sign-in on Android: add the app's SHA-1 fingerprint in Firebase
-  - [ ] Apple sign-in: needs an Apple Developer account
+  - [x] Apple sign-in: iOS entitlement added (`ios/Runner/Runner.entitlements`)
+  - [ ] Apple sign-in: enable it on the App ID and in Firebase; Services ID + key for Android/web
 - [x] Responsive app shell: phone (bottom nav), tablet and web (sidebar). The notebooks drawer comes with Phase 2
 
 ### Phase 1: Skins (3–4 weeks), built first
