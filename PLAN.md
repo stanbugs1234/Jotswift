@@ -1,14 +1,15 @@
 # Motley — Product & Technical Plan
 
-A handwriting-first notebook app, in the spirit of OneNote. You write with a stylus on a tablet and the notes show up on the web almost instantly. It also includes a calendar, a daily planner and to-do lists. The look comes from swappable **skins**: a few free ones ship with the app, and the rest are sold, along with premium features.
+A handwriting-first notebook app, in the spirit of OneNote. You write with a stylus (or finger) on an iOS or Android tablet or phone, and the notes show up on the web almost instantly. It also includes a calendar, a daily planner and to-do lists. The look comes from swappable **skins**: a few free ones ship with the app, and the rest are sold, along with premium features.
 
 ---
 
 ## 1. Goals and non-goals
 
 **Goals for v1**
-- Write on a tablet (iPad + Apple Pencil, Android + S Pen) with low latency and pressure-sensitive ink.
-- The same notes appear on the web app, in near real time, and can be edited there (typing, plus mouse or pen ink).
+- Write on iOS and Android **tablets and phones** with low latency and pressure-sensitive ink (Apple Pencil, S Pen, or finger on phones).
+- The same notes appear on the web app in near real time. The web is for **viewing and typing**: ink shows read-only, while typed text, tasks and events can be edited.
+- An account is required (sign in with Apple, Google or email). That keeps sync and purchases simple.
 - Notebooks → Sections → Pages, like OneNote.
 - Page types: **Freeform note**, **Daily planner**, **To-do list**, **Calendar** (month/week/day views).
 - Works offline on the tablet and syncs when it reconnects.
@@ -17,8 +18,8 @@ A handwriting-first notebook app, in the spirit of OneNote. You write with a sty
 **Non-goals for v1** (later phases)
 - Real-time multi-user collaboration on one page
 - Native desktop apps (Flutter can add these later)
-- Handwriting-to-text search (Phase 4)
-- Two-way Google/Outlook calendar sync (Phase 4)
+- Handwriting-to-text search (Phase 5)
+- Two-way Google/Outlook calendar sync (Phase 5)
 
 ---
 
@@ -26,7 +27,7 @@ A handwriting-first notebook app, in the spirit of OneNote. You write with a sty
 
 | Concern | Choice | Why |
 |---|---|---|
-| App framework | **Flutter** (one codebase for iPadOS, Android and Web) | Tablet and web come from the same code |
+| App framework | **Flutter** (one codebase for iOS, iPadOS, Android and Web) | Phone, tablet and web come from the same code |
 | State management | **Riverpod** (+ `riverpod_generator`) | Testable and works well with async streams |
 | Routing | **go_router** | Deep links and clean web URLs (`/notebook/:id/page/:id`) |
 | Models | **freezed** + **json_serializable** | Immutable models with generated serialization |
@@ -120,7 +121,8 @@ skins/{skinId}                                       # public catalog, read-only
 
 1. **Input:** use a `Listener` to get raw `PointerEvent`s, which include `pressure`, `tilt` and `kind`.
    - **Palm rejection:** once a stylus has been seen, only `PointerDeviceKind.stylus` draws. Fingers then pan and zoom.
-   - On web, mouse and pen both draw. Pressure is used when the browser reports it.
+   - **Phones** (usually no stylus): a "Draw / Scroll" toggle. In Draw mode one finger draws and two fingers pan and zoom.
+   - **Web:** ink is view-only (render strokes, no drawing tools), so the web doesn't need the input pipeline.
 2. **Rendering is split into two layers** for performance:
    - A *committed layer*: finished strokes cached into a `ui.Picture` / raster image and redrawn only when they change.
    - A *live layer*: only the stroke being drawn right now, repainted every frame.
@@ -130,7 +132,9 @@ skins/{skinId}                                       # public catalog, read-only
 6. **Undo/redo:** a per-session command stack (add stroke / delete stroke / move elements).
 7. **Sync:** when the pen lifts, write the stroke to Firestore. Firestore's local cache shows it instantly, and the web client's snapshot listener receives it within about a second.
 
-**Spike this first** (see Phase 0). Ink latency and Flutter Web canvas performance are the main technical risks.
+**Spike this early** (start of Phase 2). Ink latency is the main technical risk. Because the web only renders ink, web performance is less of a concern.
+
+**Layouts:** phones use a bottom nav bar and full-screen page view, with notebooks in a drawer. Tablets and web use a persistent sidebar. The page has a fixed size, so on phones it is zoomed to fit width and scrolled.
 
 ---
 
@@ -166,13 +170,22 @@ A skin is **data, not code**, so new skins can be sold without shipping an app u
 
 ## 7. Monetization and entitlements
 
-**Products**
-| Type | Example | Store type |
+**Products and recommended prices (USD)**
+| Product | Price | Store type |
 |---|---|---|
-| Individual skin | "Botanical" | Non-consumable |
-| Skin bundle | "Seasons Pack (4 skins)" | Non-consumable |
-| **Motley Pro** | Monthly / yearly | Auto-renewing subscription |
-| (optional) Lifetime Pro | | Non-consumable |
+| Individual skin | **$1.99** ($2.99 for premium skins with extra templates and stickers) | Non-consumable |
+| Skin bundle (4–5 themed skins) | **$5.99** (about 30–40% off buying them one by one) | Non-consumable |
+| **Motley Pro**, monthly | **$2.99/mo** | Auto-renewing subscription |
+| **Motley Pro**, yearly | **$19.99/yr** (about 45% off monthly), with a **7-day free trial** | Auto-renewing subscription |
+| Lifetime Pro (add later, after launch) | $49.99 | Non-consumable |
+
+**Why these numbers**
+- Note apps like Goodnotes and Notability charge roughly $10–20 a year. Motley also includes a planner and calendar, so $19.99/yr sits at the top of that range but stays competitive.
+- Small skin prices ($1.99) are impulse buys. Bundles raise the average order.
+- Push the **yearly** plan: show it first and use the free trial only on yearly. Yearly subscribers stay much longer.
+- **Pro includes a "Pro skins" collection** (e.g. one new skin each month for subscribers). This gives skin lovers a reason to subscribe instead of buying one skin at a time. Other skins stay sold individually.
+- Apple and Google take 15% under their small-business programs (under $1M/yr). Web purchases through Stripe cost about 3%.
+- Launch with these prices, then A/B test with RevenueCat Experiments once there's traffic. Check current competitor prices before launch.
 
 **Suggested free vs Pro split**
 | Free | Pro |
@@ -203,46 +216,53 @@ A skin is **data, not code**, so new skins can be sold without shipping an app u
 
 You can handwrite anywhere on the page, and the structured widgets stay interactive.
 
-**To-do lists:** typed tasks with checkboxes, due dates, priority and drag reorder. A "handwritten task" option stores an ink snippet as the task title, with text recognition in Phase 4.
+**To-do lists:** typed tasks with checkboxes, due dates, priority and drag reorder. A "handwritten task" option stores an ink snippet as the task title, with text recognition in Phase 5.
 
 **Calendar:** month, week and day views (consider `table_calendar` for month, custom widgets for week/day). Events have colors and RRULE recurrence (Pro). Local reminders via `flutter_local_notifications` (Pro). Tapping a day opens that day's planner page.
 
-**Web app:** same Flutter code built with `flutter build web` (CanvasKit / Skwasm renderer). It uses a responsive layout with the sidebar always visible, keyboard shortcuts, and mouse ink.
+**Web app:** same Flutter code built with `flutter build web`. It is for **viewing and typing**: notebooks and pages render with their ink (read-only), and users can add and edit text boxes, tasks, events and planner entries. There are no ink tools on the web. It uses a responsive layout with the sidebar always visible, plus keyboard shortcuts.
 
 ---
 
 ## 9. Roadmap
 
-### Phase 0: Spikes and setup (1–2 weeks)
+### Phase 0: Setup (1 week)
 - [ ] `flutter create` with iOS, Android and web; set up folder structure, lints, CI
-- [ ] Firebase project (dev + prod), FlutterFire config, Auth (email, Apple, Google)
-- [ ] **Ink spike:** draw with pressure on an iPad and in the web browser, sync strokes through Firestore, measure latency and FPS with 2,000+ strokes on a page
-- [ ] Decide on page size and point encoding based on the spike
+- [ ] Firebase project (dev + prod), FlutterFire config
+- [ ] Auth: sign in with Apple, Google and email (required, see §1); account deletion (required by Apple)
+- [ ] Responsive app shell: phone (bottom nav + drawer), tablet and web (sidebar)
 
-### Phase 1: Core notebook MVP (4–6 weeks)
-- [ ] Notebooks / sections / pages CRUD and sidebar navigation
-- [ ] Canvas: pen, highlighter, stroke eraser, undo/redo, zoom/pan, palm rejection
-- [ ] Page templates: blank, lined, grid, dot
+### Phase 1: Skins (3–4 weeks), built first
+- [ ] Skin manifest format + `SkinEngine` (manifest → ThemeData + `ThemeExtension<MotleySkin>`)
+- [ ] 4 bundled free skins (Classic, Minimal Dark, Pastel, Kraft Paper)
+- [ ] Skin picker screen with live preview on sample pages
+- [ ] Skin catalog in Firestore; paid skin asset download and caching
+- [ ] Golden tests: every skin on every screen and page type
+- [ ] Skin authoring guide (`docs/skins.md`) so we can make new skins without code changes
+
+### Phase 2: Core notebook MVP (4–6 weeks)
+- [ ] Notebooks / sections / pages CRUD; sidebar (tablet/web) and drawer (phone) navigation
+- [ ] **Ink spike first:** pressure ink on an iPad, an Android tablet and a phone; measure latency and FPS with 2,000+ strokes on a page
+- [ ] Canvas: pen, highlighter, stroke eraser, undo/redo, zoom/pan, palm rejection, phone Draw/Scroll toggle
+- [ ] Page templates (blank, lined, grid, dot), drawn from the active skin
 - [ ] Text boxes and image insert
 - [ ] Offline mode and sync status indicator
-- [ ] Web build deployed to Firebase Hosting
+- [ ] Web: read-only ink rendering, text box editing; deploy to Firebase Hosting
 - [ ] Firestore security rules + rules unit tests
 
-### Phase 2: Planner, to-do, calendar (4–5 weeks)
-- [ ] Tasks and task lists
-- [ ] Events and calendar month/week/day views
+### Phase 3: Planner, to-do, calendar (4–5 weeks)
+- [ ] Tasks and task lists (editable on web)
+- [ ] Events and calendar month/week/day views (editable on web)
 - [ ] Daily planner page type with live task/event widgets plus a free ink area
 - [ ] Simple reminders (local notifications)
 
-### Phase 3: Skins and monetization (3–4 weeks)
-- [ ] Skin engine (manifest → ThemeData + ThemeExtension), 4 bundled free skins
-- [ ] Skin catalog in Firestore, on-demand asset download and caching
-- [ ] RevenueCat set up for App Store, Play Store and Web; webhook Cloud Function
+### Phase 4: Store and monetization (2–3 weeks)
+- [ ] RevenueCat set up for App Store, Play Store and Web; webhook Cloud Function → entitlements
 - [ ] Store UI with previews and "try before you buy" (preview the skin on the current page)
 - [ ] Feature gates for Pro features
-- [ ] Restore purchases, plus account deletion (required by Apple)
+- [ ] Restore purchases
 
-### Phase 4: Polish and growth (ongoing)
+### Phase 5: Polish and growth (ongoing)
 - [ ] Handwriting recognition and search (`google_mlkit_digital_ink_recognition` on mobile; a server-side option for web)
 - [ ] PDF import/annotate and export
 - [ ] Google / Outlook calendar sync
@@ -262,27 +282,29 @@ You can handwrite anywhere on the page, and the structured widgets stay interact
 - **Unit:** models, stroke encoding, skin manifest parsing, feature gates.
 - **Widget / golden tests:** each skin rendered on each page type, to catch theming regressions.
 - **Firestore rules:** Firebase Emulator Suite + `@firebase/rules-unit-testing`.
-- **Integration:** `integration_test` on a physical iPad and an Android tablet (pen input can't be fully simulated).
-- **Manual sync matrix:** iPad offline → write → reconnect → check the web; web and tablet editing the same page at once.
+- **Integration:** `integration_test` on a physical iPad, an Android tablet, an iPhone and an Android phone (pen input can't be fully simulated).
+- **Manual sync matrix:** phone/tablet offline → write → reconnect → check the web; web typing and tablet inking on the same page at once.
 
 ---
 
 ## 11. Key risks and mitigations
 | Risk | Mitigation |
 |---|---|
-| Ink latency / jank (esp. Flutter Web) | Phase 0 spike, two-layer rendering, raster caching, Skwasm renderer |
+| Ink latency / jank (esp. low-end Android phones) | Early ink spike, two-layer rendering, raster caching |
 | Firestore cost from many stroke docs | Batch writes, compact old strokes into Storage blobs, compact point encoding |
 | Sync conflicts | Append-only strokes + tombstones; last-write-wins only for element moves and metadata |
 | App Store rejection over payments | Native IAP on mobile; web purchases only on web; RevenueCat to unify |
 | Skin assets bloating the app | Bundle only free skins; paid skins downloaded on demand |
-| Scope creep | Ship Phase 1 + 2 as a free beta before building the store |
+| Scope creep | Ship Phases 1–3 as a free beta before building the store |
 
 ---
 
-## 12. Open questions for you
-1. **Platforms:** iPad only at first, or iPad + Android tablets at launch? Should the phone UI be supported too?
-2. **Pricing:** price points for single skins, bundles, and Pro (e.g. $1.99 per skin, $4.99 per bundle, $3.99/mo or $29.99/yr Pro)?
-3. **Accounts:** require sign-in to use the app, or allow local-only use with sign-in for sync?
-4. **Skin art:** who creates the skins (in-house, a commissioned artist, community)? This affects the manifest format.
-5. **Web editing:** should the web be fully editable (ink + typing), or mainly for viewing and typing?
-6. **Backend preference:** OK with Firebase, or do you prefer Supabase or your own server?
+## 12. Decisions
+| Question | Decision |
+|---|---|
+| Platforms | iOS + Android, **phones and tablets**, plus web |
+| Pricing | Skins $1.99 ($2.99 premium), bundles $5.99, Pro $2.99/mo or $19.99/yr with a 7-day trial (see §7) |
+| Accounts | **Required** (Apple, Google, email) |
+| Starting point | **Skins first** (Phase 1); the skin art is made by our team |
+| Web | **Viewing and typing**: ink is read-only, while text, tasks and events are editable |
+| Backend | **Firebase** |
