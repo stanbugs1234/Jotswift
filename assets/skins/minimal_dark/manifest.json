@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "minimal_dark",
+  "version": 1,
+  "name": "Minimal Dark",
+  "description": "Charcoal pages and soft dot grid, easy on the eyes at night.",
+  "tier": "free",
+  "brightness": "dark",
+  "colors": {
+    "primary": "#8AB4F8",
+    "onPrimary": "#0B1A33",
+    "secondary": "#F2B880",
+    "onSecondary": "#2A1A08",
+    "background": "#121316",
+    "surface": "#1C1D21",
+    "onSurface": "#E6E7EA",
+    "outline": "#5A5E66",
+    "error": "#F2B8B5"
+  },
+  "paper": {
+    "color": "#1E1F24",
+    "lineColor": "#3A3D45",
+    "pattern": "dot",
+    "spacing": 28
+  },
+  "inkColors": ["#E6E7EA", "#8AB4F8", "#F2B880", "#81C995", "#F28B82"],
+  "typography": { "heading": "Inter", "body": "Inter", "accent": "Kalam" },
+  "cornerRadius": 14
+}

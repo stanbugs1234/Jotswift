@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "botanical",
+  "version": 1,
+  "name": "Botanical",
+  "description": "Sage greens and terracotta on cream, for calm, leafy pages.",
+  "tier": "paid",
+  "productId": "skin_botanical",
+  "brightness": "light",
+  "colors": {
+    "primary": "#4F7B5A",
+    "onPrimary": "#FFFFFF",
+    "secondary": "#D98E73",
+    "onSecondary": "#2B2B2B",
+    "background": "#EEF1E8",
+    "surface": "#FBF8F1",
+    "onSurface": "#2B2B2B",
+    "outline": "#A9B8A0",
+    "error": "#B3261E"
+  },
+  "paper": {
+    "color": "#FBF8F1",
+    "lineColor": "#D8D2C4",
+    "pattern": "dot",
+    "spacing": 26
+  },
+  "inkColors": ["#2B2B2B", "#4F7B5A", "#D98E73", "#8A6FB0", "#C9A227"],
+  "typography": { "heading": "Cormorant Garamond", "body": "Inter", "accent": "Dancing Script" },
+  "cornerRadius": 16
+}

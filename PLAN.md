@@ -142,22 +142,7 @@ skins/{skinId}                                       # public catalog, read-only
 
 A skin is **data, not code**, so new skins can be sold without shipping an app update.
 
-**Skin manifest** (JSON in Cloud Storage, cached locally):
-```json
-{
-  "id": "botanical",
-  "version": 3,
-  "name": "Botanical",
-  "colors": { "primary": "#4F7B5A", "surface": "#FBF8F1", "onSurface": "#2B2B2B", "accent": "#D98E73", ... },
-  "darkColors": { ... },
-  "fonts": { "heading": "Playfair Display", "body": "Inter", "handwritingAccent": "Caveat" },
-  "paper": { "texture": "paper_cream.webp", "lineColor": "#D8D2C4" },
-  "pageTemplates": { "plannerDaily": "planner_daily.svg", "todo": "todo.svg", "calendarMonth": "cal_month.svg" },
-  "stickers": ["leaf1.png", "fern.png", ...],
-  "icons": "rounded",
-  "cornerRadius": 16
-}
-```
+**Skin manifest:** a JSON file per skin with colors, paper style, ink palette, fonts and corner radius. Each skin has one brightness, so a dark look is its own skin (e.g. *Minimal Dark*). The full format and how to make a skin are in [docs/skins.md](docs/skins.md).
 
 **In the app:**
 - A `SkinEngine` loads the manifest and builds a Flutter `ThemeData` plus a custom `ThemeExtension<MotleySkin>`. The extension carries the paper texture, template art, stickers and decorative assets.
@@ -227,18 +212,20 @@ You can handwrite anywhere on the page, and the structured widgets stay interact
 ## 9. Roadmap
 
 ### Phase 0: Setup (1 week)
-- [ ] `flutter create` with iOS, Android and web; set up folder structure, lints, CI
-- [ ] Firebase project (dev + prod), FlutterFire config
+- [x] `flutter create` with iOS, Android and web; set up folder structure, lints, CI
+- [ ] Firebase project (dev + prod), FlutterFire config (**you:** create the project in the Firebase console)
 - [ ] Auth: sign in with Apple, Google and email (required, see §1); account deletion (required by Apple)
-- [ ] Responsive app shell: phone (bottom nav + drawer), tablet and web (sidebar)
+  - [x] Sign-in and settings screens, auth interface, stand-in auth for development
+  - [ ] Firebase Auth implementation (needs the Firebase project)
+- [x] Responsive app shell: phone (bottom nav), tablet and web (sidebar). The notebooks drawer comes with Phase 2
 
 ### Phase 1: Skins (3–4 weeks), built first
-- [ ] Skin manifest format + `SkinEngine` (manifest → ThemeData + `ThemeExtension<MotleySkin>`)
-- [ ] 4 bundled free skins (Classic, Minimal Dark, Pastel, Kraft Paper)
-- [ ] Skin picker screen with live preview on sample pages
-- [ ] Skin catalog in Firestore; paid skin asset download and caching
-- [ ] Golden tests: every skin on every screen and page type
-- [ ] Skin authoring guide (`docs/skins.md`) so we can make new skins without code changes
+- [x] Skin manifest format + `SkinEngine` (manifest → ThemeData + `ThemeExtension<MotleySkin>`)
+- [x] 4 bundled free skins (Classic, Minimal Dark, Pastel, Kraft Paper)
+- [x] Skin picker screen with live preview on sample pages
+- [ ] Skin catalog in Firestore; paid skin asset download and caching (needs Firebase)
+- [x] Golden tests: every skin on every page type
+- [x] Skin authoring guide (`docs/skins.md`) so we can make new skins without code changes
 
 ### Phase 2: Core notebook MVP (4–6 weeks)
 - [ ] Notebooks / sections / pages CRUD; sidebar (tablet/web) and drawer (phone) navigation

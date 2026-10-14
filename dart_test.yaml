@@ -1,0 +1,4 @@
+tags:
+  golden:
+    # Screenshot tests. Font rendering differs between operating systems,
+    # so goldens are generated and checked on Linux (as in CI).

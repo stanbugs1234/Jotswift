@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "pastel",
+  "version": 1,
+  "name": "Pastel",
+  "description": "Blush pink and lavender with a soft grid for cheerful planning.",
+  "tier": "free",
+  "brightness": "light",
+  "colors": {
+    "primary": "#A3557F",
+    "onPrimary": "#FFFFFF",
+    "secondary": "#7C83C9",
+    "onSecondary": "#FFFFFF",
+    "background": "#FDF1F5",
+    "surface": "#FFF8FB",
+    "onSurface": "#3D2C36",
+    "outline": "#D7B8C8",
+    "error": "#C2364C"
+  },
+  "paper": {
+    "color": "#FFFBFD",
+    "lineColor": "#F1DCE7",
+    "pattern": "grid",
+    "spacing": 24
+  },
+  "inkColors": ["#3D2C36", "#B5658F", "#7C83C9", "#6FAF9C", "#E59A6B"],
+  "typography": { "heading": "Quicksand", "body": "Nunito", "accent": "Pacifico" },
+  "cornerRadius": 20
+}
