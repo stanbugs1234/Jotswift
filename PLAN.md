@@ -235,14 +235,16 @@ You can handwrite anywhere on the page, and the structured widgets stay interact
 - [x] Skin authoring guide (`docs/skins.md`) so we can make new skins without code changes
 
 ### Phase 2: Core notebook MVP (4–6 weeks)
-- [ ] Notebooks / sections / pages CRUD; sidebar (tablet/web) and drawer (phone) navigation
-- [ ] **Ink spike first:** pressure ink on an iPad, an Android tablet and a phone; measure latency and FPS with 2,000+ strokes on a page
-- [ ] Canvas: pen, highlighter, stroke eraser, undo/redo, zoom/pan, palm rejection, phone Draw/Scroll toggle
+- [x] Notebooks / sections / pages: create, rename, delete (Firestore + offline)
+- [ ] Tablet sidebar with the notebook tree (currently the same screens as phones)
+- [ ] **Ink spike on real devices:** pressure ink on an iPad, an Android tablet and a phone; measure latency and FPS with 2,000+ strokes on a page (**needs devices**)
+- [x] Canvas: pen, highlighter, stroke eraser, undo/redo, zoom/pan, palm rejection, phone Draw/Scroll toggle
 - [ ] Page templates (blank, lined, grid, dot), drawn from the active skin
 - [ ] Text boxes and image insert
 - [ ] Offline mode and sync status indicator
-- [ ] Web: read-only ink rendering, text box editing; deploy to Firebase Hosting
-- [ ] Firestore security rules + rules unit tests
+- [x] Web: read-only ink rendering
+- [ ] Web: text box editing; deploy to Firebase Hosting
+- [x] Firestore security rules + rules unit tests
 
 ### Phase 3: Planner, to-do, calendar (4–5 weeks)
 - [ ] Tasks and task lists (editable on web)

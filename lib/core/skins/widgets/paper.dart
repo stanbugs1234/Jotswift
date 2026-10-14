@@ -53,6 +53,7 @@ class PaperPainter extends CustomPainter {
     required this.pattern,
     required this.spacing,
     this.marginColor,
+    this.scale = 1,
   });
 
   final Color color;
@@ -61,16 +62,23 @@ class PaperPainter extends CustomPainter {
   final PaperPattern pattern;
   final double spacing;
 
+  /// Multiplies spacing, margins and line widths. Full-size note pages use
+  /// a larger scale than the small previews.
+  final double scale;
+
   /// Space above the first line, so headers sit on a clean band.
   static const topMargin = 48.0;
   static const leftMargin = 40.0;
 
   @override
   void paint(Canvas canvas, Size size) {
+    final spacing = this.spacing * scale;
+    final topMargin = PaperPainter.topMargin * scale;
+    final leftMargin = PaperPainter.leftMargin * scale;
     canvas.drawRect(Offset.zero & size, Paint()..color = color);
     final line = Paint()
       ..color = lineColor
-      ..strokeWidth = 1;
+      ..strokeWidth = scale;
 
     switch (pattern) {
       case PaperPattern.blank:
@@ -90,7 +98,7 @@ class PaperPainter extends CustomPainter {
         final dot = Paint()..color = lineColor;
         for (var y = spacing; y < size.height; y += spacing) {
           for (var x = spacing; x < size.width; x += spacing) {
-            canvas.drawCircle(Offset(x, y), 1.4, dot);
+            canvas.drawCircle(Offset(x, y), 1.4 * scale, dot);
           }
         }
     }
@@ -98,11 +106,11 @@ class PaperPainter extends CustomPainter {
     final margin = marginColor;
     if (margin != null && pattern == PaperPattern.lined) {
       canvas.drawLine(
-        const Offset(leftMargin, 0),
+        Offset(leftMargin, 0),
         Offset(leftMargin, size.height),
         Paint()
           ..color = margin
-          ..strokeWidth = 1.5,
+          ..strokeWidth = 1.5 * scale,
       );
     }
   }
@@ -113,5 +121,6 @@ class PaperPainter extends CustomPainter {
       old.lineColor != lineColor ||
       old.marginColor != marginColor ||
       old.pattern != pattern ||
-      old.spacing != spacing;
+      old.spacing != spacing ||
+      old.scale != scale;
 }

@@ -5,6 +5,9 @@ import 'package:go_router/go_router.dart';
 import '../features/auth/auth_repository.dart';
 import '../features/auth/sign_in_screen.dart';
 import '../features/home/placeholder_screen.dart';
+import '../features/notebooks/notebook_screen.dart';
+import '../features/notebooks/notebooks_screen.dart';
+import '../features/notebooks/page_screen.dart';
 import '../features/settings/settings_screen.dart';
 import '../features/skins/sample_pages.dart';
 import '../features/skins/skin_detail_screen.dart';
@@ -14,6 +17,8 @@ import 'shell.dart';
 const signInPath = '/sign-in';
 const homePath = '/notebooks';
 
+final _rootNavigatorKey = GlobalKey<NavigatorState>();
+
 final routerProvider = Provider<GoRouter>((ref) {
   // Re-run the redirect whenever the user signs in or out.
   final authChanged = ValueNotifier(0);
@@ -22,6 +27,7 @@ final routerProvider = Provider<GoRouter>((ref) {
     ..onDispose(authChanged.dispose);
 
   final router = GoRouter(
+    navigatorKey: _rootNavigatorKey,
     initialLocation: homePath,
     refreshListenable: authChanged,
     redirect: (context, state) {
@@ -39,7 +45,31 @@ final routerProvider = Provider<GoRouter>((ref) {
       StatefulShellRoute.indexedStack(
         builder: (context, state, shell) => AppShell(navigationShell: shell),
         branches: [
-          _tab('/notebooks', 'Notebooks', SamplePageKind.note, 'Phase 2'),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/notebooks',
+                builder: (context, state) => const NotebooksScreen(),
+                routes: [
+                  GoRoute(
+                    path: ':notebookId',
+                    builder: (context, state) => NotebookScreen(
+                      notebookId: state.pathParameters['notebookId']!,
+                    ),
+                    routes: [
+                      // Full screen (above the tab bar) to give ink room.
+                      GoRoute(
+                        path: 'pages/:pageId',
+                        parentNavigatorKey: _rootNavigatorKey,
+                        builder: (context, state) =>
+                            PageScreen(pageId: state.pathParameters['pageId']!),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
           _tab('/planner', 'Planner', SamplePageKind.planner, 'Phase 3'),
           _tab('/calendar', 'Calendar', SamplePageKind.calendar, 'Phase 3'),
           _tab('/todo', 'To-do', SamplePageKind.todo, 'Phase 3'),

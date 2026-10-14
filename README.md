@@ -10,9 +10,10 @@ See [PLAN.md](PLAN.md) for the product plan and roadmap, and [docs/skins.md](doc
 |---|---|
 | 0. Setup: app shell, sign-in, Firebase | iOS and Android use Firebase sign-in; web waits on its Firebase config |
 | 1. Skins | Skin engine, 4 free skins + 1 sample paid skin, skin picker with previews |
-| 2–5 | Not started |
+| 2. Notebooks and handwriting | Notebooks, sections, pages; ink canvas with pen, highlighter, eraser, undo/redo, zoom, palm rejection. Text boxes and images next |
+| 3–5 | Not started |
 
-The Notebooks, Planner, Calendar and To-do tabs show **sample pages** so skins can be seen everywhere. Real editing comes in later phases.
+The Planner, Calendar and To-do tabs still show **sample pages**; they're built in Phase 3. On the web, handwriting is view-only.
 
 **Sign-in:** iOS and Android use real Firebase accounts (project `notely-b1aec`). Platforms without a Firebase config (currently the web) fall back to a stand-in sign-in: any email with a 6+ character password works, and nothing is saved between launches.
 
@@ -54,6 +55,8 @@ lib/
     entitlements/      what the user has unlocked (stub until the store is built)
   features/
     auth/              sign-in screen and auth repository
+    notebooks/         notebooks, sections, pages (Firestore + in-memory)
+    canvas/            ink: strokes, rendering, tools, undo/redo
     skins/             skin picker, skin preview, sample pages
     home/              placeholder tabs
     settings/
