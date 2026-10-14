@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:motley/core/entitlements/entitlements.dart';
-import 'package:motley/core/skins/motley_skin.dart';
-import 'package:motley/core/skins/skin_manifest.dart';
-import 'package:motley/core/skins/skin_providers.dart';
+import 'package:notely/core/entitlements/entitlements.dart';
+import 'package:notely/core/skins/notely_skin.dart';
+import 'package:notely/core/skins/skin_manifest.dart';
+import 'package:notely/core/skins/skin_providers.dart';
 
 import '../../helpers.dart';
 
@@ -17,7 +17,7 @@ void main() {
 
     expect(container.read(activeSkinProvider).id, 'classic');
     expect(
-      container.read(themeProvider).extension<MotleySkin>()!.id,
+      container.read(themeProvider).extension<NotelySkin>()!.id,
       'classic',
     );
   });
@@ -116,7 +116,7 @@ void main() {
       expect(const Entitlements(ownedSkinIds: {'x'}).canUseSkin(paid), isTrue);
     });
 
-    test('pro skins need Motley Pro', () {
+    test('pro skins need Notely Pro', () {
       final pro = withTier(SkinTier.pro);
       expect(Entitlements.none.canUseSkin(pro), isFalse);
       expect(const Entitlements(pro: true).canUseSkin(pro), isTrue);

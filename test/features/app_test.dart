@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:motley/core/skins/motley_skin.dart';
-import 'package:motley/core/skins/skin_manifest.dart';
-import 'package:motley/features/auth/sign_in_screen.dart';
+import 'package:notely/core/skins/notely_skin.dart';
+import 'package:notely/core/skins/skin_manifest.dart';
+import 'package:notely/features/auth/sign_in_screen.dart';
 
 import '../helpers.dart';
 
@@ -17,7 +17,7 @@ void main() {
   /// The skin used to draw [at] (by default, the screen on top).
   String skinAt(WidgetTester tester, [Finder? at]) =>
       Theme.of(tester.element(at ?? find.byType(Scaffold).last))
-          .extension<MotleySkin>()!
+          .extension<NotelySkin>()!
           .id;
 
   group('sign-in', () {

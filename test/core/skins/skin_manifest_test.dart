@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:motley/core/skins/skin_manifest.dart';
+import 'package:notely/core/skins/skin_manifest.dart';
 
 Map<String, dynamic> validJson() => jsonDecode('''
 {

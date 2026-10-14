@@ -8,7 +8,7 @@ enum SkinTier {
   /// Sold individually or in a bundle.
   paid,
 
-  /// Included with a Motley Pro subscription.
+  /// Included with a Notely Pro subscription.
   pro,
 }
 

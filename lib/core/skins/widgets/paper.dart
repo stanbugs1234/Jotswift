@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../motley_skin.dart';
+import '../notely_skin.dart';
 import '../skin_manifest.dart';
 
 /// A sheet of paper in the active skin's style, with [child] on top.
@@ -24,7 +24,7 @@ class Paper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final skin = MotleySkin.of(context);
+    final skin = NotelySkin.of(context);
     return ClipRRect(
       borderRadius: BorderRadius.circular(skin.cornerRadius),
       child: CustomPaint(

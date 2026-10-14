@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'skin_manifest.dart';
 
 /// Skin values that don't fit in [ThemeData]: paper, ink palette and the
-/// accent font. Read it with `MotleySkin.of(context)`.
+/// accent font. Read it with `NotelySkin.of(context)`.
 @immutable
-class MotleySkin extends ThemeExtension<MotleySkin> {
-  const MotleySkin({
+class NotelySkin extends ThemeExtension<NotelySkin> {
+  const NotelySkin({
     required this.id,
     required this.name,
     required this.paperColor,
@@ -32,17 +32,17 @@ class MotleySkin extends ThemeExtension<MotleySkin> {
   final TextStyle accentTextStyle;
   final double cornerRadius;
 
-  static MotleySkin of(BuildContext context) {
-    final skin = Theme.of(context).extension<MotleySkin>();
+  static NotelySkin of(BuildContext context) {
+    final skin = Theme.of(context).extension<NotelySkin>();
     assert(
       skin != null,
-      'No MotleySkin in the theme. Build it with SkinEngine.',
+      'No NotelySkin in the theme. Build it with SkinEngine.',
     );
     return skin!;
   }
 
   @override
-  MotleySkin copyWith({
+  NotelySkin copyWith({
     String? id,
     String? name,
     Color? paperColor,
@@ -54,7 +54,7 @@ class MotleySkin extends ThemeExtension<MotleySkin> {
     TextStyle? accentTextStyle,
     double? cornerRadius,
   }) {
-    return MotleySkin(
+    return NotelySkin(
       id: id ?? this.id,
       name: name ?? this.name,
       paperColor: paperColor ?? this.paperColor,
@@ -69,10 +69,10 @@ class MotleySkin extends ThemeExtension<MotleySkin> {
   }
 
   @override
-  MotleySkin lerp(MotleySkin? other, double t) {
+  NotelySkin lerp(NotelySkin? other, double t) {
     if (other == null) return this;
     final end = t >= 0.5 ? other : this;
-    return MotleySkin(
+    return NotelySkin(
       id: end.id,
       name: end.name,
       paperColor: Color.lerp(paperColor, other.paperColor, t)!,

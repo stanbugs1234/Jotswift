@@ -71,7 +71,7 @@ class AppShell extends StatelessWidget {
             leading: Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
               child: Text(
-                'Motley',
+                'Notely',
                 style: Theme.of(context).textTheme.titleLarge,
               ),
             ),

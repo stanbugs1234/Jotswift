@@ -1,11 +1,11 @@
 {
-    "name": "motley",
-    "short_name": "motley",
+    "name": "Notely",
+    "short_name": "Notely",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Notely: handwritten notes, planner, calendar and to-do lists.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

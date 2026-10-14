@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'font_resolver.dart';
-import 'motley_skin.dart';
+import 'notely_skin.dart';
 import 'skin_manifest.dart';
 
-/// Builds a Flutter [ThemeData] (with a [MotleySkin] extension) from a skin.
+/// Builds a Flutter [ThemeData] (with a [NotelySkin] extension) from a skin.
 class SkinEngine {
   const SkinEngine({this.fonts = const GoogleFontResolver()});
 
@@ -73,7 +73,7 @@ class SkinEngine {
       ),
       dividerTheme: DividerThemeData(color: c.outline.withValues(alpha: 0.4)),
       extensions: [
-        MotleySkin(
+        NotelySkin(
           id: skin.id,
           name: skin.name,
           paperColor: skin.paper.color,

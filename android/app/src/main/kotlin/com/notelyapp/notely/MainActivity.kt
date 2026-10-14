@@ -1,4 +1,4 @@
-package com.motleyapp.motley
+package com.notelyapp.notely
 
 import io.flutter.embedding.android.FlutterActivity
 

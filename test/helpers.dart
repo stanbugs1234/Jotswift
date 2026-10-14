@@ -3,13 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
-import 'package:motley/app/app.dart';
-import 'package:motley/core/skins/font_resolver.dart';
-import 'package:motley/core/skins/skin_engine.dart';
-import 'package:motley/core/skins/skin_manifest.dart';
-import 'package:motley/core/skins/skin_providers.dart';
-import 'package:motley/core/skins/skin_repository.dart';
-import 'package:motley/features/auth/auth_repository.dart';
+import 'package:notely/app/app.dart';
+import 'package:notely/core/skins/font_resolver.dart';
+import 'package:notely/core/skins/skin_engine.dart';
+import 'package:notely/core/skins/skin_manifest.dart';
+import 'package:notely/core/skins/skin_providers.dart';
+import 'package:notely/core/skins/skin_repository.dart';
+import 'package:notely/features/auth/auth_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Fonts can't be downloaded in tests, so use the platform font.
@@ -64,7 +64,7 @@ Future<DevAuthRepository> pumpApp(
     overrides: [authRepositoryProvider.overrideWithValue(auth)],
   );
   await tester.pumpWidget(
-    UncontrolledProviderScope(container: container, child: const MotleyApp()),
+    UncontrolledProviderScope(container: container, child: const NotelyApp()),
   );
   await tester.pumpAndSettle();
   return auth;

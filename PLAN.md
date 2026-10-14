@@ -1,4 +1,4 @@
-# Motley — Product & Technical Plan
+# Notely — Product & Technical Plan
 
 A handwriting-first notebook app, in the spirit of OneNote. You write with a stylus (or finger) on an iOS or Android tablet or phone, and the notes show up on the web almost instantly. It also includes a calendar, a daily planner and to-do lists. The look comes from swappable **skins**: a few free ones ship with the app, and the rest are sold, along with premium features.
 
@@ -145,7 +145,7 @@ A skin is **data, not code**, so new skins can be sold without shipping an app u
 **Skin manifest:** a JSON file per skin with colors, paper style, ink palette, fonts and corner radius. Each skin has one brightness, so a dark look is its own skin (e.g. *Minimal Dark*). The full format and how to make a skin are in [docs/skins.md](docs/skins.md).
 
 **In the app:**
-- A `SkinEngine` loads the manifest and builds a Flutter `ThemeData` plus a custom `ThemeExtension<MotleySkin>`. The extension carries the paper texture, template art, stickers and decorative assets.
+- A `SkinEngine` loads the manifest and builds a Flutter `ThemeData` plus a custom `ThemeExtension<NotelySkin>`. The extension carries the paper texture, template art, stickers and decorative assets.
 - Skins can apply app-wide (the default) or per notebook (a Pro feature).
 - Assets are downloaded on demand and cached with `flutter_cache_manager`.
 - **Free skins** are bundled in the app so they work offline on first launch: e.g. *Classic*, *Minimal Dark*, *Pastel* and *Kraft Paper*.
@@ -160,12 +160,12 @@ A skin is **data, not code**, so new skins can be sold without shipping an app u
 |---|---|---|
 | Individual skin | **$1.99** ($2.99 for premium skins with extra templates and stickers) | Non-consumable |
 | Skin bundle (4–5 themed skins) | **$5.99** (about 30–40% off buying them one by one) | Non-consumable |
-| **Motley Pro**, monthly | **$2.99/mo** | Auto-renewing subscription |
-| **Motley Pro**, yearly | **$19.99/yr** (about 45% off monthly), with a **7-day free trial** | Auto-renewing subscription |
+| **Notely Pro**, monthly | **$2.99/mo** | Auto-renewing subscription |
+| **Notely Pro**, yearly | **$19.99/yr** (about 45% off monthly), with a **7-day free trial** | Auto-renewing subscription |
 | Lifetime Pro (add later, after launch) | $49.99 | Non-consumable |
 
 **Why these numbers**
-- Note apps like Goodnotes and Notability charge roughly $10–20 a year. Motley also includes a planner and calendar, so $19.99/yr sits at the top of that range but stays competitive.
+- Note apps like Goodnotes and Notability charge roughly $10–20 a year. Notely also includes a planner and calendar, so $19.99/yr sits at the top of that range but stays competitive.
 - Small skin prices ($1.99) are impulse buys. Bundles raise the average order.
 - Push the **yearly** plan: show it first and use the free trial only on yearly. Yearly subscribers stay much longer.
 - **Pro includes a "Pro skins" collection** (e.g. one new skin each month for subscribers). This gives skin lovers a reason to subscribe instead of buying one skin at a time. Other skins stay sold individually.
@@ -213,14 +213,15 @@ You can handwrite anywhere on the page, and the structured widgets stay interact
 
 ### Phase 0: Setup (1 week)
 - [x] `flutter create` with iOS, Android and web; set up folder structure, lints, CI
-- [ ] Firebase project (dev + prod), FlutterFire config (**you:** create the project in the Firebase console)
+- [x] Firebase project created ("Notely")
+- [ ] Register the iOS, Android and web apps in Firebase; FlutterFire config
 - [ ] Auth: sign in with Apple, Google and email (required, see §1); account deletion (required by Apple)
   - [x] Sign-in and settings screens, auth interface, stand-in auth for development
   - [ ] Firebase Auth implementation (needs the Firebase project)
 - [x] Responsive app shell: phone (bottom nav), tablet and web (sidebar). The notebooks drawer comes with Phase 2
 
 ### Phase 1: Skins (3–4 weeks), built first
-- [x] Skin manifest format + `SkinEngine` (manifest → ThemeData + `ThemeExtension<MotleySkin>`)
+- [x] Skin manifest format + `SkinEngine` (manifest → ThemeData + `ThemeExtension<NotelySkin>`)
 - [x] 4 bundled free skins (Classic, Minimal Dark, Pastel, Kraft Paper)
 - [x] Skin picker screen with live preview on sample pages
 - [ ] Skin catalog in Firestore; paid skin asset download and caching (needs Firebase)

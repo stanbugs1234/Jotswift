@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../core/skins/motley_skin.dart';
+import '../../core/skins/notely_skin.dart';
 import '../../core/skins/skin_manifest.dart';
 import '../../core/skins/widgets/paper.dart';
 
@@ -52,7 +52,7 @@ class SampleNotePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final skin = MotleySkin.of(context);
+    final skin = NotelySkin.of(context);
     final text = Theme.of(context).textTheme;
     // The first text line sits on the first ruled line.
     const firstLine = PaperPainter.topMargin;
@@ -78,7 +78,7 @@ class SampleNotePage extends StatelessWidget {
 class _SampleInkPainter extends CustomPainter {
   _SampleInkPainter(this.skin);
 
-  final MotleySkin skin;
+  final NotelySkin skin;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -112,7 +112,7 @@ class SamplePlannerPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final skin = MotleySkin.of(context);
+    final skin = NotelySkin.of(context);
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     Widget label(String s) => Padding(
@@ -235,7 +235,7 @@ class SampleTodoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final skin = MotleySkin.of(context);
+    final skin = NotelySkin.of(context);
     final theme = Theme.of(context);
     return Paper(
       pattern: PaperPattern.blank,
@@ -269,7 +269,7 @@ class SampleCalendarPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final skin = MotleySkin.of(context);
+    final skin = NotelySkin.of(context);
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final first = DateTime(month.year, month.month);
@@ -336,7 +336,7 @@ class SampleCalendarPage extends StatelessWidget {
     Map<int, Color> eventDays,
   ) {
     if (day < 1 || day > daysInMonth) return const SizedBox.shrink();
-    final skin = MotleySkin.of(context);
+    final skin = NotelySkin.of(context);
     final scheme = Theme.of(context).colorScheme;
     final isSelected = day == month.day;
     return Container(

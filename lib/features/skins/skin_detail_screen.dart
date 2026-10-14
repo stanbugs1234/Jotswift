@@ -116,7 +116,7 @@ class _ApplyButton extends ConsumerWidget {
         child: const Text('Use this skin'),
       );
     }
-    final what = skin.tier == SkinTier.pro ? 'Motley Pro' : 'this skin';
+    final what = skin.tier == SkinTier.pro ? 'Notely Pro' : 'this skin';
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [

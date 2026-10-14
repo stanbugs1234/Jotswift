@@ -3,8 +3,8 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:motley/core/skins/skin_manifest.dart';
-import 'package:motley/features/skins/sample_pages.dart';
+import 'package:notely/core/skins/skin_manifest.dart';
+import 'package:notely/features/skins/sample_pages.dart';
 
 import '../helpers.dart';
 

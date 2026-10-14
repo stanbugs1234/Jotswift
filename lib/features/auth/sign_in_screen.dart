@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/skins/motley_skin.dart';
+import '../../core/skins/notely_skin.dart';
 import '../../core/skins/skin_manifest.dart';
 import '../../core/skins/widgets/paper.dart';
 import 'auth_repository.dart';
@@ -49,7 +49,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final skin = MotleySkin.of(context);
+    final skin = NotelySkin.of(context);
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -66,7 +66,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
-                      'Motley',
+                      'Notely',
                       textAlign: TextAlign.center,
                       style: skin.accentTextStyle.copyWith(fontSize: 44),
                     ),

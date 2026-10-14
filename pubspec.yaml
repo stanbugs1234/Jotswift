@@ -1,5 +1,5 @@
-name: motley
-description: "Motley: handwritten notes, planner, calendar and to-do lists with swappable skins."
+name: notely
+description: "Notely: handwritten notes, planner, calendar and to-do lists with swappable skins."
 publish_to: 'none'
 version: 0.1.0+1
 

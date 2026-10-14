@@ -4,8 +4,8 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:motley/core/skins/motley_skin.dart';
-import 'package:motley/core/skins/skin_manifest.dart';
+import 'package:notely/core/skins/notely_skin.dart';
+import 'package:notely/core/skins/skin_manifest.dart';
 
 import '../../helpers.dart';
 
@@ -60,9 +60,9 @@ void main() {
       late SkinManifest skin;
       setUp(() => skin = skinById(skins, id));
 
-      test('builds a theme with a MotleySkin extension', () {
+      test('builds a theme with a NotelySkin extension', () {
         final theme = testEngine.buildTheme(skin);
-        final ext = theme.extension<MotleySkin>()!;
+        final ext = theme.extension<NotelySkin>()!;
 
         expect(theme.colorScheme.primary, skin.colors.primary);
         expect(theme.brightness, skin.brightness);

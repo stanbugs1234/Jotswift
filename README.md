@@ -1,4 +1,4 @@
-# Motley
+# Notely
 
 Handwritten notes, a daily planner, calendar and to-do lists for iOS and Android phones and tablets, with a web app for viewing and typing. The look comes from swappable **skins**.
 

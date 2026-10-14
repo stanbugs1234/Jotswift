@@ -38,7 +38,7 @@ If a step is missed, the tests say which one.
   "version": 1,                  // bump whenever you change the skin
   "name": "Botanical",           // shown in the app
   "description": "Sage greens and terracotta on cream, for calm, leafy pages.",
-  "tier": "paid",                // "free", "paid" (sold on its own) or "pro" (included with Motley Pro)
+  "tier": "paid",                // "free", "paid" (sold on its own) or "pro" (included with Notely Pro)
   "productId": "skin_botanical", // store product id; required when tier is "paid"
   "brightness": "light",         // "light" or "dark"
 

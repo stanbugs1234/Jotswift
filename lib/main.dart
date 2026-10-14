@@ -20,7 +20,7 @@ Future<void> main() async {
         sharedPreferencesProvider.overrideWithValue(prefs),
         bundledSkinsProvider.overrideWithValue(skins),
       ],
-      child: const MotleyApp(),
+      child: const NotelyApp(),
     ),
   );
 }
