@@ -8,14 +8,16 @@ See [PLAN.md](PLAN.md) for the product plan and roadmap, and [docs/skins.md](doc
 
 | Phase | State |
 |---|---|
-| 0. Setup: app shell, sign-in, Firebase | iOS and Android use Firebase sign-in; web waits on its Firebase config |
+| 0. Setup: app shell, sign-in, Firebase | iOS, Android and web use Firebase sign-in |
 | 1. Skins | Skin engine, 4 free skins + 1 sample paid skin, skin picker with previews |
 | 2. Notebooks and handwriting | Notebooks, sections, pages; ink canvas with pen, highlighter, eraser, undo/redo, zoom, palm rejection. Text boxes and images next |
 | 3–5 | Not started |
 
 The Planner, Calendar and To-do tabs still show **sample pages**; they're built in Phase 3. On the web, handwriting is view-only.
 
-**Sign-in:** iOS and Android use real Firebase accounts (project `notely-b1aec`). Platforms without a Firebase config (currently the web) fall back to a stand-in sign-in: any email with a 6+ character password works, and nothing is saved between launches.
+**Sign-in:** iOS, Android and the web use real Firebase accounts (project `notely-b1aec`). A platform without a Firebase config would fall back to a stand-in sign-in (any email, 6+ character password, nothing saved).
+
+**Testing on an iPad:** see [docs/testing-on-ipad.md](docs/testing-on-ipad.md).
 
 The chosen skin is saved on the device and in the account (`users/{uid}.activeSkinId`), so it follows the user to other devices.
 

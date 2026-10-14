@@ -215,7 +215,7 @@ You can handwrite anywhere on the page, and the structured widgets stay interact
 - [x] `flutter create` with iOS, Android and web; set up folder structure, lints, CI
 - [x] Firebase project created ("Notely")
 - [x] Register the iOS and Android apps in Firebase; `lib/firebase_options.dart`
-- [ ] Register the web app config
+- [x] Register the web app config
 - [x] Firestore security rules + emulator tests (`firebase/`)
 - [ ] Publish the rules to the live database
 - [ ] Auth: sign in with Apple, Google and email (required, see §1); account deletion (required by Apple)
