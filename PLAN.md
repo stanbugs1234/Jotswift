@@ -214,10 +214,15 @@ You can handwrite anywhere on the page, and the structured widgets stay interact
 ### Phase 0: Setup (1 week)
 - [x] `flutter create` with iOS, Android and web; set up folder structure, lints, CI
 - [x] Firebase project created ("Notely")
-- [ ] Register the iOS, Android and web apps in Firebase; FlutterFire config
+- [x] Register the iOS and Android apps in Firebase; `lib/firebase_options.dart`
+- [ ] Register the web app config
+- [x] Firestore security rules + emulator tests (`firebase/`)
+- [ ] Publish the rules to the live database
 - [ ] Auth: sign in with Apple, Google and email (required, see §1); account deletion (required by Apple)
   - [x] Sign-in and settings screens, auth interface, stand-in auth for development
-  - [ ] Firebase Auth implementation (needs the Firebase project)
+  - [x] Firebase Auth implementation (email, Google, Apple)
+  - [ ] Google sign-in on Android: add the app's SHA-1 fingerprint in Firebase
+  - [ ] Apple sign-in: needs an Apple Developer account
 - [x] Responsive app shell: phone (bottom nav), tablet and web (sidebar). The notebooks drawer comes with Phase 2
 
 ### Phase 1: Skins (3–4 weeks), built first

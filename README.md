@@ -8,13 +8,15 @@ See [PLAN.md](PLAN.md) for the product plan and roadmap, and [docs/skins.md](doc
 
 | Phase | State |
 |---|---|
-| 0. Setup: app shell, sign-in screens | Done, with a stand-in sign-in until Firebase is connected |
+| 0. Setup: app shell, sign-in, Firebase | iOS and Android use Firebase sign-in; web waits on its Firebase config |
 | 1. Skins | Skin engine, 4 free skins + 1 sample paid skin, skin picker with previews |
 | 2–5 | Not started |
 
 The Notebooks, Planner, Calendar and To-do tabs show **sample pages** so skins can be seen everywhere. Real editing comes in later phases.
 
-**Sign-in is a stand-in for now.** Any email with a 6+ character password works, as do the Apple and Google buttons. Nothing is saved between launches. Real accounts arrive when the Firebase project is connected.
+**Sign-in:** iOS and Android use real Firebase accounts (project `notely-b1aec`). Platforms without a Firebase config (currently the web) fall back to a stand-in sign-in: any email with a 6+ character password works, and nothing is saved between launches.
+
+The chosen skin is saved on the device and in the account (`users/{uid}.activeSkinId`), so it follows the user to other devices.
 
 ## Running it
 
@@ -32,6 +34,12 @@ flutter run -d chrome       # web
 flutter analyze
 flutter test                                  # all tests, including screenshot (golden) tests
 flutter test --tags golden --update-goldens   # regenerate screenshots after an intended visual change
+```
+
+Firestore security rules (`firebase/firestore.rules`) have their own tests, which run in the Firebase emulator and need Node.js and Java:
+
+```sh
+cd firebase/rules-tests && npm install && npm test
 ```
 
 Golden screenshots are generated on Linux (as in CI). They may differ slightly on macOS.
