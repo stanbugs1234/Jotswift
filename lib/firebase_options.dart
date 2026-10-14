@@ -1,8 +1,9 @@
-import 'package:firebase_core/firebase_core.dart';
+﻿import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 
 /// Firebase settings for the Notely project (`notely-b1aec`), taken from
-/// `android/app/google-services.json` and `ios/Runner/GoogleService-Info.plist`.
+/// `android/app/google-services.json`, `ios/Runner/GoogleService-Info.plist`
+/// and the web app's config in the Firebase console.
 ///
 /// These values only identify the project; they are not secrets. Access to
 /// data is controlled by `firestore.rules`.
@@ -39,6 +40,13 @@ abstract final class DefaultFirebaseOptions {
     iosBundleId: 'com.notelyapp.notely',
   );
 
-  /// Waiting on the web app's config from the Firebase console.
-  static const FirebaseOptions? web = null;
+  static const web = FirebaseOptions(
+    apiKey: 'AIzaSyDoWjbaJyITzHfNJPIi5rdvxevVh6H6FfQ',
+    appId: '1:699023762250:web:7220ac3f8222721cf457b3',
+    messagingSenderId: _senderId,
+    projectId: _projectId,
+    authDomain: 'notely-b1aec.firebaseapp.com',
+    storageBucket: _storageBucket,
+    measurementId: 'G-Q03WCHDWFM',
+  );
 }
