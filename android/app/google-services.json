@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "699023762250",
+    "project_id": "notely-b1aec",
+    "storage_bucket": "notely-b1aec.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:699023762250:android:fd38a358bc303a78f457b3",
+        "android_client_info": {
+          "package_name": "com.notely.notely"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKA8uTpXQeO2k9JoExiefMSFDEH0rnXaY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
