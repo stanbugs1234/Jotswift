@@ -19,7 +19,7 @@ service cloud.firestore {
       let changed = resource == null
         ? request.resource.data.keys()
         : request.resource.data.diff(resource.data).affectedKeys();
-      return changed.hasAny(['entitlements']);
+      return changed.hasAny(['entitlements', 'tester']);
     }
 
     match /users/{uid} {
@@ -41,8 +41,9 @@ service cloud.firestore {
       }
     }
 
-    // Public skin catalog, managed from the Firebase console.
-    match /skins/{skinId} {
+    // The catalog of covers, papers, templates and sticker packs, published
+    // with tool/catalog.py (which bypasses these rules).
+    match /catalog/{itemId} {
       allow read: if signedIn();
       allow write: if false;
     }

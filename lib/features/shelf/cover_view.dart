@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/catalog/catalog_providers.dart';
 import '../notebooks/data/cover_photos.dart';
 import '../notebooks/domain/notebook_models.dart';
 import 'cover_designs.dart';
 
 /// The front of a notebook, drawn as a book with a spine.
 ///
-/// Design covers are drawn in code (see [CoverDesign]); photo covers show
-/// their color until the photo has loaded. Covers this version can't draw
-/// show their color.
+/// Design covers are drawn in code (see [CoverDesign]). Photo and catalog
+/// covers show their color until the image has loaded (catalog covers are
+/// downloaded once, then kept). Covers this version can't draw show their
+/// color.
 class CoverView extends ConsumerWidget {
   const CoverView({required this.cover, this.elevation = 2, super.key});
 
@@ -22,9 +24,14 @@ class CoverView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final color = Color(cover.color);
-    final photo = cover.photoPath == null
-        ? null
-        : ref.watch(coverPhotoProvider(cover.photoPath!)).value;
+    final design = CoverDesign.byId(cover.coverId);
+    final image = switch (cover) {
+      NotebookCover(kind: CoverKind.photo, :final photoPath?) =>
+        ref.watch(coverPhotoProvider(photoPath)).value,
+      NotebookCover(kind: CoverKind.art, :final coverId?) when design == null =>
+        ref.watch(catalogCoverProvider(coverId)).value,
+      _ => null,
+    };
     final spine = ThemeData.estimateBrightnessForColor(color) == Brightness.dark
         ? Colors.white
         : Colors.black;
@@ -41,12 +48,11 @@ class CoverView extends ConsumerWidget {
         clipBehavior: Clip.antiAlias,
         child: Stack(
           children: [
-            if (photo != null)
+            if (image != null)
               Positioned.fill(
-                child: Image(image: photo, fit: BoxFit.cover),
+                child: Image(image: image, fit: BoxFit.cover),
               ),
-            if (CoverDesign.byId(cover.coverId) case final design?
-                when cover.kind == CoverKind.art)
+            if (design != null && cover.kind == CoverKind.art)
               Positioned.fill(
                 child: CustomPaint(painter: CoverDesignPainter(design, color)),
               ),

@@ -1,0 +1,9 @@
+{
+  "kind": "cover",
+  "name": "Terrazzo",
+  "version": 1,
+  "unlock": { "free": true },
+  "category": "covers",
+  "tags": ["light", "pattern"],
+  "color": "#F2EBDD"
+}

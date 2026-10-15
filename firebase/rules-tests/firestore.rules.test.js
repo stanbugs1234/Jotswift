@@ -63,6 +63,10 @@ describe('users/{uid}', () => {
     );
   });
 
+  test('people cannot mark themselves as testers', async () => {
+    await assertFails(setDoc(doc(sam(), 'users/sam'), { tester: true }));
+  });
+
   test('people can still change other fields when they have purchases', async () => {
     await seed('users/sam', { activeSkinId: 'kraft', entitlements: { pro: true } });
     await assertSucceeds(
@@ -101,16 +105,16 @@ describe('data under users/{uid}', () => {
   });
 });
 
-describe('skins/{skinId}', () => {
+describe('catalog/{itemId}', () => {
   test('signed-in people can read the catalog but not change it', async () => {
-    await seed('skins/botanical', { name: 'Botanical' });
-    await assertSucceeds(getDoc(doc(sam(), 'skins/botanical')));
-    await assertFails(setDoc(doc(sam(), 'skins/botanical'), { name: 'Hacked' }));
+    await seed('catalog/night_sky', { name: 'Night sky' });
+    await assertSucceeds(getDoc(doc(sam(), 'catalog/night_sky')));
+    await assertFails(setDoc(doc(sam(), 'catalog/night_sky'), { name: 'Hacked' }));
   });
 
   test('signed-out visitors cannot read the catalog', async () => {
-    await seed('skins/botanical', { name: 'Botanical' });
-    await assertFails(getDoc(doc(guest(), 'skins/botanical')));
+    await seed('catalog/night_sky', { name: 'Night sky' });
+    await assertFails(getDoc(doc(guest(), 'catalog/night_sky')));
   });
 });
 

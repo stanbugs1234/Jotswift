@@ -14,7 +14,7 @@ individually as well as through Pro, and templates are PDFs.
 | 2 | Plain light/dark interface; skins become collections ✅ | M | — |
 | 3 | The shelf: covers, categories, groups, sort ✅ | L | — |
 | 4 | New-notebook flow and per-page paper ✅ | L | Turn on Firebase Storage (needs the Blaze plan) ✅ |
-| 5 | Catalog and downloads (free items only) | L | — |
+| 5 | Catalog and downloads (free items only) ✅ | L | — |
 | 6 | Stickers | M | Sticker art (I can make placeholders) |
 | 7 | PDF templates and dated planners | L | Planner designs (I can make a simple first one) |
 | 8 | Store and purchases | L | App Store Connect, Play Console, RevenueCat and Stripe accounts and products |
@@ -98,32 +98,26 @@ The editor saves a concrete paper and style, so later changes to the default sty
 
 **Not done:** photos of a notebook that is cancelled or later changed stay in Storage. A clean-up function can come with the Cloud Functions in milestone 8.
 
-## Milestone 5: Catalog and downloads (free items first)
+## Milestone 5: Catalog and downloads (free items only) ✅
 
-**App**
-- `lib/core/catalog/`:
-  - `CatalogItem` (the listing format in skins-plan.md §5)
-  - `BundledCatalog` (`assets/catalog/`), `FirestoreCatalog` (`catalog/{id}`), and `catalogProvider`, which merges them and hides `hidden`, `retired`, newer-`minAppVersion` and (unless tester) `testers` items
-  - `PackCache`: downloads `pack.zip` from Storage, checks the `sha256`, unzips into the app's support folder by id and version, and removes unused old versions. On the web, files are kept in memory and the browser's cache.
-- New dependencies: `archive`, `crypto`, `path_provider`.
-- Covers, papers and collections from the catalog appear in the milestone 4 pickers. They download when first used.
+**Built for covers and papers**, the two kinds the pickers already had. Templates, sticker packs and collections are read but not shown yet, and are added with their milestones. The bundled skins stay as they are until collections arrive.
+
+**App** (`lib/core/catalog/`)
+- `CatalogItem`: the listing format of skins-plan.md §5. Instead of `minAppVersion`, each listing has a `format` number; the app skips formats newer than it reads, and kinds it doesn't know.
+- **Papers live in the listing itself** (a paper is a few numbers), so nothing is downloaded and the notebook keeps a copy. Covers come as `pack.zip` with `cover.webp`.
+- `CatalogRepository` (Firestore `catalog`), `catalogProvider` (everything readable, including retired items, so notebooks using them keep working) and `offeredCatalogProvider` (public, or for testers, and unlocked).
+- `PackCache` looks in memory, then on the device, then downloads. Downloads are checked against `sha256` and unpacked, and file names that could escape the folder are dropped. Packs are kept per version (`<support>/catalog/<id>/<version>/`; memory on the web), old versions are removed, and requests made at the same time share one download.
+- Pickers: **More covers** (with previews) and **More papers**. `CoverView` draws catalog covers once downloaded. `Entitlements.canUseCatalogItem` covers free, Pro, products and grants.
+- The tester flag is `users/{uid}.tester`, which only the server may set.
 
 **Firebase**
-- The Firestore rule for `skins/{id}` becomes `catalog/{id}`: read if signed in, never written by the app.
-- Storage rules for `catalog/`:
-  - previews: anyone signed in can read
-  - packs: readable only if the item is free or the user is entitled (`firestore.get` on the user's entitlements and the catalog entry)
+- Firestore: `catalog/{id}` is readable when signed in and never written by the app. `tester` joins `entitlements` as a server-only field.
+- Storage: previews are readable when signed in. A pack is readable only if `canUseItem` passes; it looks up the listing and the user's entitlements in Firestore. The Storage service account was given `roles/firebaserules.firestoreServiceAgent` so these rules can read Firestore.
+- Rules tests cover free, Pro, product, grant and visitor access. The Firestore and Storage test files run one at a time, as they share the emulator's database.
 
-**Tools** (in `firebase/tools/`, Node, using the Admin SDK)
-- `catalog_check`: listing format, sizes, image dimensions, PDF pages and links, paper contrast.
-- `publish_catalog <id> --testers|--public`: zips, computes the hash, uploads and writes the listing.
-- A GitHub Actions job runs `catalog_check` on every change under `catalog/`.
+**Tools:** `tool/catalog.py` (Python, like the icon script) runs `check`, `publish <id> --testers|--public|--hidden|--retired [--dry-run]` and `set-tester <uid> on|off`. It uses the gcloud login. CI runs `check`. Guide: [catalog.md](catalog.md).
 
-**Proof:** publish two free covers and a free paper, then use them on the iPad (including offline after the first use).
-
-**Tests:** catalog merge and filtering, cache (download, bad hash rejected, version change, clean-up) with a fake downloader, rules tests for the catalog and packs.
-
----
+**Published:** the free covers Night Sky and Terrazzo, and the free paper Sage Dot.
 
 ## Milestone 6: Stickers
 

@@ -7,7 +7,9 @@ environment:
   sdk: ^3.13.0
 
 dependencies:
+  archive: ^4.5.2
   cloud_firestore: ^6.10.0
+  crypto: ^3.0.7
   firebase_auth: ^6.7.0
   firebase_core: ^4.15.0
   firebase_storage: ^13.6.0
@@ -17,6 +19,7 @@ dependencies:
   go_router: ^18.1.0
   google_fonts: ^9.0.0
   image_picker: ^1.2.4
+  path_provider: ^2.1.6
   perfect_freehand: ^2.5.2+1
   shared_preferences: ^2.5.6
 

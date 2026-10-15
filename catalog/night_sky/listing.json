@@ -1,0 +1,9 @@
+{
+  "kind": "cover",
+  "name": "Night Sky",
+  "version": 1,
+  "unlock": { "free": true },
+  "category": "covers",
+  "tags": ["dark", "illustrated"],
+  "color": "#1C2A57"
+}

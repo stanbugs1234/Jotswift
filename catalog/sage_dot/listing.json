@@ -1,0 +1,15 @@
+{
+  "kind": "paper",
+  "name": "Sage Dot",
+  "version": 1,
+  "unlock": { "free": true },
+  "category": "papers",
+  "tags": ["light", "dot"],
+  "paper": {
+    "color": "#EEF2EA",
+    "lineColor": "#AFC0A8",
+    "marginColor": null,
+    "pattern": "dot",
+    "spacing": 26
+  }
+}

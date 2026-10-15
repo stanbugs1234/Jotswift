@@ -9,6 +9,10 @@ import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app/app.dart';
+import 'core/catalog/catalog_providers.dart';
+import 'core/catalog/catalog_repository.dart';
+import 'core/catalog/pack_cache.dart';
+import 'core/catalog/pack_disk.dart';
 import 'core/settings/user_settings_repository.dart';
 import 'core/skins/skin_providers.dart';
 import 'core/skins/skin_repository.dart';
@@ -67,6 +71,15 @@ Future<List<Override>> _backendOverrides() async {
     notesBackendProvider.overrideWithValue(FirestoreNotesBackend(firestore)),
     coverPhotoStoreProvider.overrideWithValue(
       FirebaseCoverPhotoStore(FirebaseStorage.instance),
+    ),
+    catalogRepositoryProvider.overrideWithValue(
+      FirestoreCatalogRepository(firestore),
+    ),
+    packCacheProvider.overrideWithValue(
+      PackCache(
+        FirebasePackDownloader(FirebaseStorage.instance),
+        createPackDisk(),
+      ),
     ),
   ];
 }

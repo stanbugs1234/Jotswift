@@ -16,6 +16,38 @@ service firebase.storage {
         && request.resource.contentType.matches('image/.*');
     }
 
+    // Catalog files, published with tool/catalog.py. Previews are open to
+    // anyone signed in; a pack only to people who may use the item.
+    match /catalog/{itemId}/{version}/preview.webp {
+      allow read: if request.auth != null;
+    }
+
+    match /catalog/{itemId}/{version}/pack.zip {
+      allow read: if request.auth != null && canUseItem(itemId);
+    }
+
+    // Same rules as Entitlements.canUseCatalogItem in the app. Repeated
+    // lookups within one request are fetched (and billed) once.
+    function canUseItem(itemId) {
+      return unlockOf(itemId).get('free', false) == true
+        || (unlockOf(itemId).get('pro', false) == true
+            && purchases().get('pro', false) == true)
+        || purchases().get('products', []).hasAny(
+            unlockOf(itemId).get('products', []))
+        || purchases().get('grants', []).hasAny([itemId]);
+    }
+
+    function unlockOf(itemId) {
+      return firestore.get(
+          /databases/(default)/documents/catalog/$(itemId)).data.unlock;
+    }
+
+    function purchases() {
+      return firestore.get(
+          /databases/(default)/documents/users/$(request.auth.uid))
+          .data.get('entitlements', {});
+    }
+
     // Everything else is closed.
   }
 }

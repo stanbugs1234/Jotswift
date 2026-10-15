@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "firebase emulators:exec --config ../../firebase.json --only firestore,storage --project demo-notely 'node --test --test-reporter=spec'"
+    "test": "firebase emulators:exec --config ../../firebase.json --only firestore,storage --project demo-notely 'node --test --test-concurrency=1 --test-reporter=spec'"
   },
   "devDependencies": {
     "@firebase/rules-unit-testing": "^4.0.1",

@@ -20,6 +20,9 @@ abstract interface class UserSettingsRepository {
   /// The setting saved on the account, or null if none has been saved.
   Stream<String?> watch(String uid, String key);
   Future<void> set(String uid, String key, String value);
+
+  /// Whether the account is marked as a tester. Only the server sets this.
+  Stream<bool> watchTester(String uid);
 }
 
 class FirestoreUserSettingsRepository implements UserSettingsRepository {
@@ -33,6 +36,10 @@ class FirestoreUserSettingsRepository implements UserSettingsRepository {
   @override
   Stream<String?> watch(String uid, String key) =>
       _doc(uid).snapshots().map((snap) => snap.data()?[key] as String?);
+
+  @override
+  Stream<bool> watchTester(String uid) =>
+      _doc(uid).snapshots().map((snap) => snap.data()?['tester'] == true);
 
   @override
   Future<void> set(String uid, String key, String value) => _doc(uid).set({
@@ -56,6 +63,22 @@ class InMemoryUserSettingsRepository implements UserSettingsRepository {
   Future<void> set(String uid, String key, String value) async {
     _values[(uid, key)] = value;
     _changes.add((uid, key));
+  }
+
+  final _testers = <String>{};
+
+  /// Marks [uid] as a tester, as the server would.
+  void setTester(String uid, {required bool tester}) {
+    tester ? _testers.add(uid) : _testers.remove(uid);
+    _changes.add((uid, 'tester'));
+  }
+
+  @override
+  Stream<bool> watchTester(String uid) async* {
+    yield _testers.contains(uid);
+    yield* _changes.stream
+        .where((k) => k == (uid, 'tester'))
+        .map((_) => _testers.contains(uid));
   }
 }
 

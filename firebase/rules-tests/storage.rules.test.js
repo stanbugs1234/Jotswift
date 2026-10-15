@@ -7,6 +7,7 @@ import {
   assertSucceeds,
   initializeTestEnvironment,
 } from '@firebase/rules-unit-testing';
+import { doc, setDoc } from 'firebase/firestore';
 import { deleteObject, getBytes, ref, uploadBytes } from 'firebase/storage';
 
 let env;
@@ -14,6 +15,10 @@ let env;
 before(async () => {
   env = await initializeTestEnvironment({
     projectId: 'demo-notely',
+    // Pack rules look up the catalog and the user's purchases in Firestore.
+    firestore: {
+      rules: readFileSync(new URL('../firestore.rules', import.meta.url), 'utf8'),
+    },
     storage: {
       rules: readFileSync(new URL('../storage.rules', import.meta.url), 'utf8'),
     },
@@ -21,7 +26,10 @@ before(async () => {
 });
 
 after(() => env.cleanup());
-beforeEach(() => env.clearStorage());
+beforeEach(async () => {
+  await env.clearStorage();
+  await env.clearFirestore();
+});
 
 const sam = () => env.authenticatedContext('sam').storage();
 const alex = () => env.authenticatedContext('alex').storage();
@@ -58,5 +66,52 @@ describe('users/{uid}/covers', () => {
 
   test('nothing outside the covers folder', async () => {
     await assertFails(uploadBytes(ref(sam(), 'users/sam/other.jpg'), jpeg, asJpeg));
+  });
+});
+
+/** Writes as tool/catalog.py would: past the rules. */
+const seedDoc = (path, data) =>
+  env.withSecurityRulesDisabled((ctx) => setDoc(doc(ctx.firestore(), path), data));
+const seedFile = (path) =>
+  env.withSecurityRulesDisabled((ctx) => uploadBytes(ref(ctx.storage(), path), jpeg));
+
+describe('catalog files', () => {
+  const pack = (id) => `catalog/${id}/1/pack.zip`;
+
+  beforeEach(async () => {
+    await seedDoc('catalog/free_cover', { unlock: { free: true } });
+    await seedDoc('catalog/pro_cover', { unlock: { pro: true } });
+    await seedDoc('catalog/sold_cover', { unlock: { products: ['pack_x'] } });
+    for (const id of ['free_cover', 'pro_cover', 'sold_cover']) {
+      await seedFile(pack(id));
+      await seedFile(`catalog/${id}/1/preview.webp`);
+    }
+  });
+
+  test('previews are open to anyone signed in, not to visitors', async () => {
+    await assertSucceeds(getBytes(ref(sam(), 'catalog/sold_cover/1/preview.webp')));
+    await assertFails(getBytes(ref(guest(), 'catalog/sold_cover/1/preview.webp')));
+  });
+
+  test('free packs can be downloaded by anyone signed in', async () => {
+    await assertSucceeds(getBytes(ref(sam(), pack('free_cover'))));
+    await assertFails(getBytes(ref(guest(), pack('free_cover'))));
+  });
+
+  test('paid packs need the purchase, Pro or a grant', async () => {
+    await seedDoc('users/sam', { activeSkinId: 'classic' });
+    await assertFails(getBytes(ref(sam(), pack('pro_cover'))));
+    await assertFails(getBytes(ref(sam(), pack('sold_cover'))));
+
+    await seedDoc('users/sam', { entitlements: { pro: true, products: ['pack_x'] } });
+    await assertSucceeds(getBytes(ref(sam(), pack('pro_cover'))));
+    await assertSucceeds(getBytes(ref(sam(), pack('sold_cover'))));
+
+    await seedDoc('users/alex', { entitlements: { grants: ['sold_cover'] } });
+    await assertSucceeds(getBytes(ref(alex(), pack('sold_cover'))));
+  });
+
+  test('nobody can upload to the catalog from the app', async () => {
+    await assertFails(uploadBytes(ref(sam(), pack('new_cover')), jpeg, asJpeg));
   });
 });

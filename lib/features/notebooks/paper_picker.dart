@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/catalog/catalog_item.dart';
+import '../../core/catalog/catalog_providers.dart';
 import '../../core/paper/basic_papers.dart';
 import '../../core/paper/paper_style.dart';
 import '../../core/skins/skin_providers.dart';
@@ -74,6 +76,10 @@ class PaperPicker extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final favorites = ref.watch(favoritePapersProvider).value ?? const [];
+    final catalogPapers = [
+      for (final item in ref.watch(offeredCatalogProvider(CatalogKind.paper)))
+        (name: item.name, paper: item.paper!),
+    ];
     final isFavorite = favorites.contains(selected);
     final isBasicColor = BasicPaperColor.values.any(
       (b) => b.color == selected.color,
@@ -163,6 +169,14 @@ class PaperPicker extends ConsumerWidget {
             make(selected.pattern, selected.color, spacing: s.first),
           ),
         ),
+        if (catalogPapers.isNotEmpty) ...[
+          heading('More papers'),
+          _PaperRow(
+            papers: catalogPapers,
+            selected: selected,
+            onChanged: onChanged,
+          ),
+        ],
         if (stylePapers.isNotEmpty) ...[
           heading('From notebook styles'),
           _PaperRow(
