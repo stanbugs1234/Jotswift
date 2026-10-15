@@ -13,6 +13,7 @@ import '../features/shelf/shelf_view.dart';
 import '../features/skins/sample_pages.dart';
 import '../features/skins/notebook_style_screen.dart';
 import '../features/store/store_item_screen.dart';
+import '../features/tasks/todo_screen.dart';
 import '../features/store/store_screen.dart';
 import 'shell.dart';
 
@@ -77,7 +78,14 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           _tab('/planner', 'Planner', SamplePageKind.planner, 'Phase 3'),
           _tab('/calendar', 'Calendar', SamplePageKind.calendar, 'Phase 3'),
-          _tab('/todo', 'To-do', SamplePageKind.todo, 'Phase 3'),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/todo',
+                builder: (context, state) => const TodoScreen(),
+              ),
+            ],
+          ),
         ],
       ),
       GoRoute(

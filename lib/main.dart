@@ -23,6 +23,8 @@ import 'features/auth/firebase_auth_repository.dart';
 import 'features/notebooks/data/cover_photos.dart';
 import 'features/notebooks/data/firestore_notes_backend.dart';
 import 'features/notebooks/notes_providers.dart';
+import 'features/tasks/data/task_repository.dart';
+import 'features/tasks/task_providers.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -71,6 +73,7 @@ Future<List<Override>> _backendOverrides() async {
       FirestoreUserSettingsRepository(firestore),
     ),
     notesBackendProvider.overrideWithValue(FirestoreNotesBackend(firestore)),
+    tasksBackendProvider.overrideWithValue(FirestoreTasksBackend(firestore)),
     coverPhotoStoreProvider.overrideWithValue(
       FirebaseCoverPhotoStore(FirebaseStorage.instance),
     ),

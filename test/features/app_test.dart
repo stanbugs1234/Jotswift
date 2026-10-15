@@ -97,10 +97,15 @@ void main() {
     testWidgets('tabs switch between sections', (tester) async {
       await pumpApp(tester, skins);
 
-      for (final tab in ['Planner', 'Calendar', 'To-do', 'Notebooks']) {
+      for (final (tab, title) in [
+        ('Planner', 'Planner'),
+        ('Calendar', 'Calendar'),
+        ('To-do', 'Today'),
+        ('Notebooks', 'Notebooks'),
+      ]) {
         await tester.tap(find.widgetWithText(NavigationDestination, tab));
         await tester.pumpAndSettle();
-        expect(find.widgetWithText(AppBar, tab), findsOneWidget);
+        expect(find.widgetWithText(AppBar, title), findsWidgets);
       }
     });
   });

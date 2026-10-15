@@ -102,7 +102,10 @@ users/{uid}/pages/{pageId}/strokes/{strokeId}        # one doc per stroke (appen
 users/{uid}/pages/{pageId}/elements/{elementId}      # stickers now; text boxes and images later
   kind, frame {x, y, w, h, rotation}, z, data{...}, deleted
 
-users/{uid}/tasks, taskLists, events                 # Phase 3
+users/{uid}/taskLists/{id}                           # title, color, order
+users/{uid}/tasks/{id}                               # title, notes, done, due ("YYYY-MM-DD"),
+                                                     # priority 0-3, listId?, order, createdAt, completedAt?
+users/{uid}/events                                   # Phase 3
 
 catalog/{itemId}                                     # covers, papers, stickers, templates,
   kind, name, version, format, unlock {free, pro, products[]},   collections; read-only
@@ -249,7 +252,7 @@ You can handwrite anywhere on the page, and the structured widgets stay interact
 - [x] Firestore security rules + rules unit tests
 
 ### Phase 3: Planner, to-do, calendar (4–5 weeks)
-- [ ] Tasks and task lists (editable on web)
+- [x] Tasks and task lists (editable on web); plan in [docs/phase3-plan.md](docs/phase3-plan.md)
 - [ ] Events and calendar month/week/day views (editable on web)
 - [ ] Daily planner page type with live task/event widgets plus a free ink area
 - [ ] Simple reminders (local notifications)
