@@ -1,0 +1,19 @@
+{
+  "kind": "template",
+  "name": "Self-care Journal (undated)",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "planner_spread_selfcare"
+    ]
+  },
+  "category": "spreads",
+  "tags": [
+    "self-care",
+    "journal",
+    "gratitude",
+    "undated",
+    "spreads"
+  ]
+}

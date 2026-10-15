@@ -3,7 +3,7 @@ are named "<module>.<function>"; each module lists titles in TITLES."""
 
 import importlib
 
-MODULES = ["notes", "plan", "money", "habits"]
+MODULES = ["notes", "plan", "money", "habits", "life"]
 
 
 def get(name):

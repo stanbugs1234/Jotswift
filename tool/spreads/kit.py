@@ -10,7 +10,7 @@ from spreads.look import BOTTOM, TOP, Spread  # noqa: F401
 
 __all__ = [
     "BOTTOM", "TOP", "Spread", "S", "panel", "ruled", "checks", "mini_month", "day_columns",
-    "habit_grid", "split", "table", "dots", "lines", "columns", "circle", "caps", "math", "mp", "bar",
+    "habit_grid", "split", "table", "dots", "lines", "columns", "circle", "caps", "math", "mp", "bar", "ledger",
 ]
 
 
@@ -103,3 +103,10 @@ def habit_grid(p, x, y_top, w, h, title, rows, cols=7, col_labels="MTWTFSS"):
         s = min(cw, rh) - 3
         for i in range(cols):
             p.rect(x + name_w + i * cw + (cw - s) / 2, y + (rh - s) / 2, s, s, stroke=S().rule, width=0.5)
+
+
+def ledger(p, x0, x1, y_top, height, title, cols, row_h=15, check=False):
+    """A titled table filling [height]: [cols] is (name, start fraction)."""
+    top = panel(p, x0, y_top, x1 - x0, height, title)
+    rows = max(1, int((top - (y_top - height) - 20) / row_h))
+    table(p, top - 2, cols, rows, row_h=row_h, x0=x0 + 4, x1=x1 - 4, check=check)

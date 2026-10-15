@@ -1,0 +1,221 @@
+{
+  "mode": "notebook",
+  "sections": [
+    {
+      "title": "Index",
+      "pages": [
+        {
+          "pdfPage": 1,
+          "title": "Index"
+        }
+      ]
+    },
+    {
+      "title": "Workout",
+      "pages": [
+        {
+          "pdfPage": 2,
+          "title": "Workout 1"
+        },
+        {
+          "pdfPage": 3,
+          "title": "Workout 2"
+        },
+        {
+          "pdfPage": 4,
+          "title": "Workout 3"
+        },
+        {
+          "pdfPage": 5,
+          "title": "Workout 4"
+        },
+        {
+          "pdfPage": 6,
+          "title": "Workout 5"
+        },
+        {
+          "pdfPage": 7,
+          "title": "Workout 6"
+        },
+        {
+          "pdfPage": 8,
+          "title": "Workout 7"
+        },
+        {
+          "pdfPage": 9,
+          "title": "Workout 8"
+        },
+        {
+          "pdfPage": 10,
+          "title": "Workout 9"
+        },
+        {
+          "pdfPage": 11,
+          "title": "Workout 10"
+        },
+        {
+          "pdfPage": 12,
+          "title": "Workout 11"
+        },
+        {
+          "pdfPage": 13,
+          "title": "Workout 12"
+        }
+      ]
+    },
+    {
+      "title": "Meal plans",
+      "pages": [
+        {
+          "pdfPage": 14,
+          "title": "Meal plan 1"
+        },
+        {
+          "pdfPage": 15,
+          "title": "Meal plan 2"
+        },
+        {
+          "pdfPage": 16,
+          "title": "Meal plan 3"
+        },
+        {
+          "pdfPage": 17,
+          "title": "Meal plan 4"
+        },
+        {
+          "pdfPage": 18,
+          "title": "Meal plan 5"
+        },
+        {
+          "pdfPage": 19,
+          "title": "Meal plan 6"
+        },
+        {
+          "pdfPage": 20,
+          "title": "Meal plan 7"
+        },
+        {
+          "pdfPage": 21,
+          "title": "Meal plan 8"
+        }
+      ]
+    },
+    {
+      "title": "Food diary",
+      "pages": [
+        {
+          "pdfPage": 22,
+          "title": "Food diary 1"
+        },
+        {
+          "pdfPage": 23,
+          "title": "Food diary 2"
+        },
+        {
+          "pdfPage": 24,
+          "title": "Food diary 3"
+        },
+        {
+          "pdfPage": 25,
+          "title": "Food diary 4"
+        },
+        {
+          "pdfPage": 26,
+          "title": "Food diary 5"
+        },
+        {
+          "pdfPage": 27,
+          "title": "Food diary 6"
+        },
+        {
+          "pdfPage": 28,
+          "title": "Food diary 7"
+        },
+        {
+          "pdfPage": 29,
+          "title": "Food diary 8"
+        },
+        {
+          "pdfPage": 30,
+          "title": "Food diary 9"
+        },
+        {
+          "pdfPage": 31,
+          "title": "Food diary 10"
+        },
+        {
+          "pdfPage": 32,
+          "title": "Food diary 11"
+        },
+        {
+          "pdfPage": 33,
+          "title": "Food diary 12"
+        },
+        {
+          "pdfPage": 34,
+          "title": "Food diary 13"
+        },
+        {
+          "pdfPage": 35,
+          "title": "Food diary 14"
+        }
+      ]
+    },
+    {
+      "title": "Body",
+      "pages": [
+        {
+          "pdfPage": 36,
+          "title": "Body & weight"
+        }
+      ]
+    },
+    {
+      "title": "Medication",
+      "pages": [
+        {
+          "pdfPage": 37,
+          "title": "Medication 1"
+        },
+        {
+          "pdfPage": 38,
+          "title": "Medication 2"
+        },
+        {
+          "pdfPage": 39,
+          "title": "Medication 3"
+        }
+      ]
+    },
+    {
+      "title": "Habits",
+      "pages": [
+        {
+          "pdfPage": 40,
+          "title": "Circle habit tracker"
+        },
+        {
+          "pdfPage": 41,
+          "title": "Sleep & water"
+        }
+      ]
+    }
+  ],
+  "variants": [
+    {
+      "name": "Classic",
+      "file": "template.pdf",
+      "color": "#2C3E66"
+    },
+    {
+      "name": "Pastel",
+      "file": "template_pastel.pdf",
+      "color": "#7E6AAE"
+    },
+    {
+      "name": "Neutral",
+      "file": "template_neutral.pdf",
+      "color": "#7A6552"
+    }
+  ]
+}

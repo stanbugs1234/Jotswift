@@ -1,0 +1,19 @@
+{
+  "kind": "template",
+  "name": "Health & Fitness Planner (undated)",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "planner_spread_health"
+    ]
+  },
+  "category": "spreads",
+  "tags": [
+    "health",
+    "fitness",
+    "meals",
+    "undated",
+    "spreads"
+  ]
+}

@@ -1,0 +1,197 @@
+{
+  "mode": "notebook",
+  "sections": [
+    {
+      "title": "Index",
+      "pages": [
+        {
+          "pdfPage": 1,
+          "title": "Index"
+        }
+      ]
+    },
+    {
+      "title": "Self-care",
+      "pages": [
+        {
+          "pdfPage": 2,
+          "title": "Self-care"
+        },
+        {
+          "pdfPage": 3,
+          "title": "Affirmations"
+        }
+      ]
+    },
+    {
+      "title": "Gratitude",
+      "pages": [
+        {
+          "pdfPage": 4,
+          "title": "Gratitude 1"
+        },
+        {
+          "pdfPage": 5,
+          "title": "Gratitude 2"
+        },
+        {
+          "pdfPage": 6,
+          "title": "Gratitude 3"
+        },
+        {
+          "pdfPage": 7,
+          "title": "Gratitude 4"
+        },
+        {
+          "pdfPage": 8,
+          "title": "Gratitude 5"
+        },
+        {
+          "pdfPage": 9,
+          "title": "Gratitude 6"
+        },
+        {
+          "pdfPage": 10,
+          "title": "Gratitude 7"
+        },
+        {
+          "pdfPage": 11,
+          "title": "Gratitude 8"
+        }
+      ]
+    },
+    {
+      "title": "Reflection",
+      "pages": [
+        {
+          "pdfPage": 12,
+          "title": "Reflection 1"
+        },
+        {
+          "pdfPage": 13,
+          "title": "Reflection 2"
+        },
+        {
+          "pdfPage": 14,
+          "title": "Reflection 3"
+        },
+        {
+          "pdfPage": 15,
+          "title": "Reflection 4"
+        },
+        {
+          "pdfPage": 16,
+          "title": "Reflection 5"
+        },
+        {
+          "pdfPage": 17,
+          "title": "Reflection 6"
+        },
+        {
+          "pdfPage": 18,
+          "title": "Reflection 7"
+        },
+        {
+          "pdfPage": 19,
+          "title": "Reflection 8"
+        },
+        {
+          "pdfPage": 20,
+          "title": "Reflection 9"
+        },
+        {
+          "pdfPage": 21,
+          "title": "Reflection 10"
+        },
+        {
+          "pdfPage": 22,
+          "title": "Reflection 11"
+        },
+        {
+          "pdfPage": 23,
+          "title": "Reflection 12"
+        },
+        {
+          "pdfPage": 24,
+          "title": "Reflection 13"
+        },
+        {
+          "pdfPage": 25,
+          "title": "Reflection 14"
+        },
+        {
+          "pdfPage": 26,
+          "title": "Reflection 15"
+        },
+        {
+          "pdfPage": 27,
+          "title": "Reflection 16"
+        },
+        {
+          "pdfPage": 28,
+          "title": "Reflection 17"
+        },
+        {
+          "pdfPage": 29,
+          "title": "Reflection 18"
+        },
+        {
+          "pdfPage": 30,
+          "title": "Reflection 19"
+        },
+        {
+          "pdfPage": 31,
+          "title": "Reflection 20"
+        }
+      ]
+    },
+    {
+      "title": "Mood",
+      "pages": [
+        {
+          "pdfPage": 32,
+          "title": "Year in moods"
+        }
+      ]
+    },
+    {
+      "title": "Reading",
+      "pages": [
+        {
+          "pdfPage": 33,
+          "title": "Reading log"
+        }
+      ]
+    },
+    {
+      "title": "Bucket list",
+      "pages": [
+        {
+          "pdfPage": 34,
+          "title": "Bucket list"
+        },
+        {
+          "pdfPage": 35,
+          "title": "Vision board"
+        }
+      ]
+    }
+  ],
+  "variants": [
+    {
+      "name": "Classic",
+      "file": "template.pdf",
+      "color": "#2C3E66"
+    },
+    {
+      "name": "Pastel",
+      "file": "template_pastel.pdf",
+      "color": "#7E6AAE"
+    },
+    {
+      "name": "Neutral",
+      "file": "template_neutral.pdf",
+      "color": "#7A6552"
+    }
+  ]
+}

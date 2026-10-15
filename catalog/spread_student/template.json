@@ -1,0 +1,228 @@
+{
+  "mode": "notebook",
+  "sections": [
+    {
+      "title": "Index",
+      "pages": [
+        {
+          "pdfPage": 1,
+          "title": "Index"
+        }
+      ]
+    },
+    {
+      "title": "Classes",
+      "pages": [
+        {
+          "pdfPage": 2,
+          "title": "Class timetable"
+        },
+        {
+          "pdfPage": 3,
+          "title": "Grades"
+        }
+      ]
+    },
+    {
+      "title": "Assignments",
+      "pages": [
+        {
+          "pdfPage": 4,
+          "title": "Assignments"
+        },
+        {
+          "pdfPage": 5,
+          "title": "Assignments"
+        },
+        {
+          "pdfPage": 6,
+          "title": "Exam planner"
+        }
+      ]
+    },
+    {
+      "title": "Study",
+      "pages": [
+        {
+          "pdfPage": 7,
+          "title": "Study week 1"
+        },
+        {
+          "pdfPage": 8,
+          "title": "Study week 2"
+        },
+        {
+          "pdfPage": 9,
+          "title": "Study week 3"
+        },
+        {
+          "pdfPage": 10,
+          "title": "Study week 4"
+        },
+        {
+          "pdfPage": 11,
+          "title": "Study week 5"
+        },
+        {
+          "pdfPage": 12,
+          "title": "Study week 6"
+        },
+        {
+          "pdfPage": 13,
+          "title": "Study week 7"
+        },
+        {
+          "pdfPage": 14,
+          "title": "Study week 8"
+        },
+        {
+          "pdfPage": 15,
+          "title": "Study week 9"
+        },
+        {
+          "pdfPage": 16,
+          "title": "Study week 10"
+        },
+        {
+          "pdfPage": 17,
+          "title": "Study week 11"
+        },
+        {
+          "pdfPage": 18,
+          "title": "Study week 12"
+        },
+        {
+          "pdfPage": 19,
+          "title": "Study week 13"
+        },
+        {
+          "pdfPage": 20,
+          "title": "Study week 14"
+        },
+        {
+          "pdfPage": 21,
+          "title": "Study week 15"
+        },
+        {
+          "pdfPage": 22,
+          "title": "Study week 16"
+        }
+      ]
+    },
+    {
+      "title": "Months",
+      "pages": [
+        {
+          "pdfPage": 23,
+          "title": "Month 1"
+        },
+        {
+          "pdfPage": 24,
+          "title": "Month 2"
+        },
+        {
+          "pdfPage": 25,
+          "title": "Month 3"
+        },
+        {
+          "pdfPage": 26,
+          "title": "Month 4"
+        },
+        {
+          "pdfPage": 27,
+          "title": "Month 5"
+        },
+        {
+          "pdfPage": 28,
+          "title": "Month 6"
+        },
+        {
+          "pdfPage": 29,
+          "title": "Month 7"
+        },
+        {
+          "pdfPage": 30,
+          "title": "Month 8"
+        },
+        {
+          "pdfPage": 31,
+          "title": "Month 9"
+        },
+        {
+          "pdfPage": 32,
+          "title": "Month 10"
+        }
+      ]
+    },
+    {
+      "title": "Class notes",
+      "pages": [
+        {
+          "pdfPage": 33,
+          "title": "Cornell 1"
+        },
+        {
+          "pdfPage": 34,
+          "title": "Cornell 2"
+        },
+        {
+          "pdfPage": 35,
+          "title": "Cornell 3"
+        },
+        {
+          "pdfPage": 36,
+          "title": "Cornell 4"
+        },
+        {
+          "pdfPage": 37,
+          "title": "Cornell 5"
+        },
+        {
+          "pdfPage": 38,
+          "title": "Cornell 6"
+        },
+        {
+          "pdfPage": 39,
+          "title": "Cornell 7"
+        },
+        {
+          "pdfPage": 40,
+          "title": "Cornell 8"
+        },
+        {
+          "pdfPage": 41,
+          "title": "Cornell 9"
+        },
+        {
+          "pdfPage": 42,
+          "title": "Cornell 10"
+        },
+        {
+          "pdfPage": 43,
+          "title": "Lined notes"
+        },
+        {
+          "pdfPage": 44,
+          "title": "Grid"
+        }
+      ]
+    }
+  ],
+  "variants": [
+    {
+      "name": "Classic",
+      "file": "template.pdf",
+      "color": "#2C3E66"
+    },
+    {
+      "name": "Pastel",
+      "file": "template_pastel.pdf",
+      "color": "#7E6AAE"
+    },
+    {
+      "name": "Neutral",
+      "file": "template_neutral.pdf",
+      "color": "#7A6552"
+    }
+  ]
+}

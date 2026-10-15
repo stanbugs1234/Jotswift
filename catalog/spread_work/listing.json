@@ -1,0 +1,19 @@
+{
+  "kind": "template",
+  "name": "Work & Business Planner (undated)",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "planner_spread_work"
+    ]
+  },
+  "category": "spreads",
+  "tags": [
+    "work",
+    "business",
+    "clients",
+    "undated",
+    "spreads"
+  ]
+}

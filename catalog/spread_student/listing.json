@@ -1,0 +1,19 @@
+{
+  "kind": "template",
+  "name": "Student Planner (undated)",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "planner_spread_student"
+    ]
+  },
+  "category": "spreads",
+  "tags": [
+    "student",
+    "school",
+    "college",
+    "undated",
+    "spreads"
+  ]
+}

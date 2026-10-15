@@ -1,0 +1,237 @@
+{
+  "mode": "notebook",
+  "sections": [
+    {
+      "title": "Index",
+      "pages": [
+        {
+          "pdfPage": 1,
+          "title": "Index"
+        }
+      ]
+    },
+    {
+      "title": "Clients",
+      "pages": [
+        {
+          "pdfPage": 2,
+          "title": "Clients"
+        }
+      ]
+    },
+    {
+      "title": "Income",
+      "pages": [
+        {
+          "pdfPage": 3,
+          "title": "Income 1"
+        },
+        {
+          "pdfPage": 4,
+          "title": "Income 2"
+        },
+        {
+          "pdfPage": 5,
+          "title": "Income 3"
+        },
+        {
+          "pdfPage": 6,
+          "title": "Income 4"
+        },
+        {
+          "pdfPage": 7,
+          "title": "Income 5"
+        },
+        {
+          "pdfPage": 8,
+          "title": "Income 6"
+        },
+        {
+          "pdfPage": 9,
+          "title": "Income 7"
+        },
+        {
+          "pdfPage": 10,
+          "title": "Income 8"
+        },
+        {
+          "pdfPage": 11,
+          "title": "Income 9"
+        },
+        {
+          "pdfPage": 12,
+          "title": "Income 10"
+        },
+        {
+          "pdfPage": 13,
+          "title": "Income 11"
+        },
+        {
+          "pdfPage": 14,
+          "title": "Income 12"
+        },
+        {
+          "pdfPage": 15,
+          "title": "Invoices"
+        }
+      ]
+    },
+    {
+      "title": "Content",
+      "pages": [
+        {
+          "pdfPage": 16,
+          "title": "Content 1"
+        },
+        {
+          "pdfPage": 17,
+          "title": "Content 2"
+        },
+        {
+          "pdfPage": 18,
+          "title": "Content 3"
+        },
+        {
+          "pdfPage": 19,
+          "title": "Content 4"
+        },
+        {
+          "pdfPage": 20,
+          "title": "Content 5"
+        },
+        {
+          "pdfPage": 21,
+          "title": "Content 6"
+        },
+        {
+          "pdfPage": 22,
+          "title": "Content 7"
+        },
+        {
+          "pdfPage": 23,
+          "title": "Content 8"
+        },
+        {
+          "pdfPage": 24,
+          "title": "Content 9"
+        },
+        {
+          "pdfPage": 25,
+          "title": "Content 10"
+        },
+        {
+          "pdfPage": 26,
+          "title": "Content 11"
+        },
+        {
+          "pdfPage": 27,
+          "title": "Content 12"
+        }
+      ]
+    },
+    {
+      "title": "Meetings",
+      "pages": [
+        {
+          "pdfPage": 28,
+          "title": "Meeting 1"
+        },
+        {
+          "pdfPage": 29,
+          "title": "Meeting 2"
+        },
+        {
+          "pdfPage": 30,
+          "title": "Meeting 3"
+        },
+        {
+          "pdfPage": 31,
+          "title": "Meeting 4"
+        },
+        {
+          "pdfPage": 32,
+          "title": "Meeting 5"
+        },
+        {
+          "pdfPage": 33,
+          "title": "Meeting 6"
+        },
+        {
+          "pdfPage": 34,
+          "title": "Meeting 7"
+        },
+        {
+          "pdfPage": 35,
+          "title": "Meeting 8"
+        },
+        {
+          "pdfPage": 36,
+          "title": "Meeting 9"
+        },
+        {
+          "pdfPage": 37,
+          "title": "Meeting 10"
+        },
+        {
+          "pdfPage": 38,
+          "title": "Meeting 11"
+        },
+        {
+          "pdfPage": 39,
+          "title": "Meeting 12"
+        }
+      ]
+    },
+    {
+      "title": "Projects",
+      "pages": [
+        {
+          "pdfPage": 40,
+          "title": "Project planner"
+        },
+        {
+          "pdfPage": 41,
+          "title": "Project planner"
+        },
+        {
+          "pdfPage": 42,
+          "title": "SWOT analysis"
+        },
+        {
+          "pdfPage": 43,
+          "title": "Priority matrix"
+        }
+      ]
+    },
+    {
+      "title": "Notes",
+      "pages": [
+        {
+          "pdfPage": 44,
+          "title": "Lined notes"
+        },
+        {
+          "pdfPage": 45,
+          "title": "Dot grid"
+        }
+      ]
+    }
+  ],
+  "variants": [
+    {
+      "name": "Classic",
+      "file": "template.pdf",
+      "color": "#2C3E66"
+    },
+    {
+      "name": "Pastel",
+      "file": "template_pastel.pdf",
+      "color": "#7E6AAE"
+    },
+    {
+      "name": "Neutral",
+      "file": "template_neutral.pdf",
+      "color": "#7A6552"
+    }
+  ]
+}

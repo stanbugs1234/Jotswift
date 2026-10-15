@@ -5,13 +5,6 @@ from spreads.kit import *  # noqa: F401,F403
 from spreads.plan import _fill_in
 
 
-def ledger(p, x0, x1, y_top, height, title, cols, row_h=15, check=False):
-    """A titled table filling [height]: [cols] is (name, start fraction)."""
-    top = panel(p, x0, y_top, x1 - x0, height, title)
-    rows = max(1, int((top - (y_top - height) - 20) / row_h))
-    table(p, top - 2, cols, rows, row_h=row_h, x0=x0 + 4, x1=x1 - 4, check=check)
-
-
 def budget(sp, n=1):
     """The month's money: income and bills on the left; expenses, savings,
     debts and a summary on the right."""

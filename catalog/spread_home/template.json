@@ -1,0 +1,170 @@
+{
+  "mode": "notebook",
+  "sections": [
+    {
+      "title": "Index",
+      "pages": [
+        {
+          "pdfPage": 1,
+          "title": "Index"
+        }
+      ]
+    },
+    {
+      "title": "Cleaning",
+      "pages": [
+        {
+          "pdfPage": 2,
+          "title": "Cleaning schedule"
+        }
+      ]
+    },
+    {
+      "title": "Chores",
+      "pages": [
+        {
+          "pdfPage": 3,
+          "title": "Chores 1"
+        },
+        {
+          "pdfPage": 4,
+          "title": "Chores 2"
+        },
+        {
+          "pdfPage": 5,
+          "title": "Chores 3"
+        },
+        {
+          "pdfPage": 6,
+          "title": "Chores 4"
+        }
+      ]
+    },
+    {
+      "title": "Meals",
+      "pages": [
+        {
+          "pdfPage": 7,
+          "title": "Meal plan 1"
+        },
+        {
+          "pdfPage": 8,
+          "title": "Meal plan 2"
+        },
+        {
+          "pdfPage": 9,
+          "title": "Meal plan 3"
+        },
+        {
+          "pdfPage": 10,
+          "title": "Meal plan 4"
+        }
+      ]
+    },
+    {
+      "title": "Recipes",
+      "pages": [
+        {
+          "pdfPage": 11,
+          "title": "Recipe 1"
+        },
+        {
+          "pdfPage": 12,
+          "title": "Recipe 2"
+        },
+        {
+          "pdfPage": 13,
+          "title": "Recipe 3"
+        },
+        {
+          "pdfPage": 14,
+          "title": "Recipe 4"
+        },
+        {
+          "pdfPage": 15,
+          "title": "Recipe 5"
+        },
+        {
+          "pdfPage": 16,
+          "title": "Recipe 6"
+        },
+        {
+          "pdfPage": 17,
+          "title": "Recipe 7"
+        },
+        {
+          "pdfPage": 18,
+          "title": "Recipe 8"
+        },
+        {
+          "pdfPage": 19,
+          "title": "Recipe 9"
+        },
+        {
+          "pdfPage": 20,
+          "title": "Recipe 10"
+        },
+        {
+          "pdfPage": 21,
+          "title": "Recipe 11"
+        },
+        {
+          "pdfPage": 22,
+          "title": "Recipe 12"
+        }
+      ]
+    },
+    {
+      "title": "Contacts",
+      "pages": [
+        {
+          "pdfPage": 23,
+          "title": "Contacts & birthdays"
+        },
+        {
+          "pdfPage": 24,
+          "title": "Contacts & birthdays"
+        }
+      ]
+    },
+    {
+      "title": "Home care",
+      "pages": [
+        {
+          "pdfPage": 25,
+          "title": "Home maintenance"
+        }
+      ]
+    },
+    {
+      "title": "Money",
+      "pages": [
+        {
+          "pdfPage": 26,
+          "title": "Monthly budget"
+        },
+        {
+          "pdfPage": 27,
+          "title": "Bills"
+        }
+      ]
+    }
+  ],
+  "variants": [
+    {
+      "name": "Classic",
+      "file": "template.pdf",
+      "color": "#2C3E66"
+    },
+    {
+      "name": "Pastel",
+      "file": "template_pastel.pdf",
+      "color": "#7E6AAE"
+    },
+    {
+      "name": "Neutral",
+      "file": "template_neutral.pdf",
+      "color": "#7A6552"
+    }
+  ]
+}

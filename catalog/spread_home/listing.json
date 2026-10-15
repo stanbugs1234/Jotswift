@@ -1,0 +1,20 @@
+{
+  "kind": "template",
+  "name": "Home & Family Planner (undated)",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "planner_spread_home"
+    ]
+  },
+  "category": "spreads",
+  "tags": [
+    "home",
+    "family",
+    "cleaning",
+    "recipes",
+    "undated",
+    "spreads"
+  ]
+}

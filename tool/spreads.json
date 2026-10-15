@@ -66,6 +66,89 @@
         { "tab": "Sleep", "title": "Sleep & water", "pages": [{ "layout": "habits.sleep_water", "repeat": 12, "title": "Sleep & water {n}" }] },
         { "tab": "Notes", "pages": ["notes.lined"] }
       ]
+    },
+    "spread_goals": {
+      "name": "Goals & Productivity Planner (undated)",
+      "short": "Goals & Productivity",
+      "price": "1.99",
+      "tags": ["goals", "productivity", "projects", "undated", "spreads"],
+      "unlock": { "pro": true, "products": ["planner_spread_goals"] },
+      "sections": [
+        {"tab": "Goals", "pages": ["plan.goals", "life.smart", "life.smart", "life.plan_90"]},
+        {"tab": "Plan", "title": "Planning", "pages": ["life.swot", "life.project", "life.project", "life.matrix", "life.mind_map"]},
+        {"tab": "Review", "title": "Weekly review", "pages": [{"layout": "life.review", "repeat": 12, "title": "Review {n}"}]},
+        {"tab": "Notes", "pages": ["notes.lined", "notes.dotted"]}
+      ]    },
+    "spread_health": {
+      "name": "Health & Fitness Planner (undated)",
+      "short": "Health & Fitness",
+      "price": "1.99",
+      "tags": ["health", "fitness", "meals", "undated", "spreads"],
+      "unlock": { "pro": true, "products": ["planner_spread_health"] },
+      "sections": [
+        {"tab": "Workout", "pages": [{"layout": "life.workout", "repeat": 12, "title": "Workout {n}"}]},
+        {"tab": "Meals", "title": "Meal plans", "pages": [{"layout": "life.meals", "repeat": 8, "title": "Meal plan {n}"}]},
+        {"tab": "Food", "title": "Food diary", "pages": [{"layout": "life.food", "repeat": 14, "title": "Food diary {n}"}]},
+        {"tab": "Body", "pages": ["life.body"]},
+        {"tab": "Meds", "title": "Medication", "pages": [{"layout": "life.medication", "repeat": 3, "title": "Medication {n}"}]},
+        {"tab": "Habits", "pages": ["habits.circle_tracker", "habits.sleep_water"]}
+      ]    },
+    "spread_home": {
+      "name": "Home & Family Planner (undated)",
+      "short": "Home & Family",
+      "price": "1.99",
+      "tags": ["home", "family", "cleaning", "recipes", "undated", "spreads"],
+      "unlock": { "pro": true, "products": ["planner_spread_home"] },
+      "sections": [
+        {"tab": "Clean", "title": "Cleaning", "pages": ["life.cleaning"]},
+        {"tab": "Chores", "pages": [{"layout": "life.chores", "repeat": 4, "title": "Chores {n}"}]},
+        {"tab": "Meals", "pages": [{"layout": "life.meals", "repeat": 4, "title": "Meal plan {n}"}]},
+        {"tab": "Recipes", "pages": [{"layout": "life.recipe", "repeat": 12, "title": "Recipe {n}"}]},
+        {"tab": "People", "title": "Contacts", "pages": ["life.contacts", "life.contacts"]},
+        {"tab": "Home", "title": "Home care", "pages": ["life.home_care"]},
+        {"tab": "Money", "pages": ["money.budget", "money.bills"]}
+      ]    },
+    "spread_student": {
+      "name": "Student Planner (undated)",
+      "short": "Student Planner",
+      "price": "1.99",
+      "tags": ["student", "school", "college", "undated", "spreads"],
+      "unlock": { "pro": true, "products": ["planner_spread_student"] },
+      "sections": [
+        {"tab": "Classes", "pages": ["life.timetable", "life.grades"]},
+        {"tab": "Tasks", "title": "Assignments", "pages": ["life.assignments", "life.assignments", "life.exams"]},
+        {"tab": "Study", "pages": [{"layout": "life.study", "repeat": 16, "title": "Study week {n}"}]},
+        {"tab": "Months", "pages": [{"layout": "plan.month", "repeat": 10, "title": "Month {n}"}]},
+        {"tab": "Notes", "title": "Class notes", "pages": [{"layout": "notes.cornell", "repeat": 10, "title": "Cornell {n}"}, "notes.lined", "notes.grid"]}
+      ]    },
+    "spread_selfcare": {
+      "name": "Self-care Journal (undated)",
+      "short": "Self-care Journal",
+      "price": "1.99",
+      "tags": ["self-care", "journal", "gratitude", "undated", "spreads"],
+      "unlock": { "pro": true, "products": ["planner_spread_selfcare"] },
+      "sections": [
+        {"tab": "Care", "title": "Self-care", "pages": ["life.self_care", "life.affirmations"]},
+        {"tab": "Thanks", "title": "Gratitude", "pages": [{"layout": "life.gratitude", "repeat": 8, "title": "Gratitude {n}"}]},
+        {"tab": "Reflect", "title": "Reflection", "pages": [{"layout": "life.reflection", "repeat": 20, "title": "Reflection {n}"}]},
+        {"tab": "Mood", "pages": ["habits.mood_year"]},
+        {"tab": "Books", "title": "Reading", "pages": ["life.reading"]},
+        {"tab": "Dreams", "title": "Bucket list", "pages": ["life.bucket", "plan.vision"]}
+      ]    },
+    "spread_work": {
+      "name": "Work & Business Planner (undated)",
+      "short": "Work & Business",
+      "price": "1.99",
+      "tags": ["work", "business", "clients", "undated", "spreads"],
+      "unlock": { "pro": true, "products": ["planner_spread_work"] },
+      "sections": [
+        {"tab": "Clients", "pages": ["life.clients"]},
+        {"tab": "Money", "title": "Income", "pages": [{"layout": "life.income", "repeat": 12, "title": "Income {n}"}, "life.invoices"]},
+        {"tab": "Content", "pages": [{"layout": "life.content", "repeat": 12, "title": "Content {n}"}]},
+        {"tab": "Meetings", "pages": [{"layout": "life.meeting", "repeat": 12, "title": "Meeting {n}"}]},
+        {"tab": "Projects", "pages": ["life.project", "life.project", "life.swot", "life.matrix"]},
+        {"tab": "Notes", "pages": ["notes.lined", "notes.dotted"]}
+      ]
     }
   }
 }
