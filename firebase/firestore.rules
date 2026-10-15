@@ -30,7 +30,15 @@ service cloud.firestore {
             || (request.resource.data.activeSkinId is string
                 && request.resource.data.activeSkinId.size() <= 64))
         && (!('appearance' in request.resource.data)
-            || request.resource.data.appearance in ['system', 'light', 'dark']);
+            || request.resource.data.appearance in ['system', 'light', 'dark'])
+        && (!('calendarTemplate' in request.resource.data)
+            || (request.resource.data.calendarTemplate is string
+                && request.resource.data.calendarTemplate.size() <= 64))
+        // Animation names; newer apps may add more, so only the shape is
+        // checked.
+        && (!('monthAnimation' in request.resource.data)
+            || (request.resource.data.monthAnimation is string
+                && request.resource.data.monthAnimation.size() <= 32));
 
       // Notebooks, pages, tasks, events... (added in later phases).
       // `{collection}` makes this match only data below the user doc. A bare

@@ -12,6 +12,13 @@ abstract final class SettingKeys {
 
   /// Light, dark or following the system: "light", "dark" or "system".
   static const appearance = 'appearance';
+
+  /// The Calendar's template id.
+  static const calendarTemplate = 'calendarTemplate';
+
+  /// How the Calendar moves between months: an animation name, or
+  /// "template" for the template's own.
+  static const monthAnimation = 'monthAnimation';
 }
 
 /// Per-account settings that follow the user across devices, stored in

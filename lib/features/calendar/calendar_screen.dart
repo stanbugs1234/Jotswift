@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/motion/directional_switcher.dart';
+import '../../core/motion/period_transition.dart';
 import '../../core/motion/zoom_switcher.dart';
 import '../planner/planner_screen.dart' show openPlannerDay;
 import '../tasks/task_providers.dart' show todayProvider;
@@ -236,9 +237,10 @@ class CalendarScreen extends ConsumerWidget {
               view: state.mode,
               level: zoomLevel(state.mode),
               origin: ref.watch(zoomOriginProvider)?.rect,
-              child: DirectionalSwitcher<Day>(
+              child: _PeriodSwitcher(
                 key: ValueKey(state.mode),
-                position: period,
+                mode: state.mode,
+                period: period,
                 child: body,
               ),
             ),
@@ -334,4 +336,31 @@ class _PinchToZoomState extends State<_PinchToZoom> {
     onPointerCancel: _up,
     child: widget.child,
   );
+}
+
+/// Moves within a view: months and years use the chosen month animation;
+/// weeks and days slide.
+class _PeriodSwitcher extends ConsumerWidget {
+  const _PeriodSwitcher({
+    required this.mode,
+    required this.period,
+    required this.child,
+    super.key,
+  });
+
+  final CalendarMode mode;
+  final Day period;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (mode != CalendarMode.month && mode != CalendarMode.year) {
+      return DirectionalSwitcher<Day>(position: period, child: child);
+    }
+    return PeriodTransition<Day>(
+      animation: ref.watch(monthAnimationProvider),
+      period: period,
+      child: child,
+    );
+  }
 }

@@ -161,6 +161,7 @@ void main() {
 
       await tester.tap(find.byTooltip('Settings'));
       await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(find.text('Notebook style'), 200);
       await tester.tap(find.text('Notebook style'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Pastel'));
@@ -190,6 +191,7 @@ void main() {
 
       await tester.tap(find.byTooltip('Settings'));
       await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(find.text('Notebook style'), 200);
       await tester.tap(find.text('Notebook style'));
       await tester.pumpAndSettle();
       await tester.ensureVisible(find.text('Botanical'));

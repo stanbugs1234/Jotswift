@@ -88,6 +88,13 @@ describe('users/{uid}', () => {
     await assertFails(setDoc(ref, { appearance: 'sepia' }));
     await assertFails(setDoc(ref, { appearance: 1 }));
   });
+
+  test('the calendar template and month animation are short strings', async () => {
+    const ref = doc(sam(), 'users/sam');
+    await assertSucceeds(setDoc(ref, { calendarTemplate: 'wall', monthAnimation: 'wallFlip' }));
+    await assertFails(setDoc(ref, { calendarTemplate: 'x'.repeat(65) }));
+    await assertFails(setDoc(ref, { monthAnimation: 3 }));
+  });
 });
 
 describe('data under users/{uid}', () => {

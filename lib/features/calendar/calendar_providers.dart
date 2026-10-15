@@ -3,7 +3,9 @@ import 'dart:ui' show Rect;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/settings/synced_setting.dart' show sharedPreferencesProvider;
+import '../../core/motion/period_transition.dart';
+import '../../core/settings/synced_setting.dart';
+import '../../core/settings/user_settings_repository.dart' show SettingKeys;
 import '../notebooks/notes_providers.dart' show currentUidProvider;
 import '../tasks/task_providers.dart' show todayProvider;
 import 'data/calendar_repository.dart';
@@ -230,3 +232,36 @@ Day startOfWeek(Day day, int firstWeekday) {
   final weekday = day.weekday % 7; // Sunday 0
   return day.addDays(-((weekday - firstWeekday) % 7));
 }
+
+/// How the Calendar moves to another month or year: one of
+/// [PeriodAnimation], or [templateChoice] for the calendar template's own.
+/// Saved on the account.
+class MonthAnimationController extends SyncedSetting {
+  static const templateChoice = 'template';
+
+  @override
+  String get key => SettingKeys.monthAnimation;
+
+  @override
+  String get defaultValue => templateChoice;
+
+  /// [animation], or null for the template's choice.
+  Future<void> set(PeriodAnimation? animation) =>
+      save(animation?.name ?? templateChoice);
+}
+
+final monthAnimationSettingProvider =
+    NotifierProvider<MonthAnimationController, String>(
+      MonthAnimationController.new,
+    );
+
+/// The animation chosen in Settings, or null to use the template's.
+final monthAnimationChoiceProvider = Provider<PeriodAnimation?>(
+  (ref) => PeriodAnimation.values
+      .asNameMap()[ref.watch(monthAnimationSettingProvider)],
+);
+
+/// The animation months and years actually use.
+final monthAnimationProvider = Provider<PeriodAnimation>(
+  (ref) => ref.watch(monthAnimationChoiceProvider) ?? PeriodAnimation.slide,
+);

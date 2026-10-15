@@ -6,9 +6,12 @@ import '../../core/entitlements/entitlements.dart';
 import '../../core/purchases/purchases_providers.dart';
 import '../../core/input/finger_drawing.dart';
 import '../../core/motion/motion.dart';
+import '../../core/motion/period_transition.dart';
 import '../../core/settings/appearance.dart';
 import '../../core/skins/skin_providers.dart';
 import '../auth/auth_repository.dart';
+import '../calendar/calendar_providers.dart'
+    show monthAnimationChoiceProvider, monthAnimationSettingProvider;
 import '../skins/notebook_style_screen.dart';
 import '../store/paywall.dart';
 import '../store/store_actions.dart';
@@ -138,6 +141,25 @@ class SettingsScreen extends ConsumerWidget {
               selected: {ref.watch(animationLevelProvider)},
               onSelectionChanged: (s) =>
                   ref.read(animationLevelProvider.notifier).set(s.first),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.calendar_month_outlined),
+            title: const Text('Calendar month animation'),
+            subtitle: const Text('How the Calendar moves between months.'),
+            trailing: DropdownButton<PeriodAnimation?>(
+              value: ref.watch(monthAnimationChoiceProvider),
+              underline: const SizedBox.shrink(),
+              items: [
+                const DropdownMenuItem(
+                  value: null,
+                  child: Text("Template's choice"),
+                ),
+                for (final a in PeriodAnimation.values)
+                  DropdownMenuItem(value: a, child: Text(a.label)),
+              ],
+              onChanged: (a) =>
+                  ref.read(monthAnimationSettingProvider.notifier).set(a),
             ),
           ),
           ListTile(

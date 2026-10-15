@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:notely/app/app.dart';
+import 'package:notely/core/motion/directional_switcher.dart';
+import 'package:notely/core/motion/period_transition.dart';
 import 'package:notely/core/settings/synced_setting.dart';
 import 'package:notely/core/skins/skin_manifest.dart';
 import 'package:notely/features/calendar/calendar_providers.dart';
@@ -229,6 +231,32 @@ void main() {
       await b.up();
       await tester.pumpAndSettle();
       expect(find.text('October 2026'), findsOneWidget);
+    });
+
+    testWidgets('months use the chosen animation; weeks slide', (tester) async {
+      await open(tester);
+      PeriodAnimation monthAnimation() => tester
+          .widget<PeriodTransition<Day>>(find.byType(PeriodTransition<Day>))
+          .animation;
+      expect(monthAnimation(), PeriodAnimation.slide, reason: "Classic's");
+
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(NotelyApp)),
+      );
+      await container
+          .read(monthAnimationSettingProvider.notifier)
+          .set(PeriodAnimation.wallFlip);
+      await tester.pumpAndSettle();
+      expect(monthAnimation(), PeriodAnimation.wallFlip);
+
+      await tester.tap(find.byTooltip('Next'));
+      await tester.pumpAndSettle();
+      expect(find.text('November 2026'), findsOneWidget);
+
+      await tester.tap(find.text('Week'));
+      await tester.pumpAndSettle();
+      expect(find.byType(PeriodTransition<Day>), findsNothing);
+      expect(find.byType(DirectionalSwitcher<Day>), findsOneWidget);
     });
   });
 }
