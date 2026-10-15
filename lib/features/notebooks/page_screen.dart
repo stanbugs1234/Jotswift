@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/motion/page_turn.dart';
 import '../../core/skins/skin_providers.dart';
 import '../../core/skins/widgets/page_style.dart';
 import '../../shared/dialogs.dart';
 import '../canvas/ink_toolbar.dart';
 import '../canvas/page_canvas.dart';
 import 'notes_providers.dart';
+import 'page_order.dart';
 import 'paper_picker.dart';
 
 /// A single page: handwriting on phones and tablets, view-only on the web.
@@ -48,6 +50,13 @@ class PageScreen extends ConsumerWidget {
     }
 
     final title = page.value?.title ?? '';
+    final notebookId = page.value?.notebookId;
+    final order = notebookId == null
+        ? const <String>[]
+        : ref.watch(notebookPageOrderProvider(notebookId));
+    final adjacent = adjacentPages(order, pageId);
+    void openPage(String id) => context.go('/notebooks/$notebookId/pages/$id');
+
     return PageStyle(
       style: ref.watch(pageStyleProvider(pageId)),
       child: Scaffold(
@@ -57,6 +66,20 @@ class PageScreen extends ConsumerWidget {
             child: Text(page.value?.displayTitle ?? ''),
           ),
           actions: [
+            IconButton(
+              tooltip: 'Previous page',
+              icon: const Icon(Icons.chevron_left),
+              onPressed: adjacent.previous == null
+                  ? null
+                  : () => openPage(adjacent.previous!),
+            ),
+            IconButton(
+              tooltip: 'Next page',
+              icon: const Icon(Icons.chevron_right),
+              onPressed: adjacent.next == null
+                  ? null
+                  : () => openPage(adjacent.next!),
+            ),
             if (!readOnly && page.value != null)
               IconButton(
                 tooltip: 'Page paper',
@@ -90,11 +113,17 @@ class PageScreen extends ConsumerWidget {
               InkToolbar(pageId: pageId),
             const Divider(height: 1),
             Expanded(
-              child: PageCanvas(
-                pageId: pageId,
-                readOnly: readOnly,
-                onOpenPage: (id) => context.go(
-                  '/notebooks/${page.value!.notebookId}/pages/$id',
+              child: PageTurnSwitcher(
+                pageKey: pageId,
+                order: order,
+                // Each page keeps its own paper while it turns.
+                child: PageStyle(
+                  style: ref.watch(pageStyleProvider(pageId)),
+                  child: PageCanvas(
+                    pageId: pageId,
+                    readOnly: readOnly,
+                    onOpenPage: openPage,
+                  ),
                 ),
               ),
             ),

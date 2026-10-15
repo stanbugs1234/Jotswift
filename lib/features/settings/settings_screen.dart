@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/entitlements/entitlements.dart';
 import '../../core/purchases/purchases_providers.dart';
+import '../../core/motion/motion.dart';
 import '../../core/settings/appearance.dart';
 import '../../core/skins/skin_providers.dart';
 import '../auth/auth_repository.dart';
@@ -72,6 +73,31 @@ class SettingsScreen extends ConsumerWidget {
               selected: {ref.watch(themeModeProvider)},
               onSelectionChanged: (s) =>
                   ref.read(appearanceProvider.notifier).set(s.first),
+            ),
+          ),
+          const ListTile(
+            leading: Icon(Icons.animation),
+            title: Text('Animations'),
+            subtitle: Text(
+              'Page turns, opening notebooks and other motion. '
+              "Your device's Reduce Motion setting also tones them down.",
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(72, 0, 16, 8),
+            child: SegmentedButton<AnimationLevel>(
+              showSelectedIcon: false,
+              segments: const [
+                ButtonSegment(value: AnimationLevel.full, label: Text('Full')),
+                ButtonSegment(
+                  value: AnimationLevel.reduced,
+                  label: Text('Reduced'),
+                ),
+                ButtonSegment(value: AnimationLevel.off, label: Text('Off')),
+              ],
+              selected: {ref.watch(animationLevelProvider)},
+              onSelectionChanged: (s) =>
+                  ref.read(animationLevelProvider.notifier).set(s.first),
             ),
           ),
           ListTile(

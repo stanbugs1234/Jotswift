@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/motion/pop_in.dart';
 import '../../core/paper/paper_style.dart';
 import '../../core/skins/notely_skin.dart';
 import '../../core/skins/widgets/paper.dart';
@@ -86,6 +87,10 @@ class _PageCanvasState extends ConsumerState<PageCanvas> {
 
   // Stickers (select tool).
   String? _selectedId;
+
+  /// Stickers placed during this visit, which pop onto the page. Kept for
+  /// the visit so they aren't rebuilt (and replayed) later.
+  final _poppingIn = <String>{};
   _ElementDrag? _drag;
 
   /// Frames shown until the saved copies catch up, so a moved sticker
@@ -561,7 +566,10 @@ class _PageCanvasState extends ConsumerState<PageCanvas> {
       createdAt: DateTime.now().millisecondsSinceEpoch,
     );
     ref.read(inkHistoryProvider(widget.pageId).notifier).addElement(element);
-    setState(() => _selectedId = element.id);
+    setState(() {
+      _selectedId = element.id;
+      _poppingIn.add(element.id);
+    });
   }
 
   /// Drops frame stand-ins once the saved frames match them.
@@ -682,6 +690,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas> {
                           ? null
                           : _templateRect(templateImage),
                       elements: elements,
+                      poppingIn: _poppingIn,
                       selected: selected?.frame,
                       handleScale: _handleSize / _scale,
                       strokes: visible,
@@ -706,6 +715,7 @@ class _PageSurface extends StatelessWidget {
     required this.templateImage,
     required this.templateRect,
     required this.elements,
+    required this.poppingIn,
     required this.selected,
     required this.handleScale,
     required this.strokes,
@@ -722,6 +732,9 @@ class _PageSurface extends StatelessWidget {
   final ui.Image? templateImage;
   final Rect? templateRect;
   final List<PageElement> elements;
+
+  /// Ids of [elements] that pop in when they first appear.
+  final Set<String> poppingIn;
 
   /// The selected sticker's frame, to draw its outline and handles.
   final ElementFrame? selected;
@@ -772,7 +785,12 @@ class _PageSurface extends StatelessWidget {
               height: e.frame.height,
               child: Transform.rotate(
                 angle: e.frame.rotation,
-                child: StickerView(itemId: e.itemId, file: e.file),
+                child: poppingIn.contains(e.id)
+                    ? PopIn(
+                        key: ValueKey(e.id),
+                        child: StickerView(itemId: e.itemId, file: e.file),
+                      )
+                    : StickerView(itemId: e.itemId, file: e.file),
               ),
             ),
           RepaintBoundary(child: CustomPaint(painter: StrokesPainter(strokes))),

@@ -6,6 +6,7 @@ import '../../core/catalog/catalog_item.dart';
 import '../../core/catalog/catalog_providers.dart';
 import '../../core/catalog/template_spec.dart';
 import '../../core/entitlements/entitlements.dart';
+import '../../core/motion/rise_in.dart';
 import '../../core/purchases/purchases_providers.dart';
 import 'paywall.dart';
 import 'store_actions.dart';
@@ -136,7 +137,11 @@ class _StoreScreenState extends ConsumerState<StoreScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   itemCount: row.length,
                   separatorBuilder: (_, _) => const SizedBox(width: 16),
-                  itemBuilder: (context, i) => StoreTile(item: row[i]),
+                  // Cards arrive one after another.
+                  itemBuilder: (context, i) => RiseIn(
+                    index: i,
+                    child: StoreTile(item: row[i]),
+                  ),
                 ),
               ),
             ],

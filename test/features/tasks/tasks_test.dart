@@ -1,6 +1,8 @@
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:notely/core/motion/motion.dart';
+import 'package:notely/core/motion/strike_through.dart';
 import 'package:notely/core/skins/skin_manifest.dart';
 import 'package:notely/features/tasks/data/task_repository.dart';
 import 'package:notely/features/tasks/domain/task.dart';
@@ -200,6 +202,27 @@ void main() {
       await tester.tap(find.widgetWithText(ChoiceChip, 'Inbox'));
       await tester.pumpAndSettle();
       expect(find.text('Completed (1)'), findsOneWidget);
+    });
+
+    testWidgets('ticking a task draws a line through it, then saves', (
+      tester,
+    ) async {
+      await openTodo(tester);
+      await add(tester, 'Call Mom');
+
+      await tester.tap(find.bySemanticsLabel('Complete Call Mom'));
+      await tester.pump();
+      await tester.pump(MotionTokens.standard ~/ 2);
+
+      // Halfway: still in Today, line partly drawn, not saved yet.
+      final strike = tester.widget<StrikeThroughText>(
+        find.byType(StrikeThroughText),
+      );
+      expect(strike.progress, inExclusiveRange(0, 1));
+      expect(find.text('Call Mom'), findsOneWidget);
+
+      await tester.pumpAndSettle();
+      expect(find.text('Call Mom'), findsNothing);
     });
 
     testWidgets('editing a task\'s due day moves it to Upcoming', (
