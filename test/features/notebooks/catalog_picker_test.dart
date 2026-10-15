@@ -111,7 +111,8 @@ void main() {
 
       settings.setTester(auth.currentUser!.uid, tester: true);
       await pumpEventQueue();
-      expect(ids(CatalogKind.cover), ['free', 'beta']);
+      // Testers also get Pro, so they can try paid items too.
+      expect(ids(CatalogKind.cover), ['free', 'beta', 'pro']);
     });
 
     test('Pro items are offered with Pro', () async {
