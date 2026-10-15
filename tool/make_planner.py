@@ -1,4 +1,4 @@
-"""Makes Notely's own PDF templates, with links between pages.
+"""Makes Jotswift's own PDF templates, with links between pages.
 
   python3 tool/make_planner.py planner 2027   # catalog/planner_2027/
   python3 tool/make_planner.py essentials     # catalog/essentials_pages/

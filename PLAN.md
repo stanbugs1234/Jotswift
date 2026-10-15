@@ -1,4 +1,4 @@
-# Notely — Product & Technical Plan
+# Jotswift — Product & Technical Plan
 
 A handwriting-first notebook app, in the spirit of OneNote. You write with a stylus (or finger) on an iOS or Android tablet or phone, and the notes show up on the web almost instantly. It also includes a calendar, a daily planner and to-do lists. The look comes from swappable **skins**: a few free ones ship with the app, and the rest are sold, along with premium features.
 
@@ -143,7 +143,7 @@ catalog/{itemId}                                     # covers, papers, stickers,
 
 ## 6. Notebook styles and content
 
-Notely works like Noteshelf. The app's screens use a plain light or dark theme (Settings → Appearance). Each notebook has its own **cover**, **paper**, **style** and pages, which can come from **templates** and carry **stickers**. All of it is data, not code. [docs/content.md](docs/content.md) explains how to make and publish each kind, and [docs/skins-plan.md](docs/skins-plan.md) has the product plan behind it.
+Jotswift works like Noteshelf. The app's screens use a plain light or dark theme (Settings → Appearance). Each notebook has its own **cover**, **paper**, **style** and pages, which can come from **templates** and carry **stickers**. All of it is data, not code. [docs/content.md](docs/content.md) explains how to make and publish each kind, and [docs/skins-plan.md](docs/skins-plan.md) has the product plan behind it.
 
 - **Notebook styles** (`assets/skins/`):
   - Bundled with the app: Classic, Minimal Dark, Pastel, Kraft Paper, and Botanical, which is included in Pro.
@@ -164,12 +164,12 @@ Notely works like Noteshelf. The app's screens use a plain light or dark theme (
 | Collection pack (covers + papers + planner + stickers) | **$2.99** | Non-consumable |
 | Dated planner (one year) | **$3.99** | Non-consumable |
 | Bundle (several collections) | **$5.99** | Non-consumable |
-| **Notely Pro**, monthly | **$2.99/mo** | Auto-renewing subscription |
-| **Notely Pro**, yearly | **$19.99/yr** (about 45% off monthly), with a **7-day free trial** | Auto-renewing subscription |
+| **Jotswift Pro**, monthly | **$2.99/mo** | Auto-renewing subscription |
+| **Jotswift Pro**, yearly | **$19.99/yr** (about 45% off monthly), with a **7-day free trial** | Auto-renewing subscription |
 | Lifetime Pro (add later, after launch) | $49.99 | Non-consumable |
 
 **Why these numbers**
-- Note apps like Goodnotes and Notability charge roughly $10–20 a year. Notely also includes a planner and calendar, so $19.99/yr sits at the top of that range but stays competitive.
+- Note apps like Goodnotes and Notability charge roughly $10–20 a year. Jotswift also includes a planner and calendar, so $19.99/yr sits at the top of that range but stays competitive.
 - Small pack prices ($1.99) are impulse buys. Bundles raise the average order.
 - Push the **yearly** plan: show it first and use the free trial only on yearly. Yearly subscribers stay much longer.
 - **Pro includes everything marked Pro**, plus a new collection or planner each month. Packs are also sold on their own, for people who don't want a subscription.
@@ -220,7 +220,7 @@ You can handwrite anywhere on the page, and the structured widgets stay interact
 
 ### Phase 0: Setup (1 week)
 - [x] `flutter create` with iOS, Android and web; set up folder structure, lints, CI
-- [x] Firebase project created ("Notely")
+- [x] Firebase project created ("Jotswift")
 - [x] Register the iOS and Android apps in Firebase; `lib/firebase_options.dart`
 - [x] Register the web app config
 - [x] Firestore security rules + emulator tests (`firebase/`)

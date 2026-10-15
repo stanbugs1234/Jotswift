@@ -72,7 +72,7 @@ void main() {
     }
   });
 
-  test('a Pro style needs Notely Pro', () async {
+  test('a Pro style needs Jotswift Pro', () async {
     final botanical = skinById(skins, 'botanical');
     expect(botanical.pro, isTrue);
     expect(Entitlements.none.canUseSkin(botanical), isFalse);

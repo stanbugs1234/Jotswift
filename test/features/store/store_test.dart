@@ -350,7 +350,7 @@ void main() {
       tester,
     ) async {
       final store = await open(tester);
-      await tester.tap(find.text('Notely Pro'));
+      await tester.tap(find.text('Jotswift Pro'));
       await tester.pumpAndSettle();
       expect(find.text(r'$19.99/year'), findsOneWidget);
       expect(find.text('7 days free'), findsOneWidget);
@@ -363,7 +363,7 @@ void main() {
         find.bySemanticsLabel('pro_paper, Paper, In your Pro'),
         findsOneWidget,
       );
-      expect(find.text('Notely Pro'), findsNothing, reason: 'no banner');
+      expect(find.text('Jotswift Pro'), findsNothing, reason: 'no banner');
     });
 
     testWidgets('restore purchases', (tester) async {

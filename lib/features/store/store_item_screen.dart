@@ -171,7 +171,7 @@ class _GetOrUseState extends ConsumerState<_GetOrUse> {
               const SizedBox(width: 8),
               Text(switch (access) {
                 ItemAccess.free => 'Free',
-                ItemAccess.pro => 'Included in your Notely Pro',
+                ItemAccess.pro => 'Included in your Jotswift Pro',
                 _ => 'You own this',
               }, style: theme.textTheme.titleMedium),
             ],
@@ -203,7 +203,7 @@ class _GetOrUseState extends ConsumerState<_GetOrUse> {
         if (item.unlock.pro)
           OutlinedButton.icon(
             icon: const Icon(Icons.auto_awesome),
-            label: const Text('Included in Notely Pro'),
+            label: const Text('Included in Jotswift Pro'),
             onPressed: () => showPaywall(context, ref),
           ),
       ],

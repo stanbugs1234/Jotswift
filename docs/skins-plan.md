@@ -1,6 +1,6 @@
 # Plan: Noteshelf-style covers, paper, templates and stickers
 
-Notely's look and its store are modeled on **Noteshelf 3**. This replaces the
+Jotswift's look and its store are modeled on **Noteshelf 3**. This replaces the
 app-wide skins in [PLAN.md](../PLAN.md) §6 and adds to the store plan in §7.
 How to make and publish content is in [content.md](content.md).
 
@@ -15,7 +15,7 @@ How to make and publish content is in [content.md](content.md).
 
 ## 1. What Noteshelf does, and what we copy
 
-| In Noteshelf 3 | In Notely |
+| In Noteshelf 3 | In Jotswift |
 |---|---|
 | Shelf of notebooks shown with their covers; grid or list, large or small thumbnails; sort by last opened, modified, name or custom | **Copy.** The notebook list becomes a shelf of covers |
 | Categories in the sidebar, and groups (nested as deep as you like) for notebooks; tags | **Copy** categories and groups. Tags come later |
@@ -45,7 +45,7 @@ Things to check in Noteshelf on the iPad before building screens: the steps for 
 
 **Templates in detail.** A **dated planner** is a template whose pages link to each other (year → month → week → day, with tabs down the side). The links are areas on the page saved in the template's JSON. Tapping one jumps to that page. The pages are a PDF because:
 - planner designers already work in PDF, which is how Noteshelf-style planners are sold,
-- Notely draws PDFs anyway once **PDF import** (PLAN.md Phase 5) is built, so it's one feature, not two,
+- Jotswift draws PDFs anyway once **PDF import** (PLAN.md Phase 5) is built, so it's one feature, not two,
 - a dated planner is generated once per year, when the user picks the year and start day.
 
 Live widgets stay separate. The **daily planner page** from PLAN.md §8, with tasks and events from the calendar, is still built in code. Template art can decorate it.
@@ -127,7 +127,7 @@ Each item has its **files** (made by the design team) and a **listing** (how it'
   "tags": ["weekly", "dated", "light"],
   "unlock": {
     "free": false,
-    "pro": true,                       // included with Notely Pro
+    "pro": true,                       // included with Jotswift Pro
     "products": ["pack_botanical"]     // also sold in the Botanical pack
   },
   "visibility": "public",              // hidden | testers | public | retired
@@ -178,7 +178,7 @@ Rules that matter:
 | Collection pack (covers + papers + planner + stickers) | $2.99 | Non-consumable | `pack_<collection>` |
 | Dated planner (one year) | $3.99 | Non-consumable | `planner_<id>_<year>` |
 | Bundle (several collections) | $5.99 | Non-consumable | `bundle_<id>` |
-| Notely Pro | $2.99/mo, $19.99/yr, 7-day trial on yearly | Subscription | `pro_monthly`, `pro_yearly` |
+| Jotswift Pro | $2.99/mo, $19.99/yr, 7-day trial on yearly | Subscription | `pro_monthly`, `pro_yearly` |
 
 This keeps the pricing in PLAN.md §7, with planners and sticker packs added. For comparison, Noteshelf charges $29.99/yr on Apple, and Etsy sells Noteshelf-compatible planners for about $1–7.
 

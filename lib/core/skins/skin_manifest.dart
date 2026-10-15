@@ -176,7 +176,7 @@ class SkinManifest {
   final String name;
   final String description;
 
-  /// Included in Notely Pro rather than free. Notebooks already using it
+  /// Included in Jotswift Pro rather than free. Notebooks already using it
   /// keep it when Pro ends; only choosing it again needs Pro.
   final bool pro;
   final Brightness brightness;

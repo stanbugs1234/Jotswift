@@ -6,7 +6,7 @@ import '../../core/purchases/purchases_client.dart';
 import '../../core/purchases/purchases_providers.dart';
 import 'store_actions.dart';
 
-/// Offers Notely Pro, yearly first. [reason] says what needed Pro, such as
+/// Offers Jotswift Pro, yearly first. [reason] says what needed Pro, such as
 /// the notebook limit. Returns whether the user has Pro afterwards.
 Future<bool> showPaywall(
   BuildContext context,
@@ -103,7 +103,7 @@ class _PaywallState extends ConsumerState<Paywall> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text('Notely Pro', style: theme.textTheme.headlineSmall),
+              Text('Jotswift Pro', style: theme.textTheme.headlineSmall),
               if (widget.reason case final reason?)
                 Padding(
                   padding: const EdgeInsets.only(top: 8),
@@ -123,13 +123,13 @@ class _PaywallState extends ConsumerState<Paywall> {
               if (entitlements.pro)
                 Text(switch (entitlements.proUntil) {
                   final until? =>
-                    'You have Notely Pro. It renews or ends on '
+                    'You have Jotswift Pro. It renews or ends on '
                         '${MaterialLocalizations.of(context).formatMediumDate(until.toLocal())}.',
-                  null => 'You have Notely Pro.',
+                  null => 'You have Jotswift Pro.',
                 }, style: theme.textTheme.titleSmall)
               else if (!available)
                 const Text(
-                  'Notely Pro isn\'t on sale yet. Everything is free for '
+                  'Jotswift Pro isn\'t on sale yet. Everything is free for '
                   'now.',
                 )
               else ...[

@@ -66,7 +66,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
-                      'Notely',
+                      'Jotswift',
                       textAlign: TextAlign.center,
                       style: skin.accentTextStyle.copyWith(fontSize: 44),
                     ),

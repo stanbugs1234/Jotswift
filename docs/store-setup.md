@@ -1,6 +1,6 @@
 # Setting up the store
 
-Notely's store code is built and tested, but it stays switched off until the
+Jotswift's store code is built and tested, but it stays switched off until the
 accounts below exist. Until then, the Templates screen shows prices as
 "Coming soon", Buy buttons are disabled, and there's no notebook limit.
 
@@ -30,15 +30,15 @@ At [appstoreconnect.apple.com](https://appstoreconnect.apple.com):
 2. **Business:** add your **bank account** and fill in the **tax forms**
    (the US form W-9 for a US individual). Paid products won't load until
    these say *Active*. This is the step that takes days.
-3. **Apps:** if Notely isn't listed, click **+ → New App**:
-   - platform iOS, name *Notely*, bundle id `com.notelyapp.notely`
+3. **Apps:** if Jotswift isn't listed, click **+ → New App**:
+   - platform iOS, name *Jotswift*, bundle id `com.notelyapp.notely`
    - SKU `notely`
-4. **Notely → Monetization → Subscriptions:**
-   - Create a group called **Notely Pro**.
+4. **Jotswift → Monetization → Subscriptions:**
+   - Create a group called **Jotswift Pro**.
    - In it, add `pro_yearly` (1 year, $19.99) and `pro_monthly` (1 month, $2.99).
    - On `pro_yearly`, add an **Introductory Offer**: *Free*, 1 week, all countries.
-   - Give each one a display name and description, such as "Notely Pro (yearly)".
-5. **Notely → Monetization → In-App Purchases:** add each paid pack as
+   - Give each one a display name and description, such as "Jotswift Pro (yearly)".
+5. **Jotswift → Monetization → In-App Purchases:** add each paid pack as
    **Non-Consumable**, with the product id from its catalog listing.
    - When creating the first one, set **Family Sharing** (recommended: **on**). Apple doesn't let you turn it off later.
 6. **Users and Access → Integrations → In-App Purchase:**
@@ -56,7 +56,7 @@ Note: the **first** in-app purchase has to be submitted for review together with
 At [play.google.com/console](https://play.google.com/console):
 
 1. **Settings → Payments profile:** set up a merchant account.
-2. **Create app**: Notely.
+2. **Create app**: Jotswift.
 3. Upload a build to **Testing → Internal testing**. Products can only be added after a build that uses billing is uploaded; Claude can make that build.
 4. **Monetize → Subscriptions:**
    - Add `pro_yearly` with a free-trial offer.
@@ -69,7 +69,7 @@ At [play.google.com/console](https://play.google.com/console):
 At [app.revenuecat.com](https://app.revenuecat.com) (free until you earn
 $2,500 a month):
 
-1. **Create a project** named Notely.
+1. **Create a project** named Jotswift.
 2. **Apps & providers:**
    - **App Store:** bundle id `com.notelyapp.notely`; upload the `.p8` key with its Key ID and Issuer ID.
    - **Play Store** (later): package `com.notely.notely`; upload the service account JSON.

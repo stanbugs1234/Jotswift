@@ -84,7 +84,7 @@ class SettingsScreen extends ConsumerWidget {
           const Divider(),
           ListTile(
             leading: const Icon(Icons.auto_awesome_outlined),
-            title: const Text('Notely Pro'),
+            title: const Text('Jotswift Pro'),
             subtitle: Text(
               ref.watch(entitlementsProvider).pro
                   ? 'You have Pro'

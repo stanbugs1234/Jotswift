@@ -2,7 +2,7 @@
     <!-- Reminders: reschedule after a restart. -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <application
-        android:label="Notely"
+        android:label="Jotswift"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

@@ -1,6 +1,6 @@
 # Making content: styles, covers, papers, stickers, templates and collections
 
-Notely's look comes from content, not code.
+Jotswift's look comes from content, not code.
 
 | Kind | What it is | Where it lives | How it ships |
 |---|---|---|---|
@@ -57,7 +57,7 @@ If a step is missed, the tests say which one.
   "version": 1,                  // bump whenever you change the style
   "name": "Botanical",
   "description": "Sage greens and terracotta on cream, for calm, leafy pages.",
-  "pro": true,                   // optional: included in Notely Pro instead of free
+  "pro": true,                   // optional: included in Jotswift Pro instead of free
   "brightness": "light",         // "light" or "dark"
 
   "colors": {                    // "#RRGGBB" or "#AARRGGBB"; style the preview card
@@ -157,7 +157,7 @@ lowercase letters, digits and `_`. An id can never be reused.
 
 ### Templates
 - **Files:** `template.pdf`, `template.json` and `preview.webp`. Any PDF works, including a designer's.
-- **Making Notely's own:**
+- **Making Jotswift's own:**
   ```sh
   python3 tool/make_planner.py planner 2028    # catalog/planner_2028/: a dated weekly planner
   python3 tool/make_planner.py essentials      # catalog/essentials_pages/: to-do, meetings, habits
@@ -196,7 +196,7 @@ lowercase letters, digits and `_`. An id can never be reused.
 | unlock | Who can use it |
 |---|---|
 | `{ "free": true }` | Everyone |
-| `{ "pro": true }` | Notely Pro subscribers |
+| `{ "pro": true }` | Jotswift Pro subscribers |
 | `{ "products": ["pack_space"] }` | People who bought `pack_space` |
 | `{ "pro": true, "products": ["pack_space"] }` | Either, which is the usual choice for paid items |
 

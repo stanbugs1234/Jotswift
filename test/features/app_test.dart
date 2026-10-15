@@ -189,11 +189,11 @@ void main() {
       await tester.tap(find.text('Botanical'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Botanical is included in Notely Pro.'), findsOneWidget);
+      expect(find.text('Botanical is included in Jotswift Pro.'), findsOneWidget);
       await tester.tapAt(const Offset(10, 10));
       await tester.pumpAndSettle();
       expect(find.text('In use'), findsOneWidget, reason: 'Classic still');
-      expect(find.text('Botanical is included in Notely Pro.'), findsNothing);
+      expect(find.text('Botanical is included in Jotswift Pro.'), findsNothing);
     });
   });
 

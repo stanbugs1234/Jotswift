@@ -98,7 +98,7 @@ class AppShell extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(vertical: 12),
           child: Column(
             children: [
-              Text('Notely', style: Theme.of(context).textTheme.titleLarge),
+              Text('Jotswift', style: Theme.of(context).textTheme.titleLarge),
               const SizedBox(height: 4),
               const SyncIndicator(),
             ],
@@ -196,7 +196,7 @@ class _Sidebar extends ConsumerWidget {
                 child: Row(
                   children: [
                     Expanded(
-                      child: Text('Notely', style: theme.textTheme.titleLarge),
+                      child: Text('Jotswift', style: theme.textTheme.titleLarge),
                     ),
                     const SyncIndicator(),
                   ],

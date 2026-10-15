@@ -27,7 +27,7 @@ PurchasesClient createPurchasesClient() {
 class RevenueCatPurchases implements PurchasesClient {
   RevenueCatPurchases(this._apiKey);
 
-  /// RevenueCat's entitlement for Notely Pro.
+  /// RevenueCat's entitlement for Jotswift Pro.
   static const proEntitlement = 'pro';
 
   final String _apiKey;

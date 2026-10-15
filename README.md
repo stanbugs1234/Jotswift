@@ -1,4 +1,4 @@
-# Notely
+# Jotswift
 
 Handwritten notes, a daily planner, calendar and to-do lists for iOS and Android phones and tablets, with a web app at **https://notely-b1aec.web.app**. Notebooks work like Noteshelf: covers, papers, PDF planners and templates, stickers, text boxes and photos.
 
@@ -12,7 +12,7 @@ See [PLAN.md](PLAN.md) for the product plan and roadmap, and [docs/content.md](d
 | Notebooks | A shelf with categories and groups. Each notebook has a cover, paper, style and size. Pages have pen, highlighter, eraser, undo, zoom and palm rejection, plus stickers, text boxes and photos. |
 | Content | A catalog of covers, papers, sticker packs, PDF planners and page templates, published from Firebase ([docs/content.md](docs/content.md)). |
 | Planner, Calendar, To-do | Daily planner pages, events with repeats in month, week and day views, task lists, and reminders as local notifications. |
-| Store | Templates screen, Notely Pro and packs through RevenueCat. Built and tested, switched on once the accounts in [docs/store-setup.md](docs/store-setup.md) exist. |
+| Store | Templates screen, Jotswift Pro and packs through RevenueCat. Built and tested, switched on once the accounts in [docs/store-setup.md](docs/store-setup.md) exist. |
 | Web | Everything syncs. Text boxes, photos and stickers can be added and edited; handwriting is view-only. |
 
 **Testing on an iPad:** see [docs/testing-on-ipad.md](docs/testing-on-ipad.md).
@@ -42,6 +42,14 @@ cd firebase/rules-tests && npm install && npm test
 cd firebase/functions && npm install && npm test   # Cloud Functions
 python3 tool/catalog.py check                      # catalog content
 ```
+
+## Sending a build to TestFlight
+
+```sh
+tool/release_testflight.sh   # analyze, test, bump the build number, build, upload
+```
+
+It uses the App Store Connect API key in `~/.appstoreconnect/private_keys/` and the Apple Distribution certificate in the keychain. The App Store Connect app is **Jotswift** (bundle id `com.notelyapp.notely`).
 
 ## Publishing the web app
 

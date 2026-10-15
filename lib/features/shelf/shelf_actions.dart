@@ -37,7 +37,7 @@ Future<void> createNotebookAt(
       ref,
       reason:
           'Free accounts have up to $freeNotebookLimit notebooks. Get '
-          'Notely Pro for as many as you like.',
+          'Jotswift Pro for as many as you like.',
     );
     if (!pro || !context.mounted) return;
   }

@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 
 import '../entitlements/entitlements.dart';
 
-/// Product ids of Notely Pro, yearly first (the one the paywall suggests).
+/// Product ids of Jotswift Pro, yearly first (the one the paywall suggests).
 abstract final class ProProducts {
   static const yearly = 'pro_yearly';
   static const monthly = 'pro_monthly';

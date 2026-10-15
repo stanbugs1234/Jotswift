@@ -1,4 +1,4 @@
-"""Draws the Notely app icon and writes every size for iOS, Android and web.
+"""Draws the Jotswift app icon and writes every size for iOS, Android and web.
 
 Run from the repo root:  python3 tool/generate_app_icon.py
 Needs Pillow (pip install pillow).

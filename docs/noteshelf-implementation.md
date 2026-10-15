@@ -179,14 +179,14 @@ Built and tested. It switches on when a build has a RevenueCat key. Until then t
   - Reached from the sidebar, the shelf's app bar and Settings.
 - **Item page:**
   - Shows a preview, what the item is, and which collection it belongs to.
-  - A locked item has Buy (with the price from the store) and *Included in Notely Pro*.
+  - A locked item has Buy (with the price from the store) and *Included in Jotswift Pro*.
   - An unlocked item has Use: a new notebook with the planner, cover or paper, or a hint for page templates and stickers.
   - "Try it" is a preview image for now. A page to write on without saving would need a scratch notebook, and can come later.
 - **The paywall:**
   - Yearly first with the 7-day trial, then monthly, plus Restore.
   - It closes itself when Pro arrives.
   - It opens when a free account at the notebook limit taps New notebook.
-- **Settings:** Notely Pro, Templates and Restore purchases.
+- **Settings:** Jotswift Pro, Templates and Restore purchases.
 - **Locked items:** pages and notebooks keep whatever they already use, and only new use is blocked.
 
 **Firebase**
@@ -226,7 +226,7 @@ Built and tested. It switches on when a build has a RevenueCat key. Until then t
 
 ## Order and checkpoints
 
-- Milestones 1–4 make Notely *feel* like Noteshelf, without any downloads or purchases. That's a good point to put it on your iPad and compare it with Noteshelf side by side.
+- Milestones 1–4 make Jotswift *feel* like Noteshelf, without any downloads or purchases. That's a good point to put it on your iPad and compare it with Noteshelf side by side.
 - Milestones 5–7 add content.
 - Milestone 8 starts earning. Its account setup (step 1 of milestone 8) can start any time, because Apple and Google approvals take days.
 - Every milestone ends with `flutter analyze`, all tests passing, the rules tests for Firebase changes, a build installed on the iPad, and a commit.

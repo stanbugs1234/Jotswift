@@ -161,7 +161,7 @@ class _ProBanner extends ConsumerWidget {
           Icons.auto_awesome,
           color: theme.colorScheme.onPrimaryContainer,
         ),
-        title: const Text('Notely Pro'),
+        title: const Text('Jotswift Pro'),
         subtitle: const Text(
           'Everything marked Pro, unlimited notebooks, and something new '
           'every month.',

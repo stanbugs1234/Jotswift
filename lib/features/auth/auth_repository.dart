@@ -19,7 +19,7 @@ class AuthException implements Exception {
   String toString() => message;
 }
 
-/// Sign-in for Notely. An account is required to use the app.
+/// Sign-in for Jotswift. An account is required to use the app.
 ///
 /// The Firebase implementation is added once the Firebase project exists.
 /// Until then [DevAuthRepository] lets the app run end to end.

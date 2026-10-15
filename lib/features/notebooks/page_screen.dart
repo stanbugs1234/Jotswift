@@ -127,7 +127,7 @@ class _ViewOnlyBanner extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Text(
         'Handwriting is view-only on the web. You can add and edit text, '
-        'photos and stickers here; write with the Notely app on your phone '
+        'photos and stickers here; write with the Jotswift app on your phone '
         'or tablet.',
         style: theme.textTheme.bodySmall,
       ),

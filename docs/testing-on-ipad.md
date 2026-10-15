@@ -1,4 +1,4 @@
-# Testing Notely on an iPad
+# Testing Jotswift on an iPad
 
 You need a Mac with Xcode, the iPad, and a USB cable.
 
@@ -44,7 +44,7 @@ flutter run --release
 
 Pick the iPad when asked. `--release` matters: debug builds are much slower and would make the pen feel laggy.
 
-The first build takes several minutes. After that, the Notely icon stays on the iPad.
+The first build takes several minutes. After that, the Jotswift icon stays on the iPad.
 
 To get the newest version later:
 

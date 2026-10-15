@@ -1,7 +1,7 @@
 ﻿import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 
-/// Firebase settings for the Notely project (`notely-b1aec`), taken from
+/// Firebase settings for the Jotswift project (`notely-b1aec`), taken from
 /// `android/app/google-services.json`, `ios/Runner/GoogleService-Info.plist`
 /// and the web app's config in the Firebase console.
 ///

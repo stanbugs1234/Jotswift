@@ -11,7 +11,7 @@ class NotelyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp.router(
-      title: 'Notely',
+      title: 'Jotswift',
       debugShowCheckedModeBanner: false,
       theme: ref.watch(lightThemeProvider),
       darkTheme: ref.watch(darkThemeProvider),

@@ -1,11 +1,11 @@
 {
-    "name": "Notely",
-    "short_name": "Notely",
+    "name": "Jotswift",
+    "short_name": "Jotswift",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#2C4A7C",
     "theme_color": "#2C4A7C",
-    "description": "Notely: handwritten notes, planner, calendar and to-do lists.",
+    "description": "Jotswift: handwritten notes, planner, calendar and to-do lists.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

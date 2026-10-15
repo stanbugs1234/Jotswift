@@ -23,7 +23,7 @@ class NotebookStyleScreen extends ConsumerWidget {
       final pro = await showPaywall(
         context,
         ref,
-        reason: '${skin.name} is included in Notely Pro.',
+        reason: '${skin.name} is included in Jotswift Pro.',
       );
       if (!pro) return;
     }

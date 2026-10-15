@@ -44,7 +44,7 @@ class CatalogUnlock {
 
   final bool free;
 
-  /// Included with Notely Pro.
+  /// Included with Jotswift Pro.
   final bool pro;
 
   /// Store products that unlock it (a pack, a bundle, ...).
