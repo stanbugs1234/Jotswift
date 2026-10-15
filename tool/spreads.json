@@ -9,6 +9,33 @@
       "sections": [
         { "tab": "Notes", "pages": ["notes.lined", "notes.dotted", "notes.grid", "notes.blank", "notes.cornell"] }
       ]
+    },
+    "spread_weekly": {
+      "name": "Weekly Planner (undated)",
+      "short": "Weekly Planner",
+      "price": "2.99",
+      "tags": ["weekly", "monthly", "undated", "spreads", "tabs"],
+      "unlock": { "pro": true, "products": ["planner_spread_weekly"] },
+      "sections": [
+        { "tab": "Year", "title": "Year", "pages": ["plan.year", "plan.goals", "plan.vision"] },
+        { "tab": "Months", "pages": [{ "layout": "plan.month", "repeat": 12, "title": "Month {n}" }] },
+        { "tab": "Weeks", "pages": [{ "layout": "plan.week", "repeat": 52, "title": "Week {n}" }] },
+        { "tab": "Notes", "pages": ["notes.lined", "notes.dotted", "notes.lined", "notes.dotted"] }
+      ]
+    },
+    "spread_daily": {
+      "name": "Daily Planner (undated)",
+      "short": "Daily Planner",
+      "price": "2.99",
+      "tags": ["daily", "undated", "spreads", "tabs"],
+      "unlock": { "pro": true, "products": ["planner_spread_daily"] },
+      "sections": [
+        { "tab": "Month", "pages": ["plan.month"] },
+        { "tab": "Weeks", "pages": [{ "layout": "plan.week_rows", "repeat": 5, "title": "Week {n}" }] },
+        { "tab": "Days", "pages": [{ "layout": "plan.day", "repeat": 31, "title": "Day {n}" }] },
+        { "tab": "Simple", "title": "Simple days", "pages": [{ "layout": "plan.day_simple", "repeat": 10, "title": "Simple day {n}" }] },
+        { "tab": "Notes", "pages": ["notes.lined", "notes.dotted"] }
+      ]
     }
   }
 }

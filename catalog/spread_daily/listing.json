@@ -1,0 +1,18 @@
+{
+  "kind": "template",
+  "name": "Daily Planner (undated)",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "planner_spread_daily"
+    ]
+  },
+  "category": "spreads",
+  "tags": [
+    "daily",
+    "undated",
+    "spreads",
+    "tabs"
+  ]
+}

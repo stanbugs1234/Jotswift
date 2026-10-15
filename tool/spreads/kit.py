@@ -5,12 +5,12 @@ left and right pages of a Spread."""
 import math
 
 import make_planner as mp
-from layouts.kit import box, checkbox_rows, circle, columns, dots, lines, table  # noqa: F401
+from layouts.kit import bar, box, checkbox_rows, circle, columns, dots, lines, table  # noqa: F401
 from spreads.look import BOTTOM, TOP, Spread  # noqa: F401
 
 __all__ = [
     "BOTTOM", "TOP", "Spread", "S", "panel", "ruled", "checks", "mini_month", "day_columns",
-    "habit_grid", "split", "table", "dots", "lines", "columns", "circle", "caps", "math", "mp",
+    "habit_grid", "split", "table", "dots", "lines", "columns", "circle", "caps", "math", "mp", "bar",
 ]
 
 

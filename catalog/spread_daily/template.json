@@ -1,0 +1,252 @@
+{
+  "mode": "notebook",
+  "sections": [
+    {
+      "title": "Index",
+      "pages": [
+        {
+          "pdfPage": 1,
+          "title": "Index"
+        }
+      ]
+    },
+    {
+      "title": "Month",
+      "pages": [
+        {
+          "pdfPage": 2,
+          "title": "Monthly planner"
+        }
+      ]
+    },
+    {
+      "title": "Weeks",
+      "pages": [
+        {
+          "pdfPage": 3,
+          "title": "Week 1"
+        },
+        {
+          "pdfPage": 4,
+          "title": "Week 2"
+        },
+        {
+          "pdfPage": 5,
+          "title": "Week 3"
+        },
+        {
+          "pdfPage": 6,
+          "title": "Week 4"
+        },
+        {
+          "pdfPage": 7,
+          "title": "Week 5"
+        }
+      ]
+    },
+    {
+      "title": "Days",
+      "pages": [
+        {
+          "pdfPage": 8,
+          "title": "Day 1"
+        },
+        {
+          "pdfPage": 9,
+          "title": "Day 2"
+        },
+        {
+          "pdfPage": 10,
+          "title": "Day 3"
+        },
+        {
+          "pdfPage": 11,
+          "title": "Day 4"
+        },
+        {
+          "pdfPage": 12,
+          "title": "Day 5"
+        },
+        {
+          "pdfPage": 13,
+          "title": "Day 6"
+        },
+        {
+          "pdfPage": 14,
+          "title": "Day 7"
+        },
+        {
+          "pdfPage": 15,
+          "title": "Day 8"
+        },
+        {
+          "pdfPage": 16,
+          "title": "Day 9"
+        },
+        {
+          "pdfPage": 17,
+          "title": "Day 10"
+        },
+        {
+          "pdfPage": 18,
+          "title": "Day 11"
+        },
+        {
+          "pdfPage": 19,
+          "title": "Day 12"
+        },
+        {
+          "pdfPage": 20,
+          "title": "Day 13"
+        },
+        {
+          "pdfPage": 21,
+          "title": "Day 14"
+        },
+        {
+          "pdfPage": 22,
+          "title": "Day 15"
+        },
+        {
+          "pdfPage": 23,
+          "title": "Day 16"
+        },
+        {
+          "pdfPage": 24,
+          "title": "Day 17"
+        },
+        {
+          "pdfPage": 25,
+          "title": "Day 18"
+        },
+        {
+          "pdfPage": 26,
+          "title": "Day 19"
+        },
+        {
+          "pdfPage": 27,
+          "title": "Day 20"
+        },
+        {
+          "pdfPage": 28,
+          "title": "Day 21"
+        },
+        {
+          "pdfPage": 29,
+          "title": "Day 22"
+        },
+        {
+          "pdfPage": 30,
+          "title": "Day 23"
+        },
+        {
+          "pdfPage": 31,
+          "title": "Day 24"
+        },
+        {
+          "pdfPage": 32,
+          "title": "Day 25"
+        },
+        {
+          "pdfPage": 33,
+          "title": "Day 26"
+        },
+        {
+          "pdfPage": 34,
+          "title": "Day 27"
+        },
+        {
+          "pdfPage": 35,
+          "title": "Day 28"
+        },
+        {
+          "pdfPage": 36,
+          "title": "Day 29"
+        },
+        {
+          "pdfPage": 37,
+          "title": "Day 30"
+        },
+        {
+          "pdfPage": 38,
+          "title": "Day 31"
+        }
+      ]
+    },
+    {
+      "title": "Simple days",
+      "pages": [
+        {
+          "pdfPage": 39,
+          "title": "Simple day 1"
+        },
+        {
+          "pdfPage": 40,
+          "title": "Simple day 2"
+        },
+        {
+          "pdfPage": 41,
+          "title": "Simple day 3"
+        },
+        {
+          "pdfPage": 42,
+          "title": "Simple day 4"
+        },
+        {
+          "pdfPage": 43,
+          "title": "Simple day 5"
+        },
+        {
+          "pdfPage": 44,
+          "title": "Simple day 6"
+        },
+        {
+          "pdfPage": 45,
+          "title": "Simple day 7"
+        },
+        {
+          "pdfPage": 46,
+          "title": "Simple day 8"
+        },
+        {
+          "pdfPage": 47,
+          "title": "Simple day 9"
+        },
+        {
+          "pdfPage": 48,
+          "title": "Simple day 10"
+        }
+      ]
+    },
+    {
+      "title": "Notes",
+      "pages": [
+        {
+          "pdfPage": 49,
+          "title": "Lined notes"
+        },
+        {
+          "pdfPage": 50,
+          "title": "Dot grid"
+        }
+      ]
+    }
+  ],
+  "variants": [
+    {
+      "name": "Classic",
+      "file": "template.pdf",
+      "color": "#2C3E66"
+    },
+    {
+      "name": "Pastel",
+      "file": "template_pastel.pdf",
+      "color": "#7E6AAE"
+    },
+    {
+      "name": "Neutral",
+      "file": "template_neutral.pdf",
+      "color": "#7A6552"
+    }
+  ]
+}

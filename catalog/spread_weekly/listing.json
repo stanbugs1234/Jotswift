@@ -1,0 +1,19 @@
+{
+  "kind": "template",
+  "name": "Weekly Planner (undated)",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "planner_spread_weekly"
+    ]
+  },
+  "category": "spreads",
+  "tags": [
+    "weekly",
+    "monthly",
+    "undated",
+    "spreads",
+    "tabs"
+  ]
+}
