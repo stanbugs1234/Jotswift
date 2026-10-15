@@ -17,7 +17,33 @@ enum PaperPattern {
 
   /// Lined, with a cue column on the left and a summary area at the bottom.
   cornell,
+
+  /// A triangle grid for drawing in 3D.
+  isometric,
+
+  /// Flat-topped hexagons, for maps and chemistry.
+  hexagon,
+
+  /// Handwriting practice: a top line, a dashed middle line and a baseline,
+  /// with a faint line for descenders.
+  handwriting,
+
+  /// Calligraphy guides: ascender, x-height, baseline and descender lines,
+  /// with slanted lines to keep letters at the same angle.
+  calligraphy,
+
+  /// A legal pad: lines below a blank top band and a double margin rule.
+  legal,
+
+  /// A fine grid with every fifth line darker.
+  engineering,
 }
+
+/// Whether [pattern] has a vertical margin line on the left.
+bool hasMarginLine(PaperPattern pattern) => switch (pattern) {
+  PaperPattern.lined || PaperPattern.narrowLined || PaperPattern.legal => true,
+  _ => false,
+};
 
 /// The size of a notebook's pages, in page units (about 165 per inch), as
 /// [width] x [height] in portrait. Ink is stored in page units, so a
@@ -92,7 +118,7 @@ class PaperStyle {
   final Color color;
   final Color lineColor;
 
-  /// The left margin line (lined and narrow-lined paper only).
+  /// The left margin line (lined, narrow-lined and legal paper only).
   final Color? marginColor;
   final PaperPattern pattern;
 

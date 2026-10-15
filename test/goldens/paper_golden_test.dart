@@ -12,7 +12,7 @@ import 'package:notely/core/skins/widgets/paper.dart';
 void main() {
   testWidgets('paper patterns', (tester) async {
     tester.view
-      ..physicalSize = const Size(1442, 632)
+      ..physicalSize = Size(206.0 * PaperPattern.values.length, 632)
       ..devicePixelRatio = 1;
     addTearDown(tester.view.reset);
 

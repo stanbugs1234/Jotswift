@@ -54,12 +54,10 @@ class PaperPicker extends ConsumerWidget {
     final margin =
         basic?.marginColor ??
         (light ? const Color(0xFFE3A99A) : const Color(0xFF8A5A5A));
-    final lined =
-        pattern == PaperPattern.lined || pattern == PaperPattern.narrowLined;
     return PaperStyle(
       color: color,
       lineColor: lineColor,
-      marginColor: lined ? margin : null,
+      marginColor: hasMarginLine(pattern) ? margin : null,
       pattern: pattern,
       spacing: (defaultSpacing(pattern) * spacing.factor).roundToDouble(),
     );
@@ -194,6 +192,7 @@ class PaperPicker extends ConsumerWidget {
     BasicPaperColor.cream => 'Cream',
     BasicPaperColor.gray => 'Gray',
     BasicPaperColor.dark => 'Dark',
+    BasicPaperColor.yellow => 'Yellow',
   };
 
   static String _patternName(PaperPattern pattern) => switch (pattern) {
@@ -204,6 +203,12 @@ class PaperPicker extends ConsumerWidget {
     PaperPattern.dot => 'Dot',
     PaperPattern.music => 'Music',
     PaperPattern.cornell => 'Cornell',
+    PaperPattern.isometric => 'Isometric',
+    PaperPattern.hexagon => 'Hexagon',
+    PaperPattern.handwriting => 'Handwriting',
+    PaperPattern.calligraphy => 'Calligraphy',
+    PaperPattern.legal => 'Legal',
+    PaperPattern.engineering => 'Engineering',
   };
 }
 

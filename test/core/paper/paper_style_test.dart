@@ -48,11 +48,13 @@ void main() {
       );
     });
 
-    test('only lined papers have a margin line', () {
+    test('only lined and legal papers have a margin line', () {
       for (final paper in basicPapers) {
-        final lined =
-            paper.pattern == PaperPattern.lined ||
-            paper.pattern == PaperPattern.narrowLined;
+        final lined = const {
+          PaperPattern.lined,
+          PaperPattern.narrowLined,
+          PaperPattern.legal,
+        }.contains(paper.pattern);
         expect(paper.marginColor != null, lined, reason: '${paper.pattern}');
       }
     });

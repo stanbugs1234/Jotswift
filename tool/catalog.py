@@ -38,7 +38,10 @@ CATALOG = ROOT / "catalog"
 
 KINDS = {"cover", "paper", "template", "stickers", "collection"}
 VISIBILITIES = {"hidden", "testers", "public", "retired"}
-PATTERNS = {"blank", "lined", "narrowLined", "grid", "dot", "music", "cornell"}
+PATTERNS = {
+    "blank", "lined", "narrowLined", "grid", "dot", "music", "cornell",
+    "isometric", "hexagon", "handwriting", "calligraphy", "legal", "engineering",
+}
 PRODUCT = re.compile(r"^(pack|bundle|planner)_[a-z0-9_]+$")
 ID = re.compile(r"^[a-z0-9_]+$")
 HEX = re.compile(r"^#([0-9a-fA-F]{6}|[0-9a-fA-F]{8})$")

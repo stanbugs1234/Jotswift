@@ -7,7 +7,10 @@ enum BasicPaperColor {
   white(Color(0xFFFFFFFF), Color(0xFFC9D6EA), Color(0xFFE8A0A0)),
   cream(Color(0xFFFBF6E9), Color(0xFFDCD3BC), Color(0xFFE3A99A)),
   gray(Color(0xFFEDEEF0), Color(0xFFC4C8CF), Color(0xFFD9A0A0)),
-  dark(Color(0xFF26282C), Color(0xFF474B52), Color(0xFF8A5A5A));
+  dark(Color(0xFF26282C), Color(0xFF474B52), Color(0xFF8A5A5A)),
+
+  /// Legal-pad yellow.
+  yellow(Color(0xFFFBF1B0), Color(0xFF9FB4CF), Color(0xFFD9675F));
 
   const BasicPaperColor(this.color, this.lineColor, this.marginColor);
 
@@ -22,17 +25,23 @@ double defaultSpacing(PaperPattern pattern) => switch (pattern) {
   PaperPattern.grid => 28,
   PaperPattern.dot => 26,
   PaperPattern.music => 12,
-  PaperPattern.blank || PaperPattern.lined || PaperPattern.cornell => 32,
+  PaperPattern.isometric => 30,
+  PaperPattern.hexagon => 22,
+  PaperPattern.handwriting => 18,
+  PaperPattern.calligraphy => 24,
+  PaperPattern.engineering => 16,
+  PaperPattern.blank ||
+  PaperPattern.lined ||
+  PaperPattern.cornell ||
+  PaperPattern.legal => 32,
 };
 
 /// A free paper: [pattern] on [color].
 PaperStyle basicPaper(PaperPattern pattern, BasicPaperColor color) {
-  final hasMargin =
-      pattern == PaperPattern.lined || pattern == PaperPattern.narrowLined;
   return PaperStyle(
     color: color.color,
     lineColor: color.lineColor,
-    marginColor: hasMargin ? color.marginColor : null,
+    marginColor: hasMarginLine(pattern) ? color.marginColor : null,
     pattern: pattern,
     spacing: defaultSpacing(pattern),
   );
