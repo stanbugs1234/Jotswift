@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../../core/paper/paper_style.dart';
+import '../../canvas/domain/page_element.dart';
 import '../../canvas/domain/stroke.dart';
 import '../domain/notebook_models.dart';
 import 'notes_repository.dart';
@@ -17,6 +18,7 @@ import 'notes_repository.dart';
 /// users/{uid}/favoritePapers/{paperKey}
 /// users/{uid}/pages/{pageId}
 /// users/{uid}/pages/{pageId}/strokes/{strokeId}
+/// users/{uid}/pages/{pageId}/elements/{elementId}
 /// ```
 ///
 /// Firestore's offline cache makes writes show up instantly and sync later.
@@ -40,6 +42,10 @@ class FirestoreNotesBackend implements NotesBackend {
   @override
   StrokeRepository strokes(String uid) =>
       _FirestoreUserNotes(_firestore.doc('users/$uid'));
+
+  @override
+  ElementRepository elements(String uid) =>
+      _FirestoreUserNotes(_firestore.doc('users/$uid'));
 }
 
 class _FirestoreUserNotes
@@ -47,7 +53,8 @@ class _FirestoreUserNotes
         NotebookRepository,
         ShelfRepository,
         FavoritePapersRepository,
-        StrokeRepository {
+        StrokeRepository,
+        ElementRepository {
   _FirestoreUserNotes(this._user);
 
   final DocumentReference<Map<String, dynamic>> _user;
@@ -66,6 +73,8 @@ class _FirestoreUserNotes
       _user.collection('pages');
   CollectionReference<Map<String, dynamic>> _strokes(String pageId) =>
       _pages.doc(pageId).collection('strokes');
+  CollectionReference<Map<String, dynamic>> _elements(String pageId) =>
+      _pages.doc(pageId).collection('elements');
 
   // Notebooks
 
@@ -406,6 +415,7 @@ class _FirestoreUserNotes
   @override
   Future<void> deletePage(String pageId) async {
     await _deleteAll(await _strokes(pageId).get());
+    await _deleteAll(await _elements(pageId).get());
     _pages.doc(pageId).delete().ignore();
   }
 
@@ -444,6 +454,46 @@ class _FirestoreUserNotes
       _commitInBackground(batch);
     }
   }
+
+  // Elements
+
+  @override
+  String newElementId() => _pages.doc().id;
+
+  @override
+  Stream<List<PageElement>> watchElements(String pageId) =>
+      _elements(pageId).snapshots().map(
+        (snap) =>
+            [for (final d in snap.docs) ?PageElement.fromMap(d.id, d.data())]
+              ..sort((a, b) => a.z.compareTo(b.z)),
+      );
+
+  @override
+  Future<void> addElement(String pageId, PageElement element) async {
+    final batch = _user.firestore.batch()
+      ..set(_elements(pageId).doc(element.id), element.toMap())
+      ..update(_pages.doc(pageId), {'updatedAt': nowMillis()});
+    _commitInBackground(batch);
+  }
+
+  @override
+  Future<void> setElementFrame(
+    String pageId,
+    String elementId,
+    ElementFrame frame,
+  ) async =>
+      _elements(pageId)
+          .doc(elementId)
+          .update(PageElement.frameToMap(frame))
+          .ignore();
+
+  @override
+  Future<void> setElementDeleted(
+    String pageId,
+    String elementId, {
+    required bool deleted,
+  }) async =>
+      _elements(pageId).doc(elementId).update({'deleted': deleted}).ignore();
 
   static const _batchLimit = 450; // Firestore allows 500 writes per batch.
 

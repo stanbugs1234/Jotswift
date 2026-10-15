@@ -162,7 +162,7 @@ class CatalogItem {
       format <= supportedFormat &&
       kind != CatalogKind.unknown &&
       switch (kind) {
-        CatalogKind.cover => files != null,
+        CatalogKind.cover || CatalogKind.stickers => files != null,
         CatalogKind.paper => paper != null,
         _ => true,
       };

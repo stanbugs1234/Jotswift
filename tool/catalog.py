@@ -3,7 +3,9 @@
 Each item lives in catalog/<id>/:
   listing.json   what it is and how it's offered (see docs/catalog.md)
   cover.webp     covers: the cover image, 1536 x 2048
-  preview.webp   covers: a small preview for pickers, at most 512 px wide
+  stickers.json  sticker packs: {"stickers": [{"file": "stickers/x.webp", "name": "X"}]}
+  stickers/      sticker packs: transparent WebP images, at most 1024 px
+  preview.webp   covers and sticker packs: a small preview, at most 512 px wide
 
 Usage, from the repo root:
   python3 tool/catalog.py check [id ...]
@@ -42,8 +44,22 @@ MAX_PREVIEW_WIDTH = 512
 MAX_PACK_BYTES = {"template": 25 * 1024 * 1024}
 DEFAULT_MAX_PACK_BYTES = 5 * 1024 * 1024
 
-# The files of each kind that go into its pack.zip.
-PACK_FILES = {"cover": ["cover.webp"]}
+MAX_STICKER_SIZE = 1024
+
+
+def pack_files(folder, kind):
+    """The files of an item that go into its pack.zip, in a fixed order."""
+    if kind == "cover":
+        return ["cover.webp"]
+    if kind == "stickers":
+        images = sorted(
+            f.relative_to(folder).as_posix() for f in (folder / "stickers").glob("*.webp")
+        )
+        return ["stickers.json", *images]
+    return []
+
+
+PACKED_KINDS = {"cover", "stickers"}
 
 
 class CheckError(Exception):
@@ -117,10 +133,34 @@ def check(item_id):
             with Image.open(cover) as im:
                 need(im.format == "WEBP", "cover.webp must be a WebP image")
                 need(im.size == COVER_SIZE, f"cover.webp must be {COVER_SIZE[0]} x {COVER_SIZE[1]} (is {im.size[0]} x {im.size[1]})")
-        if preview.exists():
-            with Image.open(preview) as im:
-                need(im.format == "WEBP", "preview.webp must be a WebP image")
-                need(im.size[0] <= MAX_PREVIEW_WIDTH, f"preview.webp must be at most {MAX_PREVIEW_WIDTH} px wide")
+    elif kind == "stickers":
+        need((folder / "preview.webp").exists(), "preview.webp is missing")
+        listing_file = folder / "stickers.json"
+        entries = []
+        if not listing_file.exists():
+            problems.append("stickers.json is missing")
+        else:
+            try:
+                entries = json.loads(listing_file.read_text()).get("stickers", [])
+            except (json.JSONDecodeError, AttributeError):
+                problems.append("stickers.json must be {\"stickers\": [...]}")
+        need(entries, "stickers.json lists no stickers")
+        listed = set()
+        for e in entries:
+            file, name = e.get("file"), e.get("name")
+            need(isinstance(name, str) and name.strip(), f"{file}: needs a name")
+            path = folder / file if isinstance(file, str) else None
+            if path is None or not path.exists() or not file.startswith("stickers/"):
+                problems.append(f"{file}: not found in stickers/")
+                continue
+            listed.add(file)
+            with Image.open(path) as im:
+                need(im.format == "WEBP", f"{file}: must be a WebP image")
+                need("A" in im.getbands(), f"{file}: needs a transparent background")
+                need(max(im.size) <= MAX_STICKER_SIZE, f"{file}: at most {MAX_STICKER_SIZE} px")
+        for f in (folder / "stickers").glob("*.webp") if (folder / "stickers").exists() else []:
+            rel = f.relative_to(folder).as_posix()
+            need(rel in listed, f"{rel}: not listed in stickers.json")
     elif kind == "paper":
         paper = listing.get("paper")
         if not isinstance(paper, dict):
@@ -139,7 +179,12 @@ def check(item_id):
     elif kind in KINDS:
         problems.append(f"{kind} items can't be published yet")
 
-    if not problems and kind in PACK_FILES:
+    if kind in ("cover", "stickers") and (folder / "preview.webp").exists():
+        with Image.open(folder / "preview.webp") as im:
+            need(im.format == "WEBP", "preview.webp must be a WebP image")
+            need(im.size[0] <= MAX_PREVIEW_WIDTH, f"preview.webp must be at most {MAX_PREVIEW_WIDTH} px wide")
+
+    if not problems and kind in PACKED_KINDS:
         size = len(build_pack(folder, kind))
         limit = MAX_PACK_BYTES.get(kind, DEFAULT_MAX_PACK_BYTES)
         need(size <= limit, f"pack is {size} bytes; the limit is {limit}")
@@ -153,7 +198,7 @@ def build_pack(folder, kind):
     """The item's pack.zip. Same files give the same bytes (and checksum)."""
     out = io.BytesIO()
     with zipfile.ZipFile(out, "w", zipfile.ZIP_STORED) as z:
-        for name in PACK_FILES[kind]:
+        for name in pack_files(folder, kind):
             info = zipfile.ZipInfo(name, date_time=(2020, 1, 1, 0, 0, 0))
             z.writestr(info, (folder / name).read_bytes())
     return out.getvalue()
@@ -258,7 +303,7 @@ def publish(item_id, visibility, dry_run):
         }
 
     uploads = []
-    if kind in PACK_FILES:
+    if kind in PACKED_KINDS:
         pack = build_pack(folder, kind)
         base = f"catalog/{item_id}/{version}"
         doc["files"] = {

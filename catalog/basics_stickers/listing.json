@@ -1,0 +1,8 @@
+{
+  "kind": "stickers",
+  "name": "Basics",
+  "version": 1,
+  "unlock": { "free": true },
+  "category": "stickers",
+  "tags": ["everyday", "planner"]
+}

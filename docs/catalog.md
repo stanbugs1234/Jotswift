@@ -1,6 +1,6 @@
-# Publishing covers and papers
+# Publishing covers, papers and stickers
 
-New covers and papers go live from Firebase, without an app update. Each item is a folder in `catalog/` and is published with `tool/catalog.py`.
+New covers, papers and sticker packs go live from Firebase, without an app update. Each item is a folder in `catalog/` and is published with `tool/catalog.py`.
 
 ## Make an item
 
@@ -43,6 +43,16 @@ The folder name is the item's id: lowercase letters, digits and `_`. It can neve
   }
 }
 ```
+
+**A sticker pack:** the listing, plus `stickers.json`, a `stickers/` folder of transparent WebP images (at most 1024 px), and a `preview.webp`.
+```jsonc
+// listing.json
+{ "kind": "stickers", "name": "Basics", "version": 1, "unlock": { "free": true } }
+
+// stickers.json: every image in stickers/ must be listed
+{ "stickers": [ { "file": "stickers/star.webp", "name": "Star" } ] }
+```
+Stickers are placed 240 page units wide (a page is about 1400 wide) and keep their image's shape.
 
 ## Check it
 

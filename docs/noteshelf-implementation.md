@@ -15,7 +15,7 @@ individually as well as through Pro, and templates are PDFs.
 | 3 | The shelf: covers, categories, groups, sort ✅ | L | — |
 | 4 | New-notebook flow and per-page paper ✅ | L | Turn on Firebase Storage (needs the Blaze plan) ✅ |
 | 5 | Catalog and downloads (free items only) ✅ | L | — |
-| 6 | Stickers | M | Sticker art (I can make placeholders) |
+| 6 | Stickers ✅ | M | Sticker art (placeholder pack published) |
 | 7 | PDF templates and dated planners | L | Planner designs (I can make a simple first one) |
 | 8 | Store and purchases | L | App Store Connect, Play Console, RevenueCat and Stripe accounts and products |
 | 9 | Clean-up and docs | S | — |
@@ -119,18 +119,21 @@ The editor saves a concrete paper and style, so later changes to the default sty
 
 **Published:** the free covers Night Sky and Terrazzo, and the free paper Sage Dot.
 
-## Milestone 6: Stickers
+## Milestone 6: Stickers ✅
 
-- Elements on a page: `users/{uid}/pages/{pageId}/elements/{id}` `{kind: "sticker", itemId, file, x, y, w, h, rotation, z}`. This is the `elements` collection already in PLAN.md §4, and the same code later serves image insert and text boxes.
-- `ElementLayer` in the canvas, drawn **under** the ink so you can write over stickers.
-- **Sticker tray** in the ink toolbar ([ink_toolbar.dart](../lib/features/canvas/ink_toolbar.dart)): owned packs, tap or drag to place.
-- **Select tool:** tap a sticker to move, resize (corner handle), rotate or delete it. Undo and redo cover these actions.
-- **Web:** stickers are shown, not edited (matching the web's view-and-type role).
-- A first free sticker pack. I can draw simple placeholder stickers in code. The real art comes from your designer.
+- **Elements:** `users/{uid}/pages/{pageId}/elements/{id}` `{kind: "sticker", itemId, file, x, y, w, h, rotation, z, deleted}`, where x and y are the center. Removing sets `deleted`, as erasing does for strokes, so undo and other devices see it. `ElementRepository` is in both backends, and deleting a page deletes its elements. Kinds this version doesn't know (images and text boxes later) are skipped.
+- **Canvas:** stickers are drawn **under** the ink, so you can write over them.
+- **Select tool:** tap a sticker to select it, then:
+  - drag to move it,
+  - use the corner handle to resize it (it keeps its shape),
+  - use the top handle to rotate it (it snaps straight within 4°),
+  - tap the red × to remove it.
 
-**Tests:** element repository in both backends, select/move/resize gestures, undo/redo, golden of a page with stickers and ink.
-
----
+  In Select mode a stylus never draws; fingers can move stickers, and a finger on empty paper still scrolls. While a sticker moves, the canvas shows its new place until the saved copy catches up (as with ink), so nothing jumps.
+- **Sticker tray** (toolbar): every sticker pack the user can use, downloaded on first open. Tapping a sticker places it in the middle of the view, selected, and switches to the Select tool. (Dragging from the tray was left out: tapping covers it.)
+- **Undo and redo** cover placing, moving, resizing, rotating and removing (`ElementPresenceCommand`, `ElementFrameCommand`).
+- **Web:** stickers show, but the page stays view-only.
+- **Content:** `tool/catalog.py` handles `stickers` packs (`stickers.json` + transparent WebP images, each checked). The free **Basics** pack has 16 stickers drawn in code as placeholders until real art arrives: star, heart, done, arrow, smile, sun, cloud, flower, leaf, coffee, idea, pin, important, music, sparkle and birthday.
 
 ## Milestone 7: PDF templates and dated planners
 

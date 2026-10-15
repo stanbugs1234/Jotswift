@@ -3,8 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/skins/notely_skin.dart';
 import 'ink_tools.dart';
+import 'stickers.dart';
 
-/// Pen, highlighter, eraser, colors, sizes, hand mode, undo and redo.
+/// Pen, highlighter, eraser, select, stickers, colors, sizes, hand mode,
+/// undo and redo.
 class InkToolbar extends ConsumerWidget {
   const InkToolbar({required this.pageId, super.key});
 
@@ -58,6 +60,12 @@ class InkToolbar extends ConsumerWidget {
             toolButton(InkToolKind.pen, Icons.edit, 'Pen'),
             toolButton(InkToolKind.highlighter, Icons.highlight, 'Highlighter'),
             toolButton(InkToolKind.eraser, Icons.auto_fix_normal, 'Eraser'),
+            toolButton(InkToolKind.select, Icons.near_me_outlined, 'Select'),
+            IconButton(
+              tooltip: 'Stickers',
+              icon: const Icon(Icons.emoji_emotions_outlined),
+              onPressed: () => showStickerTray(context, pageId),
+            ),
             const _Divider(),
             for (final (i, color) in skin.inkColors.indexed)
               _ColorDot(

@@ -2,9 +2,18 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../notebooks/notes_providers.dart';
+import '../notebooks/data/notes_repository.dart';
+import 'domain/page_element.dart';
 import 'domain/stroke.dart';
 
-enum InkToolKind { pen, highlighter, eraser }
+enum InkToolKind {
+  pen,
+  highlighter,
+  eraser,
+
+  /// Selects stickers to move, resize, rotate or remove.
+  select,
+}
 
 /// The selected drawing tool. Shared by all pages, so it sticks when the
 /// user moves between pages.
@@ -37,7 +46,7 @@ class InkToolState {
   static const eraserSizes = [8.0, 16.0, 32.0];
 
   double get size => switch (kind) {
-    InkToolKind.pen => penSizes[sizeIndex],
+    InkToolKind.pen || InkToolKind.select => penSizes[sizeIndex],
     InkToolKind.highlighter => highlighterSizes[sizeIndex],
     InkToolKind.eraser => eraserSizes[sizeIndex],
   };
@@ -72,16 +81,32 @@ final inkToolProvider = NotifierProvider<InkToolController, InkToolState>(
 
 /// Something that can be undone on a page.
 sealed class InkCommand {
-  const InkCommand(this.strokeIds);
-  final List<String> strokeIds;
+  const InkCommand();
 }
 
 class AddStrokeCommand extends InkCommand {
-  AddStrokeCommand(String strokeId) : super([strokeId]);
+  const AddStrokeCommand(this.strokeId);
+  final String strokeId;
 }
 
 class EraseCommand extends InkCommand {
-  const EraseCommand(super.strokeIds);
+  const EraseCommand(this.strokeIds);
+  final List<String> strokeIds;
+}
+
+/// A sticker was placed ([added]) or removed.
+class ElementPresenceCommand extends InkCommand {
+  const ElementPresenceCommand(this.elementId, {required this.added});
+  final String elementId;
+  final bool added;
+}
+
+/// A sticker was moved, resized or rotated.
+class ElementFrameCommand extends InkCommand {
+  const ElementFrameCommand(this.elementId, this.before, this.after);
+  final String elementId;
+  final ElementFrame before;
+  final ElementFrame after;
 }
 
 @immutable
@@ -95,8 +120,9 @@ class InkHistoryState {
   bool get canRedo => redo.isNotEmpty;
 }
 
-/// Adds and erases strokes on one page, with undo and redo. Undo works by
-/// flipping the strokes' `deleted` flag, so it syncs like any other edit.
+/// Adds and erases strokes, and places, changes and removes stickers, on
+/// one page, with undo and redo. Undo works by flipping `deleted` flags and
+/// restoring frames, so it syncs like any other edit.
 class InkHistory extends Notifier<InkHistoryState> {
   InkHistory(this.pageId);
 
@@ -134,6 +160,31 @@ class InkHistory extends Notifier<InkHistoryState> {
 
   var _lastTouch = DateTime(0);
 
+  Future<void> addElement(PageElement element) async {
+    await ref.read(elementRepositoryProvider).addElement(pageId, element);
+    _push(ElementPresenceCommand(element.id, added: true));
+    _touchNotebook();
+  }
+
+  Future<void> removeElement(String elementId) async {
+    await _elements.setElementDeleted(pageId, elementId, deleted: true);
+    _push(ElementPresenceCommand(elementId, added: false));
+    _touchNotebook();
+  }
+
+  Future<void> setElementFrame(
+    String elementId,
+    ElementFrame before,
+    ElementFrame after,
+  ) async {
+    if (before == after) return;
+    await _elements.setElementFrame(pageId, elementId, after);
+    _push(ElementFrameCommand(elementId, before, after));
+    _touchNotebook();
+  }
+
+  ElementRepository get _elements => ref.read(elementRepositoryProvider);
+
   void _push(InkCommand command) {
     final undo = [...state.undo, command];
     state = InkHistoryState(
@@ -162,14 +213,26 @@ class InkHistory extends Notifier<InkHistoryState> {
   }
 
   Future<void> _apply(InkCommand command, {required bool reverse}) {
-    // Undoing an add hides the stroke; undoing an erase brings strokes back.
-    final deleted = switch (command) {
-      AddStrokeCommand() => reverse,
-      EraseCommand() => !reverse,
+    final strokes = ref.read(strokeRepositoryProvider);
+    // Undoing an add hides it; undoing a removal brings it back.
+    return switch (command) {
+      AddStrokeCommand(:final strokeId) => strokes.setDeleted(pageId, [
+        strokeId,
+      ], reverse),
+      EraseCommand(:final strokeIds) => strokes.setDeleted(
+        pageId,
+        strokeIds,
+        !reverse,
+      ),
+      ElementPresenceCommand(:final elementId, :final added) =>
+        _elements.setElementDeleted(
+          pageId,
+          elementId,
+          deleted: added == reverse,
+        ),
+      ElementFrameCommand(:final elementId, :final before, :final after) =>
+        _elements.setElementFrame(pageId, elementId, reverse ? before : after),
     };
-    return ref
-        .read(strokeRepositoryProvider)
-        .setDeleted(pageId, command.strokeIds, deleted);
   }
 }
 

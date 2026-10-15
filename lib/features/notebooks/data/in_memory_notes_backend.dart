@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import '../../../core/paper/paper_style.dart';
+import '../../canvas/domain/page_element.dart';
 import '../../canvas/domain/stroke.dart';
 import '../domain/notebook_models.dart';
 import 'notes_repository.dart';
@@ -25,6 +26,9 @@ class InMemoryNotesBackend implements NotesBackend {
 
   @override
   StrokeRepository strokes(String uid) => _user(uid);
+
+  @override
+  ElementRepository elements(String uid) => _user(uid);
 }
 
 class _InMemoryUserData
@@ -32,7 +36,8 @@ class _InMemoryUserData
         NotebookRepository,
         ShelfRepository,
         FavoritePapersRepository,
-        StrokeRepository {
+        StrokeRepository,
+        ElementRepository {
   final _favoritePapers = <String, PaperStyle>{};
   final _notebooks = <String, Notebook>{};
   final _categories = <String, Category>{};
@@ -40,6 +45,8 @@ class _InMemoryUserData
   final _sections = <String, Section>{};
   final _pages = <String, NotePage>{};
   final _strokes = <String, Map<String, Stroke>>{}; // pageId -> id -> stroke
+  // pageId -> element id -> element
+  final _elements = <String, Map<String, PageElement>>{};
   final _changes = StreamController<void>.broadcast();
   final _random = Random();
   var _counter = 0;
@@ -388,6 +395,7 @@ class _InMemoryUserData
   void _removePage(String pageId) {
     _pages.remove(pageId);
     _strokes.remove(pageId);
+    _elements.remove(pageId);
   }
 
   // Strokes
@@ -420,6 +428,50 @@ class _InMemoryUserData
       final s = strokes[id];
       if (s != null) strokes[id] = s.copyWith(deleted: deleted);
     }
+    _changed();
+  }
+
+  // Elements
+
+  @override
+  String newElementId() => _id();
+
+  @override
+  Stream<List<PageElement>> watchElements(String pageId) => _watch(
+    () =>
+        (_elements[pageId]?.values.toList() ?? <PageElement>[])
+          ..sort((a, b) => a.z.compareTo(b.z)),
+  );
+
+  @override
+  Future<void> addElement(String pageId, PageElement element) async {
+    _elements.putIfAbsent(pageId, () => {})[element.id] = element;
+    _changed();
+  }
+
+  @override
+  Future<void> setElementFrame(
+    String pageId,
+    String elementId,
+    ElementFrame frame,
+  ) async => _updateElement(pageId, elementId, (e) => e.copyWith(frame: frame));
+
+  @override
+  Future<void> setElementDeleted(
+    String pageId,
+    String elementId, {
+    required bool deleted,
+  }) async =>
+      _updateElement(pageId, elementId, (e) => e.copyWith(deleted: deleted));
+
+  void _updateElement(
+    String pageId,
+    String id,
+    PageElement Function(PageElement) change,
+  ) {
+    final e = _elements[pageId]?[id];
+    if (e == null) return;
+    _elements[pageId]![id] = change(e);
     _changed();
   }
 }

@@ -9,8 +9,10 @@ import '../../core/paper/paper_style.dart';
 import '../../core/skins/notely_skin.dart';
 import '../../core/skins/widgets/paper.dart';
 import '../notebooks/notes_providers.dart';
+import 'domain/page_element.dart';
 import 'domain/stroke.dart';
 import 'ink_tools.dart';
+import 'stickers.dart';
 import 'stroke_painter.dart';
 
 /// Ruling on full-size pages is drawn larger than on the small previews.
@@ -63,6 +65,17 @@ class _PageCanvasState extends ConsumerState<PageCanvas> {
   // Scrolling and zooming: screen positions of the non-drawing pointers.
   final _navPointers = <int, Offset>{};
 
+  // Stickers (select tool).
+  String? _selectedId;
+  _ElementDrag? _drag;
+
+  /// Frames shown until the saved copies catch up, so a moved sticker
+  /// doesn't jump back for a moment.
+  final _frameOverrides = <String, ElementFrame>{};
+
+  /// Handles are this many screen pixels across at any zoom.
+  static const _handleSize = 28.0;
+
   @override
   void dispose() {
     _live.dispose();
@@ -100,6 +113,10 @@ class _PageCanvasState extends ConsumerState<PageCanvas> {
     if (widget.readOnly || _drawPointer != null || _navPointers.isNotEmpty) {
       return false;
     }
+    if (ref.read(inkToolProvider).kind == InkToolKind.select &&
+        e.kind != PointerDeviceKind.invertedStylus) {
+      return false;
+    }
     final draw = ref.read(inkToolProvider).drawMode;
     return switch (e.kind) {
       PointerDeviceKind.stylus || PointerDeviceKind.invertedStylus => true,
@@ -114,6 +131,8 @@ class _PageCanvasState extends ConsumerState<PageCanvas> {
         e.kind == PointerDeviceKind.stylus ||
         e.kind == PointerDeviceKind.invertedStylus;
     if (isStylus) _stylusSeen = true;
+
+    if (_selectWith(e)) return;
 
     if (_canDraw(e)) {
       _drawPointer = e.pointer;
@@ -140,6 +159,10 @@ class _PageCanvasState extends ConsumerState<PageCanvas> {
   }
 
   void _onPointerMove(PointerMoveEvent e) {
+    if (e.pointer == _drag?.pointer) {
+      setState(() => _dragTo(_toPage(e.localPosition)));
+      return;
+    }
     if (e.pointer == _drawPointer) {
       if (_erasing) {
         _eraseAt(e.localPosition);
@@ -181,6 +204,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas> {
   }
 
   void _onPointerUp(PointerEvent e) {
+    if (e.pointer == _drag?.pointer) _finishDrag();
     if (e.pointer == _drawPointer) {
       if (_erasing) {
         _finishErasing();
@@ -192,6 +216,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas> {
   }
 
   void _onPointerCancel(PointerEvent e) {
+    if (e.pointer == _drag?.pointer) setState(() => _drag = null);
     if (e.pointer == _drawPointer) _cancelDrawing();
     _navPointers.remove(e.pointer);
   }
@@ -298,6 +323,176 @@ class _PageCanvasState extends ConsumerState<PageCanvas> {
     ref.read(inkHistoryProvider(widget.pageId).notifier).erase(ids);
   }
 
+  // Stickers
+
+  /// The page's stickers as shown: not removed, with frames being moved.
+  List<PageElement> _shownElements() => [
+    for (final e in ref.read(elementsProvider(widget.pageId)).value ?? [])
+      if (!e.deleted)
+        e.copyWith(
+          frame: _drag?.elementId == e.id
+              ? _drag!.frame
+              : _frameOverrides[e.id] ?? e.frame,
+        ),
+  ];
+
+  /// With the select tool, a pointer on a sticker or one of its handles
+  /// selects, moves, resizes, rotates or removes it. Returns whether the
+  /// pointer was used.
+  bool _selectWith(PointerDownEvent e) {
+    if (widget.readOnly ||
+        ref.read(inkToolProvider).kind != InkToolKind.select ||
+        _drag != null ||
+        _drawPointer != null ||
+        _navPointers.isNotEmpty ||
+        (e.kind == PointerDeviceKind.mouse &&
+            e.buttons != kPrimaryMouseButton)) {
+      return false;
+    }
+    final point = _toPage(e.localPosition);
+    final elements = _shownElements();
+    final handle = _handleSize / _scale;
+
+    final selected = elements.where((el) => el.id == _selectedId).firstOrNull;
+    if (selected != null) {
+      final f = selected.frame;
+      bool near(Offset local) => (f.toPage(local) - point).distance <= handle;
+      if (near(_deleteHandle(f))) {
+        ref
+            .read(inkHistoryProvider(widget.pageId).notifier)
+            .removeElement(selected.id);
+        setState(() => _selectedId = null);
+        return true;
+      }
+      final mode = near(_resizeHandle(f))
+          ? _DragMode.resize
+          : near(_rotateHandle(f, _scale))
+          ? _DragMode.rotate
+          : null;
+      if (mode != null) {
+        setState(() => _drag = _ElementDrag(e.pointer, selected, mode, point));
+        return true;
+      }
+    }
+
+    // The topmost sticker under the pointer.
+    for (final el in elements.reversed) {
+      if (el.frame.contains(point, slop: 4 / _scale)) {
+        setState(() {
+          _selectedId = el.id;
+          _drag = _ElementDrag(e.pointer, el, _DragMode.move, point);
+        });
+        return true;
+      }
+    }
+    if (_selectedId != null) setState(() => _selectedId = null);
+    // A stylus that misses does nothing; fingers and the mouse scroll.
+    return e.kind == PointerDeviceKind.stylus;
+  }
+
+  static Offset _deleteHandle(ElementFrame f) =>
+      Offset(-f.width / 2, -f.height / 2);
+  static Offset _resizeHandle(ElementFrame f) =>
+      Offset(f.width / 2, f.height / 2);
+  static Offset _rotateHandle(ElementFrame f, double scale) =>
+      Offset(0, -f.height / 2 - 40 / scale);
+
+  void _dragTo(Offset point) {
+    final drag = _drag!;
+    final start = drag.start;
+    drag.frame = switch (drag.mode) {
+      _DragMode.move => start.copyWith(
+        center: start.center + (point - drag.startPoint),
+      ),
+      _DragMode.resize => () {
+        final from = (drag.startPoint - start.center).distance;
+        final factor = from < 1 ? 1.0 : (point - start.center).distance / from;
+        final width = math.max(start.width * factor, _minElementSize);
+        return start.copyWith(
+          width: width,
+          height: width * start.height / start.width,
+        );
+      }(),
+      _DragMode.rotate => start.copyWith(
+        rotation: _snapAngle(
+          math.atan2(point.dy - start.center.dy, point.dx - start.center.dx) +
+              math.pi / 2,
+        ),
+      ),
+    };
+  }
+
+  static const _minElementSize = 40.0;
+
+  /// Snaps to straight (0, 90, 180, 270 degrees) when within 4 degrees.
+  static double _snapAngle(double angle) {
+    const quarter = math.pi / 2;
+    final nearest = (angle / quarter).roundToDouble() * quarter;
+    final snapped = (angle - nearest).abs() < 4 * math.pi / 180
+        ? nearest
+        : angle;
+    // Keep it in (-pi, pi].
+    return math.atan2(math.sin(snapped), math.cos(snapped));
+  }
+
+  void _finishDrag() {
+    final drag = _drag!;
+    setState(() {
+      _drag = null;
+      if (drag.frame != drag.start) {
+        _frameOverrides[drag.elementId] = drag.frame;
+      }
+    });
+    ref
+        .read(inkHistoryProvider(widget.pageId).notifier)
+        .setElementFrame(drag.elementId, drag.start, drag.frame);
+  }
+
+  /// Places the sticker picked in the tray in the middle of the view.
+  void _placeRequested() {
+    final request = ref
+        .read(stickerRequestProvider(widget.pageId).notifier)
+        .take();
+    final viewport = _viewport;
+    if (request == null || viewport == null) return;
+    final middle = _toPage(viewport.center(Offset.zero));
+    const width = 240.0;
+    final height = width / request.aspect;
+    final center = Offset(
+      middle.dx.clamp(
+        width / 2,
+        math.max(width / 2, _pageSize.width - width / 2),
+      ),
+      middle.dy.clamp(
+        height / 2,
+        math.max(height / 2, _pageSize.height - height / 2),
+      ),
+    );
+    final existing = ref.read(elementsProvider(widget.pageId)).value ?? [];
+    final element = PageElement(
+      id: ref.read(elementRepositoryProvider).newElementId(),
+      itemId: request.itemId,
+      file: request.file,
+      frame: ElementFrame(center: center, width: width, height: height),
+      z: existing.fold(0.0, (z, e) => math.max(z, e.z)) + 1,
+      createdAt: DateTime.now().millisecondsSinceEpoch,
+    );
+    ref.read(inkHistoryProvider(widget.pageId).notifier).addElement(element);
+    setState(() => _selectedId = element.id);
+  }
+
+  /// Drops frame stand-ins once the saved frames match them.
+  void _reconcileElements(List<PageElement> saved) {
+    final caughtUp = [
+      for (final MapEntry(key: id, value: frame) in _frameOverrides.entries)
+        if (saved.where((e) => e.id == id).firstOrNull?.frame == frame) id,
+    ];
+    if (caughtUp.isEmpty) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) setState(() => caughtUp.forEach(_frameOverrides.remove));
+    });
+  }
+
   /// Drops local stand-ins once the saved data has caught up: the live
   /// stroke once it's saved, and pending erasures once they're deleted.
   void _reconcile(List<Stroke> strokes) {
@@ -341,6 +536,17 @@ class _PageCanvasState extends ConsumerState<PageCanvas> {
     // Keep the history notifier alive while the page is open.
     ref.watch(inkHistoryProvider(widget.pageId));
 
+    final saved = ref.watch(elementsProvider(widget.pageId)).value ?? [];
+    _reconcileElements(saved);
+    final elements = _shownElements();
+    final tool = ref.watch(inkToolProvider).kind;
+    final selected = widget.readOnly || tool != InkToolKind.select
+        ? null
+        : elements.where((e) => e.id == _selectedId).firstOrNull;
+    ref.listen(stickerRequestProvider(widget.pageId), (_, next) {
+      if (next != null) _placeRequested();
+    });
+
     return LayoutBuilder(
       builder: (context, constraints) {
         final viewport = constraints.biggest;
@@ -366,6 +572,9 @@ class _PageCanvasState extends ConsumerState<PageCanvas> {
                     child: _PageSurface(
                       size: _pageSize,
                       paper: paper,
+                      elements: elements,
+                      selected: selected?.frame,
+                      handleScale: _handleSize / _scale,
                       strokes: visible,
                       live: _live,
                     ),
@@ -384,12 +593,22 @@ class _PageSurface extends StatelessWidget {
   const _PageSurface({
     required this.size,
     required this.paper,
+    required this.elements,
+    required this.selected,
+    required this.handleScale,
     required this.strokes,
     required this.live,
   });
 
   final Size size;
   final PaperStyle paper;
+  final List<PageElement> elements;
+
+  /// The selected sticker's frame, to draw its outline and handles.
+  final ElementFrame? selected;
+
+  /// Handle size in page units.
+  final double handleScale;
   final List<Stroke> strokes;
   final ValueNotifier<Stroke?> live;
 
@@ -415,10 +634,138 @@ class _PageSurface extends StatelessWidget {
               painter: PaperPainter(paper, scale: _paperScale),
             ),
           ),
+          for (final e in elements)
+            Positioned(
+              left: e.frame.center.dx - e.frame.width / 2,
+              top: e.frame.center.dy - e.frame.height / 2,
+              width: e.frame.width,
+              height: e.frame.height,
+              child: Transform.rotate(
+                angle: e.frame.rotation,
+                child: StickerView(itemId: e.itemId, file: e.file),
+              ),
+            ),
           RepaintBoundary(child: CustomPaint(painter: StrokesPainter(strokes))),
           CustomPaint(painter: LiveStrokePainter(live)),
+          if (selected case final frame?)
+            IgnorePointer(
+              child: CustomPaint(
+                painter: _SelectionPainter(
+                  frame,
+                  handleScale,
+                  Theme.of(context).colorScheme.primary,
+                ),
+              ),
+            ),
         ],
       ),
     );
   }
+}
+
+enum _DragMode { move, resize, rotate }
+
+/// A sticker being moved, resized or rotated by one pointer.
+class _ElementDrag {
+  _ElementDrag(this.pointer, PageElement element, this.mode, this.startPoint)
+    : elementId = element.id,
+      start = element.frame,
+      frame = element.frame;
+
+  final int pointer;
+  final String elementId;
+  final _DragMode mode;
+  final ElementFrame start;
+  final Offset startPoint;
+
+  /// The frame now, shown while dragging and saved at the end.
+  ElementFrame frame;
+}
+
+/// A placed sticker's image (blank while it downloads).
+class StickerView extends ConsumerWidget {
+  const StickerView({required this.itemId, required this.file, super.key});
+
+  final String itemId;
+  final String file;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final image = ref
+        .watch(stickerImageProvider((itemId: itemId, file: file)))
+        .value;
+    return image == null
+        ? const SizedBox.expand()
+        : Image(image: image, fit: BoxFit.fill, gaplessPlayback: true);
+  }
+}
+
+/// The selected sticker's outline and its handles: remove (top left),
+/// resize (bottom right) and rotate (above).
+class _SelectionPainter extends CustomPainter {
+  _SelectionPainter(this.frame, this.handle, this.color);
+
+  final ElementFrame frame;
+
+  /// Handle diameter in page units.
+  final double handle;
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final unit = handle / 28;
+    final line = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2 * unit;
+    final fill = Paint()..color = color;
+    final white = Paint()
+      ..color = Colors.white
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.5 * unit
+      ..strokeCap = StrokeCap.round;
+
+    canvas
+      ..save()
+      ..translate(frame.center.dx, frame.center.dy)
+      ..rotate(frame.rotation);
+    final w = frame.width / 2, h = frame.height / 2;
+    canvas.drawRect(Rect.fromLTRB(-w, -h, w, h), line);
+
+    // Rotate: a stalk and a round handle above the top edge.
+    final rotate = Offset(0, -h - 40 * unit);
+    canvas
+      ..drawLine(Offset(0, -h), rotate, line)
+      ..drawCircle(rotate, handle / 2, fill)
+      ..drawArc(
+        Rect.fromCircle(center: rotate, radius: handle / 4),
+        -math.pi / 2,
+        math.pi * 1.5,
+        false,
+        white,
+      );
+
+    // Resize: bottom right, with a diagonal arrow.
+    final resize = Offset(w, h);
+    canvas
+      ..drawCircle(resize, handle / 2, fill)
+      ..drawLine(
+        resize - Offset(handle / 5, handle / 5),
+        resize + Offset(handle / 5, handle / 5),
+        white,
+      );
+
+    // Remove: top left, red with a cross.
+    final remove = Offset(-w, -h);
+    final d = handle / 6;
+    canvas
+      ..drawCircle(remove, handle / 2, Paint()..color = const Color(0xFFB3261E))
+      ..drawLine(remove - Offset(d, d), remove + Offset(d, d), white)
+      ..drawLine(remove + Offset(-d, d), remove + Offset(d, -d), white)
+      ..restore();
+  }
+
+  @override
+  bool shouldRepaint(_SelectionPainter old) =>
+      old.frame != frame || old.handle != handle || old.color != color;
 }

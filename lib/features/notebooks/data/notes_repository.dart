@@ -1,4 +1,5 @@
 import '../../../core/paper/paper_style.dart';
+import '../../canvas/domain/page_element.dart';
 import '../../canvas/domain/stroke.dart';
 import '../domain/notebook_models.dart';
 
@@ -97,6 +98,29 @@ abstract interface class StrokeRepository {
   Future<void> setDeleted(String pageId, List<String> strokeIds, bool deleted);
 }
 
+/// Stickers (and later images and text boxes) on a user's pages.
+abstract interface class ElementRepository {
+  String newElementId();
+
+  /// Every element on the page, including removed ones.
+  Stream<List<PageElement>> watchElements(String pageId);
+  Future<void> addElement(String pageId, PageElement element);
+
+  /// Moves, resizes or rotates an element.
+  Future<void> setElementFrame(
+    String pageId,
+    String elementId,
+    ElementFrame frame,
+  );
+
+  /// Removes ([deleted] = true) or restores an element.
+  Future<void> setElementDeleted(
+    String pageId,
+    String elementId, {
+    required bool deleted,
+  });
+}
+
 /// Creates the repositories for a user. In the app this is backed by
 /// Firestore; tests and platforms without Firebase use memory.
 abstract interface class NotesBackend {
@@ -104,6 +128,7 @@ abstract interface class NotesBackend {
   ShelfRepository shelf(String uid);
   FavoritePapersRepository favoritePapers(String uid);
   StrokeRepository strokes(String uid);
+  ElementRepository elements(String uid);
 }
 
 int nowMillis() => DateTime.now().millisecondsSinceEpoch;

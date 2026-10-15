@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/paper/paper_style.dart';
 import '../auth/auth_repository.dart';
+import '../canvas/domain/page_element.dart';
 import '../canvas/domain/stroke.dart';
 import 'data/in_memory_notes_backend.dart';
 import 'data/notes_repository.dart';
@@ -80,6 +81,18 @@ final pagesProvider =
 final pageProvider = StreamProvider.family<NotePage?, String>(
   (ref, pageId) => ref.watch(notebookRepositoryProvider).watchPage(pageId),
 );
+
+final elementRepositoryProvider = Provider<ElementRepository>(
+  (ref) =>
+      ref.watch(notesBackendProvider).elements(ref.watch(currentUidProvider)),
+);
+
+/// Every element on a page (stickers), including removed ones, bottom first.
+final elementsProvider = StreamProvider.autoDispose
+    .family<List<PageElement>, String>(
+      (ref, pageId) =>
+          ref.watch(elementRepositoryProvider).watchElements(pageId),
+    );
 
 /// Every stroke on a page, including erased ones.
 final strokesProvider = StreamProvider.autoDispose.family<List<Stroke>, String>(

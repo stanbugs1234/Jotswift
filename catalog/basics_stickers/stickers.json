@@ -1,0 +1,68 @@
+{
+  "stickers": [
+    {
+      "file": "stickers/star.webp",
+      "name": "Star"
+    },
+    {
+      "file": "stickers/heart.webp",
+      "name": "Heart"
+    },
+    {
+      "file": "stickers/check.webp",
+      "name": "Done"
+    },
+    {
+      "file": "stickers/arrow.webp",
+      "name": "Arrow"
+    },
+    {
+      "file": "stickers/smiley.webp",
+      "name": "Smile"
+    },
+    {
+      "file": "stickers/sun.webp",
+      "name": "Sun"
+    },
+    {
+      "file": "stickers/cloud.webp",
+      "name": "Cloud"
+    },
+    {
+      "file": "stickers/flower.webp",
+      "name": "Flower"
+    },
+    {
+      "file": "stickers/leaf.webp",
+      "name": "Leaf"
+    },
+    {
+      "file": "stickers/coffee.webp",
+      "name": "Coffee"
+    },
+    {
+      "file": "stickers/idea.webp",
+      "name": "Idea"
+    },
+    {
+      "file": "stickers/pin.webp",
+      "name": "Pin"
+    },
+    {
+      "file": "stickers/important.webp",
+      "name": "Important"
+    },
+    {
+      "file": "stickers/music.webp",
+      "name": "Music"
+    },
+    {
+      "file": "stickers/sparkle.webp",
+      "name": "Sparkle"
+    },
+    {
+      "file": "stickers/cake.webp",
+      "name": "Birthday"
+    }
+  ]
+}
