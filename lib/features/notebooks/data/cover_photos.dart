@@ -8,16 +8,17 @@ import 'package:image_picker/image_picker.dart';
 
 import '../notes_providers.dart';
 
-/// Where photo covers are kept.
+/// Where the user's photos are kept: covers, and photos on pages.
 abstract interface class CoverPhotoStore {
-  /// Saves [jpeg] as a cover photo for [uid] and returns its path.
-  Future<String> upload(String uid, Uint8List jpeg);
+  /// Saves [jpeg] for [uid] in [folder] ("covers" or "images") and returns
+  /// its path.
+  Future<String> upload(String uid, Uint8List jpeg, {String folder});
 
   /// The image saved at [path].
   Future<ImageProvider> image(String path);
 }
 
-/// Keeps photos in Cloud Storage at `users/{uid}/covers/{id}.jpg`
+/// Keeps photos in Cloud Storage at `users/{uid}/{folder}/{id}.jpg`
 /// (see firebase/storage.rules).
 class FirebaseCoverPhotoStore implements CoverPhotoStore {
   FirebaseCoverPhotoStore(this._storage);
@@ -26,11 +27,15 @@ class FirebaseCoverPhotoStore implements CoverPhotoStore {
   final _random = Random();
 
   @override
-  Future<String> upload(String uid, Uint8List jpeg) async {
+  Future<String> upload(
+    String uid,
+    Uint8List jpeg, {
+    String folder = 'covers',
+  }) async {
     final id =
         '${DateTime.now().millisecondsSinceEpoch}'
         '${_random.nextInt(1 << 30).toRadixString(36)}';
-    final path = 'users/$uid/covers/$id.jpg';
+    final path = 'users/$uid/$folder/$id.jpg';
     await _storage
         .ref(path)
         .putData(jpeg, SettableMetadata(contentType: 'image/jpeg'));
@@ -48,8 +53,12 @@ class InMemoryCoverPhotoStore implements CoverPhotoStore {
   var _count = 0;
 
   @override
-  Future<String> upload(String uid, Uint8List jpeg) async {
-    final path = 'users/$uid/covers/${_count++}.jpg';
+  Future<String> upload(
+    String uid,
+    Uint8List jpeg, {
+    String folder = 'covers',
+  }) async {
+    final path = 'users/$uid/$folder/${_count++}.jpg';
     _photos[path] = jpeg;
     return path;
   }
@@ -67,23 +76,25 @@ final coverPhotoStoreProvider = Provider<CoverPhotoStore>(
   (ref) => InMemoryCoverPhotoStore(),
 );
 
+/// A saved photo (a cover, or a photo on a page).
 final coverPhotoProvider = FutureProvider.family<ImageProvider, String>(
   (ref, path) => ref.watch(coverPhotoStoreProvider).image(path),
 );
 
-/// Lets the user choose a photo, already shrunk for a cover. Returns null
-/// if they cancel. Replaced in tests.
-final photoPickerProvider = Provider<Future<Uint8List?> Function()>(
-  (ref) => () async {
-    final file = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
-      maxWidth: 1536,
-      maxHeight: 2048,
-      imageQuality: 85,
+/// Lets the user choose a photo, shrunk to fit [maxSize] (a cover by
+/// default). Returns null if they cancel. Replaced in tests.
+final photoPickerProvider =
+    Provider<Future<Uint8List?> Function({Size maxSize})>(
+      (ref) => ({Size maxSize = const Size(1536, 2048)}) async {
+        final file = await ImagePicker().pickImage(
+          source: ImageSource.gallery,
+          maxWidth: maxSize.width,
+          maxHeight: maxSize.height,
+          imageQuality: 85,
+        );
+        return file?.readAsBytes();
+      },
     );
-    return file?.readAsBytes();
-  },
-);
 
 /// Asks for a photo and saves it. Returns its path, or null if cancelled.
 /// Throws if it can't be saved (e.g. offline).

@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:flutter/foundation.dart';
 
@@ -6,10 +5,9 @@ import 'auth_repository.dart';
 
 /// Sign-in backed by Firebase Authentication.
 class FirebaseAuthRepository implements AuthRepository {
-  FirebaseAuthRepository(this._auth, this._firestore);
+  FirebaseAuthRepository(this._auth);
 
   final fb.FirebaseAuth _auth;
-  final FirebaseFirestore _firestore;
 
   static AuthUser? _toUser(fb.User? user) => user == null
       ? null
@@ -70,9 +68,9 @@ class FirebaseAuthRepository implements AuthRepository {
   Future<void> deleteAccount() => _guard(() async {
     final user = _auth.currentUser;
     if (user == null) return;
-    // TODO(phase-2): once notebooks exist, delete all of the user's data
-    // with the "Delete User Data" Firebase extension instead.
-    await _firestore.doc('users/${user.uid}').delete();
+    // The deleteUserData Cloud Function then erases everything the account
+    // owns (firebase/functions/src/accounts.ts). Deleting the account
+    // first means a "sign in again" refusal leaves the data untouched.
     await user.delete();
   });
 }

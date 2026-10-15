@@ -63,14 +63,132 @@ class ElementFrame {
   int get hashCode => Object.hash(center, width, height, rotation);
 }
 
-/// Something placed on a page besides ink. Stickers for now; images and text
-/// boxes later. Drawn under the ink, so you can write over it.
+/// What an element shows.
+sealed class ElementContent {
+  const ElementContent();
+
+  /// Reads the content of a saved element; null for kinds this version
+  /// doesn't know, or if it's damaged.
+  static ElementContent? fromMap(Map<String, dynamic> map) {
+    switch (map['kind']) {
+      case 'sticker':
+        final itemId = map['itemId'], file = map['file'];
+        if (itemId is! String || file is! String) return null;
+        return StickerContent(itemId: itemId, file: file);
+      case 'image':
+        final path = map['path'];
+        if (path is! String) return null;
+        return ImageContent(path);
+      case 'text':
+        final text = map['text'];
+        if (text is! String) return null;
+        return TextContent(
+          text: text,
+          fontSize: (map['fontSize'] as num?)?.toDouble() ?? 36,
+          color: map['color'] as int? ?? 0xFF000000,
+          layoutWidth: (map['layoutWidth'] as num?)?.toDouble() ?? 600,
+        );
+    }
+    return null;
+  }
+
+  Map<String, Object?> toMap();
+}
+
+/// A sticker from a sticker pack (catalog item).
+@immutable
+class StickerContent extends ElementContent {
+  const StickerContent({required this.itemId, required this.file});
+
+  final String itemId;
+  final String file;
+
+  @override
+  Map<String, Object?> toMap() => {
+    'kind': 'sticker',
+    'itemId': itemId,
+    'file': file,
+  };
+
+  @override
+  bool operator ==(Object other) =>
+      other is StickerContent && other.itemId == itemId && other.file == file;
+
+  @override
+  int get hashCode => Object.hash(itemId, file);
+}
+
+/// A photo the user added, kept in Cloud Storage at [path].
+@immutable
+class ImageContent extends ElementContent {
+  const ImageContent(this.path);
+
+  final String path;
+
+  @override
+  Map<String, Object?> toMap() => {'kind': 'image', 'path': path};
+
+  @override
+  bool operator ==(Object other) => other is ImageContent && other.path == path;
+
+  @override
+  int get hashCode => path.hashCode;
+}
+
+/// Typed text. It wraps at [layoutWidth] page units with [fontSize], and the
+/// frame scales the result, so resizing a text box scales its text.
+@immutable
+class TextContent extends ElementContent {
+  const TextContent({
+    required this.text,
+    required this.fontSize,
+    required this.color,
+    this.layoutWidth = 600,
+  });
+
+  final String text;
+  final double fontSize;
+
+  /// ARGB.
+  final int color;
+  final double layoutWidth;
+
+  TextContent copyWith({String? text, double? fontSize, int? color}) =>
+      TextContent(
+        text: text ?? this.text,
+        fontSize: fontSize ?? this.fontSize,
+        color: color ?? this.color,
+        layoutWidth: layoutWidth,
+      );
+
+  @override
+  Map<String, Object?> toMap() => {
+    'kind': 'text',
+    'text': text,
+    'fontSize': fontSize,
+    'color': color,
+    'layoutWidth': layoutWidth,
+  };
+
+  @override
+  bool operator ==(Object other) =>
+      other is TextContent &&
+      other.text == text &&
+      other.fontSize == fontSize &&
+      other.color == color &&
+      other.layoutWidth == layoutWidth;
+
+  @override
+  int get hashCode => Object.hash(text, fontSize, color, layoutWidth);
+}
+
+/// Something placed on a page besides ink: a sticker, a photo or a text
+/// box. Drawn under the ink, so you can write over it.
 @immutable
 class PageElement {
   const PageElement({
     required this.id,
-    required this.itemId,
-    required this.file,
+    required this.content,
     required this.frame,
     required this.z,
     required this.createdAt,
@@ -80,21 +198,14 @@ class PageElement {
   /// Reads a saved element. Returns null for kinds this version doesn't
   /// know, or if it's damaged.
   static PageElement? fromMap(String id, Map<String, dynamic> map) {
-    if (map['kind'] != 'sticker') return null;
-    final itemId = map['itemId'], file = map['file'];
+    final content = ElementContent.fromMap(map);
     final x = map['x'], y = map['y'], w = map['w'], h = map['h'];
-    if (itemId is! String ||
-        file is! String ||
-        x is! num ||
-        y is! num ||
-        w is! num ||
-        h is! num) {
+    if (content == null || x is! num || y is! num || w is! num || h is! num) {
       return null;
     }
     return PageElement(
       id: id,
-      itemId: itemId,
-      file: file,
+      content: content,
       frame: ElementFrame(
         center: Offset(x.toDouble(), y.toDouble()),
         width: w.toDouble(),
@@ -108,10 +219,7 @@ class PageElement {
   }
 
   final String id;
-
-  /// The sticker pack (catalog item) and the file in it.
-  final String itemId;
-  final String file;
+  final ElementContent content;
   final ElementFrame frame;
 
   /// Stacking order; higher is on top.
@@ -122,9 +230,7 @@ class PageElement {
   final bool deleted;
 
   Map<String, Object?> toMap() => {
-    'kind': 'sticker',
-    'itemId': itemId,
-    'file': file,
+    ...content.toMap(),
     ...frameToMap(frame),
     'z': z,
     'createdAt': createdAt,
@@ -139,10 +245,13 @@ class PageElement {
     'rotation': f.rotation,
   };
 
-  PageElement copyWith({ElementFrame? frame, bool? deleted}) => PageElement(
+  PageElement copyWith({
+    ElementContent? content,
+    ElementFrame? frame,
+    bool? deleted,
+  }) => PageElement(
     id: id,
-    itemId: itemId,
-    file: file,
+    content: content ?? this.content,
     frame: frame ?? this.frame,
     z: z,
     createdAt: createdAt,

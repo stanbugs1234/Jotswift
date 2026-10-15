@@ -309,10 +309,10 @@ class _NotesAreaState extends ConsumerState<_NotesArea> {
     style: ref.watch(defaultStyleProvider),
     child: Column(
       children: [
-        if (!kIsWeb) InkToolbar(pageId: _pageId),
+        InkToolbar(pageId: _pageId, inkEnabled: !kIsWeb),
         const Divider(height: 1),
         Expanded(
-          child: PageCanvas(pageId: _pageId, readOnly: kIsWeb),
+          child: PageCanvas(pageId: _pageId, inkEnabled: !kIsWeb),
         ),
       ],
     ),

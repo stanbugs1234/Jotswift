@@ -20,9 +20,10 @@ import '../notebooks/notes_providers.dart';
 import 'domain/page_element.dart';
 import 'domain/stroke.dart';
 import 'ink_tools.dart';
+import 'page_items.dart';
 import 'stickers.dart';
-import 'templates.dart';
 import 'stroke_painter.dart';
+import 'templates.dart';
 
 /// Ruling on full-size pages is drawn larger than on the small previews.
 const _paperScale = 1.6;
@@ -42,6 +43,7 @@ class PageCanvas extends ConsumerStatefulWidget {
   const PageCanvas({
     required this.pageId,
     this.readOnly = false,
+    this.inkEnabled = true,
     this.onOpenPage,
     super.key,
   });
@@ -51,8 +53,13 @@ class PageCanvas extends ConsumerStatefulWidget {
   /// Opens another page of the notebook (when a template link is tapped).
   final ValueChanged<String>? onOpenPage;
 
-  /// View only: no drawing (used on the web).
+  /// View only: no drawing and no changes to stickers, photos or text.
   final bool readOnly;
+
+  /// Whether ink can be drawn. Off on the web, where the page always acts
+  /// as with the select tool: stickers, photos and text boxes can still be
+  /// added, moved and edited.
+  final bool inkEnabled;
 
   @override
   ConsumerState<PageCanvas> createState() => _PageCanvasState();
@@ -205,7 +212,9 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
   bool get _penDown => _drawPointer != null && _isStylus(_drawKind!);
 
   bool _canDraw(PointerDownEvent e) {
-    if (widget.readOnly || _drawPointer != null) return false;
+    if (widget.readOnly || !widget.inkEnabled || _drawPointer != null) {
+      return false;
+    }
     // Fingers already on the page block other fingers and the mouse, but
     // never the Pencil (see _yieldToPencil).
     if (!_isStylus(e.kind) && _navPointers.isNotEmpty) return false;
@@ -649,12 +658,24 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
         ),
   ];
 
+  /// Whether pointers select and move items rather than draw.
+  bool _selecting(InkToolKind tool) =>
+      !widget.inkEnabled || tool == InkToolKind.select;
+
+  /// Removes the selected item (the Delete key).
+  void _deleteSelected() {
+    final id = _selectedId;
+    if (id == null || widget.readOnly) return;
+    ref.read(inkHistoryProvider(widget.pageId).notifier).removeElement(id);
+    setState(() => _selectedId = null);
+  }
+
   /// With the select tool, a pointer on a sticker or one of its handles
   /// selects, moves, resizes, rotates or removes it. Returns whether the
   /// pointer was used.
   bool _selectWith(PointerDownEvent e) {
     if (widget.readOnly ||
-        ref.read(inkToolProvider).kind != InkToolKind.select ||
+        !_selecting(ref.read(inkToolProvider).kind) ||
         _drag != null ||
         _drawPointer != null ||
         _navPointers.isNotEmpty ||
@@ -691,9 +712,16 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     // The topmost sticker under the pointer.
     for (final el in elements.reversed) {
       if (el.frame.contains(point, slop: 4 / _scale)) {
+        final wasSelected = el.id == _selectedId;
         setState(() {
           _selectedId = el.id;
-          _drag = _ElementDrag(e.pointer, el, _DragMode.move, point);
+          _drag = _ElementDrag(
+            e.pointer,
+            el,
+            _DragMode.move,
+            point,
+            wasSelected: wasSelected,
+          );
         });
         return true;
       }
@@ -750,6 +778,19 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
 
   void _finishDrag() {
     final drag = _drag!;
+    // A tap (no move) on a text box that was already selected edits it.
+    if (drag.wasSelected &&
+        drag.mode == _DragMode.move &&
+        drag.frame == drag.start) {
+      setState(() => _drag = null);
+      final element = _shownElements()
+          .where((e) => e.id == drag.elementId)
+          .firstOrNull;
+      if (element != null && element.content is TextContent) {
+        _editText(element);
+      }
+      return;
+    }
     setState(() {
       _drag = null;
       if (drag.frame != drag.start) {
@@ -761,16 +802,44 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
         .setElementFrame(drag.elementId, drag.start, drag.frame);
   }
 
-  /// Places the sticker picked in the tray in the middle of the view.
+  /// Edits a text box's text; emptying it removes the box.
+  Future<void> _editText(PageElement element) async {
+    final before = element.content as TextContent;
+    final after = await showTextBoxEditor(context, initial: before);
+    if (after == null || !mounted || after == before) return;
+    final history = ref.read(inkHistoryProvider(widget.pageId).notifier);
+    if (after.text.trim().isEmpty) {
+      await history.removeElement(element.id);
+      if (mounted) setState(() => _selectedId = null);
+      return;
+    }
+    await history.editElement(
+      element,
+      element.copyWith(
+        content: after,
+        frame: reframeText(element.frame, before, after),
+      ),
+    );
+  }
+
+  /// Places the waiting sticker, photo or text box in the middle of the
+  /// view.
   void _placeRequested() {
     final request = ref
-        .read(stickerRequestProvider(widget.pageId).notifier)
+        .read(placementRequestProvider(widget.pageId).notifier)
         .take();
     final viewport = _viewport;
     if (request == null || viewport == null) return;
     final middle = _toPage(viewport.center(Offset.zero));
-    const width = 240.0;
-    final height = width / request.aspect;
+    // Fits on the page, keeping its shape.
+    final fit = math.min(
+      1.0,
+      math.min(
+        _pageSize.width * 0.9 / request.width,
+        _pageSize.height * 0.9 / request.height,
+      ),
+    );
+    final width = request.width * fit, height = request.height * fit;
     final center = Offset(
       middle.dx.clamp(
         width / 2,
@@ -784,8 +853,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     final existing = ref.read(elementsProvider(widget.pageId)).value ?? [];
     final element = PageElement(
       id: ref.read(elementRepositoryProvider).newElementId(),
-      itemId: request.itemId,
-      file: request.file,
+      content: request.content,
       frame: ElementFrame(center: center, width: width, height: height),
       z: existing.fold(0.0, (z, e) => math.max(z, e.z)) + 1,
       createdAt: DateTime.now().millisecondsSinceEpoch,
@@ -877,13 +945,13 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     _reconcileElements(saved);
     final elements = _shownElements();
     final tool = ref.watch(inkToolProvider).kind;
-    final selectedId = tool == InkToolKind.select
+    final selectedId = _selecting(tool)
         ? _selectedId
         : _drag?.elementId; // a finger holding a sticker in pen mode
     final selected = widget.readOnly
         ? null
         : elements.where((e) => e.id == selectedId).firstOrNull;
-    ref.listen(stickerRequestProvider(widget.pageId), (_, next) {
+    ref.listen(placementRequestProvider(widget.pageId), (_, next) {
       if (next != null) _placeRequested();
     });
 
@@ -893,55 +961,80 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
         if (_viewport == null) _fitWidth(viewport);
         _viewport = viewport;
 
-        return ClipRect(
-          child: Listener(
-            behavior: HitTestBehavior.opaque,
-            onPointerDown: _onPointerDown,
-            onPointerMove: _onPointerMove,
-            onPointerUp: _onPointerUp,
-            onPointerCancel: _onPointerCancel,
-            onPointerSignal: _onPointerSignal,
-            child: Stack(
-              children: [
-                Positioned(
-                  left: _offset.dx,
-                  top: _offset.dy,
-                  child: Transform.scale(
-                    scale: _scale,
-                    alignment: Alignment.topLeft,
-                    child: _PageSurface(
-                      size: _pageSize,
-                      paper: paper,
-                      hasTemplate: template != null,
-                      templateImage: templateImage,
-                      templateRect: templateImage == null
-                          ? null
-                          : _templateRect(templateImage),
-                      elements: elements,
-                      poppingIn: _poppingIn,
-                      selected: selected?.frame,
-                      handleScale: _handleSize / _scale,
-                      strokes: visible,
-                      live: _live,
-                    ),
-                  ),
-                ),
-                Positioned(
-                  top: 12,
-                  left: 0,
-                  right: 0,
-                  child: IgnorePointer(
-                    child: ValueListenableBuilder<String?>(
-                      valueListenable: _zoomBadge,
-                      builder: (context, text, _) => AnimatedOpacity(
-                        opacity: text == null ? 0 : 1,
-                        duration: const Duration(milliseconds: 150),
-                        child: Center(child: _ZoomBadge(text ?? '')),
+        final history = ref.read(inkHistoryProvider(widget.pageId).notifier);
+        return CallbackShortcuts(
+          bindings: {
+            const SingleActivator(LogicalKeyboardKey.delete): _deleteSelected,
+            const SingleActivator(LogicalKeyboardKey.backspace):
+                _deleteSelected,
+            const SingleActivator(LogicalKeyboardKey.keyZ, control: true):
+                history.undo,
+            const SingleActivator(LogicalKeyboardKey.keyZ, meta: true):
+                history.undo,
+            const SingleActivator(
+              LogicalKeyboardKey.keyZ,
+              control: true,
+              shift: true,
+            ): history.redo,
+            const SingleActivator(
+              LogicalKeyboardKey.keyZ,
+              meta: true,
+              shift: true,
+            ): history.redo,
+          },
+          child: Focus(
+            autofocus: true,
+            child: ClipRect(
+              child: Listener(
+                behavior: HitTestBehavior.opaque,
+                onPointerDown: _onPointerDown,
+                onPointerMove: _onPointerMove,
+                onPointerUp: _onPointerUp,
+                onPointerCancel: _onPointerCancel,
+                onPointerSignal: _onPointerSignal,
+                child: Stack(
+                  children: [
+                    Positioned(
+                      left: _offset.dx,
+                      top: _offset.dy,
+                      child: Transform.scale(
+                        scale: _scale,
+                        alignment: Alignment.topLeft,
+                        child: _PageSurface(
+                          size: _pageSize,
+                          paper: paper,
+                          hasTemplate: template != null,
+                          templateImage: templateImage,
+                          templateRect: templateImage == null
+                              ? null
+                              : _templateRect(templateImage),
+                          elements: elements,
+                          poppingIn: _poppingIn,
+                          selected: selected?.frame,
+                          handleScale: _handleSize / _scale,
+                          strokes: visible,
+                          live: _live,
+                        ),
                       ),
                     ),
-                  ),
+                    Positioned(
+                      top: 12,
+                      left: 0,
+                      right: 0,
+                      child: IgnorePointer(
+                        child: ValueListenableBuilder<String?>(
+                          valueListenable: _zoomBadge,
+                          builder: (context, text, _) => AnimatedOpacity(
+                            opacity: text == null ? 0 : 1,
+                            duration: const Duration(milliseconds: 150),
+                            child: Center(child: _ZoomBadge(text ?? '')),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         );
@@ -1029,11 +1122,8 @@ class _PageSurface extends StatelessWidget {
               child: Transform.rotate(
                 angle: e.frame.rotation,
                 child: poppingIn.contains(e.id)
-                    ? PopIn(
-                        key: ValueKey(e.id),
-                        child: StickerView(itemId: e.itemId, file: e.file),
-                      )
-                    : StickerView(itemId: e.itemId, file: e.file),
+                    ? PopIn(key: ValueKey(e.id), child: _ElementView(e))
+                    : _ElementView(e),
               ),
             ),
           RepaintBoundary(child: CustomPaint(painter: StrokesPainter(strokes))),
@@ -1058,16 +1148,24 @@ enum _DragMode { move, resize, rotate }
 
 /// A sticker being moved, resized or rotated by one pointer.
 class _ElementDrag {
-  _ElementDrag(this.pointer, PageElement element, this.mode, this.startPoint)
-    : elementId = element.id,
-      start = element.frame,
-      frame = element.frame;
+  _ElementDrag(
+    this.pointer,
+    PageElement element,
+    this.mode,
+    this.startPoint, {
+    this.wasSelected = false,
+  }) : elementId = element.id,
+       start = element.frame,
+       frame = element.frame;
 
   final int pointer;
   final String elementId;
   final _DragMode mode;
   final ElementFrame start;
   final Offset startPoint;
+
+  /// It was already selected when touched (so a tap on text edits it).
+  final bool wasSelected;
 
   /// The frame now, shown while dragging and saved at the end.
   ElementFrame frame;
@@ -1184,4 +1282,21 @@ class _ZoomBadge extends StatelessWidget {
       ),
     );
   }
+}
+
+/// What a page item shows: a sticker, a photo or a text box.
+class _ElementView extends StatelessWidget {
+  const _ElementView(this.element);
+
+  final PageElement element;
+
+  @override
+  Widget build(BuildContext context) => switch (element.content) {
+    StickerContent(:final itemId, :final file) => StickerView(
+      itemId: itemId,
+      file: file,
+    ),
+    ImageContent(:final path) => PageImageView(path: path),
+    final TextContent text => TextBoxView(content: text),
+  };
 }

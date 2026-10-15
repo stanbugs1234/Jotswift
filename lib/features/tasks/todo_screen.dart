@@ -613,6 +613,13 @@ class _TaskTileState extends ConsumerState<TaskTile>
             Text(list.title, style: theme.textTheme.bodySmall),
           ],
         ),
+      if (task.reminderTime != null && !task.done)
+        Icon(
+          Icons.alarm,
+          size: 14,
+          semanticLabel: 'Reminder',
+          color: theme.colorScheme.outline,
+        ),
       if (task.notes.isNotEmpty)
         Icon(Icons.notes, size: 14, color: theme.colorScheme.outline),
     ];

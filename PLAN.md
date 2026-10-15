@@ -226,6 +226,7 @@ You can handwrite anywhere on the page, and the structured widgets stay interact
 - [x] Firestore security rules + emulator tests (`firebase/`)
 - [x] Publish the rules to the live database
 - [ ] Auth: sign in with Apple, Google and email (required, see §1); account deletion (required by Apple)
+  - [x] Deleting an account erases all its data (`deleteUserData` Cloud Function, deployed)
   - [x] Sign-in and settings screens, auth interface, stand-in auth for development
   - [x] Firebase Auth implementation (email, Google, Apple)
   - [ ] Google sign-in on Android: add the app's SHA-1 fingerprint in Firebase
@@ -247,17 +248,18 @@ You can handwrite anywhere on the page, and the structured widgets stay interact
 - [ ] **Ink spike on real devices:** pressure ink on an iPad, an Android tablet and a phone; measure latency and FPS with 2,000+ strokes on a page (**needs devices**)
 - [x] Canvas: pen, highlighter, stroke eraser, undo/redo, zoom/pan, palm rejection, phone Draw/Scroll toggle
 - [x] Page paper (blank, lined, narrow, grid, dot, music, Cornell) and PDF templates with links
-- [ ] Text boxes and image insert
+- [x] Text boxes and image insert
 - [ ] Offline mode and sync status indicator
 - [x] Web: read-only ink rendering
-- [ ] Web: text box editing; deploy to Firebase Hosting
+- [x] Web: text boxes, photos and stickers editable (ink stays view-only); links and refreshes keep their page
+- [x] Web: deployed to Firebase Hosting at https://notely-b1aec.web.app (`tool/deploy_web.sh`)
 - [x] Firestore security rules + rules unit tests
 
 ### Phase 3: Planner, to-do, calendar (4–5 weeks)
 - [x] Tasks and task lists (editable on web); plan in [docs/phase3-plan.md](docs/phase3-plan.md)
 - [x] Events and calendar month/week/day views (editable on web)
 - [x] Daily planner page with live tasks and events plus a free ink area
-- [ ] Simple reminders (local notifications)
+- [x] Simple reminders (local notifications)
 
 ### Phase 4: Store and monetization (2–3 weeks)
 - [x] Purchases code (RevenueCat) and webhook Cloud Function → entitlements, tested

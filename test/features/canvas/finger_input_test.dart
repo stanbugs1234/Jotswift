@@ -261,8 +261,10 @@ void main() {
         elements: [
           const PageElement(
             id: 's',
-            itemId: 'basics',
-            file: 'stickers/star.webp',
+            content: StickerContent(
+              itemId: 'basics',
+              file: 'stickers/star.webp',
+            ),
             frame: frame,
             z: 1,
             createdAt: 0,
@@ -305,8 +307,10 @@ void main() {
         elements: [
           const PageElement(
             id: 's',
-            itemId: 'basics',
-            file: 'stickers/star.webp',
+            content: StickerContent(
+              itemId: 'basics',
+              file: 'stickers/star.webp',
+            ),
             frame: frame,
             z: 1,
             createdAt: 0,

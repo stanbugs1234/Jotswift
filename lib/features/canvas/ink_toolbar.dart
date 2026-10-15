@@ -4,19 +4,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/input/finger_drawing.dart';
 import '../../core/skins/notely_skin.dart';
 import 'ink_tools.dart';
+import 'page_items.dart';
 import 'stickers.dart';
 
-/// The drawing tools: a finger toggle, pen, highlighter, eraser, select,
-/// stickers, colors, sizes, undo and redo. On narrow screens the colors and
-/// sizes fold into one "Pen options" button.
+/// The page tools: a finger toggle, pen, highlighter, eraser, select, text,
+/// photos, stickers, colors, sizes, undo and redo. On narrow screens the
+/// colors and sizes fold into one "Pen options" button.
 class InkToolbar extends ConsumerWidget {
-  const InkToolbar({required this.pageId, super.key});
+  const InkToolbar({required this.pageId, this.inkEnabled = true, super.key});
 
   final String pageId;
 
+  /// False on the web: only text, photos, stickers, undo and redo.
+  final bool inkEnabled;
+
   /// Below this width, colors and sizes go into a pop-up.
-  // The full toolbar is about 880 wide, so an upright iPad (820) folds too.
-  static const compactWidth = 960.0;
+  // The full toolbar is about 970 wide, so an upright iPad (820) folds too.
+  static const compactWidth = 1060.0;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -46,19 +50,37 @@ class InkToolbar extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             child: Row(
               children: [
-                const FingerToggle(),
-                const _Divider(),
-                toolButton(InkToolKind.pen, Icons.edit, 'Pen'),
-                toolButton(
-                  InkToolKind.highlighter,
-                  Icons.highlight,
-                  'Highlighter',
+                if (inkEnabled) ...[
+                  const FingerToggle(),
+                  const _Divider(),
+                  toolButton(InkToolKind.pen, Icons.edit, 'Pen'),
+                  toolButton(
+                    InkToolKind.highlighter,
+                    Icons.highlight,
+                    'Highlighter',
+                  ),
+                  toolButton(
+                    InkToolKind.eraser,
+                    Icons.auto_fix_normal,
+                    'Eraser',
+                  ),
+                  toolButton(
+                    InkToolKind.select,
+                    Icons.near_me_outlined,
+                    'Select',
+                  ),
+                ],
+                _ToolButton(
+                  tooltip: 'Text',
+                  icon: Icons.text_fields,
+                  selected: false,
+                  onPressed: () => addTextBox(context, ref, pageId),
                 ),
-                toolButton(InkToolKind.eraser, Icons.auto_fix_normal, 'Eraser'),
-                toolButton(
-                  InkToolKind.select,
-                  Icons.near_me_outlined,
-                  'Select',
+                _ToolButton(
+                  tooltip: 'Photo',
+                  icon: Icons.add_photo_alternate_outlined,
+                  selected: false,
+                  onPressed: () => addPhoto(context, ref, pageId),
                 ),
                 _ToolButton(
                   tooltip: 'Stickers',
@@ -66,8 +88,13 @@ class InkToolbar extends ConsumerWidget {
                   selected: false,
                   onPressed: () => showStickerTray(context, pageId),
                 ),
-                const _Divider(),
-                if (compact) const _PenOptionsButton() else const _PenOptions(),
+                if (inkEnabled) ...[
+                  const _Divider(),
+                  if (compact)
+                    const _PenOptionsButton()
+                  else
+                    const _PenOptions(),
+                ],
                 const _Divider(),
                 _ToolButton(
                   tooltip: 'Undo',

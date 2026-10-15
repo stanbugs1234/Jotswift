@@ -25,6 +25,16 @@ const homePath = '/notebooks';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
+/// Where to go after signing in: [from] if it's a path in this app,
+/// otherwise the shelf.
+String _safeReturn(String? from) =>
+    from != null &&
+        from.startsWith('/') &&
+        !from.startsWith('//') &&
+        !from.startsWith(signInPath)
+    ? from
+    : homePath;
+
 final routerProvider = Provider<GoRouter>((ref) {
   // Re-run the redirect whenever the user signs in or out.
   final authChanged = ValueNotifier(0);
@@ -39,8 +49,16 @@ final routerProvider = Provider<GoRouter>((ref) {
     redirect: (context, state) {
       final signedIn = ref.read(authRepositoryProvider).currentUser != null;
       final onSignIn = state.matchedLocation == signInPath;
-      if (!signedIn) return onSignIn ? null : signInPath;
-      if (onSignIn) return homePath;
+      if (!signedIn) {
+        if (onSignIn) return null;
+        // Come back here after signing in (a link, or a refresh on the
+        // web before the saved session is restored).
+        final from = state.uri.toString();
+        return from == homePath
+            ? signInPath
+            : Uri(path: signInPath, queryParameters: {'from': from}).toString();
+      }
+      if (onSignIn) return _safeReturn(state.uri.queryParameters['from']);
       return null;
     },
     routes: [

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../shared/dialogs.dart';
 import '../notebooks/domain/notebook_models.dart' show notebookColors;
+import '../reminders/reminders.dart';
 import 'calendar_providers.dart';
 import 'domain/event.dart';
 
@@ -57,6 +58,10 @@ class _EventEditorState extends ConsumerState<EventEditor> {
   late int _color = widget.initial.color;
   late Recurrence? _repeat = widget.initial.recurrence;
 
+  /// Minutes before the start; null for no alert. See
+  /// [CalendarEvent.reminderMinutes].
+  late int? _alert = widget.initial.reminderMinutes.firstOrNull;
+
   bool get _isNew => widget.initial.id.isEmpty;
 
   @override
@@ -80,10 +85,36 @@ class _EventEditorState extends ConsumerState<EventEditor> {
             color: _color,
             recurrence: _repeat,
             clearRecurrence: _repeat == null,
+            reminderMinutes: [?_validAlert],
           ),
         );
+    if (_validAlert != null) {
+      ref.read(reminderServiceProvider).requestPermission();
+    }
     Navigator.pop(context);
   }
+
+  /// The alert choices: timed events count back from the start; all-day
+  /// events from midnight, so 9 AM on the day is -540.
+  List<(int?, String)> get _alertChoices => _allDay
+      ? const [
+          (null, 'None'),
+          (-540, 'On the day (9 AM)'),
+          (900, 'The day before (9 AM)'),
+        ]
+      : const [
+          (null, 'None'),
+          (0, 'At the start'),
+          (5, '5 minutes before'),
+          (15, '15 minutes before'),
+          (30, '30 minutes before'),
+          (60, '1 hour before'),
+          (1440, '1 day before'),
+        ];
+
+  /// The alert, if it suits all-day or timed as currently chosen.
+  int? get _validAlert =>
+      _alertChoices.any((c) => c.$1 == _alert) ? _alert : null;
 
   Future<void> _delete() async {
     final ok = await confirmDelete(
@@ -276,6 +307,17 @@ class _EventEditorState extends ConsumerState<EventEditor> {
                   ),
               ],
             ),
+          const SizedBox(height: 16),
+          DropdownButtonFormField<int?>(
+            key: ValueKey(_allDay),
+            initialValue: _validAlert,
+            decoration: const InputDecoration(labelText: 'Alert'),
+            items: [
+              for (final (value, label) in _alertChoices)
+                DropdownMenuItem(value: value, child: Text(label)),
+            ],
+            onChanged: (v) => setState(() => _alert = v),
+          ),
           const SizedBox(height: 16),
           Text('Color', style: theme.textTheme.titleSmall),
           const SizedBox(height: 8),

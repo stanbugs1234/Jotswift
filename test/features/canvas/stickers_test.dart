@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'dart:math' as math;
-import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:notely/core/catalog/catalog_item.dart';
@@ -40,8 +40,10 @@ const _frame = ElementFrame(center: Offset(500, 400), width: 200, height: 100);
 PageElement sticker(String id, {double z = 1, ElementFrame frame = _frame}) =>
     PageElement(
       id: id,
-      itemId: 'basics',
-      file: 'stickers/star.webp',
+      content: const StickerContent(
+        itemId: 'basics',
+        file: 'stickers/star.webp',
+      ),
       frame: frame,
       z: z,
       createdAt: 0,
@@ -108,8 +110,7 @@ void main() {
       final e = sticker('a');
       final back = PageElement.fromMap('a', e.toMap())!;
       expect(back.frame, e.frame);
-      expect(back.itemId, 'basics');
-      expect(back.file, 'stickers/star.webp');
+      expect(back.content, e.content);
     });
 
     test('kinds from newer apps are skipped', () {
@@ -221,6 +222,7 @@ void main() {
     Future<ProviderContainer> pumpPage(
       WidgetTester tester, {
       bool readOnly = false,
+      bool inkEnabled = true,
     }) async {
       tester.view
         ..physicalSize = const Size(800, 1000)
@@ -255,7 +257,11 @@ void main() {
           container: container,
           child: themed(
             skinById(skins, 'classic'),
-            PageScreen(pageId: pageId, readOnly: readOnly),
+            PageScreen(
+              pageId: pageId,
+              readOnly: readOnly,
+              inkEnabled: inkEnabled,
+            ),
           ),
         ),
       );
@@ -314,8 +320,10 @@ void main() {
       await placeStar(tester);
 
       final placed = (await stickers()).single;
-      expect(placed.itemId, 'basics');
-      expect(placed.file, 'stickers/star.webp');
+      expect(
+        placed.content,
+        const StickerContent(itemId: 'basics', file: 'stickers/star.webp'),
+      );
       expect(placed.frame.width, 240);
       expect(container.read(inkToolProvider).kind, InkToolKind.select);
       expect(find.byType(StickerView), findsOneWidget);
@@ -371,14 +379,17 @@ void main() {
       await settle(tester);
       expect(await stickers(), isEmpty);
 
+      await tester.ensureVisible(find.byTooltip('Undo'));
       await tester.tap(find.byTooltip('Undo'));
       await settle(tester);
       expect(await stickers(), hasLength(1));
 
       // Undo the placing too, then redo it.
+      await tester.ensureVisible(find.byTooltip('Undo'));
       await tester.tap(find.byTooltip('Undo'));
       await settle(tester);
       expect(await stickers(), isEmpty);
+      await tester.ensureVisible(find.byTooltip('Redo'));
       await tester.tap(find.byTooltip('Redo'));
       await settle(tester);
       expect(await stickers(), hasLength(1));
@@ -391,6 +402,7 @@ void main() {
       final center = onScreen(tester, start.center);
       await drag(tester, center, center + const Offset(80, 0));
 
+      await tester.ensureVisible(find.byTooltip('Undo'));
       await tester.tap(find.byTooltip('Undo'));
       await settle(tester);
 
@@ -411,6 +423,28 @@ void main() {
       );
 
       expect(await backend.strokes(uid).watchStrokes(pageId).first, isEmpty);
+    });
+
+    testWidgets('on the web, stickers move with any tool, and Delete '
+        'removes them', (tester) async {
+      final container = await pumpPage(tester, inkEnabled: false);
+      await backend.elements(uid).addElement(pageId, sticker('s'));
+      await settle(tester);
+      // The pen is still the chosen tool, but the web can't draw.
+      expect(container.read(inkToolProvider).kind, InkToolKind.pen);
+
+      final center = onScreen(tester, _frame.center);
+      await drag(
+        tester,
+        center,
+        center + const Offset(80, 0),
+        kind: PointerDeviceKind.mouse,
+      );
+      expect((await stickers()).single.frame.center.dx, greaterThan(500));
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.delete);
+      await settle(tester);
+      expect(await stickers(), isEmpty);
     });
 
     testWidgets('view-only pages show stickers but cannot change them', (

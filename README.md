@@ -1,25 +1,21 @@
 # Notely
 
-Handwritten notes, a daily planner, calendar and to-do lists for iOS and Android phones and tablets, with a web app for viewing and typing. The look comes from swappable **skins**.
+Handwritten notes, a daily planner, calendar and to-do lists for iOS and Android phones and tablets, with a web app at **https://notely-b1aec.web.app**. Notebooks work like Noteshelf: covers, papers, PDF planners and templates, stickers, text boxes and photos.
 
 See [PLAN.md](PLAN.md) for the product plan and roadmap, and [docs/content.md](docs/content.md) to make notebook styles, covers, papers, stickers and templates.
 
 ## Status
 
-| Phase | State |
+| Area | State |
 |---|---|
-| 0. Setup: app shell, sign-in, Firebase | iOS, Android and web use Firebase sign-in |
-| 1. Skins | Skin engine, 4 free skins + 1 sample paid skin, skin picker with previews |
-| 2. Notebooks and handwriting | Notebooks, sections, pages; ink canvas with pen, highlighter, eraser, undo/redo, zoom, palm rejection. Text boxes and images next |
-| 3–5 | Not started |
-
-The Planner, Calendar and To-do tabs still show **sample pages**; they're built in Phase 3. On the web, handwriting is view-only.
-
-**Sign-in:** iOS, Android and the web use real Firebase accounts (project `notely-b1aec`). A platform without a Firebase config would fall back to a stand-in sign-in (any email, 6+ character password, nothing saved).
+| Accounts | Email, Google and Apple sign-in through Firebase. Deleting an account erases all its data (a Cloud Function). |
+| Notebooks | A shelf with categories and groups. Each notebook has a cover, paper, style and size. Pages have pen, highlighter, eraser, undo, zoom and palm rejection, plus stickers, text boxes and photos. |
+| Content | A catalog of covers, papers, sticker packs, PDF planners and page templates, published from Firebase ([docs/content.md](docs/content.md)). |
+| Planner, Calendar, To-do | Daily planner pages, events with repeats in month, week and day views, task lists, and reminders as local notifications. |
+| Store | Templates screen, Notely Pro and packs through RevenueCat. Built and tested, switched on once the accounts in [docs/store-setup.md](docs/store-setup.md) exist. |
+| Web | Everything syncs. Text boxes, photos and stickers can be added and edited; handwriting is view-only. |
 
 **Testing on an iPad:** see [docs/testing-on-ipad.md](docs/testing-on-ipad.md).
-
-The chosen skin is saved on the device and in the account (`users/{uid}.activeSkinId`), so it follows the user to other devices.
 
 ## Running it
 
@@ -43,6 +39,14 @@ Firestore security rules (`firebase/firestore.rules`) have their own tests, whic
 
 ```sh
 cd firebase/rules-tests && npm install && npm test
+cd firebase/functions && npm install && npm test   # Cloud Functions
+python3 tool/catalog.py check                      # catalog content
+```
+
+## Publishing the web app
+
+```sh
+tool/deploy_web.sh     # flutter build web, then firebase deploy --only hosting
 ```
 
 Golden screenshots are generated on Linux (as in CI). They may differ slightly on macOS.
@@ -53,14 +57,20 @@ Golden screenshots are generated on Linux (as in CI). They may differ slightly o
 lib/
   app/                 app widget, router, responsive shell (phone / tablet / web)
   core/
-    skins/             manifest parser, theme builder, paper painter, providers
-    entitlements/      what the user has unlocked (stub until the store is built)
+    catalog/           catalog listings, downloads and pack cache
+    entitlements/      what the user may use; the notebook limit
+    purchases/         RevenueCat
+    paper/, pdf/       paper styles, PDF rendering
+    skins/             notebook styles (manifests, theme builder)
+    settings/          settings synced to the account
   features/
-    auth/              sign-in screen and auth repository
-    notebooks/         notebooks, sections, pages (Firestore + in-memory)
-    canvas/            ink: strokes, rendering, tools, undo/redo
-    skins/             skin picker, skin preview, sample pages
-    home/              placeholder tabs
-    settings/
-assets/skins/          skin manifests (one folder per skin)
+    auth/              sign-in
+    shelf/, notebooks/ the shelf, notebooks, sections, pages
+    canvas/            ink, stickers, text boxes, photos, templates
+    planner/, calendar/, tasks/, reminders/
+    store/             Templates screen, item pages, Pro paywall
+    settings/, skins/
+assets/skins/          notebook styles (one folder per style)
+catalog/               catalog content, published with tool/catalog.py
+firebase/              security rules, their tests, Cloud Functions
 ```

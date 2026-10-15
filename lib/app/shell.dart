@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import '../core/skins/skin_providers.dart';
 import '../features/notebooks/notes_providers.dart';
+import '../features/planner/planner_screen.dart';
+import '../features/reminders/reminders.dart';
 import '../features/shelf/shelf_actions.dart';
 import '../features/shelf/shelf_view.dart';
 import '../features/store/store_screen.dart';
@@ -80,6 +82,15 @@ class AppShell extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // While signed in, keep reminders scheduled, and open the day of a
+    // tapped reminder in the Planner.
+    ref.watch(reminderSyncProvider);
+    ref.listen(reminderTapsProvider, (_, next) {
+      if (next case AsyncData(value: final day)) {
+        ref.read(plannerDayProvider.notifier).show(day);
+        context.go(plannerPath);
+      }
+    });
     final width = MediaQuery.sizeOf(context).width;
 
     if (width < Breakpoints.medium) {

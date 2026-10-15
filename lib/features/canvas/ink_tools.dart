@@ -11,7 +11,8 @@ enum InkToolKind {
   highlighter,
   eraser,
 
-  /// Selects stickers to move, resize, rotate or remove.
+  /// Selects stickers, photos and text boxes to move, resize, rotate,
+  /// remove or (text) edit.
   select,
 }
 
@@ -101,6 +102,13 @@ class ElementPresenceCommand extends InkCommand {
   final bool added;
 }
 
+/// A text box's text (and so its frame) changed.
+class ElementEditCommand extends InkCommand {
+  const ElementEditCommand(this.before, this.after);
+  final PageElement before;
+  final PageElement after;
+}
+
 /// A sticker was moved, resized or rotated.
 class ElementFrameCommand extends InkCommand {
   const ElementFrameCommand(this.elementId, this.before, this.after);
@@ -183,6 +191,18 @@ class InkHistory extends Notifier<InkHistoryState> {
     _touchNotebook();
   }
 
+  /// Saves [after]'s content and frame (editing a text box).
+  Future<void> editElement(PageElement before, PageElement after) async {
+    await _elements.setElementContent(
+      pageId,
+      after.id,
+      after.content,
+      after.frame,
+    );
+    _push(ElementEditCommand(before, after));
+    _touchNotebook();
+  }
+
   ElementRepository get _elements => ref.read(elementRepositoryProvider);
 
   void _push(InkCommand command) {
@@ -232,6 +252,10 @@ class InkHistory extends Notifier<InkHistoryState> {
         ),
       ElementFrameCommand(:final elementId, :final before, :final after) =>
         _elements.setElementFrame(pageId, elementId, reverse ? before : after),
+      ElementEditCommand(:final before, :final after) => () {
+        final e = reverse ? before : after;
+        return _elements.setElementContent(pageId, e.id, e.content, e.frame);
+      }(),
     };
   }
 }

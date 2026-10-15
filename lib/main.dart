@@ -2,10 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_web_plugins/url_strategy.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app/app.dart';
@@ -25,11 +28,19 @@ import 'features/calendar/data/event_repository.dart';
 import 'features/notebooks/data/cover_photos.dart';
 import 'features/notebooks/data/firestore_notes_backend.dart';
 import 'features/notebooks/notes_providers.dart';
+import 'features/reminders/local_reminders.dart';
+import 'features/reminders/reminders.dart';
 import 'features/tasks/data/task_repository.dart';
 import 'features/tasks/task_providers.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
+  // On the web, addresses look like /notebooks/abc (not /#/notebooks/abc),
+  // so links and refreshes open the same screen. Hosting sends every path
+  // to index.html (firebase.json).
+  usePathUrlStrategy();
+  // Screens opened with push() show their address too.
+  GoRouter.optionURLReflectsImperativeAPIs = true;
   WidgetsFlutterBinding.ensureInitialized();
 
   // Load these before the first frame so the app opens with the user's
@@ -46,6 +57,7 @@ Future<void> main() async {
         bundledSkinsProvider.overrideWithValue(skins),
         interfaceSkinsProvider.overrideWithValue(interface),
         ...await _backendOverrides(),
+        ...await _reminderOverrides(),
       ],
       child: const NotelyApp(),
     ),
@@ -68,9 +80,7 @@ Future<List<Override>> _backendOverrides() async {
   await auth.authStateChanges().first;
 
   return [
-    authRepositoryProvider.overrideWithValue(
-      FirebaseAuthRepository(auth, firestore),
-    ),
+    authRepositoryProvider.overrideWithValue(FirebaseAuthRepository(auth)),
     userSettingsRepositoryProvider.overrideWithValue(
       FirestoreUserSettingsRepository(firestore),
     ),
@@ -91,4 +101,21 @@ Future<List<Override>> _backendOverrides() async {
       ),
     ),
   ];
+}
+
+/// Local notifications on iOS and Android; none elsewhere.
+Future<List<Override>> _reminderOverrides() async {
+  if (kIsWeb ||
+      !(defaultTargetPlatform == TargetPlatform.iOS ||
+          defaultTargetPlatform == TargetPlatform.android)) {
+    return const [];
+  }
+  try {
+    return [
+      reminderServiceProvider.overrideWithValue(await LocalReminders.create()),
+    ];
+  } catch (e) {
+    debugPrint('Reminders are off: $e');
+    return const [];
+  }
 }

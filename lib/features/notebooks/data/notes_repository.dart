@@ -128,7 +128,7 @@ abstract interface class StrokeRepository {
   Future<void> setDeleted(String pageId, List<String> strokeIds, bool deleted);
 }
 
-/// Stickers (and later images and text boxes) on a user's pages.
+/// Stickers, photos and text boxes on a user's pages.
 abstract interface class ElementRepository {
   String newElementId();
 
@@ -140,6 +140,14 @@ abstract interface class ElementRepository {
   Future<void> setElementFrame(
     String pageId,
     String elementId,
+    ElementFrame frame,
+  );
+
+  /// Changes what an element shows (a text box's text) and its frame.
+  Future<void> setElementContent(
+    String pageId,
+    String elementId,
+    ElementContent content,
     ElementFrame frame,
   );
 

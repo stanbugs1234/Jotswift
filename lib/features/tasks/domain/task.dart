@@ -80,6 +80,7 @@ class Task {
     this.priority = TaskPriority.none,
     this.listId,
     this.completedAt,
+    this.remindAt,
   });
 
   static Task fromMap(String id, Map<String, dynamic> map) => Task(
@@ -93,6 +94,10 @@ class Task {
     order: (map['order'] as num?)?.toDouble() ?? 0,
     createdAt: map['createdAt'] as int? ?? 0,
     completedAt: map['completedAt'] as int?,
+    remindAt: switch (map['remindAt']) {
+      final int m when m >= 0 && m < 24 * 60 => m,
+      _ => null,
+    },
   );
 
   final String id;
@@ -114,6 +119,14 @@ class Task {
   final int createdAt;
   final int? completedAt;
 
+  /// Minutes after midnight on [due] to send a reminder, if any.
+  final int? remindAt;
+
+  /// When to remind, local time (null without a due day or reminder).
+  DateTime? get reminderTime => due == null || remindAt == null
+      ? null
+      : due!.toDateTime().add(Duration(minutes: remindAt!));
+
   Map<String, Object?> toMap() => {
     'title': title,
     'notes': notes,
@@ -124,6 +137,7 @@ class Task {
     'order': order,
     'createdAt': createdAt,
     'completedAt': ?completedAt,
+    'remindAt': ?remindAt,
   };
 
   /// A changed copy. Pass `due: null` / `listId: null` with [clearDue] /
@@ -140,6 +154,8 @@ class Task {
     double? order,
     int? completedAt,
     bool clearCompletedAt = false,
+    int? remindAt,
+    bool clearRemindAt = false,
   }) => Task(
     id: id,
     title: title ?? this.title,
@@ -151,6 +167,7 @@ class Task {
     order: order ?? this.order,
     createdAt: createdAt,
     completedAt: clearCompletedAt ? null : completedAt ?? this.completedAt,
+    remindAt: clearRemindAt ? null : remindAt ?? this.remindAt,
   );
 
   @override
@@ -165,7 +182,8 @@ class Task {
       other.listId == listId &&
       other.order == order &&
       other.createdAt == createdAt &&
-      other.completedAt == completedAt;
+      other.completedAt == completedAt &&
+      other.remindAt == remindAt;
 
   @override
   int get hashCode => Object.hash(
@@ -179,5 +197,6 @@ class Task {
     order,
     createdAt,
     completedAt,
+    remindAt,
   );
 }

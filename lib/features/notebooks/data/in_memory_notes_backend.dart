@@ -525,6 +525,18 @@ class _InMemoryUserData
   ) async => _updateElement(pageId, elementId, (e) => e.copyWith(frame: frame));
 
   @override
+  Future<void> setElementContent(
+    String pageId,
+    String elementId,
+    ElementContent content,
+    ElementFrame frame,
+  ) async => _updateElement(
+    pageId,
+    elementId,
+    (e) => e.copyWith(content: content, frame: frame),
+  );
+
+  @override
   Future<void> setElementDeleted(
     String pageId,
     String elementId, {

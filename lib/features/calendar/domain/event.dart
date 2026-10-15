@@ -139,7 +139,7 @@ class CalendarEvent {
       recurrence: Recurrence.fromMap(map['recurrence']),
       reminderMinutes: [
         for (final m in map['reminderMinutes'] as List? ?? const [])
-          if (m is int && m >= 0) m,
+          if (m is int && m.abs() <= 60 * 24 * 28) m,
       ],
     );
   }
@@ -161,7 +161,9 @@ class CalendarEvent {
   final int color;
   final Recurrence? recurrence;
 
-  /// Minutes before the start to remind (step 13).
+  /// Minutes before the start to send reminders. For all-day events the
+  /// start is midnight, so -540 is 9 AM on the day and 900 is 9 AM the day
+  /// before.
   final List<int> reminderMinutes;
 
   Day get startDay => Day.of(start);
@@ -192,6 +194,7 @@ class CalendarEvent {
     int? color,
     Recurrence? recurrence,
     bool clearRecurrence = false,
+    List<int>? reminderMinutes,
   }) => CalendarEvent(
     id: id,
     title: title ?? this.title,
@@ -201,7 +204,7 @@ class CalendarEvent {
     end: end ?? this.end,
     color: color ?? this.color,
     recurrence: clearRecurrence ? null : recurrence ?? this.recurrence,
-    reminderMinutes: reminderMinutes,
+    reminderMinutes: reminderMinutes ?? this.reminderMinutes,
   );
 
   @override

@@ -7,7 +7,7 @@ The three tabs that are still placeholders, built in four steps. Each step ships
 | 10 | **To-do** ✅ | Task lists, typed tasks with due dates and priority, and Today and Upcoming views. Works on the web too. |
 | 11 | **Calendar** ✅ | Events with month, week and day views, all-day events, colors and repeats. |
 | 12 | **Planner** ✅ | A page per day: the day's events and tasks next to a free ink area. |
-| 13 | **Reminders** | Local notifications for tasks and events. |
+| 13 | **Reminders** ✅ | Local notifications for tasks and events. |
 
 ## 10. To-do ✅
 
@@ -82,7 +82,23 @@ Built in `lib/features/planner/`, with 10 tests.
 - **A free ink area** stored like any page, with the same pen tools.
 - Swipe or use the arrows to change day, and jump to today.
 
-## 13. Reminders
+## 13. Reminders ✅
+
+Built in `lib/features/reminders/`, with 9 tests.
+- **Tasks:** a task with a due day can have a "Remind me" time, stored as `remindAt`, in minutes after midnight.
+- **Event alerts:**
+  - Timed events: at the start, or 5, 15 or 30 minutes, 1 hour or 1 day before.
+  - All-day events: 9 AM on the day, or 9 AM the day before.
+- **Scheduling:**
+  - The app schedules the next 14 days, at most 60 reminders, because iOS keeps only 64.
+  - It reschedules half a second after any change, each time it starts, and clears everything on sign-out.
+- **Notifications:**
+  - Tapping one opens its day in the Planner.
+  - Permission is asked the first time a reminder is set.
+- **Not yet:**
+  - Reminders while the app hasn't been opened for two weeks. A server push would cover that.
+  - 24-hour times in notification text.
+
 
 - `flutter_local_notifications` on iOS and Android, with no server needed.
 - Reminders are scheduled from tasks with a due time and events with `reminderMinutes`, and rescheduled whenever those change.

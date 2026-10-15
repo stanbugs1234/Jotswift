@@ -15,12 +15,21 @@ import 'paper_picker.dart';
 
 /// A single page: handwriting on phones and tablets, view-only on the web.
 class PageScreen extends ConsumerWidget {
-  const PageScreen({required this.pageId, this.readOnly = kIsWeb, super.key});
+  const PageScreen({
+    required this.pageId,
+    this.readOnly = false,
+    this.inkEnabled = !kIsWeb,
+    super.key,
+  });
 
   final String pageId;
 
-  /// Defaults to true on the web, where ink is view-only.
+  /// Nothing can be changed.
   final bool readOnly;
+
+  /// Handwriting can be added. Off on the web, where text boxes, photos
+  /// and stickers can still be added and changed.
+  final bool inkEnabled;
 
   Future<void> _rename(
     BuildContext context,
@@ -107,10 +116,8 @@ class PageScreen extends ConsumerWidget {
         ),
         body: Column(
           children: [
-            if (readOnly)
-              const _ViewOnlyBanner()
-            else
-              InkToolbar(pageId: pageId),
+            if (!inkEnabled) const _ViewOnlyBanner(),
+            if (!readOnly) InkToolbar(pageId: pageId, inkEnabled: inkEnabled),
             const Divider(height: 1),
             Expanded(
               child: PageTurnSwitcher(
@@ -122,6 +129,7 @@ class PageScreen extends ConsumerWidget {
                   child: PageCanvas(
                     pageId: pageId,
                     readOnly: readOnly,
+                    inkEnabled: inkEnabled,
                     onOpenPage: openPage,
                   ),
                 ),
@@ -145,8 +153,9 @@ class _ViewOnlyBanner extends StatelessWidget {
       color: theme.colorScheme.surface,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Text(
-        'Handwriting is view-only on the web. Use the Notely app on your '
-        'phone or tablet to write.',
+        'Handwriting is view-only on the web. You can add and edit text, '
+        'photos and stickers here; write with the Notely app on your phone '
+        'or tablet.',
         style: theme.textTheme.bodySmall,
       ),
     );

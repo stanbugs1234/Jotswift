@@ -563,6 +563,18 @@ class _FirestoreUserNotes
           .ignore();
 
   @override
+  Future<void> setElementContent(
+    String pageId,
+    String elementId,
+    ElementContent content,
+    ElementFrame frame,
+  ) async =>
+      _elements(pageId)
+          .doc(elementId)
+          .update({...content.toMap(), ...PageElement.frameToMap(frame)})
+          .ignore();
+
+  @override
   Future<void> setElementDeleted(
     String pageId,
     String elementId, {

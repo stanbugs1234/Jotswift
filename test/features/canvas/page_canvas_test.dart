@@ -39,7 +39,11 @@ void main() {
     skins = await loadTestSkins();
   });
 
-  Future<_Page> pumpPage(WidgetTester tester, {bool readOnly = false}) async {
+  Future<_Page> pumpPage(
+    WidgetTester tester, {
+    bool readOnly = false,
+    bool inkEnabled = true,
+  }) async {
     tester.view
       ..physicalSize = const Size(800, 1000)
       ..devicePixelRatio = 1;
@@ -68,7 +72,11 @@ void main() {
         container: container,
         child: themed(
           skinById(skins, 'classic'),
-          PageScreen(pageId: page.id, readOnly: readOnly),
+          PageScreen(
+            pageId: page.id,
+            readOnly: readOnly,
+            inkEnabled: inkEnabled,
+          ),
         ),
       ),
     );
@@ -172,10 +180,12 @@ void main() {
     final page = await pumpPage(tester);
     await drag(tester, PointerDeviceKind.stylus);
 
+    await tester.ensureVisible(find.byTooltip('Undo'));
     await tester.tap(find.byTooltip('Undo'));
     await tester.pumpAndSettle();
     expect(await page.visibleStrokes(), isEmpty);
 
+    await tester.ensureVisible(find.byTooltip('Redo'));
     await tester.tap(find.byTooltip('Redo'));
     await tester.pumpAndSettle();
     expect(await page.visibleStrokes(), hasLength(1));
@@ -205,6 +215,7 @@ void main() {
 
     expect(await page.visibleStrokes(), hasLength(1));
 
+    await tester.ensureVisible(find.byTooltip('Undo'));
     await tester.tap(find.byTooltip('Undo'));
     await tester.pumpAndSettle();
     expect(await page.visibleStrokes(), hasLength(2));
@@ -245,7 +256,22 @@ void main() {
     final page = await pumpPage(tester, readOnly: true);
 
     expect(find.byType(InkToolbar), findsNothing);
+    await drag(tester, PointerDeviceKind.stylus);
+    await drag(tester, PointerDeviceKind.mouse);
+    expect(await page.strokes(), isEmpty);
+  });
+
+  testWidgets('on the web: no pens, but text, photos and stickers', (
+    tester,
+  ) async {
+    final page = await pumpPage(tester, inkEnabled: false);
+
     expect(find.textContaining('view-only on the web'), findsOneWidget);
+    expect(find.byTooltip('Pen'), findsNothing);
+    expect(find.byTooltip('Text'), findsOneWidget);
+    expect(find.byTooltip('Photo'), findsOneWidget);
+    expect(find.byTooltip('Stickers'), findsOneWidget);
+    expect(find.byTooltip('Undo'), findsOneWidget);
 
     await drag(tester, PointerDeviceKind.stylus);
     await drag(tester, PointerDeviceKind.mouse);
