@@ -248,7 +248,7 @@ You can handwrite anywhere on the page, and the structured widgets stay interact
 - [ ] **Ink spike on real devices:** pressure ink on an iPad, an Android tablet and a phone; measure latency and FPS with 2,000+ strokes on a page (**needs devices**)
 - [x] Canvas: pen, highlighter, stroke eraser, undo/redo, zoom/pan, palm rejection, phone Draw/Scroll toggle
 - [x] Page paper (blank, lined, narrow, grid, dot, music, Cornell) and PDF templates with links
-- [ ] Text boxes and image insert
+- [x] Text boxes and image insert
 - [ ] Offline mode and sync status indicator
 - [x] Web: read-only ink rendering
 - [ ] Web: text box editing; deploy to Firebase Hosting

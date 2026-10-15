@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/catalog/catalog_item.dart';
 import '../../core/catalog/catalog_providers.dart';
+import 'domain/page_element.dart';
 import 'ink_tools.dart';
 
 /// One sticker in a pack.
@@ -59,33 +60,38 @@ final stickerImageProvider =
       return bytes == null ? null : MemoryImage(bytes);
     });
 
-/// A sticker the user picked, waiting for the canvas to place it.
-typedef StickerRequest = ({String itemId, String file, double aspect});
+/// Something to put on a page, waiting for the canvas to place it, with
+/// its size in page units.
+typedef PlacementRequest = ({
+  ElementContent content,
+  double width,
+  double height,
+});
 
-/// The sticker waiting to be placed on a page (set by the sticker tray,
-/// taken by the page's canvas, which knows what part of the page is in
-/// view).
-class StickerRequestController extends Notifier<StickerRequest?> {
-  StickerRequestController(this.pageId);
+/// The item waiting to be placed on a page (set by the sticker tray, the
+/// text box editor or the photo picker, taken by the page's canvas, which
+/// knows what part of the page is in view).
+class PlacementRequestController extends Notifier<PlacementRequest?> {
+  PlacementRequestController(this.pageId);
 
   final String pageId;
 
   @override
-  StickerRequest? build() => null;
+  PlacementRequest? build() => null;
 
-  void request(StickerRequest sticker) => state = sticker;
+  void request(PlacementRequest item) => state = item;
 
-  /// Takes the waiting sticker, if any.
-  StickerRequest? take() {
-    final sticker = state;
+  /// Takes the waiting item, if any.
+  PlacementRequest? take() {
+    final item = state;
     state = null;
-    return sticker;
+    return item;
   }
 }
 
-final stickerRequestProvider = NotifierProvider.autoDispose
-    .family<StickerRequestController, StickerRequest?, String>(
-      StickerRequestController.new,
+final placementRequestProvider = NotifierProvider.autoDispose
+    .family<PlacementRequestController, PlacementRequest?, String>(
+      PlacementRequestController.new,
     );
 
 /// The sticker tray: every sticker pack the user can use. Picking a sticker
@@ -113,10 +119,10 @@ class _StickerTray extends ConsumerWidget {
     final image = (await codec.getNextFrame()).image;
     final aspect = image.width / image.height;
     image.dispose();
-    ref.read(stickerRequestProvider(pageId).notifier).request((
-      itemId: pack.id,
-      file: sticker.file,
-      aspect: aspect,
+    ref.read(placementRequestProvider(pageId).notifier).request((
+      content: StickerContent(itemId: pack.id, file: sticker.file),
+      width: 240,
+      height: 240 / aspect,
     ));
     ref.read(inkToolProvider.notifier).selectTool(InkToolKind.select);
     if (context.mounted) Navigator.pop(context);

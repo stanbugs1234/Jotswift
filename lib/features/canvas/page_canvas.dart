@@ -14,9 +14,10 @@ import '../notebooks/notes_providers.dart';
 import 'domain/page_element.dart';
 import 'domain/stroke.dart';
 import 'ink_tools.dart';
+import 'page_items.dart';
 import 'stickers.dart';
-import 'templates.dart';
 import 'stroke_painter.dart';
+import 'templates.dart';
 
 /// Ruling on full-size pages is drawn larger than on the small previews.
 const _paperScale = 1.6;
@@ -461,9 +462,16 @@ class _PageCanvasState extends ConsumerState<PageCanvas> {
     // The topmost sticker under the pointer.
     for (final el in elements.reversed) {
       if (el.frame.contains(point, slop: 4 / _scale)) {
+        final wasSelected = el.id == _selectedId;
         setState(() {
           _selectedId = el.id;
-          _drag = _ElementDrag(e.pointer, el, _DragMode.move, point);
+          _drag = _ElementDrag(
+            e.pointer,
+            el,
+            _DragMode.move,
+            point,
+            wasSelected: wasSelected,
+          );
         });
         return true;
       }
@@ -520,6 +528,19 @@ class _PageCanvasState extends ConsumerState<PageCanvas> {
 
   void _finishDrag() {
     final drag = _drag!;
+    // A tap (no move) on a text box that was already selected edits it.
+    if (drag.wasSelected &&
+        drag.mode == _DragMode.move &&
+        drag.frame == drag.start) {
+      setState(() => _drag = null);
+      final element = _shownElements()
+          .where((e) => e.id == drag.elementId)
+          .firstOrNull;
+      if (element != null && element.content is TextContent) {
+        _editText(element);
+      }
+      return;
+    }
     setState(() {
       _drag = null;
       if (drag.frame != drag.start) {
@@ -531,16 +552,44 @@ class _PageCanvasState extends ConsumerState<PageCanvas> {
         .setElementFrame(drag.elementId, drag.start, drag.frame);
   }
 
-  /// Places the sticker picked in the tray in the middle of the view.
+  /// Edits a text box's text; emptying it removes the box.
+  Future<void> _editText(PageElement element) async {
+    final before = element.content as TextContent;
+    final after = await showTextBoxEditor(context, initial: before);
+    if (after == null || !mounted || after == before) return;
+    final history = ref.read(inkHistoryProvider(widget.pageId).notifier);
+    if (after.text.trim().isEmpty) {
+      await history.removeElement(element.id);
+      if (mounted) setState(() => _selectedId = null);
+      return;
+    }
+    await history.editElement(
+      element,
+      element.copyWith(
+        content: after,
+        frame: reframeText(element.frame, before, after),
+      ),
+    );
+  }
+
+  /// Places the waiting sticker, photo or text box in the middle of the
+  /// view.
   void _placeRequested() {
     final request = ref
-        .read(stickerRequestProvider(widget.pageId).notifier)
+        .read(placementRequestProvider(widget.pageId).notifier)
         .take();
     final viewport = _viewport;
     if (request == null || viewport == null) return;
     final middle = _toPage(viewport.center(Offset.zero));
-    const width = 240.0;
-    final height = width / request.aspect;
+    // Fits on the page, keeping its shape.
+    final fit = math.min(
+      1.0,
+      math.min(
+        _pageSize.width * 0.9 / request.width,
+        _pageSize.height * 0.9 / request.height,
+      ),
+    );
+    final width = request.width * fit, height = request.height * fit;
     final center = Offset(
       middle.dx.clamp(
         width / 2,
@@ -554,8 +603,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas> {
     final existing = ref.read(elementsProvider(widget.pageId)).value ?? [];
     final element = PageElement(
       id: ref.read(elementRepositoryProvider).newElementId(),
-      itemId: request.itemId,
-      file: request.file,
+      content: request.content,
       frame: ElementFrame(center: center, width: width, height: height),
       z: existing.fold(0.0, (z, e) => math.max(z, e.z)) + 1,
       createdAt: DateTime.now().millisecondsSinceEpoch,
@@ -647,7 +695,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas> {
     final selected = widget.readOnly || tool != InkToolKind.select
         ? null
         : elements.where((e) => e.id == _selectedId).firstOrNull;
-    ref.listen(stickerRequestProvider(widget.pageId), (_, next) {
+    ref.listen(placementRequestProvider(widget.pageId), (_, next) {
       if (next != null) _placeRequested();
     });
 
@@ -772,7 +820,14 @@ class _PageSurface extends StatelessWidget {
               height: e.frame.height,
               child: Transform.rotate(
                 angle: e.frame.rotation,
-                child: StickerView(itemId: e.itemId, file: e.file),
+                child: switch (e.content) {
+                  StickerContent(:final itemId, :final file) => StickerView(
+                    itemId: itemId,
+                    file: file,
+                  ),
+                  ImageContent(:final path) => PageImageView(path: path),
+                  final TextContent text => TextBoxView(content: text),
+                },
               ),
             ),
           RepaintBoundary(child: CustomPaint(painter: StrokesPainter(strokes))),
@@ -797,16 +852,24 @@ enum _DragMode { move, resize, rotate }
 
 /// A sticker being moved, resized or rotated by one pointer.
 class _ElementDrag {
-  _ElementDrag(this.pointer, PageElement element, this.mode, this.startPoint)
-    : elementId = element.id,
-      start = element.frame,
-      frame = element.frame;
+  _ElementDrag(
+    this.pointer,
+    PageElement element,
+    this.mode,
+    this.startPoint, {
+    this.wasSelected = false,
+  }) : elementId = element.id,
+       start = element.frame,
+       frame = element.frame;
 
   final int pointer;
   final String elementId;
   final _DragMode mode;
   final ElementFrame start;
   final Offset startPoint;
+
+  /// It was already selected when touched (so a tap on text edits it).
+  final bool wasSelected;
 
   /// The frame now, shown while dragging and saved at the end.
   ElementFrame frame;

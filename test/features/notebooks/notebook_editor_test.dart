@@ -23,7 +23,7 @@ final _png = base64Decode(
 
 class _FailingPhotoStore implements CoverPhotoStore {
   @override
-  Future<String> upload(String uid, Uint8List jpeg) =>
+  Future<String> upload(String uid, Uint8List jpeg, {String folder = ''}) =>
       Future.error(Exception('offline'));
 
   @override
@@ -59,7 +59,9 @@ void main() {
         coverPhotoStoreProvider.overrideWithValue(
           photos ?? InMemoryCoverPhotoStore(),
         ),
-        photoPickerProvider.overrideWithValue(() async => photo),
+        photoPickerProvider.overrideWithValue(
+          ({maxSize = Size.zero}) async => photo,
+        ),
       ],
     );
     uid = auth.currentUser!.uid;

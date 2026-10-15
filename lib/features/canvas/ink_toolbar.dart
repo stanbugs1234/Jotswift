@@ -3,10 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/skins/notely_skin.dart';
 import 'ink_tools.dart';
+import 'page_items.dart';
 import 'stickers.dart';
 
-/// Pen, highlighter, eraser, select, stickers, colors, sizes, hand mode,
-/// undo and redo.
+/// Pen, highlighter, eraser, select, text, photos, stickers, colors,
+/// sizes, hand mode, undo and redo.
 class InkToolbar extends ConsumerWidget {
   const InkToolbar({required this.pageId, super.key});
 
@@ -61,6 +62,16 @@ class InkToolbar extends ConsumerWidget {
             toolButton(InkToolKind.highlighter, Icons.highlight, 'Highlighter'),
             toolButton(InkToolKind.eraser, Icons.auto_fix_normal, 'Eraser'),
             toolButton(InkToolKind.select, Icons.near_me_outlined, 'Select'),
+            IconButton(
+              tooltip: 'Text',
+              icon: const Icon(Icons.text_fields),
+              onPressed: () => addTextBox(context, ref, pageId),
+            ),
+            IconButton(
+              tooltip: 'Photo',
+              icon: const Icon(Icons.add_photo_alternate_outlined),
+              onPressed: () => addPhoto(context, ref, pageId),
+            ),
             IconButton(
               tooltip: 'Stickers',
               icon: const Icon(Icons.emoji_emotions_outlined),

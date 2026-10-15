@@ -172,10 +172,12 @@ void main() {
     final page = await pumpPage(tester);
     await drag(tester, PointerDeviceKind.stylus);
 
+    await tester.ensureVisible(find.byTooltip('Undo'));
     await tester.tap(find.byTooltip('Undo'));
     await tester.pumpAndSettle();
     expect(await page.visibleStrokes(), isEmpty);
 
+    await tester.ensureVisible(find.byTooltip('Redo'));
     await tester.tap(find.byTooltip('Redo'));
     await tester.pumpAndSettle();
     expect(await page.visibleStrokes(), hasLength(1));
@@ -205,6 +207,7 @@ void main() {
 
     expect(await page.visibleStrokes(), hasLength(1));
 
+    await tester.ensureVisible(find.byTooltip('Undo'));
     await tester.tap(find.byTooltip('Undo'));
     await tester.pumpAndSettle();
     expect(await page.visibleStrokes(), hasLength(2));

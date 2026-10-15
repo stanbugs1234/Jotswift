@@ -40,8 +40,10 @@ const _frame = ElementFrame(center: Offset(500, 400), width: 200, height: 100);
 PageElement sticker(String id, {double z = 1, ElementFrame frame = _frame}) =>
     PageElement(
       id: id,
-      itemId: 'basics',
-      file: 'stickers/star.webp',
+      content: const StickerContent(
+        itemId: 'basics',
+        file: 'stickers/star.webp',
+      ),
       frame: frame,
       z: z,
       createdAt: 0,
@@ -108,8 +110,7 @@ void main() {
       final e = sticker('a');
       final back = PageElement.fromMap('a', e.toMap())!;
       expect(back.frame, e.frame);
-      expect(back.itemId, 'basics');
-      expect(back.file, 'stickers/star.webp');
+      expect(back.content, e.content);
     });
 
     test('kinds from newer apps are skipped', () {
@@ -314,8 +315,10 @@ void main() {
       await placeStar(tester);
 
       final placed = (await stickers()).single;
-      expect(placed.itemId, 'basics');
-      expect(placed.file, 'stickers/star.webp');
+      expect(
+        placed.content,
+        const StickerContent(itemId: 'basics', file: 'stickers/star.webp'),
+      );
       expect(placed.frame.width, 240);
       expect(container.read(inkToolProvider).kind, InkToolKind.select);
       expect(find.byType(StickerView), findsOneWidget);
@@ -371,14 +374,17 @@ void main() {
       await settle(tester);
       expect(await stickers(), isEmpty);
 
+      await tester.ensureVisible(find.byTooltip('Undo'));
       await tester.tap(find.byTooltip('Undo'));
       await settle(tester);
       expect(await stickers(), hasLength(1));
 
       // Undo the placing too, then redo it.
+      await tester.ensureVisible(find.byTooltip('Undo'));
       await tester.tap(find.byTooltip('Undo'));
       await settle(tester);
       expect(await stickers(), isEmpty);
+      await tester.ensureVisible(find.byTooltip('Redo'));
       await tester.tap(find.byTooltip('Redo'));
       await settle(tester);
       expect(await stickers(), hasLength(1));
@@ -391,6 +397,7 @@ void main() {
       final center = onScreen(tester, start.center);
       await drag(tester, center, center + const Offset(80, 0));
 
+      await tester.ensureVisible(find.byTooltip('Undo'));
       await tester.tap(find.byTooltip('Undo'));
       await settle(tester);
 

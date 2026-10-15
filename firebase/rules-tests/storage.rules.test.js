@@ -64,8 +64,21 @@ describe('users/{uid}/covers', () => {
     await assertFails(uploadBytes(ref(sam(), 'users/sam/covers/big.jpg'), big, asJpeg));
   });
 
-  test('nothing outside the covers folder', async () => {
+  test('photos on pages go in the images folder, the same way', async () => {
+    const photo = ref(sam(), 'users/sam/images/1.jpg');
+    await assertSucceeds(uploadBytes(photo, jpeg, asJpeg));
+    await assertSucceeds(getBytes(photo));
+    await assertFails(getBytes(ref(alex(), 'users/sam/images/1.jpg')));
+    await assertFails(
+      uploadBytes(ref(sam(), 'users/sam/images/a.txt'), jpeg, {
+        contentType: 'text/plain',
+      }),
+    );
+  });
+
+  test('nothing outside those folders', async () => {
     await assertFails(uploadBytes(ref(sam(), 'users/sam/other.jpg'), jpeg, asJpeg));
+    await assertFails(uploadBytes(ref(sam(), 'users/sam/docs/1.jpg'), jpeg, asJpeg));
   });
 });
 
