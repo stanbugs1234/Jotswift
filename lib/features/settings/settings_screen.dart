@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/entitlements/entitlements.dart';
 import '../../core/purchases/purchases_providers.dart';
+import '../../core/input/finger_drawing.dart';
 import '../../core/motion/motion.dart';
 import '../../core/settings/appearance.dart';
 import '../../core/skins/skin_providers.dart';
@@ -73,6 +74,45 @@ class SettingsScreen extends ConsumerWidget {
               selected: {ref.watch(themeModeProvider)},
               onSelectionChanged: (s) =>
                   ref.read(appearanceProvider.notifier).set(s.first),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.draw_outlined),
+            title: const Text('Apple Pencil & touch'),
+            subtitle: Text(switch (ref.watch(fingerDrawingProvider)) {
+              FingerDrawing.device =>
+                ref.watch(devicePencilProvider).pencilOnly
+                    ? 'Fingers scroll and zoom: your iPad is set to Only '
+                          'Draw with Apple Pencil.'
+                    : ref.watch(fingersDrawProvider)
+                    ? 'Fingers draw, following this device.'
+                    : 'Fingers scroll and zoom, since you use a stylus.',
+              FingerDrawing.on => 'Fingers draw on pages.',
+              FingerDrawing.off =>
+                'Fingers scroll and zoom; only the pen draws.',
+            }),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(72, 0, 16, 8),
+            child: SegmentedButton<FingerDrawing>(
+              showSelectedIcon: false,
+              segments: const [
+                ButtonSegment(
+                  value: FingerDrawing.device,
+                  label: Text('Follow device'),
+                ),
+                ButtonSegment(
+                  value: FingerDrawing.on,
+                  label: Text('Finger draws'),
+                ),
+                ButtonSegment(
+                  value: FingerDrawing.off,
+                  label: Text('Pen only'),
+                ),
+              ],
+              selected: {ref.watch(fingerDrawingProvider)},
+              onSelectionChanged: (s) =>
+                  ref.read(fingerDrawingProvider.notifier).set(s.first),
             ),
           ),
           const ListTile(

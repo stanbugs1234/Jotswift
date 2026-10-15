@@ -61,6 +61,11 @@ void main() {
 
       await tester.tap(find.byTooltip('Settings'));
       await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(
+        find.text('Sign out'),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
       await tester.ensureVisible(find.text('Sign out'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Sign out'));
