@@ -100,16 +100,25 @@ class _PeriodTransitionState<T extends Comparable<T>>
     final reduced = !Motion.of(context).full;
     final old = IgnorePointer(child: leaving);
     return LayoutBuilder(
-      builder: (context, constraints) => AnimatedBuilder(
-        animation: _controller,
-        builder: (context, _) => _frame(
-          reduced ? PeriodAnimation.fade : widget.animation,
-          _controller.value,
-          constraints.biggest,
-          old,
-          current,
-        ),
-      ),
+      builder: (context, constraints) {
+        final animation = reduced ? PeriodAnimation.fade : widget.animation;
+        final frames = AnimatedBuilder(
+          animation: _controller,
+          builder: (context, _) => _frame(
+            animation,
+            _controller.value,
+            constraints.biggest,
+            old,
+            current,
+          ),
+        );
+        // Flat moves stay inside the view; 3D turns may lean out of it.
+        return switch (animation) {
+          PeriodAnimation.slide ||
+          PeriodAnimation.stack => ClipRect(child: frames),
+          _ => frames,
+        };
+      },
     );
   }
 
@@ -172,7 +181,8 @@ class _PeriodTransitionState<T extends Comparable<T>>
             f ? old : current,
             swing,
             alignment: Alignment.topCenter,
-            rotate: (m, a) => m..rotateX(a),
+            // Toward the viewer, like lifting a hanging page.
+            rotate: (m, a) => m..rotateX(-a),
           ),
         ]);
       case PeriodAnimation.cube:

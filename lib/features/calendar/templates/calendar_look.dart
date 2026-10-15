@@ -96,11 +96,16 @@ class TodayMark extends StatelessWidget {
       TodayMarker.star => true,
       _ => false,
     };
-    final label = Text(
-      text,
-      style: style?.copyWith(
-        color: filled ? t.onAccent : t.accent,
-        fontWeight: FontWeight.w700,
+    // Shrinks to fit small markers, such as in previews.
+    final label = FittedBox(
+      fit: BoxFit.scaleDown,
+      child: Text(
+        text,
+        maxLines: 1,
+        style: style?.copyWith(
+          color: filled ? t.onAccent : t.accent,
+          fontWeight: FontWeight.w700,
+        ),
       ),
     );
     return switch (t.today) {

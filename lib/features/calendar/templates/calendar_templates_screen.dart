@@ -12,24 +12,33 @@ import 'calendar_template.dart';
 /// Opens the template and animation picker: a sheet on tablets, a full
 /// screen on phones.
 Future<void> showCalendarTemplates(BuildContext context) {
+  // In the app's own look, not the current template's.
+  final navigator = Navigator.of(context, rootNavigator: true);
+  final appTheme = Theme.of(navigator.context);
   if (MediaQuery.sizeOf(context).width >= 600) {
     return showModalBottomSheet<void>(
-      context: context,
+      context: navigator.context,
       isScrollControlled: true,
       showDragHandle: true,
-      useRootNavigator: true,
-      builder: (_) => const FractionallySizedBox(
-        heightFactor: 0.88,
-        child: CalendarTemplatesPicker(),
+      backgroundColor: appTheme.colorScheme.surface,
+      builder: (_) => Theme(
+        data: appTheme,
+        child: const FractionallySizedBox(
+          heightFactor: 0.88,
+          child: CalendarTemplatesPicker(),
+        ),
       ),
     );
   }
-  return Navigator.of(context, rootNavigator: true).push(
+  return navigator.push(
     MaterialPageRoute<void>(
       fullscreenDialog: true,
-      builder: (_) => Scaffold(
-        appBar: AppBar(title: const Text('Calendar templates')),
-        body: const CalendarTemplatesPicker(),
+      builder: (_) => Theme(
+        data: appTheme,
+        child: Scaffold(
+          appBar: AppBar(title: const Text('Calendar templates')),
+          body: const CalendarTemplatesPicker(),
+        ),
       ),
     ),
   );

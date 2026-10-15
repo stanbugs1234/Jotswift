@@ -100,6 +100,20 @@ class CalendarTemplate {
       surface: background,
       onSurface: text,
       surfaceContainerHighest: cell,
+      surfaceContainerHigh: cell,
+      surfaceContainer: cell,
+      surfaceContainerLow: background,
+      // Selected buttons and the New event button, tinted with the accent.
+      primaryContainer: Color.alphaBlend(
+        accent.withValues(alpha: dark ? 0.35 : 0.18),
+        background,
+      ),
+      onPrimaryContainer: text,
+      secondaryContainer: Color.alphaBlend(
+        accent.withValues(alpha: dark ? 0.3 : 0.16),
+        background,
+      ),
+      onSecondaryContainer: text,
       outline: muted,
       outlineVariant: grid,
     );

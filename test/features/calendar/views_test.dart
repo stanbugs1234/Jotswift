@@ -10,6 +10,7 @@ import 'package:notely/features/calendar/calendar_providers.dart';
 import 'package:notely/features/calendar/data/event_repository.dart';
 import 'package:notely/features/calendar/domain/event.dart';
 import 'package:notely/features/calendar/views/agenda_view.dart';
+import 'package:notely/features/calendar/views/month_view.dart';
 import 'package:notely/features/tasks/task_providers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -250,8 +251,12 @@ void main() {
       expect(monthAnimation(), PeriodAnimation.wallFlip);
 
       await tester.tap(find.byTooltip('Next'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 200));
+      expect(find.byType(MonthView), findsNWidgets(2), reason: 'flipping');
       await tester.pumpAndSettle();
       expect(find.text('November 2026'), findsOneWidget);
+      expect(find.byType(MonthView), findsOneWidget);
 
       await tester.tap(find.text('Week'));
       await tester.pumpAndSettle();

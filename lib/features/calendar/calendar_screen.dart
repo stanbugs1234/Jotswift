@@ -85,7 +85,8 @@ class CalendarScreen extends ConsumerWidget {
       child: LayoutBuilder(
         builder: (context, constraints) {
           final showPanel = constraints.maxWidth >= calendarsPanelBreakpoint;
-          final narrow = constraints.maxWidth < 600;
+          // Below this the six view buttons don't fit; use a menu.
+          final narrow = constraints.maxWidth < 720;
           return _scaffold(
             context,
             ref,
@@ -215,7 +216,10 @@ class CalendarScreen extends ConsumerWidget {
                     showSelectedIcon: false,
                     segments: [
                       for (final m in CalendarMode.values)
-                        ButtonSegment(value: m, label: Text(m.label)),
+                        ButtonSegment(
+                          value: m,
+                          label: Text(m.label, maxLines: 1, softWrap: false),
+                        ),
                     ],
                     selected: {state.mode},
                     onSelectionChanged: (s) => controller.setMode(s.first),
