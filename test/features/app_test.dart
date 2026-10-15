@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:notely/app/app.dart';
+import 'package:notely/app/router.dart';
 import 'package:notely/core/skins/notely_skin.dart';
 import 'package:notely/core/skins/skin_manifest.dart';
 import 'package:notely/features/auth/sign_in_screen.dart';
@@ -42,6 +45,27 @@ void main() {
 
       expect(find.byType(SignInScreen), findsNothing);
       expect(find.widgetWithText(AppBar, 'Notebooks'), findsOneWidget);
+    });
+
+    testWidgets('a link opened while signed out comes back after sign-in', (
+      tester,
+    ) async {
+      await pumpApp(tester, skins, signedIn: false);
+      final router = ProviderScope.containerOf(
+        tester.element(find.byType(NotelyApp)),
+      ).read(routerProvider);
+      router.go('/todo');
+      await tester.pumpAndSettle();
+      expect(find.byType(SignInScreen), findsOneWidget);
+
+      await tester.enterText(find.widgetWithText(TextField, 'Email'), 'a@b.co');
+      await tester.enterText(
+        find.widgetWithText(TextField, 'Password'),
+        'secret1',
+      );
+      await tester.tap(find.widgetWithText(FilledButton, 'Sign in'));
+      await tester.pumpAndSettle();
+      expect(router.routerDelegate.currentConfiguration.uri.path, '/todo');
     });
 
     testWidgets('shows an error for a short password', (tester) async {

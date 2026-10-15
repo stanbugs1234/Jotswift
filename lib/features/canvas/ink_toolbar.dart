@@ -9,9 +9,12 @@ import 'stickers.dart';
 /// Pen, highlighter, eraser, select, text, photos, stickers, colors,
 /// sizes, hand mode, undo and redo.
 class InkToolbar extends ConsumerWidget {
-  const InkToolbar({required this.pageId, super.key});
+  const InkToolbar({required this.pageId, this.inkEnabled = true, super.key});
 
   final String pageId;
+
+  /// False on the web: only text, photos, stickers, undo and redo.
+  final bool inkEnabled;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -44,24 +47,32 @@ class InkToolbar extends ConsumerWidget {
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         child: Row(
           children: [
-            IconButton(
-              tooltip: tool.drawMode ? 'Hand (scroll with one finger)' : 'Hand',
-              isSelected: !tool.drawMode,
-              style: IconButton.styleFrom(
-                backgroundColor: tool.drawMode
-                    ? null
-                    : scheme.primary.withValues(alpha: 0.15),
+            if (inkEnabled) ...[
+              IconButton(
+                tooltip: tool.drawMode
+                    ? 'Hand (scroll with one finger)'
+                    : 'Hand',
+                isSelected: !tool.drawMode,
+                style: IconButton.styleFrom(
+                  backgroundColor: tool.drawMode
+                      ? null
+                      : scheme.primary.withValues(alpha: 0.15),
+                ),
+                icon: Icon(
+                  Icons.pan_tool_outlined,
+                  color: tool.drawMode ? null : scheme.primary,
+                ),
+                onPressed: () => tools.setDrawMode(!tool.drawMode),
               ),
-              icon: Icon(
-                Icons.pan_tool_outlined,
-                color: tool.drawMode ? null : scheme.primary,
+              toolButton(InkToolKind.pen, Icons.edit, 'Pen'),
+              toolButton(
+                InkToolKind.highlighter,
+                Icons.highlight,
+                'Highlighter',
               ),
-              onPressed: () => tools.setDrawMode(!tool.drawMode),
-            ),
-            toolButton(InkToolKind.pen, Icons.edit, 'Pen'),
-            toolButton(InkToolKind.highlighter, Icons.highlight, 'Highlighter'),
-            toolButton(InkToolKind.eraser, Icons.auto_fix_normal, 'Eraser'),
-            toolButton(InkToolKind.select, Icons.near_me_outlined, 'Select'),
+              toolButton(InkToolKind.eraser, Icons.auto_fix_normal, 'Eraser'),
+              toolButton(InkToolKind.select, Icons.near_me_outlined, 'Select'),
+            ],
             IconButton(
               tooltip: 'Text',
               icon: const Icon(Icons.text_fields),
@@ -77,31 +88,33 @@ class InkToolbar extends ConsumerWidget {
               icon: const Icon(Icons.emoji_emotions_outlined),
               onPressed: () => showStickerTray(context, pageId),
             ),
-            const _Divider(),
-            for (final (i, color) in skin.inkColors.indexed)
-              _ColorDot(
-                color: color,
-                selected: i == tool.colorIndex,
-                onTap: () => tools.selectColor(i),
-                label: 'Ink color ${i + 1}',
-              ),
-            const _Divider(),
-            for (var i = 0; i < 3; i++)
-              IconButton(
-                tooltip: const ['Thin', 'Medium', 'Thick'][i],
-                isSelected: i == tool.sizeIndex,
-                icon: Container(
-                  width: 6.0 + i * 5,
-                  height: 6.0 + i * 5,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: i == tool.sizeIndex
-                        ? scheme.primary
-                        : scheme.onSurface.withValues(alpha: 0.45),
-                  ),
+            if (inkEnabled) ...[
+              const _Divider(),
+              for (final (i, color) in skin.inkColors.indexed)
+                _ColorDot(
+                  color: color,
+                  selected: i == tool.colorIndex,
+                  onTap: () => tools.selectColor(i),
+                  label: 'Ink color ${i + 1}',
                 ),
-                onPressed: () => tools.selectSize(i),
-              ),
+              const _Divider(),
+              for (var i = 0; i < 3; i++)
+                IconButton(
+                  tooltip: const ['Thin', 'Medium', 'Thick'][i],
+                  isSelected: i == tool.sizeIndex,
+                  icon: Container(
+                    width: 6.0 + i * 5,
+                    height: 6.0 + i * 5,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: i == tool.sizeIndex
+                          ? scheme.primary
+                          : scheme.onSurface.withValues(alpha: 0.45),
+                    ),
+                  ),
+                  onPressed: () => tools.selectSize(i),
+                ),
+            ],
             const _Divider(),
             IconButton(
               tooltip: 'Undo',

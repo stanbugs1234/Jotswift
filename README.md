@@ -13,7 +13,7 @@ See [PLAN.md](PLAN.md) for the product plan and roadmap, and [docs/content.md](d
 | Content | A catalog of covers, papers, sticker packs, PDF planners and page templates, published from Firebase ([docs/content.md](docs/content.md)). |
 | Planner, Calendar, To-do | Daily planner pages, events with repeats in month, week and day views, task lists, and reminders as local notifications. |
 | Store | Templates screen, Notely Pro and packs through RevenueCat. Built and tested, switched on once the accounts in [docs/store-setup.md](docs/store-setup.md) exist. |
-| Web | Everything syncs. Handwriting, text boxes and photos are view-only on the web. |
+| Web | Everything syncs. Text boxes, photos and stickers can be added and edited; handwriting is view-only. |
 
 **Testing on an iPad:** see [docs/testing-on-ipad.md](docs/testing-on-ipad.md).
 

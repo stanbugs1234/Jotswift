@@ -7,6 +7,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:flutter_web_plugins/url_strategy.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app/app.dart';
@@ -33,6 +35,12 @@ import 'features/tasks/task_providers.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
+  // On the web, addresses look like /notebooks/abc (not /#/notebooks/abc),
+  // so links and refreshes open the same screen. Hosting sends every path
+  // to index.html (firebase.json).
+  usePathUrlStrategy();
+  // Screens opened with push() show their address too.
+  GoRouter.optionURLReflectsImperativeAPIs = true;
   WidgetsFlutterBinding.ensureInitialized();
 
   // Load these before the first frame so the app opens with the user's

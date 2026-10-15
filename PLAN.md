@@ -251,7 +251,7 @@ You can handwrite anywhere on the page, and the structured widgets stay interact
 - [x] Text boxes and image insert
 - [ ] Offline mode and sync status indicator
 - [x] Web: read-only ink rendering
-- [ ] Web: text box editing
+- [x] Web: text boxes, photos and stickers editable (ink stays view-only); links and refreshes keep their page
 - [x] Web: deployed to Firebase Hosting at https://notely-b1aec.web.app (`tool/deploy_web.sh`)
 - [x] Firestore security rules + rules unit tests
 

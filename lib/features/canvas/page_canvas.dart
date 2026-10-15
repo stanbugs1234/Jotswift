@@ -37,6 +37,7 @@ class PageCanvas extends ConsumerStatefulWidget {
   const PageCanvas({
     required this.pageId,
     this.readOnly = false,
+    this.inkEnabled = true,
     this.onOpenPage,
     super.key,
   });
@@ -46,8 +47,13 @@ class PageCanvas extends ConsumerStatefulWidget {
   /// Opens another page of the notebook (when a template link is tapped).
   final ValueChanged<String>? onOpenPage;
 
-  /// View only: no drawing (used on the web).
+  /// View only: no drawing and no changes to stickers, photos or text.
   final bool readOnly;
+
+  /// Whether ink can be drawn. Off on the web, where the page always acts
+  /// as with the select tool: stickers, photos and text boxes can still be
+  /// added, moved and edited.
+  final bool inkEnabled;
 
   @override
   ConsumerState<PageCanvas> createState() => _PageCanvasState();
@@ -130,7 +136,10 @@ class _PageCanvasState extends ConsumerState<PageCanvas> {
   }
 
   bool _canDraw(PointerDownEvent e) {
-    if (widget.readOnly || _drawPointer != null || _navPointers.isNotEmpty) {
+    if (widget.readOnly ||
+        !widget.inkEnabled ||
+        _drawPointer != null ||
+        _navPointers.isNotEmpty) {
       return false;
     }
     if (ref.read(inkToolProvider).kind == InkToolKind.select &&
@@ -420,12 +429,24 @@ class _PageCanvasState extends ConsumerState<PageCanvas> {
         ),
   ];
 
+  /// Whether pointers select and move items rather than draw.
+  bool _selecting(InkToolKind tool) =>
+      !widget.inkEnabled || tool == InkToolKind.select;
+
+  /// Removes the selected item (the Delete key).
+  void _deleteSelected() {
+    final id = _selectedId;
+    if (id == null || widget.readOnly) return;
+    ref.read(inkHistoryProvider(widget.pageId).notifier).removeElement(id);
+    setState(() => _selectedId = null);
+  }
+
   /// With the select tool, a pointer on a sticker or one of its handles
   /// selects, moves, resizes, rotates or removes it. Returns whether the
   /// pointer was used.
   bool _selectWith(PointerDownEvent e) {
     if (widget.readOnly ||
-        ref.read(inkToolProvider).kind != InkToolKind.select ||
+        !_selecting(ref.read(inkToolProvider).kind) ||
         _drag != null ||
         _drawPointer != null ||
         _navPointers.isNotEmpty ||
@@ -692,7 +713,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas> {
     _reconcileElements(saved);
     final elements = _shownElements();
     final tool = ref.watch(inkToolProvider).kind;
-    final selected = widget.readOnly || tool != InkToolKind.select
+    final selected = widget.readOnly || !_selecting(tool)
         ? null
         : elements.where((e) => e.id == _selectedId).firstOrNull;
     ref.listen(placementRequestProvider(widget.pageId), (_, next) {
@@ -705,39 +726,64 @@ class _PageCanvasState extends ConsumerState<PageCanvas> {
         if (_viewport == null) _fitWidth(viewport);
         _viewport = viewport;
 
-        return ClipRect(
-          child: Listener(
-            behavior: HitTestBehavior.opaque,
-            onPointerDown: _onPointerDown,
-            onPointerMove: _onPointerMove,
-            onPointerUp: _onPointerUp,
-            onPointerCancel: _onPointerCancel,
-            onPointerSignal: _onPointerSignal,
-            child: Stack(
-              children: [
-                Positioned(
-                  left: _offset.dx,
-                  top: _offset.dy,
-                  child: Transform.scale(
-                    scale: _scale,
-                    alignment: Alignment.topLeft,
-                    child: _PageSurface(
-                      size: _pageSize,
-                      paper: paper,
-                      hasTemplate: template != null,
-                      templateImage: templateImage,
-                      templateRect: templateImage == null
-                          ? null
-                          : _templateRect(templateImage),
-                      elements: elements,
-                      selected: selected?.frame,
-                      handleScale: _handleSize / _scale,
-                      strokes: visible,
-                      live: _live,
+        final history = ref.read(inkHistoryProvider(widget.pageId).notifier);
+        return CallbackShortcuts(
+          bindings: {
+            const SingleActivator(LogicalKeyboardKey.delete): _deleteSelected,
+            const SingleActivator(LogicalKeyboardKey.backspace):
+                _deleteSelected,
+            const SingleActivator(LogicalKeyboardKey.keyZ, control: true):
+                history.undo,
+            const SingleActivator(LogicalKeyboardKey.keyZ, meta: true):
+                history.undo,
+            const SingleActivator(
+              LogicalKeyboardKey.keyZ,
+              control: true,
+              shift: true,
+            ): history.redo,
+            const SingleActivator(
+              LogicalKeyboardKey.keyZ,
+              meta: true,
+              shift: true,
+            ): history.redo,
+          },
+          child: Focus(
+            autofocus: true,
+            child: ClipRect(
+              child: Listener(
+                behavior: HitTestBehavior.opaque,
+                onPointerDown: _onPointerDown,
+                onPointerMove: _onPointerMove,
+                onPointerUp: _onPointerUp,
+                onPointerCancel: _onPointerCancel,
+                onPointerSignal: _onPointerSignal,
+                child: Stack(
+                  children: [
+                    Positioned(
+                      left: _offset.dx,
+                      top: _offset.dy,
+                      child: Transform.scale(
+                        scale: _scale,
+                        alignment: Alignment.topLeft,
+                        child: _PageSurface(
+                          size: _pageSize,
+                          paper: paper,
+                          hasTemplate: template != null,
+                          templateImage: templateImage,
+                          templateRect: templateImage == null
+                              ? null
+                              : _templateRect(templateImage),
+                          elements: elements,
+                          selected: selected?.frame,
+                          handleScale: _handleSize / _scale,
+                          strokes: visible,
+                          live: _live,
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         );

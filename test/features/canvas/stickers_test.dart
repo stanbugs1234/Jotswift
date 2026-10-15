@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'dart:math' as math;
-import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:notely/core/catalog/catalog_item.dart';
@@ -222,6 +222,7 @@ void main() {
     Future<ProviderContainer> pumpPage(
       WidgetTester tester, {
       bool readOnly = false,
+      bool inkEnabled = true,
     }) async {
       tester.view
         ..physicalSize = const Size(800, 1000)
@@ -256,7 +257,11 @@ void main() {
           container: container,
           child: themed(
             skinById(skins, 'classic'),
-            PageScreen(pageId: pageId, readOnly: readOnly),
+            PageScreen(
+              pageId: pageId,
+              readOnly: readOnly,
+              inkEnabled: inkEnabled,
+            ),
           ),
         ),
       );
@@ -418,6 +423,28 @@ void main() {
       );
 
       expect(await backend.strokes(uid).watchStrokes(pageId).first, isEmpty);
+    });
+
+    testWidgets('on the web, stickers move with any tool, and Delete '
+        'removes them', (tester) async {
+      final container = await pumpPage(tester, inkEnabled: false);
+      await backend.elements(uid).addElement(pageId, sticker('s'));
+      await settle(tester);
+      // The pen is still the chosen tool, but the web can't draw.
+      expect(container.read(inkToolProvider).kind, InkToolKind.pen);
+
+      final center = onScreen(tester, _frame.center);
+      await drag(
+        tester,
+        center,
+        center + const Offset(80, 0),
+        kind: PointerDeviceKind.mouse,
+      );
+      expect((await stickers()).single.frame.center.dx, greaterThan(500));
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.delete);
+      await settle(tester);
+      expect(await stickers(), isEmpty);
     });
 
     testWidgets('view-only pages show stickers but cannot change them', (
