@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:notely/core/skins/skin_manifest.dart';
 import 'package:notely/features/canvas/ink_toolbar.dart';
-import 'package:notely/features/notebooks/notebooks_screen.dart';
+import 'package:notely/features/shelf/cover_view.dart';
 
 import '../../helpers.dart';
 
@@ -63,7 +63,7 @@ void main() {
 
     await tester.pageBack();
     await tester.pumpAndSettle();
-    expect(find.byType(NotebookTile), findsOneWidget);
+    expect(find.byType(CoverView), findsOneWidget);
     expect(find.text('Biology'), findsOneWidget);
   });
 
@@ -125,7 +125,7 @@ void main() {
     await tester.tap(find.widgetWithText(TextButton, 'Delete'));
     await tester.pumpAndSettle();
 
-    expect(find.byType(NotebookTile), findsNothing);
+    expect(find.byType(CoverView), findsNothing);
     expect(find.text('No notebooks yet'), findsOneWidget);
   });
 }

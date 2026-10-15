@@ -12,6 +12,8 @@ import 'notes_repository.dart';
 /// ```
 /// users/{uid}/notebooks/{notebookId}
 /// users/{uid}/notebooks/{notebookId}/sections/{sectionId}
+/// users/{uid}/categories/{categoryId}
+/// users/{uid}/groups/{groupId}
 /// users/{uid}/pages/{pageId}
 /// users/{uid}/pages/{pageId}/strokes/{strokeId}
 /// ```
@@ -27,11 +29,16 @@ class FirestoreNotesBackend implements NotesBackend {
       _FirestoreUserNotes(_firestore.doc('users/$uid'));
 
   @override
+  ShelfRepository shelf(String uid) =>
+      _FirestoreUserNotes(_firestore.doc('users/$uid'));
+
+  @override
   StrokeRepository strokes(String uid) =>
       _FirestoreUserNotes(_firestore.doc('users/$uid'));
 }
 
-class _FirestoreUserNotes implements NotebookRepository, StrokeRepository {
+class _FirestoreUserNotes
+    implements NotebookRepository, ShelfRepository, StrokeRepository {
   _FirestoreUserNotes(this._user);
 
   final DocumentReference<Map<String, dynamic>> _user;
@@ -40,6 +47,10 @@ class _FirestoreUserNotes implements NotebookRepository, StrokeRepository {
       _user.collection('notebooks');
   CollectionReference<Map<String, dynamic>> _sections(String notebookId) =>
       _notebooks.doc(notebookId).collection('sections');
+  CollectionReference<Map<String, dynamic>> get _categories =>
+      _user.collection('categories');
+  CollectionReference<Map<String, dynamic>> get _groups =>
+      _user.collection('groups');
   CollectionReference<Map<String, dynamic>> get _pages =>
       _user.collection('pages');
   CollectionReference<Map<String, dynamic>> _strokes(String pageId) =>
@@ -106,6 +117,142 @@ class _FirestoreUserNotes implements NotebookRepository, StrokeRepository {
     await _deleteAll(await _sections(notebookId).get());
     _notebooks.doc(notebookId).delete().ignore();
   }
+
+  @override
+  Future<void> markNotebookOpened(String notebookId) async =>
+      _notebooks.doc(notebookId).update({'lastOpenedAt': nowMillis()}).ignore();
+
+  @override
+  Future<void> touchNotebook(String notebookId) async =>
+      _notebooks.doc(notebookId).update({'updatedAt': nowMillis()}).ignore();
+
+  // Shelf
+
+  /// Only top-level items keep a category; see [NotebookGroup].
+  static Object _categoryField(ShelfPlace place) =>
+      place.groupId == null && place.categoryId != null
+      ? place.categoryId!
+      : FieldValue.delete();
+
+  @override
+  Stream<List<Category>> watchCategories() => _categories.snapshots().map(
+    (snap) =>
+        [for (final d in snap.docs) Category.fromMap(d.id, d.data())]
+          ..sort((a, b) => a.order.compareTo(b.order)),
+  );
+
+  @override
+  Future<Category> createCategory(String title) async {
+    final existing = await _categories.get();
+    final last = existing.docs
+        .map((d) => (d.data()['order'] as num?)?.toDouble() ?? 0)
+        .fold<double>(0, max);
+    final ref = _categories.doc();
+    final category = Category(id: ref.id, title: title, order: last + 1);
+    _commitInBackground(ref.firestore.batch()..set(ref, category.toMap()));
+    return category;
+  }
+
+  @override
+  Future<void> renameCategory(String categoryId, String title) async =>
+      _categories.doc(categoryId).update({'title': title}).ignore();
+
+  @override
+  Future<void> deleteCategory(String categoryId) async {
+    final notebooks = await _notebooks
+        .where('categoryId', isEqualTo: categoryId)
+        .get();
+    final groups = await _groups
+        .where('categoryId', isEqualTo: categoryId)
+        .get();
+    final batch = _user.firestore.batch()..delete(_categories.doc(categoryId));
+    for (final d in [...notebooks.docs, ...groups.docs]) {
+      batch.update(d.reference, {'categoryId': FieldValue.delete()});
+    }
+    _commitInBackground(batch);
+  }
+
+  @override
+  Stream<List<NotebookGroup>> watchGroups() => _groups.snapshots().map(
+    (snap) =>
+        [for (final d in snap.docs) NotebookGroup.fromMap(d.id, d.data())]
+          ..sort((a, b) => a.order.compareTo(b.order)),
+  );
+
+  @override
+  Future<NotebookGroup> createGroup(String title, ShelfPlace place) async {
+    final now = nowMillis();
+    final ref = _groups.doc();
+    final group = NotebookGroup(
+      id: ref.id,
+      title: title,
+      categoryId: place.groupId == null ? place.categoryId : null,
+      parentGroupId: place.groupId,
+      order: now.toDouble(),
+      createdAt: now,
+      updatedAt: now,
+    );
+    _commitInBackground(ref.firestore.batch()..set(ref, group.toMap()));
+    return group;
+  }
+
+  @override
+  Future<void> renameGroup(String groupId, String title) async => _groups
+      .doc(groupId)
+      .update({'title': title, 'updatedAt': nowMillis()})
+      .ignore();
+
+  @override
+  Future<void> deleteGroup(String groupId) async {
+    final group = await _groups.doc(groupId).get();
+    final data = group.data();
+    if (data == null) return;
+    final up = NotebookGroup.fromMap(groupId, data);
+    final place = (categoryId: up.categoryId, groupId: up.parentGroupId);
+    final notebooks = await _notebooks
+        .where('groupId', isEqualTo: groupId)
+        .get();
+    final children = await _groups
+        .where('parentGroupId', isEqualTo: groupId)
+        .get();
+    final batch = _user.firestore.batch()..delete(group.reference);
+    for (final d in notebooks.docs) {
+      batch.update(d.reference, {
+        'categoryId': _categoryField(place),
+        'groupId': place.groupId ?? FieldValue.delete(),
+      });
+    }
+    for (final d in children.docs) {
+      batch.update(d.reference, {
+        'categoryId': _categoryField(place),
+        'parentGroupId': place.groupId ?? FieldValue.delete(),
+      });
+    }
+    _commitInBackground(batch);
+  }
+
+  @override
+  Future<void> moveNotebook(String notebookId, ShelfPlace place) async =>
+      _notebooks.doc(notebookId).update({
+        'categoryId': _categoryField(place),
+        'groupId': place.groupId ?? FieldValue.delete(),
+      }).ignore();
+
+  @override
+  Future<void> moveGroup(String groupId, ShelfPlace place) async =>
+      _groups.doc(groupId).update({
+        'categoryId': _categoryField(place),
+        'parentGroupId': place.groupId ?? FieldValue.delete(),
+        'updatedAt': nowMillis(),
+      }).ignore();
+
+  @override
+  Future<void> setNotebookOrder(String notebookId, double order) async =>
+      _notebooks.doc(notebookId).update({'order': order}).ignore();
+
+  @override
+  Future<void> setGroupOrder(String groupId, double order) async =>
+      _groups.doc(groupId).update({'order': order}).ignore();
 
   // Sections
 

@@ -6,9 +6,10 @@ import '../features/auth/auth_repository.dart';
 import '../features/auth/sign_in_screen.dart';
 import '../features/home/placeholder_screen.dart';
 import '../features/notebooks/notebook_screen.dart';
-import '../features/notebooks/notebooks_screen.dart';
 import '../features/notebooks/page_screen.dart';
 import '../features/settings/settings_screen.dart';
+import '../features/shelf/shelf_screen.dart';
+import '../features/shelf/shelf_view.dart';
 import '../features/skins/sample_pages.dart';
 import '../features/skins/skin_detail_screen.dart';
 import '../features/skins/skin_picker_screen.dart';
@@ -43,13 +44,16 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const SignInScreen(),
       ),
       StatefulShellRoute.indexedStack(
-        builder: (context, state, shell) => AppShell(navigationShell: shell),
+        builder: (context, state, shell) =>
+            AppShell(navigationShell: shell, uri: state.uri),
         branches: [
           StatefulShellBranch(
             routes: [
               GoRoute(
                 path: '/notebooks',
-                builder: (context, state) => const NotebooksScreen(),
+                builder: (context, state) => ShelfScreen(
+                  location: ShelfLocation.fromQuery(state.uri.queryParameters),
+                ),
                 routes: [
                   GoRoute(
                     path: ':notebookId',

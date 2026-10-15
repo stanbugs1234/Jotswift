@@ -110,6 +110,7 @@ class InkHistory extends Notifier<InkHistoryState> {
   Future<void> addStroke(Stroke stroke) async {
     await ref.read(strokeRepositoryProvider).addStroke(pageId, stroke);
     _push(AddStrokeCommand(stroke.id));
+    _touchNotebook();
   }
 
   Future<void> erase(List<String> strokeIds) async {
@@ -118,7 +119,20 @@ class InkHistory extends Notifier<InkHistoryState> {
         .read(strokeRepositoryProvider)
         .setDeleted(pageId, strokeIds, true);
     _push(EraseCommand(strokeIds));
+    _touchNotebook();
   }
+
+  /// Marks the notebook as modified, at most once a minute while writing.
+  void _touchNotebook() {
+    final now = DateTime.now();
+    if (now.difference(_lastTouch) < const Duration(minutes: 1)) return;
+    final notebookId = ref.read(pageProvider(pageId)).value?.notebookId;
+    if (notebookId == null) return;
+    _lastTouch = now;
+    ref.read(notebookRepositoryProvider).touchNotebook(notebookId);
+  }
+
+  var _lastTouch = DateTime(0);
 
   void _push(InkCommand command) {
     final undo = [...state.undo, command];

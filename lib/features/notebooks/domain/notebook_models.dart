@@ -2,8 +2,10 @@ import 'package:flutter/foundation.dart';
 
 import '../../../core/paper/paper_style.dart';
 import 'notebook_cover.dart';
+import 'shelf_models.dart';
 
 export 'notebook_cover.dart';
+export 'shelf_models.dart';
 
 /// A notebook holds sections, and each section holds pages.
 @immutable
@@ -18,6 +20,10 @@ class Notebook {
     this.paperSize = PaperSize.letter,
     this.orientation = PaperOrientation.portrait,
     this.collectionId,
+    this.categoryId,
+    this.groupId,
+    this.order,
+    this.lastOpenedAt,
   });
 
   factory Notebook.fromMap(String id, Map<String, dynamic> map) => Notebook(
@@ -39,6 +45,10 @@ class Notebook {
       PaperOrientation.portrait,
     ),
     collectionId: map['collectionId'] as String?,
+    categoryId: map['categoryId'] as String?,
+    groupId: map['groupId'] as String?,
+    order: (map['order'] as num?)?.toDouble(),
+    lastOpenedAt: map['lastOpenedAt'] as int?,
     createdAt: map['createdAt'] as int? ?? 0,
     updatedAt: map['updatedAt'] as int? ?? 0,
   );
@@ -57,9 +67,23 @@ class Notebook {
   /// default style.
   final String? collectionId;
 
+  /// The category of a notebook at the top of the shelf. Notebooks inside a
+  /// group leave it null and belong to their group's category.
+  final String? categoryId;
+  final String? groupId;
+
+  /// Position in the custom shelf order. Notebooks saved before it existed
+  /// sort by when they were made.
+  final double? order;
+
   /// Milliseconds since epoch.
   final int createdAt;
+
+  /// Changes when the notebook or its pages are edited.
   final int updatedAt;
+  final int? lastOpenedAt;
+
+  double get sortOrder => order ?? createdAt.toDouble();
 
   Map<String, dynamic> toMap() => {
     'title': title,
@@ -70,6 +94,10 @@ class Notebook {
     'paperSize': paperSize.name,
     'orientation': orientation.name,
     'collectionId': ?collectionId,
+    'categoryId': ?categoryId,
+    'groupId': ?groupId,
+    'order': ?order,
+    'lastOpenedAt': ?lastOpenedAt,
     'createdAt': createdAt,
     'updatedAt': updatedAt,
   };
@@ -79,6 +107,9 @@ class Notebook {
     NotebookCover? cover,
     PaperStyle? paper,
     String? collectionId,
+    ShelfPlace? place,
+    double? order,
+    int? lastOpenedAt,
     int? updatedAt,
   }) => Notebook(
     id: id,
@@ -88,6 +119,12 @@ class Notebook {
     paperSize: paperSize,
     orientation: orientation,
     collectionId: collectionId ?? this.collectionId,
+    categoryId: place == null
+        ? categoryId
+        : (place.groupId == null ? place.categoryId : null),
+    groupId: place == null ? groupId : place.groupId,
+    order: order ?? this.order,
+    lastOpenedAt: lastOpenedAt ?? this.lastOpenedAt,
     createdAt: createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );
@@ -103,6 +140,7 @@ class NewNotebook {
     this.paperSize = PaperSize.letter,
     this.orientation = PaperOrientation.portrait,
     this.collectionId,
+    this.place = unfiled,
   });
 
   final String title;
@@ -112,6 +150,9 @@ class NewNotebook {
   final PaperOrientation orientation;
   final String? collectionId;
 
+  /// Where on the shelf it goes.
+  final ShelfPlace place;
+
   Notebook build(String id, int now) => Notebook(
     id: id,
     title: title,
@@ -120,6 +161,9 @@ class NewNotebook {
     paperSize: paperSize,
     orientation: orientation,
     collectionId: collectionId,
+    categoryId: place.groupId == null ? place.categoryId : null,
+    groupId: place.groupId,
+    order: now.toDouble(),
     createdAt: now,
     updatedAt: now,
   );

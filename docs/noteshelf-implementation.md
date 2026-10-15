@@ -12,7 +12,7 @@ individually as well as through Pro, and templates are PDFs.
 |---|---|---|---|
 | 1 | Paper and cover data model ✅ | M | — |
 | 2 | Plain light/dark interface; skins become collections ✅ | M | — |
-| 3 | The shelf: covers, categories, groups, sort | L | — |
+| 3 | The shelf: covers, categories, groups, sort ✅ | L | — |
 | 4 | New-notebook flow and per-page paper | L | Turn on Firebase Storage (needs the Blaze plan) |
 | 5 | Catalog and downloads (free items only) | L | — |
 | 6 | Stickers | M | Sticker art (I can make placeholders) |
@@ -62,25 +62,24 @@ The data changes come first, with no visible change, so later screens build on t
 
 ---
 
-## Milestone 3: The shelf
+## Milestone 3: The shelf ✅
 
 **Data**
 - `users/{uid}/categories/{id}` `{title, order}` and `users/{uid}/groups/{id}` `{title, categoryId?, parentGroupId?, order}`. The existing security rules already allow anything under `users/{uid}`.
-- A new `ShelfRepository` (both backends): watch, create, rename and delete categories and groups. Deleting one moves its notebooks up a level, so notebooks are never deleted by it. It also moves a notebook or group, and reorders.
+- Notebooks gain `categoryId`, `groupId`, `order` and `lastOpenedAt`.
+- **Only top-level items carry a category.** A notebook or group inside a group belongs to its top group's category, so moving a group (with everything in it) is one write, and nested items can't disagree about their category.
+- `ShelfRepository` (both backends): categories and groups (create, rename, delete), moving notebooks and groups, and custom order. Deleting a category or group never deletes notebooks: they move up a level.
+- Opening a notebook records `lastOpenedAt`. Writing in it bumps `updatedAt`, at most once a minute, so "Last modified" reflects writing.
 
-**Screens**
-- `NotebooksScreen` becomes **`ShelfScreen`** (`lib/features/shelf/`):
-  - `CoverView` widget: color, art or photo, with the title on the cover and a spine shadow.
-  - Grid or list, large or small thumbnails, and sort by last opened / modified / name / custom (drag to reorder). The choices are saved per device.
-  - A group shows as a stack of covers, and tapping it opens the group. Groups can be nested.
-  - Long-press menu: rename, change cover, move to…, delete.
-- **Sidebar on tablet and web** ([shell.dart](../lib/app/shell.dart)): the rail becomes a Noteshelf-style sidebar with All notebooks, Recent, the user's categories (+ New category), Templates (milestone 8), Planner, Calendar, To-do and Settings.
-- **Phone:** categories as chips across the top of the shelf; the same items in a drawer.
-- `lastOpenedAt` is updated when a notebook is opened.
+**Screens** (`lib/features/shelf/`)
+- `ShelfScreen` replaces the old notebook list. It shows All notebooks, Recent (the last 20 opened), one category or one group, chosen by the URL (`/notebooks?category=…`, `?group=…`, `?view=recent`).
+- `CoverView` draws a cover with a spine; `GroupStackView` draws a group as a stack of up to three covers. Art and photo covers show their color until milestone 4.
+- **View options:** sort by custom, last opened, last modified or name; grid or list; large or small covers. Saved per device.
+- **Drag and drop** (long press): onto a group moves the notebook or group into it; onto a notebook (in custom order) places it just before.
+- Menus: rename, change color, **Move to…** (a picker of categories and groups), delete.
+- **Sidebar** on wide screens (1024 px and up, e.g. iPad landscape and the web): All notebooks, Recent, categories (with options and New category), Planner, Calendar, To-do and Settings. **Narrower screens** (phones, iPad portrait) get category chips across the top of the shelf; long-press a chip for its options. (The phone drawer from the original plan wasn't needed.)
 
-**Tests:** repository operations in both backends, the "delete moves notebooks up" rule, sort orders, and a widget test of the shelf flow on phone and tablet widths (extending [notebooks_flow_test.dart](../test/features/notebooks/notebooks_flow_test.dart)).
-
----
+**Tests:** shelf logic (what each location shows, nesting, missing groups, sorting, back navigation, URLs), repository operations in both backends, and screen flows on phone and tablet widths, including drag and drop.
 
 ## Milestone 4: New-notebook flow and per-page paper
 

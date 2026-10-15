@@ -20,6 +20,13 @@ abstract interface class NotebookRepository {
   /// Deletes the notebook with all its sections, pages and ink.
   Future<void> deleteNotebook(String notebookId);
 
+  /// Records that the notebook was just opened (for "Recent" and sorting).
+  Future<void> markNotebookOpened(String notebookId);
+
+  /// Records that the notebook's pages just changed (for sorting by
+  /// modified).
+  Future<void> touchNotebook(String notebookId);
+
   Stream<List<Section>> watchSections(String notebookId);
   Future<Section> createSection(String notebookId, String title);
   Future<void> renameSection(String notebookId, String sectionId, String title);
@@ -36,6 +43,34 @@ abstract interface class NotebookRepository {
   /// notebook's paper.
   Future<void> setPagePaper(String pageId, PaperStyle? paper);
   Future<void> deletePage(String pageId);
+}
+
+/// Categories, groups and where notebooks sit on the shelf.
+abstract interface class ShelfRepository {
+  Stream<List<Category>> watchCategories();
+  Future<Category> createCategory(String title);
+  Future<void> renameCategory(String categoryId, String title);
+
+  /// Deletes the category. Its notebooks and groups stay, with no category.
+  Future<void> deleteCategory(String categoryId);
+
+  Stream<List<NotebookGroup>> watchGroups();
+  Future<NotebookGroup> createGroup(String title, ShelfPlace place);
+  Future<void> renameGroup(String groupId, String title);
+
+  /// Deletes the group. Its notebooks and groups move up to where the group
+  /// was.
+  Future<void> deleteGroup(String groupId);
+
+  Future<void> moveNotebook(String notebookId, ShelfPlace place);
+
+  /// Moves a group (with everything in it). The caller makes sure [place]
+  /// isn't inside the group itself.
+  Future<void> moveGroup(String groupId, ShelfPlace place);
+
+  /// Sets positions in the custom shelf order.
+  Future<void> setNotebookOrder(String notebookId, double order);
+  Future<void> setGroupOrder(String groupId, double order);
 }
 
 /// Ink strokes for one signed-in user's pages.
@@ -55,6 +90,7 @@ abstract interface class StrokeRepository {
 /// Firestore; tests and platforms without Firebase use memory.
 abstract interface class NotesBackend {
   NotebookRepository notebooks(String uid);
+  ShelfRepository shelf(String uid);
   StrokeRepository strokes(String uid);
 }
 

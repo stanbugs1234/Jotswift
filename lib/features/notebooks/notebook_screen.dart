@@ -19,6 +19,12 @@ class NotebookScreen extends ConsumerStatefulWidget {
 class _NotebookScreenState extends ConsumerState<NotebookScreen> {
   String? _sectionId;
 
+  @override
+  void initState() {
+    super.initState();
+    ref.read(notebookRepositoryProvider).markNotebookOpened(widget.notebookId);
+  }
+
   Future<void> _addSection() async {
     final title = await askForText(
       context,

@@ -25,6 +25,18 @@ final notebookRepositoryProvider = Provider<NotebookRepository>(
       ref.watch(notesBackendProvider).notebooks(ref.watch(currentUidProvider)),
 );
 
+final shelfRepositoryProvider = Provider<ShelfRepository>(
+  (ref) => ref.watch(notesBackendProvider).shelf(ref.watch(currentUidProvider)),
+);
+
+final categoriesProvider = StreamProvider<List<Category>>(
+  (ref) => ref.watch(shelfRepositoryProvider).watchCategories(),
+);
+
+final groupsProvider = StreamProvider<List<NotebookGroup>>(
+  (ref) => ref.watch(shelfRepositoryProvider).watchGroups(),
+);
+
 final strokeRepositoryProvider = Provider<StrokeRepository>(
   (ref) =>
       ref.watch(notesBackendProvider).strokes(ref.watch(currentUidProvider)),

@@ -18,11 +18,17 @@ class InMemoryNotesBackend implements NotesBackend {
   NotebookRepository notebooks(String uid) => _user(uid);
 
   @override
+  ShelfRepository shelf(String uid) => _user(uid);
+
+  @override
   StrokeRepository strokes(String uid) => _user(uid);
 }
 
-class _InMemoryUserData implements NotebookRepository, StrokeRepository {
+class _InMemoryUserData
+    implements NotebookRepository, ShelfRepository, StrokeRepository {
   final _notebooks = <String, Notebook>{};
+  final _categories = <String, Category>{};
+  final _groups = <String, NotebookGroup>{};
   final _sections = <String, Section>{};
   final _pages = <String, NotePage>{};
   final _strokes = <String, Map<String, Stroke>>{}; // pageId -> id -> stroke
@@ -95,6 +101,148 @@ class _InMemoryUserData implements NotebookRepository, StrokeRepository {
     pageIds.forEach(_removePage);
     _changed();
   }
+
+  @override
+  Future<void> markNotebookOpened(String notebookId) async =>
+      _updateNotebook(notebookId, (n) => n.copyWith(lastOpenedAt: nowMillis()));
+
+  @override
+  Future<void> touchNotebook(String notebookId) async =>
+      _updateNotebook(notebookId, (n) => n.copyWith(updatedAt: nowMillis()));
+
+  void _updateNotebook(String id, Notebook Function(Notebook) change) {
+    final notebook = _notebooks[id];
+    if (notebook == null) return;
+    _notebooks[id] = change(notebook);
+    _changed();
+  }
+
+  // Shelf
+
+  @override
+  Stream<List<Category>> watchCategories() => _watch(
+    () =>
+        _categories.values.toList()..sort((a, b) => a.order.compareTo(b.order)),
+  );
+
+  @override
+  Future<Category> createCategory(String title) async {
+    final last = _categories.values.fold<double>(0, (m, c) => max(m, c.order));
+    final category = Category(id: _id(), title: title, order: last + 1);
+    _categories[category.id] = category;
+    _changed();
+    return category;
+  }
+
+  @override
+  Future<void> renameCategory(String categoryId, String title) async {
+    final c = _categories[categoryId];
+    if (c == null) return;
+    _categories[categoryId] = Category(id: c.id, title: title, order: c.order);
+    _changed();
+  }
+
+  @override
+  Future<void> deleteCategory(String categoryId) async {
+    _categories.remove(categoryId);
+    for (final n in [..._notebooks.values]) {
+      if (n.categoryId == categoryId) {
+        _notebooks[n.id] = n.copyWith(place: unfiled);
+      }
+    }
+    for (final g in [..._groups.values]) {
+      if (g.categoryId == categoryId) {
+        _groups[g.id] = _copyGroup(g, place: unfiled);
+      }
+    }
+    _changed();
+  }
+
+  @override
+  Stream<List<NotebookGroup>> watchGroups() => _watch(
+    () => _groups.values.toList()..sort((a, b) => a.order.compareTo(b.order)),
+  );
+
+  @override
+  Future<NotebookGroup> createGroup(String title, ShelfPlace place) async {
+    final now = nowMillis();
+    final group = _copyGroup(
+      NotebookGroup(
+        id: _id(),
+        title: title,
+        order: now.toDouble(),
+        createdAt: now,
+        updatedAt: now,
+      ),
+      place: place,
+    );
+    _groups[group.id] = group;
+    _changed();
+    return group;
+  }
+
+  @override
+  Future<void> renameGroup(String groupId, String title) async {
+    final g = _groups[groupId];
+    if (g == null) return;
+    _groups[groupId] = _copyGroup(g, title: title);
+    _changed();
+  }
+
+  @override
+  Future<void> deleteGroup(String groupId) async {
+    final group = _groups.remove(groupId);
+    if (group == null) return;
+    final up = (categoryId: group.categoryId, groupId: group.parentGroupId);
+    for (final n in [..._notebooks.values]) {
+      if (n.groupId == groupId) _notebooks[n.id] = n.copyWith(place: up);
+    }
+    for (final g in [..._groups.values]) {
+      if (g.parentGroupId == groupId) _groups[g.id] = _copyGroup(g, place: up);
+    }
+    _changed();
+  }
+
+  @override
+  Future<void> moveNotebook(String notebookId, ShelfPlace place) async =>
+      _updateNotebook(notebookId, (n) => n.copyWith(place: place));
+
+  @override
+  Future<void> moveGroup(String groupId, ShelfPlace place) async {
+    final g = _groups[groupId];
+    if (g == null) return;
+    _groups[groupId] = _copyGroup(g, place: place);
+    _changed();
+  }
+
+  @override
+  Future<void> setNotebookOrder(String notebookId, double order) async =>
+      _updateNotebook(notebookId, (n) => n.copyWith(order: order));
+
+  @override
+  Future<void> setGroupOrder(String groupId, double order) async {
+    final g = _groups[groupId];
+    if (g == null) return;
+    _groups[groupId] = _copyGroup(g, order: order);
+    _changed();
+  }
+
+  NotebookGroup _copyGroup(
+    NotebookGroup g, {
+    String? title,
+    double? order,
+    ShelfPlace? place,
+  }) => NotebookGroup(
+    id: g.id,
+    title: title ?? g.title,
+    order: order ?? g.order,
+    createdAt: g.createdAt,
+    updatedAt: nowMillis(),
+    categoryId: place == null
+        ? g.categoryId
+        : (place.groupId == null ? place.categoryId : null),
+    parentGroupId: place == null ? g.parentGroupId : place.groupId,
+  );
 
   // Sections
 

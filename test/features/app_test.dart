@@ -83,11 +83,15 @@ void main() {
       expect(find.byType(NavigationBar), findsNothing);
     });
 
-    testWidgets('wide screens get an extended sidebar', (tester) async {
+    testWidgets('wide screens get a sidebar with the shelf categories', (
+      tester,
+    ) async {
       await pumpApp(tester, skins, size: const Size(1366, 1024));
 
-      final rail = tester.widget<NavigationRail>(find.byType(NavigationRail));
-      expect(rail.extended, isTrue);
+      expect(find.byType(NavigationRail), findsNothing);
+      expect(find.text('All notebooks'), findsOneWidget);
+      expect(find.text('CATEGORIES'), findsOneWidget);
+      expect(find.text('Planner'), findsOneWidget);
     });
 
     testWidgets('tabs switch between sections', (tester) async {
