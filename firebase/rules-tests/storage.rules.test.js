@@ -124,6 +124,12 @@ describe('catalog files', () => {
     await assertSucceeds(getBytes(ref(alex(), pack('sold_cover'))));
   });
 
+  test('testers can download everything', async () => {
+    await seedDoc('users/sam', { tester: true });
+    await assertSucceeds(getBytes(ref(sam(), pack('pro_cover'))));
+    await assertSucceeds(getBytes(ref(sam(), pack('sold_cover'))));
+  });
+
   test('nobody can upload to the catalog from the app', async () => {
     await assertFails(uploadBytes(ref(sam(), pack('new_cover')), jpeg, asJpeg));
   });

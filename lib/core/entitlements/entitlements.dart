@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../features/auth/auth_repository.dart';
 import '../catalog/catalog_item.dart';
+import '../catalog/catalog_providers.dart' show isTesterProvider;
 import '../purchases/purchases_client.dart';
 import '../purchases/purchases_providers.dart';
 import '../settings/user_settings_repository.dart';
@@ -130,7 +131,12 @@ final deviceEntitlementsProvider = StreamProvider<Entitlements>((ref) async* {
 });
 
 /// Everything the signed-in user may use.
-final entitlementsProvider = Provider<Entitlements>(
-  (ref) => (ref.watch(accountEntitlementsProvider).value ?? Entitlements.none)
-      .merge(ref.watch(deviceEntitlementsProvider).value ?? Entitlements.none),
-);
+final entitlementsProvider = Provider<Entitlements>((ref) {
+  final bought =
+      (ref.watch(accountEntitlementsProvider).value ?? Entitlements.none).merge(
+        ref.watch(deviceEntitlementsProvider).value ?? Entitlements.none,
+      );
+  // Testers get Pro, so they can try everything before it's on sale.
+  final tester = ref.watch(isTesterProvider).value ?? false;
+  return tester ? bought.merge(const Entitlements(pro: true)) : bought;
+});

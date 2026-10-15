@@ -27,10 +27,13 @@ service firebase.storage {
       allow read: if request.auth != null && canUseItem(itemId);
     }
 
-    // Same rules as Entitlements.canUseCatalogItem in the app. Repeated
+    // Same rules as Entitlements.canUseCatalogItem in the app, plus
+    // testers (marked by tool/catalog.py set-tester), who may use
+    // everything so they can try paid items before release. Repeated
     // lookups within one request are fetched (and billed) once.
     function canUseItem(itemId) {
       return unlockOf(itemId).get('free', false) == true
+        || isTester()
         || (unlockOf(itemId).get('pro', false) == true
             && purchases().get('pro', false) == true)
         || purchases().get('products', []).hasAny(
@@ -41,6 +44,12 @@ service firebase.storage {
     function unlockOf(itemId) {
       return firestore.get(
           /databases/(default)/documents/catalog/$(itemId)).data.unlock;
+    }
+
+    function isTester() {
+      return firestore.get(
+          /databases/(default)/documents/users/$(request.auth.uid))
+          .data.get('tester', false) == true;
     }
 
     function purchases() {
