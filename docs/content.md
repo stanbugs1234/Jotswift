@@ -121,7 +121,7 @@ lowercase letters, digits and `_`. An id can never be reused.
   "version": 1,                  // raise it whenever the files change
   "unlock": { "free": true },    // see "Free, Pro or sold" below
   "collectionId": "space",       // optional: the collection it belongs to
-  "category": "covers",          // templates: "planners", "journals", "study", "pages"
+  "category": "covers",          // templates: see "Template categories" below
   "tags": ["dark", "illustrated"]
 }
 ```
@@ -162,6 +162,12 @@ lowercase letters, digits and `_`. An id can never be reused.
   python3 tool/make_planner.py planner 2028    # catalog/planner_2028/: a dated weekly planner
   python3 tool/make_planner.py essentials      # catalog/essentials_pages/: to-do, meetings, habits
   ```
+- **Page packs and journals** are listed in `tool/packs.json` (name, category, unlock, US price, and the layouts from `tool/layouts/`), then made with:
+  ```sh
+  python3 tool/make_pack.py student_pages   # or: all, or --list
+  ```
+  A new layout is a function in a `tool/layouts/<category>.py` module that returns `(page, title)`, built from the helpers in `tool/layouts/kit.py`.
+- **Template categories** decide the row on the Templates screen: `planners` (or no category) for dated planners, `diaries`, `journals`, `study`, `work`, `wellness`, `lifestyle`, `creative`, and `pages` for general page packs.
 - **template.json** says how the PDF is used:
   ```jsonc
   // A planner: every listed page becomes a page of a new notebook, in sections.

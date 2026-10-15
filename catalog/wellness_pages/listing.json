@@ -1,0 +1,19 @@
+{
+  "kind": "template",
+  "name": "Wellness pack",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "pack_wellness"
+    ]
+  },
+  "category": "wellness",
+  "tags": [
+    "habits",
+    "health",
+    "mood",
+    "sleep",
+    "fitness"
+  ]
+}

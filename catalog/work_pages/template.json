@@ -1,0 +1,57 @@
+{
+  "mode": "pages",
+  "pages": [
+    {
+      "pdfPage": 1,
+      "title": "Project planner"
+    },
+    {
+      "pdfPage": 2,
+      "title": "OKRs"
+    },
+    {
+      "pdfPage": 3,
+      "title": "Meeting notes"
+    },
+    {
+      "pdfPage": 4,
+      "title": "One-to-one"
+    },
+    {
+      "pdfPage": 5,
+      "title": "Mind map"
+    },
+    {
+      "pdfPage": 6,
+      "title": "Priority matrix"
+    },
+    {
+      "pdfPage": 7,
+      "title": "Kanban board"
+    },
+    {
+      "pdfPage": 8,
+      "title": "Brain dump"
+    },
+    {
+      "pdfPage": 9,
+      "title": "Call log"
+    },
+    {
+      "pdfPage": 10,
+      "title": "Timesheet"
+    },
+    {
+      "pdfPage": 11,
+      "title": "Decision log"
+    },
+    {
+      "pdfPage": 12,
+      "title": "Retrospective"
+    },
+    {
+      "pdfPage": 13,
+      "title": "Weekly review"
+    }
+  ]
+}

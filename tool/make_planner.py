@@ -72,8 +72,16 @@ def text_width(s, size):
     return total * size / 1000
 
 
+def use_size(width, height):
+    """Pages made after this are [width] x [height] points. Layouts read
+    the size through make_planner.W and .H, so set it before drawing."""
+    global W, H
+    W, H = width, height
+
+
 class Page:
     def __init__(self):
+        self.w, self.h = W, H
         self.ops = []
         self.links = []  # (rect, target page index)
         decorate(self)
@@ -261,7 +269,7 @@ def write_pdf(pages, path):
         pid = page_ids[i]
         annots = " ".join(f"{a} 0 R" for a in annot_ids[i])
         objs[pid] = (
-            f"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 {W} {H}] "
+            f"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 {p.w} {p.h}] "
             f"/Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> "
             f"/Contents {pid + 1} 0 R /Annots [{annots}] >>"
         )

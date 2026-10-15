@@ -1,0 +1,46 @@
+{
+  "_comment": "Page packs and journals made by tool/make_pack.py. Prices are US dollars for docs/pricing.md; set the real prices in the stores.",
+  "packs": {
+    "starter_pages": {
+      "name": "Starter pages",
+      "category": "pages",
+      "tags": ["checklist", "notes", "storyboard", "free"],
+      "unlock": { "free": true },
+      "pages": ["starter.checklist", "starter.simple_day", "starter.margin_notes",
+                "starter.storyboard", "starter.weekly_todo"]
+    },
+    "student_pages": {
+      "name": "Student pack",
+      "category": "study",
+      "tags": ["school", "college", "notes", "exams"],
+      "unlock": { "pro": true, "products": ["pack_student"] },
+      "price": "1.99",
+      "pages": ["study.lecture_notes", "core.cornell", "study.cornell_grid", "study.cornell_questions",
+                "study.vocabulary", "study.lab_report", "study.reading_notes", "core.class_schedule",
+                "core.assignments", "study.exam_planner", "study.semester_overview", "study.gpa_tracker",
+                "study.study_log", "study.flashcards"]
+    },
+    "work_pages": {
+      "name": "Productivity pack",
+      "category": "work",
+      "tags": ["work", "projects", "meetings", "planning"],
+      "unlock": { "pro": true, "products": ["pack_productivity"] },
+      "price": "1.99",
+      "pages": ["work.project_planner", "work.okrs", "core.meeting_notes", "work.one_on_one",
+                "work.mind_map", "core.priority_matrix", "core.kanban", "core.brain_dump",
+                "work.call_log", "work.timesheet", "work.decision_log", "work.retrospective",
+                "core.weekly_review"]
+    },
+    "wellness_pages": {
+      "name": "Wellness pack",
+      "category": "wellness",
+      "tags": ["habits", "health", "mood", "sleep", "fitness"],
+      "unlock": { "pro": true, "products": ["pack_wellness"] },
+      "price": "1.99",
+      "pages": ["core.habit_tracker", "wellness.habit_year", "core.mood_tracker", "wellness.mood_year",
+                "core.water_sleep", "wellness.sleep_log", "core.workout_log", "wellness.steps",
+                "core.meal_plan", "wellness.cycle_tracker", "wellness.medication", "wellness.symptoms",
+                "wellness.self_care"]
+    }
+  }
+}

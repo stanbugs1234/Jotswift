@@ -1,0 +1,57 @@
+{
+  "mode": "pages",
+  "pages": [
+    {
+      "pdfPage": 1,
+      "title": "Habit tracker"
+    },
+    {
+      "pdfPage": 2,
+      "title": "Habit tracker (year)"
+    },
+    {
+      "pdfPage": 3,
+      "title": "Mood tracker"
+    },
+    {
+      "pdfPage": 4,
+      "title": "Mood tracker (year)"
+    },
+    {
+      "pdfPage": 5,
+      "title": "Water & sleep"
+    },
+    {
+      "pdfPage": 6,
+      "title": "Sleep log"
+    },
+    {
+      "pdfPage": 7,
+      "title": "Workout log"
+    },
+    {
+      "pdfPage": 8,
+      "title": "Steps tracker"
+    },
+    {
+      "pdfPage": 9,
+      "title": "Meal plan"
+    },
+    {
+      "pdfPage": 10,
+      "title": "Cycle tracker"
+    },
+    {
+      "pdfPage": 11,
+      "title": "Medication tracker"
+    },
+    {
+      "pdfPage": 12,
+      "title": "Symptom log"
+    },
+    {
+      "pdfPage": 13,
+      "title": "Self-care"
+    }
+  ]
+}

@@ -24,18 +24,25 @@ bool _isTemplate(CatalogItem i, TemplateMode mode, Set<String> categories) =>
     i.templateMode == mode &&
     !categories.contains(i.category);
 
+/// Template categories with their own row, in the order shown.
+const _categoryRows = [
+  ('diaries', 'Diaries'),
+  ('journals', 'Journals'),
+  ('study', 'Study'),
+  ('work', 'Work'),
+  ('wellness', 'Wellness'),
+  ('lifestyle', 'Lifestyle'),
+  ('creative', 'Creative'),
+];
+
+final _ownRows = {for (final (category, _) in _categoryRows) category};
+
 final List<_Section> _sections = [
-  (
-    'Planners',
-    (i) => _isTemplate(i, TemplateMode.notebook, {'journals', 'study'}),
-  ),
-  ('Journals', (i) => i.category == 'journals'),
-  ('Study', (i) => i.category == 'study'),
+  ('Planners', (i) => _isTemplate(i, TemplateMode.notebook, _ownRows)),
+  for (final (category, title) in _categoryRows)
+    (title, (CatalogItem i) => i.category == category),
   ('Collections', (i) => i.kind == CatalogKind.collection),
-  (
-    'Page templates',
-    (i) => _isTemplate(i, TemplateMode.pages, {'journals', 'study'}),
-  ),
+  ('Page templates', (i) => _isTemplate(i, TemplateMode.pages, _ownRows)),
   ('Covers', (i) => i.kind == CatalogKind.cover),
   ('Papers', (i) => i.kind == CatalogKind.paper),
   ('Stickers', (i) => i.kind == CatalogKind.stickers),

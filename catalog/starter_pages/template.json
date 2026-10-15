@@ -1,0 +1,25 @@
+{
+  "mode": "pages",
+  "pages": [
+    {
+      "pdfPage": 1,
+      "title": "Checklist"
+    },
+    {
+      "pdfPage": 2,
+      "title": "Simple day"
+    },
+    {
+      "pdfPage": 3,
+      "title": "Notes with margin"
+    },
+    {
+      "pdfPage": 4,
+      "title": "Storyboard (6 frames)"
+    },
+    {
+      "pdfPage": 5,
+      "title": "Weekly to-do"
+    }
+  ]
+}

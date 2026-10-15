@@ -1,0 +1,61 @@
+{
+  "mode": "pages",
+  "pages": [
+    {
+      "pdfPage": 1,
+      "title": "Lecture notes"
+    },
+    {
+      "pdfPage": 2,
+      "title": "Cornell notes"
+    },
+    {
+      "pdfPage": 3,
+      "title": "Cornell notes (dot grid)"
+    },
+    {
+      "pdfPage": 4,
+      "title": "Cornell notes (questions)"
+    },
+    {
+      "pdfPage": 5,
+      "title": "Vocabulary"
+    },
+    {
+      "pdfPage": 6,
+      "title": "Lab report"
+    },
+    {
+      "pdfPage": 7,
+      "title": "Reading notes"
+    },
+    {
+      "pdfPage": 8,
+      "title": "Class schedule"
+    },
+    {
+      "pdfPage": 9,
+      "title": "Assignment tracker"
+    },
+    {
+      "pdfPage": 10,
+      "title": "Exam planner"
+    },
+    {
+      "pdfPage": 11,
+      "title": "Semester overview"
+    },
+    {
+      "pdfPage": 12,
+      "title": "GPA tracker"
+    },
+    {
+      "pdfPage": 13,
+      "title": "Study session log"
+    },
+    {
+      "pdfPage": 14,
+      "title": "Flashcards (8)"
+    }
+  ]
+}

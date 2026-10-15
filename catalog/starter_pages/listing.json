@@ -1,0 +1,15 @@
+{
+  "kind": "template",
+  "name": "Starter pages",
+  "version": 1,
+  "unlock": {
+    "free": true
+  },
+  "category": "pages",
+  "tags": [
+    "checklist",
+    "notes",
+    "storyboard",
+    "free"
+  ]
+}

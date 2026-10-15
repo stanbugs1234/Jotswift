@@ -108,6 +108,21 @@ final soldPaper = item('sold_paper', 'paper', {
   'products': ['pack_sold'],
 }, extra: _paper);
 final proPaper = item('pro_paper', 'paper', {'pro': true}, extra: _paper);
+final workPages = item(
+  'work_pages',
+  'template',
+  {'pro': true},
+  extra: {'category': 'work', 'templateMode': 'pages', ..._templateFiles},
+);
+final starterPages = item(
+  'starter_pages',
+  'template',
+  {'free': true},
+  extra: {'category': 'pages', 'templateMode': 'pages', ..._templateFiles},
+);
+const _templateFiles = {
+  'files': {'pack': 'catalog/t/1/pack.zip', 'sha256': '00', 'bytes': 1},
+};
 
 void main() {
   late List<SkinManifest> skins;
@@ -313,6 +328,32 @@ void main() {
         findsOneWidget,
       );
       expect(find.bySemanticsLabel('pro_paper, Paper, Pro'), findsOneWidget);
+    });
+
+    testWidgets('templates are grouped by category', (tester) async {
+      await pumpApp(
+        tester,
+        skins,
+        size: const Size(800, 1000),
+        overrides: [
+          purchasesClientProvider.overrideWithValue(FakePurchases()),
+          catalogRepositoryProvider.overrideWithValue(
+            InMemoryCatalogRepository([workPages, starterPages]),
+          ),
+        ],
+      );
+      await tester.tap(find.text('Templates').first);
+      await tester.pumpAndSettle();
+      // Each tile shows once: in its category's row, not also under
+      // Page templates.
+      expect(find.text('Work'), findsOneWidget);
+      expect(find.text('Page templates'), findsOneWidget);
+      expect(find.bySemanticsLabel(RegExp('^work_pages')), findsOneWidget);
+      expect(find.bySemanticsLabel(RegExp('^starter_pages')), findsOneWidget);
+      expect(
+        tester.getTopLeft(find.bySemanticsLabel(RegExp('^work_pages'))).dy,
+        lessThan(tester.getTopLeft(find.text('Page templates')).dy),
+      );
     });
 
     testWidgets('buying an item unlocks it', (tester) async {
