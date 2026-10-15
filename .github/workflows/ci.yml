@@ -84,3 +84,34 @@ jobs:
           channel: stable
           cache: true
       - run: flutter build web --release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: web
+          path: build/web
+          retention-days: 3
+
+  # Publishes the web app (https://notely-b1aec.web.app) after every push
+  # to master that passes the app tests. Signs in to Google without a
+  # stored key: Google trusts this repo's master branch to act as the
+  # github-web-deploy account, which can only manage Hosting.
+  deploy-web:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    needs: [test, build-web]
+    permissions:
+      contents: read
+      id-token: write
+    concurrency:
+      group: deploy-web
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: web
+          path: build/web
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: projects/699023762250/locations/global/workloadIdentityPools/github/providers/motley
+          service_account: github-web-deploy@notely-b1aec.iam.gserviceaccount.com
+      - run: npx --yes firebase-tools@15 deploy --only hosting --project notely-b1aec --non-interactive

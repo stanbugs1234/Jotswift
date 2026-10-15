@@ -252,7 +252,7 @@ You can handwrite anywhere on the page, and the structured widgets stay interact
 - [x] Offline mode and sync status indicator (cloud icon on pages and in the sidebar; a strip while offline; web keeps an offline copy too)
 - [x] Web: read-only ink rendering
 - [x] Web: text boxes, photos and stickers editable (ink stays view-only); links and refreshes keep their page
-- [x] Web: deployed to Firebase Hosting at https://notely-b1aec.web.app (`tool/deploy_web.sh`)
+- [x] Web: deployed to Firebase Hosting at https://notely-b1aec.web.app (`tool/deploy_web.sh`); published automatically by CI on every push to master
 - [x] Firestore security rules + rules unit tests
 
 ### Phase 3: Planner, to-do, calendar (4–5 weeks)

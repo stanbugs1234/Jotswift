@@ -45,6 +45,10 @@ python3 tool/catalog.py check                      # catalog content
 
 ## Publishing the web app
 
+Every push to `master` publishes it automatically once the app tests pass (the `deploy-web` job in `.github/workflows/ci.yml`). GitHub signs in to Google with workload identity federation, so no key is stored in GitHub: Google trusts only this repo's `master` branch, acting as `github-web-deploy@notely-b1aec.iam.gserviceaccount.com`, which may only manage Hosting.
+
+To publish by hand (after `firebase login`):
+
 ```sh
 tool/deploy_web.sh     # flutter build web, then firebase deploy --only hosting
 ```
