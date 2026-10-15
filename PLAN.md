@@ -256,7 +256,7 @@ You can handwrite anywhere on the page, and the structured widgets stay interact
 ### Phase 3: Planner, to-do, calendar (4–5 weeks)
 - [x] Tasks and task lists (editable on web); plan in [docs/phase3-plan.md](docs/phase3-plan.md)
 - [x] Events and calendar month/week/day views (editable on web)
-- [ ] Daily planner page type with live task/event widgets plus a free ink area
+- [x] Daily planner page with live tasks and events plus a free ink area
 - [ ] Simple reminders (local notifications)
 
 ### Phase 4: Store and monetization (2–3 weeks)

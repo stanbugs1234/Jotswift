@@ -6,7 +6,7 @@ The three tabs that are still placeholders, built in four steps. Each step ships
 |---|---|---|
 | 10 | **To-do** ✅ | Task lists, typed tasks with due dates and priority, and Today and Upcoming views. Works on the web too. |
 | 11 | **Calendar** ✅ | Events with month, week and day views, all-day events, colors and repeats. |
-| 12 | **Planner** | A page per day: the day's events and tasks next to a free ink area. |
+| 12 | **Planner** ✅ | A page per day: the day's events and tasks next to a free ink area. |
 | 13 | **Reminders** | Local notifications for tasks and events. |
 
 ## 10. To-do ✅
@@ -64,7 +64,16 @@ Built in `lib/features/calendar/`, with 17 tests:
 - **Event editor:** title, all-day, start and end, color, repeat, notes.
 - Tapping a day opens it in the Planner.
 
-## 12. Planner
+## 12. Planner ✅
+
+Built in `lib/features/planner/`, with 10 tests.
+- **A day's handwriting** is an ordinary page with the fixed id `planner-YYYY-MM-DD` and notebook id `planner`, so every device opens the same page. It isn't in any notebook, so it never shows on the shelf.
+- **Layout:** on tablets the plan and the page sit side by side. On phones they're two tabs, and swiping is off so it doesn't fight with writing.
+- **Links:** the Calendar's agenda and Day view open a day in the Planner.
+- **Not yet:**
+  - Choosing which three tasks make the Top 3. It's the three highest-priority tasks for now.
+  - A paper style just for planner pages.
+
 
 - A planner page per date (`/planner/2026-10-14`), in the default notebook style.
 - **Live parts:**

@@ -5,13 +5,12 @@ import 'package:go_router/go_router.dart';
 import '../features/auth/auth_repository.dart';
 import '../features/auth/sign_in_screen.dart';
 import '../features/calendar/calendar_screen.dart';
-import '../features/home/placeholder_screen.dart';
 import '../features/notebooks/notebook_screen.dart';
 import '../features/notebooks/page_screen.dart';
+import '../features/planner/planner_screen.dart';
 import '../features/settings/settings_screen.dart';
 import '../features/shelf/shelf_screen.dart';
 import '../features/shelf/shelf_view.dart';
-import '../features/skins/sample_pages.dart';
 import '../features/skins/notebook_style_screen.dart';
 import '../features/store/store_item_screen.dart';
 import '../features/tasks/todo_screen.dart';
@@ -77,7 +76,14 @@ final routerProvider = Provider<GoRouter>((ref) {
               ),
             ],
           ),
-          _tab('/planner', 'Planner', SamplePageKind.planner, 'Phase 3'),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: plannerPath,
+                builder: (context, state) => const PlannerScreen(),
+              ),
+            ],
+          ),
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -122,20 +128,3 @@ final routerProvider = Provider<GoRouter>((ref) {
   ref.onDispose(router.dispose);
   return router;
 });
-
-StatefulShellBranch _tab(
-  String path,
-  String title,
-  SamplePageKind kind,
-  String comingIn,
-) {
-  return StatefulShellBranch(
-    routes: [
-      GoRoute(
-        path: path,
-        builder: (context, state) =>
-            PlaceholderScreen(title: title, kind: kind, comingIn: comingIn),
-      ),
-    ],
-  );
-}

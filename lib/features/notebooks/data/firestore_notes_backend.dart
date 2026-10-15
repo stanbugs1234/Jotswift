@@ -371,6 +371,21 @@ class _FirestoreUserNotes
       });
 
   @override
+  Future<void> ensurePage(
+    String pageId, {
+    required String notebookId,
+    required String title,
+  }) async {
+    // A merge with fixed values, so two devices doing this at once agree.
+    _pages.doc(pageId).set({
+      'notebookId': notebookId,
+      'sectionId': notebookId,
+      'title': title,
+      'order': 0,
+    }, SetOptions(merge: true)).ignore();
+  }
+
+  @override
   Future<NotePage> createPage(
     String notebookId,
     String sectionId, {

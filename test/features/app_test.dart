@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:notely/core/skins/notely_skin.dart';
 import 'package:notely/core/skins/skin_manifest.dart';
 import 'package:notely/features/auth/sign_in_screen.dart';
-import 'package:notely/features/skins/sample_pages.dart';
+import 'package:notely/features/canvas/page_canvas.dart';
 
 import '../helpers.dart';
 
@@ -98,7 +98,7 @@ void main() {
       await pumpApp(tester, skins);
 
       for (final (tab, title) in [
-        ('Planner', 'Planner'),
+        ('Planner', 'Today'),
         ('Calendar', 'Month'),
         ('To-do', 'Today'),
         ('Notebooks', 'Notebooks'),
@@ -111,11 +111,13 @@ void main() {
   });
 
   group('notebook styles', () {
-    /// The style the sample page on a not-yet-built tab is drawn in.
+    /// The style the Planner's notes page is drawn in (the default style).
     Future<String> sampleStyle(WidgetTester tester) async {
       await tester.tap(find.widgetWithText(NavigationDestination, 'Planner'));
       await tester.pumpAndSettle();
-      return skinAt(tester, find.byType(SamplePage));
+      await tester.tap(find.text('Notes'));
+      await tester.pumpAndSettle();
+      return skinAt(tester, find.byType(PageCanvas));
     }
 
     testWidgets('picking a style changes pages but not the app screens', (
@@ -199,7 +201,9 @@ void main() {
 
       await tester.tap(find.widgetWithText(NavigationDestination, 'Planner'));
       await tester.pumpAndSettle();
-      final style = Theme.of(tester.element(find.byType(SamplePage)))
+      await tester.tap(find.text('Notes'));
+      await tester.pumpAndSettle();
+      final style = Theme.of(tester.element(find.byType(PageCanvas)))
           .extension<NotelySkin>()!;
       expect(style.id, 'classic');
       expect(style.paperColor, skinById(skins, 'classic').paper.color);

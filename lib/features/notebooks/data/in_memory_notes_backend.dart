@@ -406,6 +406,26 @@ class _InMemoryUserData
   );
 
   @override
+  Future<void> ensurePage(
+    String pageId, {
+    required String notebookId,
+    required String title,
+  }) async {
+    if (_pages.containsKey(pageId)) return;
+    final now = nowMillis();
+    _pages[pageId] = NotePage(
+      id: pageId,
+      notebookId: notebookId,
+      sectionId: notebookId,
+      title: title,
+      order: 0,
+      createdAt: now,
+      updatedAt: now,
+    );
+    _changed();
+  }
+
+  @override
   Future<void> renamePage(String pageId, String title) async {
     final p = _pages[pageId];
     if (p == null) return;

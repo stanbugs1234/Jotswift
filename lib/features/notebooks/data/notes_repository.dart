@@ -46,6 +46,14 @@ abstract interface class NotebookRepository {
   });
   Future<void> renamePage(String pageId, String title);
 
+  /// Makes sure a page with this fixed [pageId] exists, outside any real
+  /// notebook (planner days). Safe to call again, from any device.
+  Future<void> ensurePage(
+    String pageId, {
+    required String notebookId,
+    required String title,
+  });
+
   /// Adds [pages] to the end of a section, in order (e.g. a planner's
   /// hundreds of pages at once).
   Future<void> createPages(

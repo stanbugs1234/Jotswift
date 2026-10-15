@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../planner/planner_screen.dart' show openPlannerDay;
 import '../tasks/task_providers.dart' show todayProvider;
 import 'calendar_providers.dart';
 import 'domain/event.dart';
@@ -45,6 +46,12 @@ class CalendarScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(title),
         actions: [
+          if (state.mode == CalendarMode.day)
+            IconButton(
+              tooltip: 'Open in Planner',
+              icon: const Icon(Icons.edit_note),
+              onPressed: () => openPlannerDay(context, ref, day),
+            ),
           IconButton(
             tooltip: 'Previous',
             icon: const Icon(Icons.chevron_left),
@@ -199,7 +206,6 @@ class _MonthGrid extends ConsumerWidget {
         excludeSemantics: true,
         child: InkWell(
           onTap: () => ref.read(calendarProvider.notifier).select(day),
-          onDoubleTap: () => ref.read(calendarProvider.notifier).openDay(day),
           child: Container(
             decoration: BoxDecoration(
               color: selected
@@ -323,14 +329,14 @@ class _MonthGrid extends ConsumerWidget {
 }
 
 /// One day's events as a list.
-class _Agenda extends StatelessWidget {
+class _Agenda extends ConsumerWidget {
   const _Agenda({required this.day, required this.occurrences});
 
   final Day day;
   final List<Occurrence> occurrences;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final local = MaterialLocalizations.of(context);
     String time(DateTime t) => local.formatTimeOfDay(TimeOfDay.fromDateTime(t));
@@ -339,10 +345,21 @@ class _Agenda extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 88),
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-          child: Text(
-            local.formatFullDate(day.toDateTime()),
-            style: theme.textTheme.titleSmall,
+          padding: const EdgeInsets.fromLTRB(16, 4, 8, 0),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  local.formatFullDate(day.toDateTime()),
+                  style: theme.textTheme.titleSmall,
+                ),
+              ),
+              TextButton.icon(
+                icon: const Icon(Icons.edit_note),
+                label: const Text('Planner'),
+                onPressed: () => openPlannerDay(context, ref, day),
+              ),
+            ],
           ),
         ),
         if (occurrences.isEmpty)
