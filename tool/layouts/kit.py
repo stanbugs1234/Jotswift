@@ -9,7 +9,7 @@ from make_planner import Page, circle, header, polygon, tint
 from page_layouts import LEFT, RIGHT, TOP, box, checkbox_rows, date_line, label, lines
 
 __all__ = [
-    "LEFT", "RIGHT", "TOP", "BOTTOM", "s", "page", "label", "lines", "checkbox_rows", "box",
+    "LEFT", "RIGHT", "TOP", "BOTTOM", "s", "page", "Page", "label", "lines", "checkbox_rows", "box",
     "date_line", "field", "fields", "table", "bar", "frame", "dots", "stars", "circle", "tint",
     "day_grid", "numbered", "columns", "header", "polygon",
 ]

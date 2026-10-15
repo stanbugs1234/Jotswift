@@ -1,0 +1,37 @@
+{
+  "mode": "pages",
+  "pages": [
+    {
+      "pdfPage": 1,
+      "title": "Index"
+    },
+    {
+      "pdfPage": 2,
+      "title": "Key"
+    },
+    {
+      "pdfPage": 3,
+      "title": "Future log Jan-Jun"
+    },
+    {
+      "pdfPage": 4,
+      "title": "Future log Jul-Dec"
+    },
+    {
+      "pdfPage": 5,
+      "title": "Monthly log"
+    },
+    {
+      "pdfPage": 6,
+      "title": "Daily log"
+    },
+    {
+      "pdfPage": 7,
+      "title": "Collection"
+    },
+    {
+      "pdfPage": 8,
+      "title": "Tracker"
+    }
+  ]
+}

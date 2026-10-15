@@ -3,7 +3,7 @@ packs name them "<module>.<function>", e.g. "study.vocabulary". "core.*" are
 the layouts in page_layouts.py that every collection's page pack uses."""
 
 import page_layouts
-from layouts import starter, study, wellness, work
+from layouts import bujo, journal, starter, study, wellness, work
 
 MODULES = {
     "core": page_layouts,
@@ -11,6 +11,8 @@ MODULES = {
     "study": study,
     "work": work,
     "wellness": wellness,
+    "journal": journal,
+    "bujo": bujo,
 }
 
 

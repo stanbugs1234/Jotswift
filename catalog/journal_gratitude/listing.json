@@ -1,0 +1,17 @@
+{
+  "kind": "template",
+  "name": "Gratitude Journal",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "pack_journal_gratitude"
+    ]
+  },
+  "category": "journals",
+  "tags": [
+    "journal",
+    "gratitude",
+    "100 days"
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "mode": "pages",
+  "pages": [
+    {
+      "pdfPage": 1,
+      "title": "Dream journal"
+    },
+    {
+      "pdfPage": 2,
+      "title": "Prayer journal"
+    },
+    {
+      "pdfPage": 3,
+      "title": "Reflection 1"
+    },
+    {
+      "pdfPage": 4,
+      "title": "Reflection 2"
+    },
+    {
+      "pdfPage": 5,
+      "title": "Reflection 3"
+    },
+    {
+      "pdfPage": 6,
+      "title": "Reflection 4"
+    },
+    {
+      "pdfPage": 7,
+      "title": "Reflection 5"
+    },
+    {
+      "pdfPage": 8,
+      "title": "Reflection 6"
+    },
+    {
+      "pdfPage": 9,
+      "title": "Reflection 7"
+    },
+    {
+      "pdfPage": 10,
+      "title": "Reflection 8"
+    },
+    {
+      "pdfPage": 11,
+      "title": "Reflection 9"
+    },
+    {
+      "pdfPage": 12,
+      "title": "Reflection 10"
+    }
+  ]
+}

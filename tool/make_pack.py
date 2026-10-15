@@ -17,12 +17,14 @@ A pack in packs.json:
     "unlock": {"pro": true, "products": ["pack_student"]},
     "price": "1.99",                 // US dollars, for docs/pricing.md
     "mode": "pages",                 // or "notebook" for journals
-    "pages": ["study.lecture_notes", // a layout (see tool/layouts/)
-              {"layout": "journal.day", "repeat": 90,
-               "title": "Day {n}", "section": "Days"}]
+    "pages": [{"intro": ["How to use it, one line each"], "section": "Start"},
+              "study.lecture_notes",   // a layout (see tool/layouts/)
+              {"group": ["journal.morning", "journal.evening"], "repeat": 90,
+               "section": "Days"}]     // layouts taking n get 1..repeat
   }
 """
 
+import inspect
 import json
 import sys
 from pathlib import Path
@@ -30,29 +32,43 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import layouts  # noqa: E402
+from layouts import journal  # noqa: E402
 import make_planner as mp  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 PACKS = json.loads((ROOT / "tool" / "packs.json").read_text())["packs"]
 
 
+def _call(make, n):
+    """Runs a layout, passing the repeat number to layouts that take one."""
+    return make(n) if inspect.signature(make).parameters else make()
+
+
 def build(pack):
     """The pages and template.json for [pack]."""
     mp.use_style(mp.DEFAULT)
     pages, sections = [], []
+
+    def add(page, title, section):
+        pages.append(page)
+        if not sections or sections[-1]["title"] != section:
+            sections.append({"title": section, "pages": []})
+        sections[-1]["pages"].append({"pdfPage": len(pages), "title": title})
+
     for entry in pack["pages"]:
         if isinstance(entry, str):
             entry = {"layout": entry}
-        make = layouts.get(entry["layout"])
+        section = entry.get("section", "Pages")
+        if "intro" in entry:
+            page, title = journal.title_page(pack["name"], entry["intro"])()
+            add(page, title, section)
+            continue
+        group = [layouts.get(name) for name in entry.get("group", [entry.get("layout")])]
+        titles = entry.get("titles") or [entry.get("title")] * len(group)
         for n in range(1, entry.get("repeat", 1) + 1):
-            page, title = make()
-            pages.append(page)
-            if "title" in entry:
-                title = entry["title"].format(n=n)
-            section = entry.get("section", "Pages")
-            if not sections or sections[-1]["title"] != section:
-                sections.append({"title": section, "pages": []})
-            sections[-1]["pages"].append({"pdfPage": len(pages), "title": title})
+            for make, title in zip(group, titles):
+                page, default = _call(make, n)
+                add(page, title.format(n=n) if title else default, section)
     if pack.get("mode", "pages") == "notebook":
         spec = {"mode": "notebook", "sections": sections}
     else:

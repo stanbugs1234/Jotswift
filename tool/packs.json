@@ -4,43 +4,275 @@
     "starter_pages": {
       "name": "Starter pages",
       "category": "pages",
-      "tags": ["checklist", "notes", "storyboard", "free"],
-      "unlock": { "free": true },
-      "pages": ["starter.checklist", "starter.simple_day", "starter.margin_notes",
-                "starter.storyboard", "starter.weekly_todo"]
+      "tags": [
+        "checklist",
+        "notes",
+        "storyboard",
+        "free"
+      ],
+      "unlock": {
+        "free": true
+      },
+      "pages": [
+        "starter.checklist",
+        "starter.simple_day",
+        "starter.margin_notes",
+        "starter.storyboard",
+        "starter.weekly_todo"
+      ]
     },
     "student_pages": {
       "name": "Student pack",
       "category": "study",
-      "tags": ["school", "college", "notes", "exams"],
-      "unlock": { "pro": true, "products": ["pack_student"] },
+      "tags": [
+        "school",
+        "college",
+        "notes",
+        "exams"
+      ],
+      "unlock": {
+        "pro": true,
+        "products": [
+          "pack_student"
+        ]
+      },
       "price": "1.99",
-      "pages": ["study.lecture_notes", "core.cornell", "study.cornell_grid", "study.cornell_questions",
-                "study.vocabulary", "study.lab_report", "study.reading_notes", "core.class_schedule",
-                "core.assignments", "study.exam_planner", "study.semester_overview", "study.gpa_tracker",
-                "study.study_log", "study.flashcards"]
+      "pages": [
+        "study.lecture_notes",
+        "core.cornell",
+        "study.cornell_grid",
+        "study.cornell_questions",
+        "study.vocabulary",
+        "study.lab_report",
+        "study.reading_notes",
+        "core.class_schedule",
+        "core.assignments",
+        "study.exam_planner",
+        "study.semester_overview",
+        "study.gpa_tracker",
+        "study.study_log",
+        "study.flashcards"
+      ]
     },
     "work_pages": {
       "name": "Productivity pack",
       "category": "work",
-      "tags": ["work", "projects", "meetings", "planning"],
-      "unlock": { "pro": true, "products": ["pack_productivity"] },
+      "tags": [
+        "work",
+        "projects",
+        "meetings",
+        "planning"
+      ],
+      "unlock": {
+        "pro": true,
+        "products": [
+          "pack_productivity"
+        ]
+      },
       "price": "1.99",
-      "pages": ["work.project_planner", "work.okrs", "core.meeting_notes", "work.one_on_one",
-                "work.mind_map", "core.priority_matrix", "core.kanban", "core.brain_dump",
-                "work.call_log", "work.timesheet", "work.decision_log", "work.retrospective",
-                "core.weekly_review"]
+      "pages": [
+        "work.project_planner",
+        "work.okrs",
+        "core.meeting_notes",
+        "work.one_on_one",
+        "work.mind_map",
+        "core.priority_matrix",
+        "core.kanban",
+        "core.brain_dump",
+        "work.call_log",
+        "work.timesheet",
+        "work.decision_log",
+        "work.retrospective",
+        "core.weekly_review"
+      ]
     },
     "wellness_pages": {
       "name": "Wellness pack",
       "category": "wellness",
-      "tags": ["habits", "health", "mood", "sleep", "fitness"],
-      "unlock": { "pro": true, "products": ["pack_wellness"] },
+      "tags": [
+        "habits",
+        "health",
+        "mood",
+        "sleep",
+        "fitness"
+      ],
+      "unlock": {
+        "pro": true,
+        "products": [
+          "pack_wellness"
+        ]
+      },
       "price": "1.99",
-      "pages": ["core.habit_tracker", "wellness.habit_year", "core.mood_tracker", "wellness.mood_year",
-                "core.water_sleep", "wellness.sleep_log", "core.workout_log", "wellness.steps",
-                "core.meal_plan", "wellness.cycle_tracker", "wellness.medication", "wellness.symptoms",
-                "wellness.self_care"]
+      "pages": [
+        "core.habit_tracker",
+        "wellness.habit_year",
+        "core.mood_tracker",
+        "wellness.mood_year",
+        "core.water_sleep",
+        "wellness.sleep_log",
+        "core.workout_log",
+        "wellness.steps",
+        "core.meal_plan",
+        "wellness.cycle_tracker",
+        "wellness.medication",
+        "wellness.symptoms",
+        "wellness.self_care"
+      ]
+    },
+    "journal_sunrise_sunset": {
+      "name": "Sunrise & Sunset Journal",
+      "category": "journals",
+      "mode": "notebook",
+      "tags": [
+        "journal",
+        "mindfulness",
+        "morning",
+        "evening",
+        "90 days"
+      ],
+      "unlock": {
+        "pro": true,
+        "products": [
+          "pack_journal_sunrise_sunset"
+        ]
+      },
+      "price": "2.99",
+      "pages": [
+        {
+          "intro": [
+            "A morning page to set up the day, and an evening page to look back.",
+            "Write a few lines each, even on busy days. Skipped days are fine.",
+            "Prompts change every day, and repeat each week.",
+            "After 90 days, read back through: you'll see patterns."
+          ],
+          "section": "Start"
+        },
+        {
+          "group": [
+            "journal.morning",
+            "journal.evening"
+          ],
+          "repeat": 90,
+          "section": "Days"
+        }
+      ]
+    },
+    "journal_gratitude": {
+      "name": "Gratitude Journal",
+      "category": "journals",
+      "mode": "notebook",
+      "tags": [
+        "journal",
+        "gratitude",
+        "100 days"
+      ],
+      "unlock": {
+        "pro": true,
+        "products": [
+          "pack_journal_gratitude"
+        ]
+      },
+      "price": "1.99",
+      "pages": [
+        {
+          "intro": [
+            "Three things you're grateful for, each day, for 100 days.",
+            "Be specific: 'the warm bread at lunch' beats 'food'.",
+            "Each day adds one deeper prompt."
+          ],
+          "section": "Start"
+        },
+        {
+          "layout": "journal.gratitude_day",
+          "repeat": 100,
+          "section": "Days"
+        }
+      ]
+    },
+    "journal_five_year": {
+      "name": "5-Year Memory Journal",
+      "category": "journals",
+      "mode": "notebook",
+      "tags": [
+        "journal",
+        "memories",
+        "undated",
+        "five years"
+      ],
+      "unlock": {
+        "pro": true,
+        "products": [
+          "pack_journal_five_year"
+        ]
+      },
+      "price": "2.99",
+      "pages": [
+        {
+          "intro": [
+            "A page for each date of the year, with room for five years.",
+            "Write a line or two each day in this year's box.",
+            "Next year, you'll read what you wrote on the same day."
+          ],
+          "section": "Start"
+        },
+        {
+          "layout": "journal.five_year_day",
+          "repeat": 366,
+          "section": "Days"
+        }
+      ]
+    },
+    "journal_reflect": {
+      "name": "Reflection Journals",
+      "category": "journals",
+      "tags": [
+        "journal",
+        "dreams",
+        "prayer",
+        "prompts"
+      ],
+      "unlock": {
+        "pro": true,
+        "products": [
+          "pack_journal_reflect"
+        ]
+      },
+      "price": "1.99",
+      "pages": [
+        "journal.dream",
+        "journal.prayer",
+        {
+          "layout": "journal.reflection",
+          "repeat": 10
+        }
+      ]
+    },
+    "bujo_kit": {
+      "name": "Bullet Journal Kit",
+      "category": "journals",
+      "tags": [
+        "bullet journal",
+        "dot grid",
+        "logs",
+        "trackers"
+      ],
+      "unlock": {
+        "pro": true,
+        "products": [
+          "pack_bujo"
+        ]
+      },
+      "price": "1.99",
+      "pages": [
+        "bujo.index",
+        "bujo.key",
+        "bujo.future_log_1",
+        "bujo.future_log_2",
+        "bujo.monthly_log",
+        "bujo.daily_log",
+        "bujo.collection",
+        "bujo.tracker"
+      ]
     }
   }
 }

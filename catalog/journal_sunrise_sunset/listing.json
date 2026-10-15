@@ -1,0 +1,19 @@
+{
+  "kind": "template",
+  "name": "Sunrise & Sunset Journal",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "pack_journal_sunrise_sunset"
+    ]
+  },
+  "category": "journals",
+  "tags": [
+    "journal",
+    "mindfulness",
+    "morning",
+    "evening",
+    "90 days"
+  ]
+}

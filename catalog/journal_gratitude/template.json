@@ -1,0 +1,419 @@
+{
+  "mode": "notebook",
+  "sections": [
+    {
+      "title": "Start",
+      "pages": [
+        {
+          "pdfPage": 1,
+          "title": "Start here"
+        }
+      ]
+    },
+    {
+      "title": "Days",
+      "pages": [
+        {
+          "pdfPage": 2,
+          "title": "Day 1"
+        },
+        {
+          "pdfPage": 3,
+          "title": "Day 2"
+        },
+        {
+          "pdfPage": 4,
+          "title": "Day 3"
+        },
+        {
+          "pdfPage": 5,
+          "title": "Day 4"
+        },
+        {
+          "pdfPage": 6,
+          "title": "Day 5"
+        },
+        {
+          "pdfPage": 7,
+          "title": "Day 6"
+        },
+        {
+          "pdfPage": 8,
+          "title": "Day 7"
+        },
+        {
+          "pdfPage": 9,
+          "title": "Day 8"
+        },
+        {
+          "pdfPage": 10,
+          "title": "Day 9"
+        },
+        {
+          "pdfPage": 11,
+          "title": "Day 10"
+        },
+        {
+          "pdfPage": 12,
+          "title": "Day 11"
+        },
+        {
+          "pdfPage": 13,
+          "title": "Day 12"
+        },
+        {
+          "pdfPage": 14,
+          "title": "Day 13"
+        },
+        {
+          "pdfPage": 15,
+          "title": "Day 14"
+        },
+        {
+          "pdfPage": 16,
+          "title": "Day 15"
+        },
+        {
+          "pdfPage": 17,
+          "title": "Day 16"
+        },
+        {
+          "pdfPage": 18,
+          "title": "Day 17"
+        },
+        {
+          "pdfPage": 19,
+          "title": "Day 18"
+        },
+        {
+          "pdfPage": 20,
+          "title": "Day 19"
+        },
+        {
+          "pdfPage": 21,
+          "title": "Day 20"
+        },
+        {
+          "pdfPage": 22,
+          "title": "Day 21"
+        },
+        {
+          "pdfPage": 23,
+          "title": "Day 22"
+        },
+        {
+          "pdfPage": 24,
+          "title": "Day 23"
+        },
+        {
+          "pdfPage": 25,
+          "title": "Day 24"
+        },
+        {
+          "pdfPage": 26,
+          "title": "Day 25"
+        },
+        {
+          "pdfPage": 27,
+          "title": "Day 26"
+        },
+        {
+          "pdfPage": 28,
+          "title": "Day 27"
+        },
+        {
+          "pdfPage": 29,
+          "title": "Day 28"
+        },
+        {
+          "pdfPage": 30,
+          "title": "Day 29"
+        },
+        {
+          "pdfPage": 31,
+          "title": "Day 30"
+        },
+        {
+          "pdfPage": 32,
+          "title": "Day 31"
+        },
+        {
+          "pdfPage": 33,
+          "title": "Day 32"
+        },
+        {
+          "pdfPage": 34,
+          "title": "Day 33"
+        },
+        {
+          "pdfPage": 35,
+          "title": "Day 34"
+        },
+        {
+          "pdfPage": 36,
+          "title": "Day 35"
+        },
+        {
+          "pdfPage": 37,
+          "title": "Day 36"
+        },
+        {
+          "pdfPage": 38,
+          "title": "Day 37"
+        },
+        {
+          "pdfPage": 39,
+          "title": "Day 38"
+        },
+        {
+          "pdfPage": 40,
+          "title": "Day 39"
+        },
+        {
+          "pdfPage": 41,
+          "title": "Day 40"
+        },
+        {
+          "pdfPage": 42,
+          "title": "Day 41"
+        },
+        {
+          "pdfPage": 43,
+          "title": "Day 42"
+        },
+        {
+          "pdfPage": 44,
+          "title": "Day 43"
+        },
+        {
+          "pdfPage": 45,
+          "title": "Day 44"
+        },
+        {
+          "pdfPage": 46,
+          "title": "Day 45"
+        },
+        {
+          "pdfPage": 47,
+          "title": "Day 46"
+        },
+        {
+          "pdfPage": 48,
+          "title": "Day 47"
+        },
+        {
+          "pdfPage": 49,
+          "title": "Day 48"
+        },
+        {
+          "pdfPage": 50,
+          "title": "Day 49"
+        },
+        {
+          "pdfPage": 51,
+          "title": "Day 50"
+        },
+        {
+          "pdfPage": 52,
+          "title": "Day 51"
+        },
+        {
+          "pdfPage": 53,
+          "title": "Day 52"
+        },
+        {
+          "pdfPage": 54,
+          "title": "Day 53"
+        },
+        {
+          "pdfPage": 55,
+          "title": "Day 54"
+        },
+        {
+          "pdfPage": 56,
+          "title": "Day 55"
+        },
+        {
+          "pdfPage": 57,
+          "title": "Day 56"
+        },
+        {
+          "pdfPage": 58,
+          "title": "Day 57"
+        },
+        {
+          "pdfPage": 59,
+          "title": "Day 58"
+        },
+        {
+          "pdfPage": 60,
+          "title": "Day 59"
+        },
+        {
+          "pdfPage": 61,
+          "title": "Day 60"
+        },
+        {
+          "pdfPage": 62,
+          "title": "Day 61"
+        },
+        {
+          "pdfPage": 63,
+          "title": "Day 62"
+        },
+        {
+          "pdfPage": 64,
+          "title": "Day 63"
+        },
+        {
+          "pdfPage": 65,
+          "title": "Day 64"
+        },
+        {
+          "pdfPage": 66,
+          "title": "Day 65"
+        },
+        {
+          "pdfPage": 67,
+          "title": "Day 66"
+        },
+        {
+          "pdfPage": 68,
+          "title": "Day 67"
+        },
+        {
+          "pdfPage": 69,
+          "title": "Day 68"
+        },
+        {
+          "pdfPage": 70,
+          "title": "Day 69"
+        },
+        {
+          "pdfPage": 71,
+          "title": "Day 70"
+        },
+        {
+          "pdfPage": 72,
+          "title": "Day 71"
+        },
+        {
+          "pdfPage": 73,
+          "title": "Day 72"
+        },
+        {
+          "pdfPage": 74,
+          "title": "Day 73"
+        },
+        {
+          "pdfPage": 75,
+          "title": "Day 74"
+        },
+        {
+          "pdfPage": 76,
+          "title": "Day 75"
+        },
+        {
+          "pdfPage": 77,
+          "title": "Day 76"
+        },
+        {
+          "pdfPage": 78,
+          "title": "Day 77"
+        },
+        {
+          "pdfPage": 79,
+          "title": "Day 78"
+        },
+        {
+          "pdfPage": 80,
+          "title": "Day 79"
+        },
+        {
+          "pdfPage": 81,
+          "title": "Day 80"
+        },
+        {
+          "pdfPage": 82,
+          "title": "Day 81"
+        },
+        {
+          "pdfPage": 83,
+          "title": "Day 82"
+        },
+        {
+          "pdfPage": 84,
+          "title": "Day 83"
+        },
+        {
+          "pdfPage": 85,
+          "title": "Day 84"
+        },
+        {
+          "pdfPage": 86,
+          "title": "Day 85"
+        },
+        {
+          "pdfPage": 87,
+          "title": "Day 86"
+        },
+        {
+          "pdfPage": 88,
+          "title": "Day 87"
+        },
+        {
+          "pdfPage": 89,
+          "title": "Day 88"
+        },
+        {
+          "pdfPage": 90,
+          "title": "Day 89"
+        },
+        {
+          "pdfPage": 91,
+          "title": "Day 90"
+        },
+        {
+          "pdfPage": 92,
+          "title": "Day 91"
+        },
+        {
+          "pdfPage": 93,
+          "title": "Day 92"
+        },
+        {
+          "pdfPage": 94,
+          "title": "Day 93"
+        },
+        {
+          "pdfPage": 95,
+          "title": "Day 94"
+        },
+        {
+          "pdfPage": 96,
+          "title": "Day 95"
+        },
+        {
+          "pdfPage": 97,
+          "title": "Day 96"
+        },
+        {
+          "pdfPage": 98,
+          "title": "Day 97"
+        },
+        {
+          "pdfPage": 99,
+          "title": "Day 98"
+        },
+        {
+          "pdfPage": 100,
+          "title": "Day 99"
+        },
+        {
+          "pdfPage": 101,
+          "title": "Day 100"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "kind": "template",
+  "name": "5-Year Memory Journal",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "pack_journal_five_year"
+    ]
+  },
+  "category": "journals",
+  "tags": [
+    "journal",
+    "memories",
+    "undated",
+    "five years"
+  ]
+}
