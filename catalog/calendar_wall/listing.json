@@ -1,0 +1,18 @@
+{
+  "kind": "calendar",
+  "name": "Wall Calendar calendar",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "pack_calendar_wall"
+    ]
+  },
+  "templateId": "wall",
+  "category": "calendars",
+  "tags": [
+    "wall calendar",
+    "illustrated",
+    "monthly art"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "kind": "calendar",
+  "name": "Pastel calendar",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "pack_calendar_pastel"
+    ]
+  },
+  "templateId": "pastel",
+  "category": "calendars",
+  "tags": [
+    "pastel",
+    "rainbow",
+    "cute"
+  ]
+}

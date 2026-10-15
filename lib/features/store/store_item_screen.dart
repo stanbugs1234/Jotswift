@@ -12,6 +12,9 @@ import '../shelf/shelf_actions.dart';
 import '../shelf/shelf_view.dart';
 import 'paywall.dart';
 import 'store_actions.dart';
+import '../calendar/templates/calendar_look.dart'
+    show calendarTemplateSettingProvider;
+import '../calendar/templates/calendar_template.dart';
 import 'store_item.dart';
 import 'store_screen.dart';
 
@@ -260,6 +263,17 @@ class _GetOrUseState extends ConsumerState<_GetOrUse> {
       ],
       CatalogKind.collection => [
         hint('Everything in this collection is ready in your pickers.'),
+      ],
+      CatalogKind.calendar => [
+        FilledButton(
+          onPressed: () async {
+            await ref
+                .read(calendarTemplateSettingProvider.notifier)
+                .select(calendarTemplateById(item.templateId ?? ''));
+            if (context.mounted) context.go('/calendar');
+          },
+          child: const Text('Use this calendar template'),
+        ),
       ],
       CatalogKind.unknown => const [],
     };

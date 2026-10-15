@@ -41,6 +41,7 @@ final List<_Section> _sections = [
   ('Planners', (i) => _isTemplate(i, TemplateMode.notebook, _ownRows)),
   for (final (category, title) in _categoryRows)
     (title, (CatalogItem i) => i.category == category),
+  ('Calendars', (i) => i.kind == CatalogKind.calendar),
   ('Collections', (i) => i.kind == CatalogKind.collection),
   ('Page templates', (i) => _isTemplate(i, TemplateMode.pages, _ownRows)),
   ('Covers', (i) => i.kind == CatalogKind.cover),

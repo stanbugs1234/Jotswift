@@ -1,0 +1,19 @@
+{
+  "kind": "calendar",
+  "name": "Paper Planner calendar",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "pack_calendar_paper"
+    ]
+  },
+  "templateId": "paper",
+  "category": "calendars",
+  "tags": [
+    "paper",
+    "cream",
+    "serif",
+    "hand-drawn"
+  ]
+}

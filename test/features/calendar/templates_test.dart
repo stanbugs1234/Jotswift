@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:notely/app/app.dart';
+import 'package:notely/core/catalog/catalog_item.dart';
+import 'package:notely/core/catalog/catalog_providers.dart';
+import 'package:notely/core/catalog/catalog_repository.dart';
 import 'package:notely/core/entitlements/entitlements.dart';
 import 'package:notely/core/motion/period_transition.dart';
 import 'package:notely/core/settings/synced_setting.dart';
@@ -183,5 +186,45 @@ void main() {
       ),
       isFalse,
     );
+  });
+
+  testWidgets('the store sells templates in a Calendars row', (tester) async {
+    final wall = CatalogItem.fromMap('calendar_wall', {
+      'kind': 'calendar',
+      'name': 'Wall Calendar calendar',
+      'version': 1,
+      'visibility': 'public',
+      'templateId': 'wall',
+      'unlock': {
+        'pro': true,
+        'products': ['pack_calendar_wall'],
+      },
+    })!;
+    await pumpApp(
+      tester,
+      skins,
+      size: const Size(1024, 900),
+      prefs: {'animationLevel': 'reduced'},
+      overrides: [
+        catalogRepositoryProvider.overrideWithValue(
+          InMemoryCatalogRepository([wall]),
+        ),
+        accountEntitlementsProvider.overrideWithValue(
+          const AsyncData(Entitlements(pro: true)),
+        ),
+      ],
+    );
+    final c = ProviderScope.containerOf(tester.element(find.byType(NotelyApp)));
+    await tester.tap(find.text('Templates').first);
+    await tester.pumpAndSettle();
+    expect(find.text('Calendars'), findsOneWidget);
+    expect(find.byType(TemplatePreview), findsOneWidget);
+
+    await tester.tap(find.bySemanticsLabel(RegExp('^Wall Calendar calendar')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Use this calendar template'));
+    await tester.pumpAndSettle();
+    expect(c.read(calendarTemplateProvider).id, 'wall');
+    expect(find.text('New event'), findsOneWidget, reason: 'on the Calendar');
   });
 }

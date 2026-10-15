@@ -33,6 +33,12 @@
       "price": "5.99",
       "items": ["stickers_planner_icons", "stickers_washi", "stickers_labels", "stickers_study",
                 "stickers_seasonal", "stickers_emoji", "stickers_weather"]
+    },
+    "bundle_calendar_templates": {
+      "name": "Every calendar template",
+      "price": "4.99",
+      "items": ["calendar_paper", "calendar_wall", "calendar_botanical", "calendar_pastel",
+                "calendar_bold", "calendar_chalkboard", "calendar_seasons"]
     }
   }
 }

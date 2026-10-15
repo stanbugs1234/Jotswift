@@ -5,7 +5,17 @@ import 'template_spec.dart';
 
 /// What a catalog item is. Kinds this version doesn't know are kept as
 /// [unknown] and never shown.
-enum CatalogKind { cover, paper, template, stickers, collection, unknown }
+enum CatalogKind {
+  cover,
+  paper,
+  template,
+  stickers,
+  collection,
+
+  /// A calendar template, drawn by the app; the listing names it.
+  calendar,
+  unknown,
+}
 
 /// Who sees an item in the app.
 enum CatalogVisibility {
@@ -106,6 +116,7 @@ class CatalogItem {
     this.paper,
     this.templateMode,
     this.pageCount,
+    this.templateId,
     this._previewPath,
   });
 
@@ -140,6 +151,7 @@ class CatalogItem {
         _ => null,
       },
       pageCount: map['pageCount'] as int?,
+      templateId: map['templateId'] as String?,
       // Collections have a preview but no pack.
       previewPath: switch (map['files']) {
         {'preview': final String path} => path,
@@ -178,6 +190,9 @@ class CatalogItem {
   /// Templates: how many PDF pages it has.
   final int? pageCount;
 
+  /// Calendar listings: the template's id in the app.
+  final String? templateId;
+
   final String? _previewPath;
 
   /// Storage path of the item's small preview image, if it has one.
@@ -191,6 +206,7 @@ class CatalogItem {
         CatalogKind.cover || CatalogKind.stickers => files != null,
         CatalogKind.template => files != null && templateMode != null,
         CatalogKind.paper => paper != null,
+        CatalogKind.calendar => templateId != null,
         _ => true,
       };
 

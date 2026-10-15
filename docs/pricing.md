@@ -93,6 +93,18 @@ it doesn't sell templates one at a time.
 | `pack_kawaii` | Kawaii | kawaii (planner, pages, covers, papers, stickers) | $2.99 |
 | `pack_budget` | Budget | budget (planner, pages, covers, papers, stickers) | $2.99 |
 
+## Calendar templates
+
+| Product id | Name | Unlocks | Price |
+|---|---|---|---|
+| `pack_calendar_paper` | Paper Planner | calendar_paper | $1.99 |
+| `pack_calendar_wall` | Wall Calendar | calendar_wall | $1.99 |
+| `pack_calendar_botanical` | Botanical | calendar_botanical | $1.99 |
+| `pack_calendar_pastel` | Pastel | calendar_pastel | $1.99 |
+| `pack_calendar_bold` | Bold Modern | calendar_bold | $1.99 |
+| `pack_calendar_chalkboard` | Chalkboard | calendar_chalkboard | $1.99 |
+| `pack_calendar_seasons` | Seasons | calendar_seasons | $1.99 |
+
 ## Bundles
 
 | Product id | Name | Unlocks | Price |
@@ -103,5 +115,6 @@ it doesn't sell templates one at a time.
 | `bundle_collections` | Every collection | botanical, dark_academia, coquette, boho_sunset, scandi, celestial, budget, ocean, autumn, retro, kawaii | $9.99 |
 | `bundle_journals` | Journal bundle | journal_sunrise_sunset, journal_gratitude, journal_five_year, journal_reflect, bujo_kit | $5.99 |
 | `bundle_stickers` | Every sticker pack | stickers_planner_icons, stickers_washi, stickers_labels, stickers_study, stickers_seasonal, stickers_emoji, stickers_weather | $5.99 |
+| `bundle_calendar_templates` | Every calendar template | calendar_paper, calendar_wall, calendar_botanical, calendar_pastel, calendar_bold, calendar_chalkboard, calendar_seasons | $4.99 |
 
-54 products in all.
+62 products in all.

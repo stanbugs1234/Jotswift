@@ -36,7 +36,17 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 CATALOG = ROOT / "catalog"
 
-KINDS = {"cover", "paper", "template", "stickers", "collection"}
+KINDS = {"cover", "paper", "template", "stickers", "collection", "calendar"}
+
+# Calendar templates are drawn by the app, so their listings carry no
+# files: just the id of a template in
+# lib/features/calendar/templates/calendar_template.dart.
+CALENDAR_TEMPLATES_DART = ROOT / "lib/features/calendar/templates/calendar_template.dart"
+
+
+def calendar_template_ids():
+    """The template ids the app knows."""
+    return set(re.findall(r"id: '([a-z0-9_]+)'", CALENDAR_TEMPLATES_DART.read_text()))
 VISIBILITIES = {"hidden", "testers", "public", "retired"}
 PATTERNS = {
     "blank", "lined", "narrowLined", "grid", "dot", "music", "cornell",
@@ -219,6 +229,11 @@ def check(item_id):
             if not problems:
                 # Faint is good, invisible is not.
                 need(contrast(paper["color"], paper["lineColor"]) >= 1.15, "paper.lineColor is too close to paper.color to see")
+    elif kind == "calendar":
+        need(
+            listing.get("templateId") in calendar_template_ids(),
+            "calendar listings need a templateId the app knows (see calendar_template.dart)",
+        )
     elif kind == "collection":
         need((folder / "preview.webp").exists(), "preview.webp is missing")
         need(not listing.get("collectionId"), "a collection can't be inside another collection")
@@ -384,6 +399,8 @@ def publish(item_id, visibility, dry_run):
         spec, pages = template_spec(folder)
         doc["templateMode"] = spec["mode"]
         doc["pageCount"] = len(pages)
+    if kind == "calendar":
+        doc["templateId"] = listing["templateId"]
     if kind == "paper":
         p = listing["paper"]
         doc["paper"] = {

@@ -7,6 +7,9 @@ import '../../core/catalog/template_spec.dart';
 import '../../core/entitlements/entitlements.dart';
 import '../../core/purchases/purchases_providers.dart';
 import '../../core/skins/widgets/paper.dart';
+import '../calendar/domain/event.dart' show Day;
+import '../calendar/templates/calendar_template.dart';
+import '../calendar/templates/calendar_templates_screen.dart';
 
 /// How the user may use an item.
 enum ItemAccess {
@@ -41,6 +44,7 @@ String kindLabel(CatalogItem item) => switch (item.kind) {
   },
   CatalogKind.stickers => 'Sticker pack',
   CatalogKind.collection => 'Collection',
+  CatalogKind.calendar => 'Calendar template',
   CatalogKind.unknown => '',
 };
 
@@ -72,6 +76,13 @@ class ItemPreview extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    if (item.kind == CatalogKind.calendar) {
+      // Drawn live by the app; there's no image to download.
+      return TemplatePreview(
+        template: calendarTemplateById(item.templateId ?? ''),
+        month: Day.of(DateTime.now()).firstOfMonth,
+      );
+    }
     if (item.paper case final paper?) {
       return ColoredBox(
         color: paper.color,

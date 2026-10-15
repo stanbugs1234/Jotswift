@@ -6,7 +6,8 @@ content tools use.
 
 Sources: tool/packs.json (page packs and journals), BOOKS in
 tool/make_diary.py (diaries and planners), PACKS in tool/make_stickers.py
-and tool/make_covers.py, tool/collections.json plus the Budget
+and tool/make_covers.py, the paid calendar templates (tool/make_calendar_listings.py),
+tool/collections.json plus the Budget
 collection, tool/bundles.json, and Jotswift Pro below.
 """
 
@@ -17,11 +18,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "tool"))
 
+import make_calendar_listings  # noqa: E402
 import make_covers  # noqa: E402
 import make_diary  # noqa: E402
 import make_stickers  # noqa: E402
 
 COLLECTION_PRICE = "2.99"
+CALENDAR_TEMPLATE_PRICE = "1.99"
 DIARY_YEAR, ACADEMIC_YEAR = 2027, 2026
 
 PRO = [
@@ -55,6 +58,9 @@ def rows():
     for cid, spec in list(collections.items()) + [("budget", {"name": "Budget"})]:
         out.append(("Collections", f"pack_{cid}", spec["name"], f"{cid} (planner, pages, covers, papers, stickers)",
                     COLLECTION_PRICE))
+    calendar_products = make_calendar_listings.products()
+    for tid, (name, _) in make_calendar_listings.TEMPLATES.items():
+        out.append(("Calendar templates", calendar_products[tid], name, f"calendar_{tid}", CALENDAR_TEMPLATE_PRICE))
     bundles = json.loads((ROOT / "tool" / "bundles.json").read_text())["bundles"]
     for product, spec in bundles.items():
         out.append(("Bundles", product, spec["name"], ", ".join(spec["items"]), spec["price"]))
