@@ -1,8 +1,14 @@
 {
   "kind": "template",
   "name": "Essentials",
-  "version": 1,
-  "unlock": { "free": true },
+  "version": 2,
+  "unlock": {
+    "free": true
+  },
   "category": "pages",
-  "tags": ["to-do", "meetings", "habits"]
+  "tags": [
+    "to-do",
+    "meetings",
+    "habits"
+  ]
 }

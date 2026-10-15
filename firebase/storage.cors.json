@@ -1,0 +1,8 @@
+[
+  {
+    "origin": ["https://notely-b1aec.web.app", "https://notely-b1aec.firebaseapp.com", "http://localhost:5000", "http://localhost:8080"],
+    "method": ["GET", "HEAD"],
+    "responseHeader": ["Content-Type", "Authorization", "Content-Length", "x-goog-meta-*"],
+    "maxAgeSeconds": 3600
+  }
+]

@@ -1,7 +1,7 @@
 {
   "kind": "template",
   "name": "Wellness pack",
-  "version": 1,
+  "version": 2,
   "unlock": {
     "pro": true,
     "products": [

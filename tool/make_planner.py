@@ -309,7 +309,10 @@ def write_preview(pdf, out):
             capture_output=True,
         )
         with Image.open(png) as im:
-            im.convert("RGB").save(out, "WEBP", quality=88)
+            # Pages without a paper colour are transparent; show them on white.
+            page = Image.new("RGB", im.size, (255, 255, 255))
+            page.paste(im, (0, 0), im.convert("RGBA"))
+            page.save(out, "WEBP", quality=88)
 
 
 # The planner
