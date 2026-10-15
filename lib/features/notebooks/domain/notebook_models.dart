@@ -17,6 +17,7 @@ class Notebook {
     this.paper,
     this.paperSize = PaperSize.letter,
     this.orientation = PaperOrientation.portrait,
+    this.collectionId,
   });
 
   factory Notebook.fromMap(String id, Map<String, dynamic> map) => Notebook(
@@ -37,6 +38,7 @@ class Notebook {
       map['orientation'],
       PaperOrientation.portrait,
     ),
+    collectionId: map['collectionId'] as String?,
     createdAt: map['createdAt'] as int? ?? 0,
     updatedAt: map['updatedAt'] as int? ?? 0,
   );
@@ -51,6 +53,10 @@ class Notebook {
   final PaperSize paperSize;
   final PaperOrientation orientation;
 
+  /// The style (collection) the pages are drawn in. Null means the user's
+  /// default style.
+  final String? collectionId;
+
   /// Milliseconds since epoch.
   final int createdAt;
   final int updatedAt;
@@ -63,6 +69,7 @@ class Notebook {
     'paper': ?paper?.toMap(),
     'paperSize': paperSize.name,
     'orientation': orientation.name,
+    'collectionId': ?collectionId,
     'createdAt': createdAt,
     'updatedAt': updatedAt,
   };
@@ -71,6 +78,7 @@ class Notebook {
     String? title,
     NotebookCover? cover,
     PaperStyle? paper,
+    String? collectionId,
     int? updatedAt,
   }) => Notebook(
     id: id,
@@ -79,6 +87,7 @@ class Notebook {
     paper: paper ?? this.paper,
     paperSize: paperSize,
     orientation: orientation,
+    collectionId: collectionId ?? this.collectionId,
     createdAt: createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );
@@ -93,6 +102,7 @@ class NewNotebook {
     this.paper,
     this.paperSize = PaperSize.letter,
     this.orientation = PaperOrientation.portrait,
+    this.collectionId,
   });
 
   final String title;
@@ -100,6 +110,7 @@ class NewNotebook {
   final PaperStyle? paper;
   final PaperSize paperSize;
   final PaperOrientation orientation;
+  final String? collectionId;
 
   Notebook build(String id, int now) => Notebook(
     id: id,
@@ -108,6 +119,7 @@ class NewNotebook {
     paper: paper,
     paperSize: paperSize,
     orientation: orientation,
+    collectionId: collectionId,
     createdAt: now,
     updatedAt: now,
   );

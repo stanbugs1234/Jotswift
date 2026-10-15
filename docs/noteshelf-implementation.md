@@ -11,7 +11,7 @@ individually as well as through Pro, and templates are PDFs.
 | # | Milestone | Size | Needs from you |
 |---|---|---|---|
 | 1 | Paper and cover data model ✅ | M | — |
-| 2 | Plain light/dark interface; skins become collections | M | — |
+| 2 | Plain light/dark interface; skins become collections ✅ | M | — |
 | 3 | The shelf: covers, categories, groups, sort | L | — |
 | 4 | New-notebook flow and per-page paper | L | Turn on Firebase Storage (needs the Blaze plan) |
 | 5 | Catalog and downloads (free items only) | L | — |
@@ -53,11 +53,10 @@ The data changes come first, with no visible change, so later screens build on t
 - New setting **Appearance**: System / Light / Dark. It's saved on the device and the account, the same way `activeSkinId` is today ([user_settings_repository.dart](../lib/core/settings/user_settings_repository.dart)). `MaterialApp` gets `theme`, `darkTheme` and `themeMode`.
 
 **Collections**
-- New `lib/core/collections/collection.dart`: `Collection {id, name, description, coverIds, papers: [PaperStyle], inkColors, accentFont}`.
-- The 5 skin manifests become collections in `assets/catalog/<id>/collection.json`. The skin's paper becomes the collection's first paper, and its `primary`/`secondary` colors become two color covers. A script converts them so nothing is copied by hand.
-- **The canvas** ([page_canvas.dart](../lib/features/canvas/page_canvas.dart)) reads paper from the page or its notebook, and the ink palette from the notebook's collection, instead of `NotelySkin`.
-- **Continuity:** a user's saved `activeSkinId` becomes the default collection for their new notebooks, so their choice isn't lost.
-- The **Skins** button and the `/settings/skins` routes are removed. The skin preview screen's sample pages are reused in milestone 4's previews.
+- For now, each bundled skin manifest *is* a collection: a notebook style with paper, ink palette and accent font. It's turned into the page style by `SkinEngine.buildNotelySkin`. A separate `Collection` format (covers, several papers) arrives with the catalog in milestone 5, so the five skins aren't converted twice.
+- Notebooks gain `collectionId`. A notebook without one uses the user's default style (the saved `activeSkinId`), so the user's earlier choice carries over.
+- **Pages are drawn in their notebook's style:** `PageStyle` swaps the paper, ink palette and accent font into the page screen, while bars and menus keep the interface theme. The canvas and ink toolbar read them as before.
+- The skin picker stays, renamed **Notebook styles**, and sets the default style. It's the only way to choose a look until the new-notebook flow in milestone 4.
 
 **Tests:** appearance setting (device + account sync, like [account_skin_sync_test.dart](../test/core/skins/account_skin_sync_test.dart)), collection parsing, canvas uses notebook paper and palette, and goldens for the interface in light and dark plus each collection's paper.
 

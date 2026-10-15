@@ -1,11 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
-import 'dart:ui';
 
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:notely/core/skins/notely_skin.dart';
 import 'package:notely/core/skins/skin_manifest.dart';
+import 'package:notely/core/skins/skin_repository.dart';
 
 import '../../helpers.dart';
 
@@ -47,6 +48,21 @@ void main() {
       'pastel',
       'kraft',
     ]);
+  });
+
+  group('interface themes', () {
+    for (final dark in [false, true]) {
+      test('${dark ? 'dark' : 'light'} text colors are readable', () async {
+        final interface = await SkinRepository(rootBundle).loadInterface();
+        final skin = dark ? interface.dark : interface.light;
+        final c = skin.colors;
+        expect(skin.brightness, dark ? Brightness.dark : Brightness.light);
+        expect(contrast(c.onSurface, c.surface), greaterThanOrEqualTo(4.5));
+        expect(contrast(c.onSurface, c.background), greaterThanOrEqualTo(4.5));
+        expect(contrast(c.onPrimary, c.primary), greaterThanOrEqualTo(4.5));
+        expect(contrast(c.onSecondary, c.secondary), greaterThanOrEqualTo(3));
+      });
+    }
   });
 
   for (final id in [

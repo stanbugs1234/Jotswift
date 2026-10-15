@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../core/settings/appearance.dart';
 import '../core/skins/skin_providers.dart';
 import 'router.dart';
 
@@ -12,7 +13,9 @@ class NotelyApp extends ConsumerWidget {
     return MaterialApp.router(
       title: 'Notely',
       debugShowCheckedModeBanner: false,
-      theme: ref.watch(themeProvider),
+      theme: ref.watch(lightThemeProvider),
+      darkTheme: ref.watch(darkThemeProvider),
+      themeMode: ref.watch(themeModeProvider),
       routerConfig: ref.watch(routerProvider),
     );
   }

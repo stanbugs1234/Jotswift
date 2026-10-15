@@ -87,11 +87,13 @@ class _FirestoreUserNotes implements NotebookRepository, StrokeRepository {
     String? title,
     NotebookCover? cover,
     PaperStyle? paper,
+    String? collectionId,
   }) async => _notebooks.doc(notebookId).update({
     'title': ?title,
     'cover': ?cover?.toMap(),
     'color': ?cover?.color,
     'paper': ?paper?.toMap(),
+    'collectionId': ?collectionId,
     'updatedAt': nowMillis(),
   }).ignore();
 

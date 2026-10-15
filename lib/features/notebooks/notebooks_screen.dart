@@ -41,7 +41,7 @@ class NotebooksScreen extends ConsumerWidget {
         title: const Text('Notebooks'),
         actions: [
           IconButton(
-            tooltip: 'Skins',
+            tooltip: 'Notebook styles',
             icon: const Icon(Icons.palette_outlined),
             onPressed: () => context.push('/settings/skins'),
           ),

@@ -1,25 +1,29 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../features/auth/auth_repository.dart';
+import '../../features/notebooks/notes_providers.dart';
 import '../entitlements/entitlements.dart';
+import '../settings/synced_setting.dart';
 import '../settings/user_settings_repository.dart';
 import 'font_resolver.dart';
+import 'notely_skin.dart';
 import 'skin_engine.dart';
 import 'skin_manifest.dart';
+import 'skin_repository.dart';
 
-/// Overridden in `main()` once SharedPreferences has loaded.
-final sharedPreferencesProvider = Provider<SharedPreferences>(
-  (ref) => throw UnimplementedError('Override sharedPreferencesProvider'),
-);
+export '../settings/synced_setting.dart' show sharedPreferencesProvider;
 
-/// The skins shipped with the app. Overridden in `main()` after
-/// [SkinRepository.loadBundled] so the first frame already has the right skin.
+/// The skins shipped with the app. Each one is a notebook style: the paper,
+/// ink palette and accent font that notebook pages are drawn in.
+/// Overridden in `main()` after [SkinRepository.loadBundled].
 final bundledSkinsProvider = Provider<List<SkinManifest>>(
   (ref) => throw UnimplementedError('Override bundledSkinsProvider'),
+);
+
+/// The light and dark themes of the app's own screens. Overridden in
+/// `main()` after [SkinRepository.loadInterface].
+final interfaceSkinsProvider = Provider<InterfaceSkins>(
+  (ref) => throw UnimplementedError('Override interfaceSkinsProvider'),
 );
 
 final fontResolverProvider = Provider<FontResolver>(
@@ -30,57 +34,33 @@ final skinEngineProvider = Provider<SkinEngine>(
   (ref) => SkinEngine(fonts: ref.watch(fontResolverProvider)),
 );
 
+final lightThemeProvider = Provider<ThemeData>(
+  (ref) => ref
+      .watch(skinEngineProvider)
+      .buildTheme(ref.watch(interfaceSkinsProvider).light),
+);
+
+final darkThemeProvider = Provider<ThemeData>(
+  (ref) => ref
+      .watch(skinEngineProvider)
+      .buildTheme(ref.watch(interfaceSkinsProvider).dark),
+);
+
 const defaultSkinId = 'classic';
 
-/// The skin id saved on the signed-in user's account (null when signed out
-/// or nothing has been saved yet).
-final accountSkinIdProvider = StreamProvider<String?>((ref) {
-  final uid = ref.watch(authStateProvider).value?.uid;
-  if (uid == null) return Stream.value(null);
-  return ref.watch(userSettingsRepositoryProvider).watchActiveSkinId(uid);
-});
-
-/// The id of the skin the user picked. Saved on the device so the app opens
-/// in the right skin straight away, and on the account so it follows the
-/// user to their other devices.
-class ActiveSkinController extends Notifier<String> {
-  static const _prefsKey = 'activeSkinId';
+/// The id of the style the user picked for their notebooks. Notebooks that
+/// don't choose their own style use it.
+class ActiveSkinController extends SyncedSetting {
+  @override
+  String get key => SettingKeys.activeSkinId;
 
   @override
-  String build() {
-    ref.listen(accountSkinIdProvider, (_, next) {
-      if (!next.hasValue) return;
-      final saved = next.value;
-      if (saved == null) {
-        // First sign-in on this account: keep the skin picked on this device.
-        _saveToAccount(state);
-      } else if (saved != state) {
-        state = saved;
-        ref.read(sharedPreferencesProvider).setString(_prefsKey, saved);
-      }
-    });
-    return ref.watch(sharedPreferencesProvider).getString(_prefsKey) ??
-        defaultSkinId;
-  }
-
-  void _saveToAccount(String skinId) {
-    final uid = ref.read(authRepositoryProvider).currentUser?.uid;
-    if (uid == null) return;
-    // Not awaited: while offline, Firestore saves locally and syncs later.
-    unawaited(
-      ref
-          .read(userSettingsRepositoryProvider)
-          .setActiveSkinId(uid, skinId)
-          .catchError((Object e) => debugPrint('Could not save skin: $e')),
-    );
-  }
+  String get defaultValue => defaultSkinId;
 
   /// Switches to [skin]. Returns false if the user hasn't unlocked it.
   Future<bool> select(SkinManifest skin) async {
     if (!ref.read(entitlementsProvider).canUseSkin(skin)) return false;
-    state = skin.id;
-    await ref.read(sharedPreferencesProvider).setString(_prefsKey, skin.id);
-    _saveToAccount(skin.id);
+    await save(skin.id);
     return true;
   }
 }
@@ -89,20 +69,51 @@ final activeSkinIdProvider = NotifierProvider<ActiveSkinController, String>(
   ActiveSkinController.new,
 );
 
-/// The skin currently in use. Falls back to the default skin if the chosen
+/// The default notebook style. Falls back to the default skin if the chosen
 /// one is missing or no longer unlocked.
-final activeSkinProvider = Provider<SkinManifest>((ref) {
-  final skins = ref.watch(bundledSkinsProvider);
-  final entitlements = ref.watch(entitlementsProvider);
-  final id = ref.watch(activeSkinIdProvider);
+final activeSkinProvider = Provider<SkinManifest>(
+  (ref) => _usableSkin(ref, ref.watch(activeSkinIdProvider)),
+);
 
-  bool usable(SkinManifest s) => entitlements.canUseSkin(s);
-  return skins.where((s) => s.id == id && usable(s)).firstOrNull ??
-      skins.where((s) => s.id == defaultSkinId).firstOrNull ??
-      skins.firstWhere(usable);
+/// The style a notebook's pages are drawn in: its own, else the default.
+final notebookSkinProvider = Provider.family<SkinManifest, String>((
+  ref,
+  notebookId,
+) {
+  final own = ref.watch(notebookProvider(notebookId)).value?.collectionId;
+  return own == null
+      ? ref.watch(activeSkinProvider)
+      : _usableSkin(ref, own, fallback: ref.watch(activeSkinProvider));
 });
 
-final themeProvider = Provider<ThemeData>(
-  (ref) =>
-      ref.watch(skinEngineProvider).buildTheme(ref.watch(activeSkinProvider)),
+/// The page style of a notebook, ready to put in a [Theme].
+final notebookStyleProvider = Provider.family<NotelySkin, String>(
+  (ref, notebookId) => ref
+      .watch(skinEngineProvider)
+      .buildNotelySkin(ref.watch(notebookSkinProvider(notebookId))),
 );
+
+/// The style of a page's notebook (the default style while it loads).
+final pageStyleProvider = Provider.family<NotelySkin, String>((ref, pageId) {
+  final notebookId = ref.watch(pageProvider(pageId)).value?.notebookId;
+  return notebookId == null
+      ? ref.watch(defaultStyleProvider)
+      : ref.watch(notebookStyleProvider(notebookId));
+});
+
+/// The default notebook style, ready to put in a [Theme].
+final defaultStyleProvider = Provider<NotelySkin>(
+  (ref) => ref
+      .watch(skinEngineProvider)
+      .buildNotelySkin(ref.watch(activeSkinProvider)),
+);
+
+SkinManifest _usableSkin(Ref ref, String id, {SkinManifest? fallback}) {
+  final skins = ref.watch(bundledSkinsProvider);
+  final entitlements = ref.watch(entitlementsProvider);
+  bool usable(SkinManifest s) => entitlements.canUseSkin(s);
+  return skins.where((s) => s.id == id && usable(s)).firstOrNull ??
+      fallback ??
+      skins.where((s) => s.id == defaultSkinId).firstOrNull ??
+      skins.firstWhere(usable);
+}

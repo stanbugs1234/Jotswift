@@ -15,8 +15,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// Fonts can't be downloaded in tests, so use the platform font.
 const testEngine = SkinEngine(fonts: PlatformFontResolver());
 
-Future<List<SkinManifest>> loadTestSkins() =>
-    SkinRepository(rootBundle).loadBundled();
+/// Loads the bundled skins and the interface themes. Call it in `setUpAll`:
+/// assets can't be loaded inside `testWidgets`, whose clock is fake.
+Future<List<SkinManifest>> loadTestSkins() async {
+  _interface ??= await SkinRepository(rootBundle).loadInterface();
+  return SkinRepository(rootBundle).loadBundled();
+}
+
+InterfaceSkins? _interface;
 
 SkinManifest skinById(List<SkinManifest> skins, String id) =>
     skins.firstWhere((s) => s.id == id);
@@ -28,8 +34,11 @@ Future<ProviderContainer> makeContainer(
   List<Override> overrides = const [],
 }) async {
   SharedPreferences.setMockInitialValues(prefs);
+  final interface = _interface;
+  if (interface == null) throw StateError('Call loadTestSkins() first');
   final container = ProviderContainer(
     overrides: [
+      interfaceSkinsProvider.overrideWithValue(interface),
       sharedPreferencesProvider.overrideWithValue(
         await SharedPreferences.getInstance(),
       ),

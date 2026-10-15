@@ -6,8 +6,8 @@ import '../../core/skins/skin_manifest.dart';
 import '../../core/skins/skin_providers.dart';
 import 'sample_pages.dart';
 
-/// Full preview of one skin on every page type ("try before you buy").
-/// The whole screen is drawn in the previewed skin, not the active one.
+/// Full preview of one notebook style on every page type ("try before you
+/// buy"). The whole screen is drawn in the previewed style.
 class SkinDetailScreen extends ConsumerStatefulWidget {
   const SkinDetailScreen({required this.skinId, super.key});
 
@@ -29,7 +29,7 @@ class _SkinDetailScreenState extends ConsumerState<SkinDetailScreen> {
     if (skin == null) {
       return Scaffold(
         appBar: AppBar(),
-        body: const Center(child: Text('This skin is no longer available.')),
+        body: const Center(child: Text('This style is no longer available.')),
       );
     }
 
@@ -110,13 +110,13 @@ class _ApplyButton extends ConsumerWidget {
           final messenger = ScaffoldMessenger.of(context);
           await ref.read(activeSkinIdProvider.notifier).select(skin);
           messenger.showSnackBar(
-            SnackBar(content: Text('${skin.name} is now your skin')),
+            SnackBar(content: Text('${skin.name} is now your notebook style')),
           );
         },
-        child: const Text('Use this skin'),
+        child: const Text('Use for my notebooks'),
       );
     }
-    final what = skin.tier == SkinTier.pro ? 'Notely Pro' : 'this skin';
+    final what = skin.tier == SkinTier.pro ? 'Notely Pro' : 'this style';
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -127,7 +127,7 @@ class _ApplyButton extends ConsumerWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          'The store opens in a later update. You can preview this skin now.',
+          'The store opens in a later update. You can preview this style now.',
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.bodySmall,
         ),

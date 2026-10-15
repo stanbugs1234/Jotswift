@@ -70,6 +70,7 @@ class _InMemoryUserData implements NotebookRepository, StrokeRepository {
     String? title,
     NotebookCover? cover,
     PaperStyle? paper,
+    String? collectionId,
   }) async {
     final notebook = _notebooks[notebookId];
     if (notebook == null) return;
@@ -77,6 +78,7 @@ class _InMemoryUserData implements NotebookRepository, StrokeRepository {
       title: title,
       cover: cover,
       paper: paper,
+      collectionId: collectionId,
       updatedAt: nowMillis(),
     );
     _changed();

@@ -7,7 +7,7 @@ import '../../core/skins/skin_manifest.dart';
 import '../../core/skins/skin_providers.dart';
 import 'sample_pages.dart';
 
-/// Lists every skin. Tapping one opens a full preview.
+/// Lists every notebook style. Tapping one opens a full preview.
 class SkinPickerScreen extends ConsumerWidget {
   const SkinPickerScreen({super.key});
 
@@ -18,7 +18,7 @@ class SkinPickerScreen extends ConsumerWidget {
     final entitlements = ref.watch(entitlementsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Skins')),
+      appBar: AppBar(title: const Text('Notebook styles')),
       body: GridView.builder(
         padding: const EdgeInsets.all(16),
         gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
@@ -68,7 +68,7 @@ class SkinCard extends ConsumerWidget {
 
     return Semantics(
       button: true,
-      label: '${skin.name} skin, $status',
+      label: '${skin.name} style, $status',
       child: Theme(
         data: theme,
         child: Material(

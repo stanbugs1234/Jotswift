@@ -72,25 +72,27 @@ class SkinEngine {
         border: OutlineInputBorder(borderRadius: radius),
       ),
       dividerTheme: DividerThemeData(color: c.outline.withValues(alpha: 0.4)),
-      extensions: [
-        NotelySkin(
-          id: skin.id,
-          name: skin.name,
-          paperColor: skin.paper.color,
-          lineColor: skin.paper.lineColor,
-          marginColor: skin.paper.marginColor,
-          pattern: skin.paper.pattern,
-          spacing: skin.paper.spacing,
-          inkColors: skin.inkColors,
-          accentTextStyle: fonts.style(
-            skin.typography.accent,
-            TextStyle(fontSize: 28, color: c.primary),
-          ),
-          cornerRadius: skin.cornerRadius,
-        ),
-      ],
+      extensions: [buildNotelySkin(skin)],
     );
   }
+
+  /// The paper, ink palette and accent font of [skin], for pages drawn in
+  /// it while the rest of the screen keeps the interface theme.
+  NotelySkin buildNotelySkin(SkinManifest skin) => NotelySkin(
+    id: skin.id,
+    name: skin.name,
+    paperColor: skin.paper.color,
+    lineColor: skin.paper.lineColor,
+    marginColor: skin.paper.marginColor,
+    pattern: skin.paper.pattern,
+    spacing: skin.paper.spacing,
+    inkColors: skin.inkColors,
+    accentTextStyle: fonts.style(
+      skin.typography.accent,
+      TextStyle(fontSize: 28, color: skin.colors.primary),
+    ),
+    cornerRadius: skin.cornerRadius,
+  );
 
   /// Headings use the heading font; everything else keeps the body font.
   TextTheme _withHeadingFont(TextTheme theme, String family) {

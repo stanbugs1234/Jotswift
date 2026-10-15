@@ -18,6 +18,16 @@ class SkinRepository {
 
   final AssetBundle _bundle;
 
+  /// The light and dark themes for the app's own screens.
+  Future<InterfaceSkins> loadInterface() async => (
+    light: await _load('assets/interface/light.json'),
+    dark: await _load('assets/interface/dark.json'),
+  );
+
+  Future<SkinManifest> _load(String path) async => SkinManifest.fromJson(
+    jsonDecode(await _bundle.loadString(path)) as Map<String, dynamic>,
+  );
+
   /// Returns every valid skin. A broken manifest is skipped (and logged) so
   /// one bad skin can't stop the app from starting.
   Future<List<SkinManifest>> loadBundled() async {
@@ -27,8 +37,7 @@ class SkinRepository {
     final skins = <SkinManifest>[];
     for (final id in ids.cast<String>()) {
       try {
-        final json = jsonDecode(await _bundle.loadString(manifestPath(id)));
-        final skin = SkinManifest.fromJson(json as Map<String, dynamic>);
+        final skin = await _load(manifestPath(id));
         if (skin.id != id) {
           throw SkinManifestException(id, 'manifest id is "${skin.id}"');
         }
@@ -40,3 +49,6 @@ class SkinRepository {
     return skins;
   }
 }
+
+/// The skins the app's own screens use in light and dark mode.
+typedef InterfaceSkins = ({SkinManifest light, SkinManifest dark});

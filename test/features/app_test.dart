@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:notely/core/skins/notely_skin.dart';
 import 'package:notely/core/skins/skin_manifest.dart';
 import 'package:notely/features/auth/sign_in_screen.dart';
+import 'package:notely/features/skins/sample_pages.dart';
 
 import '../helpers.dart';
 
@@ -100,19 +101,27 @@ void main() {
     });
   });
 
-  group('skins', () {
-    testWidgets('picking a free skin applies it to the whole app', (
+  group('notebook styles', () {
+    /// The style the sample page on a not-yet-built tab is drawn in.
+    Future<String> sampleStyle(WidgetTester tester) async {
+      await tester.tap(find.widgetWithText(NavigationDestination, 'Planner'));
+      await tester.pumpAndSettle();
+      return skinAt(tester, find.byType(SamplePage));
+    }
+
+    testWidgets('picking a style changes pages but not the app screens', (
       tester,
     ) async {
       await pumpApp(tester, skins);
-      expect(skinAt(tester), 'classic');
+      final background = Theme.of(tester.element(find.byType(Scaffold).last))
+          .scaffoldBackgroundColor;
 
-      await tester.tap(find.byTooltip('Skins'));
+      await tester.tap(find.byTooltip('Notebook styles'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Pastel'));
       await tester.pumpAndSettle();
-      await tester.scrollUntilVisible(find.text('Use this skin'), 200);
-      await tester.tap(find.text('Use this skin'));
+      await tester.scrollUntilVisible(find.text('Use for my notebooks'), 200);
+      await tester.tap(find.text('Use for my notebooks'));
       await tester.pumpAndSettle();
 
       expect(find.text('In use'), findsOneWidget);
@@ -120,36 +129,41 @@ void main() {
       await tester.pumpAndSettle();
       await tester.pageBack();
       await tester.pumpAndSettle();
-      expect(skinAt(tester), 'pastel');
+      expect(await sampleStyle(tester), 'pastel');
+      expect(
+        Theme.of(tester.element(find.byType(Scaffold).last))
+            .scaffoldBackgroundColor,
+        background,
+      );
     });
 
-    testWidgets('the saved skin is used on launch', (tester) async {
+    testWidgets('the saved style is used on launch', (tester) async {
       await pumpApp(tester, skins, prefs: {'activeSkinId': 'minimal_dark'});
 
-      expect(skinAt(tester), 'minimal_dark');
+      expect(await sampleStyle(tester), 'minimal_dark');
     });
 
-    testWidgets('locked skins can be previewed but not applied', (
+    testWidgets('locked styles can be previewed but not applied', (
       tester,
     ) async {
       await pumpApp(tester, skins);
 
-      await tester.tap(find.byTooltip('Skins'));
+      await tester.tap(find.byTooltip('Notebook styles'));
       await tester.pumpAndSettle();
       await tester.ensureVisible(find.text('Botanical'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Botanical'));
       await tester.pumpAndSettle();
 
-      // The preview screen is drawn in the Botanical skin.
+      // The preview screen is drawn in the Botanical style.
       expect(
         skinAt(tester, find.byWidgetPredicate((w) => w is SegmentedButton)),
         'botanical',
       );
-      await tester.scrollUntilVisible(find.text('Unlock this skin'), 200);
+      await tester.scrollUntilVisible(find.text('Unlock this style'), 200);
       final button = tester.widget<ButtonStyleButton>(
         find.ancestor(
-          of: find.text('Unlock this skin'),
+          of: find.text('Unlock this style'),
           matching: find.byWidgetPredicate((w) => w is ButtonStyleButton),
         ),
       );
@@ -159,7 +173,7 @@ void main() {
     testWidgets('the preview switches between page types', (tester) async {
       await pumpApp(tester, skins);
 
-      await tester.tap(find.byTooltip('Skins'));
+      await tester.tap(find.byTooltip('Notebook styles'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Kraft Paper'));
       await tester.pumpAndSettle();
@@ -171,6 +185,41 @@ void main() {
       await tester.tap(find.byTooltip('Planner'));
       await tester.pumpAndSettle();
       expect(find.text('SCHEDULE'), findsOneWidget);
+    });
+  });
+
+  group('appearance', () {
+    Brightness brightness(WidgetTester tester) =>
+        Theme.of(tester.element(find.byType(Scaffold).last)).brightness;
+
+    testWidgets('follows the system until changed in Settings', (tester) async {
+      tester.platformDispatcher.platformBrightnessTestValue = Brightness.dark;
+      addTearDown(tester.platformDispatcher.clearPlatformBrightnessTestValue);
+      await pumpApp(tester, skins);
+      expect(brightness(tester), Brightness.dark);
+
+      await tester.tap(find.byTooltip('Settings'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Light'));
+      await tester.pumpAndSettle();
+      expect(brightness(tester), Brightness.light);
+    });
+
+    testWidgets('the saved appearance is used on launch', (tester) async {
+      await pumpApp(tester, skins, prefs: {'appearance': 'dark'});
+
+      expect(brightness(tester), Brightness.dark);
+    });
+
+    testWidgets('pages keep their paper in dark mode', (tester) async {
+      await pumpApp(tester, skins, prefs: {'appearance': 'dark'});
+
+      await tester.tap(find.widgetWithText(NavigationDestination, 'Planner'));
+      await tester.pumpAndSettle();
+      final style = Theme.of(tester.element(find.byType(SamplePage)))
+          .extension<NotelySkin>()!;
+      expect(style.id, 'classic');
+      expect(style.paperColor, skinById(skins, 'classic').paper.color);
     });
   });
 }

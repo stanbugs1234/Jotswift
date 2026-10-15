@@ -75,6 +75,15 @@ describe('users/{uid}', () => {
     await assertFails(setDoc(ref, { activeSkinId: 42 }));
     await assertFails(setDoc(ref, { activeSkinId: 'x'.repeat(65) }));
   });
+
+  test('appearance must be system, light or dark', async () => {
+    const ref = doc(sam(), 'users/sam');
+    for (const appearance of ['system', 'light', 'dark']) {
+      await assertSucceeds(setDoc(ref, { appearance }));
+    }
+    await assertFails(setDoc(ref, { appearance: 'sepia' }));
+    await assertFails(setDoc(ref, { appearance: 1 }));
+  });
 });
 
 describe('data under users/{uid}', () => {

@@ -20,15 +20,19 @@ import 'firebase_options.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Load these before the first frame so the app opens in the user's skin.
+  // Load these before the first frame so the app opens with the user's
+  // appearance and notebook style.
   final prefs = await SharedPreferences.getInstance();
-  final skins = await SkinRepository(rootBundle).loadBundled();
+  final skinRepository = SkinRepository(rootBundle);
+  final skins = await skinRepository.loadBundled();
+  final interface = await skinRepository.loadInterface();
 
   runApp(
     ProviderScope(
       overrides: [
         sharedPreferencesProvider.overrideWithValue(prefs),
         bundledSkinsProvider.overrideWithValue(skins),
+        interfaceSkinsProvider.overrideWithValue(interface),
         ...await _backendOverrides(),
       ],
       child: const NotelyApp(),

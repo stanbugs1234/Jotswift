@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/settings/appearance.dart';
 import '../../core/skins/skin_providers.dart';
 import '../auth/auth_repository.dart';
 
@@ -48,9 +49,28 @@ class SettingsScreen extends ConsumerWidget {
             title: Text(user?.displayName ?? user?.email ?? 'Signed in'),
             subtitle: const Text('Account'),
           ),
+          const ListTile(
+            leading: Icon(Icons.contrast),
+            title: Text('Appearance'),
+            subtitle: Text('Pages keep their own paper in light and dark.'),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(72, 0, 16, 8),
+            child: SegmentedButton<ThemeMode>(
+              showSelectedIcon: false,
+              segments: const [
+                ButtonSegment(value: ThemeMode.system, label: Text('System')),
+                ButtonSegment(value: ThemeMode.light, label: Text('Light')),
+                ButtonSegment(value: ThemeMode.dark, label: Text('Dark')),
+              ],
+              selected: {ref.watch(themeModeProvider)},
+              onSelectionChanged: (s) =>
+                  ref.read(appearanceProvider.notifier).set(s.first),
+            ),
+          ),
           ListTile(
             leading: const Icon(Icons.palette_outlined),
-            title: const Text('Skins'),
+            title: const Text('Notebook style'),
             subtitle: Text(skin.name),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => context.push('/settings/skins'),

@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/skins/skin_providers.dart';
+import '../../core/skins/widgets/page_style.dart';
 import '../../shared/dialogs.dart';
 import '../canvas/ink_toolbar.dart';
 import '../canvas/page_canvas.dart';
@@ -44,28 +46,34 @@ class PageScreen extends ConsumerWidget {
     }
 
     final title = page.value?.title ?? '';
-    return Scaffold(
-      appBar: AppBar(
-        title: InkWell(
-          onTap: () => _rename(context, ref, title),
-          child: Text(page.value?.displayTitle ?? ''),
+    return PageStyle(
+      style: ref.watch(pageStyleProvider(pageId)),
+      child: Scaffold(
+        appBar: AppBar(
+          title: InkWell(
+            onTap: () => _rename(context, ref, title),
+            child: Text(page.value?.displayTitle ?? ''),
+          ),
+          actions: [
+            IconButton(
+              tooltip: 'Rename page',
+              icon: const Icon(Icons.edit_note),
+              onPressed: () => _rename(context, ref, title),
+            ),
+          ],
         ),
-        actions: [
-          IconButton(
-            tooltip: 'Rename page',
-            icon: const Icon(Icons.edit_note),
-            onPressed: () => _rename(context, ref, title),
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          if (readOnly) const _ViewOnlyBanner() else InkToolbar(pageId: pageId),
-          const Divider(height: 1),
-          Expanded(
-            child: PageCanvas(pageId: pageId, readOnly: readOnly),
-          ),
-        ],
+        body: Column(
+          children: [
+            if (readOnly)
+              const _ViewOnlyBanner()
+            else
+              InkToolbar(pageId: pageId),
+            const Divider(height: 1),
+            Expanded(
+              child: PageCanvas(pageId: pageId, readOnly: readOnly),
+            ),
+          ],
+        ),
       ),
     );
   }

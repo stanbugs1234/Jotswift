@@ -2,6 +2,8 @@
 
 A skin is a folder with a `manifest.json` file. No code changes are needed to add one.
 
+A skin is a **notebook style**: notebook pages are drawn in its paper, ink colors and accent font. The app's own screens don't change with it. They use the light and dark themes in `assets/interface/`, chosen under **Settings → Appearance**. (The skin's other colors and fonts still style its preview in the picker.)
+
 ```
 assets/skins/
   catalog.json          ← lists skin ids in the order shown in the app

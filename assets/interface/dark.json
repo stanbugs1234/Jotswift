@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "interface_dark",
+  "version": 1,
+  "name": "Dark",
+  "description": "The app's own screens in dark mode.",
+  "tier": "free",
+  "brightness": "dark",
+  "colors": {
+    "primary": "#8FB0E8",
+    "onPrimary": "#10213D",
+    "secondary": "#E8957F",
+    "onSecondary": "#2B1510",
+    "background": "#141619",
+    "surface": "#1D2025",
+    "onSurface": "#E6E8EC",
+    "outline": "#5A606B",
+    "error": "#F2B8B5"
+  },
+  "paper": {
+    "color": "#23262B",
+    "lineColor": "#3A3F47",
+    "pattern": "lined",
+    "spacing": 32
+  },
+  "inkColors": ["#E6E8EC", "#8FB0E8", "#E8957F", "#7FC8A0", "#C3A6E0"],
+  "typography": { "heading": "Inter", "body": "Inter", "accent": "Caveat" },
+  "cornerRadius": 12
+}

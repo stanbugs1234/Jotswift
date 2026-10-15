@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "interface_light",
+  "version": 1,
+  "name": "Light",
+  "description": "The app's own screens in light mode.",
+  "tier": "free",
+  "brightness": "light",
+  "colors": {
+    "primary": "#2C4A7C",
+    "onPrimary": "#FFFFFF",
+    "secondary": "#C8553D",
+    "onSecondary": "#FFFFFF",
+    "background": "#F4F5F7",
+    "surface": "#FFFFFF",
+    "onSurface": "#1F2430",
+    "outline": "#9AA3B2",
+    "error": "#B3261E"
+  },
+  "paper": {
+    "color": "#FFFFFF",
+    "lineColor": "#C9D6EA",
+    "marginColor": "#E8A0A0",
+    "pattern": "lined",
+    "spacing": 32
+  },
+  "inkColors": ["#1F2430", "#2C4A7C", "#C8553D", "#2E7D5B", "#7B4FA0"],
+  "typography": { "heading": "Inter", "body": "Inter", "accent": "Caveat" },
+  "cornerRadius": 12
+}

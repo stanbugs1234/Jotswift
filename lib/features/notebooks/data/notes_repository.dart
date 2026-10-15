@@ -14,6 +14,7 @@ abstract interface class NotebookRepository {
     String? title,
     NotebookCover? cover,
     PaperStyle? paper,
+    String? collectionId,
   });
 
   /// Deletes the notebook with all its sections, pages and ink.

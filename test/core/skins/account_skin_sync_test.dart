@@ -1,5 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:notely/core/settings/appearance.dart';
 import 'package:notely/core/settings/user_settings_repository.dart';
 import 'package:notely/core/skins/skin_manifest.dart';
 import 'package:notely/core/skins/skin_providers.dart';
@@ -47,14 +49,20 @@ void main() {
     await pumpEventQueue();
 
     expect(
-      await settings.watchActiveSkinId(uidFor('sam@example.com')).first,
+      await settings
+          .watch(uidFor('sam@example.com'), SettingKeys.activeSkinId)
+          .first,
       'kraft',
     );
   });
 
   test("a new device picks up the account's skin", () async {
     final settings = InMemoryUserSettingsRepository();
-    await settings.setActiveSkinId(uidFor('sam@example.com'), 'pastel');
+    await settings.set(
+      uidFor('sam@example.com'),
+      SettingKeys.activeSkinId,
+      'pastel',
+    );
 
     final device = await signedInDevice(settings);
 
@@ -88,7 +96,9 @@ void main() {
 
     expect(device.read(activeSkinProvider).id, 'kraft');
     expect(
-      await settings.watchActiveSkinId(uidFor('sam@example.com')).first,
+      await settings
+          .watch(uidFor('sam@example.com'), SettingKeys.activeSkinId)
+          .first,
       'kraft',
     );
   });
@@ -104,5 +114,23 @@ void main() {
     await pumpEventQueue();
 
     expect(alex.read(activeSkinProvider).id, 'classic');
+  });
+
+  test('appearance follows the account to other devices', () async {
+    final settings = InMemoryUserSettingsRepository();
+    final phone = await signedInDevice(settings);
+    final tablet = await signedInDevice(settings);
+    tablet.listen(appearanceProvider, (_, _) {});
+    phone.listen(appearanceProvider, (_, _) {});
+    await pumpEventQueue();
+
+    await phone.read(appearanceProvider.notifier).set(ThemeMode.dark);
+    await pumpEventQueue();
+
+    expect(tablet.read(themeModeProvider), ThemeMode.dark);
+    expect(
+      await settings.watch(uidFor('sam@example.com'), 'appearance').first,
+      'dark',
+    );
   });
 }

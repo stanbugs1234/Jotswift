@@ -28,7 +28,9 @@ service cloud.firestore {
         && !touchesServerFields()
         && (!('activeSkinId' in request.resource.data)
             || (request.resource.data.activeSkinId is string
-                && request.resource.data.activeSkinId.size() <= 64));
+                && request.resource.data.activeSkinId.size() <= 64))
+        && (!('appearance' in request.resource.data)
+            || request.resource.data.appearance in ['system', 'light', 'dark']);
 
       // Notebooks, pages, tasks, events... (added in later phases).
       // `{collection}` makes this match only data below the user doc. A bare

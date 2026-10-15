@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/skins/skin_providers.dart';
+import '../../core/skins/widgets/page_style.dart';
 import '../skins/sample_pages.dart';
 
-/// A tab that isn't built yet. Shows a sample page in the active skin so the
-/// skin can be tried out everywhere in the app.
-class PlaceholderScreen extends StatelessWidget {
+/// A tab that isn't built yet. Shows a sample page in the default notebook
+/// style.
+class PlaceholderScreen extends ConsumerWidget {
   const PlaceholderScreen({
     required this.title,
     required this.kind,
@@ -20,13 +23,13 @@ class PlaceholderScreen extends StatelessWidget {
   final String comingIn;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
         actions: [
           IconButton(
-            tooltip: 'Skins',
+            tooltip: 'Notebook styles',
             icon: const Icon(Icons.palette_outlined),
             onPressed: () => context.push('/settings/skins'),
           ),
@@ -52,7 +55,10 @@ class PlaceholderScreen extends StatelessWidget {
                 const SizedBox(height: 8),
                 AspectRatio(
                   aspectRatio: 3 / 4,
-                  child: SamplePage(kind: kind, date: DateTime.now()),
+                  child: PageStyle(
+                    style: ref.watch(defaultStyleProvider),
+                    child: SamplePage(kind: kind, date: DateTime.now()),
+                  ),
                 ),
               ],
             ),
