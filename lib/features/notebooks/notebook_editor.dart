@@ -65,6 +65,9 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
 
   /// The planner the new notebook starts from, or null for blank pages.
   late CatalogItem? _template = widget.template;
+
+  /// The planner's colourway: which PDF of its pack.
+  String _variant = PageTemplate.defaultFile;
   bool _saving = false;
 
   @override
@@ -91,7 +94,10 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
       // A planner's pages are sized to fit its PDF.
       setState(() => _saving = true);
       try {
-        final pdf = await ref.read(catalogTemplatePdfProvider(template).future);
+        final pdf = await ref.read(
+          templatePdfProvider(templatePage(template, 1, file: _variant).fileKey)
+              .future,
+        );
         (size, orientation) = closestPaperSize(pdf.pageSize(1));
       } on Object catch (e) {
         debugPrint('Could not open ${template.id}: $e');
@@ -122,6 +128,7 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
         place: widget.initial.place,
       ),
       template: template,
+      variant: _variant,
     ));
   }
 
@@ -191,7 +198,7 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
                         CoverView(cover: _cover),
                         const SizedBox(width: 20),
                         if (template != null)
-                          _TemplatePreview(template: template)
+                          _TemplatePreview(template: template, file: _variant)
                         else
                           AspectRatio(
                             aspectRatio: page.width / page.height,
@@ -239,10 +246,19 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
                             avatar: const Icon(Icons.event_note, size: 18),
                             label: Text(t.name),
                             selected: t.id == template?.id,
-                            onSelected: (_) => setState(() => _template = t),
+                            onSelected: (_) => setState(() {
+                              _template = t;
+                              _variant = PageTemplate.defaultFile;
+                            }),
                           ),
                       ],
                     ),
+                    if (template != null)
+                      _ColourwayPicker(
+                        template: template,
+                        selected: _variant,
+                        onChanged: (file) => setState(() => _variant = file),
+                      ),
                     if (template != null)
                       Padding(
                         padding: const EdgeInsets.only(top: 8),
@@ -329,20 +345,27 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
 }
 
 /// What the editor returns: the notebook, and the planner it starts from.
-typedef NotebookEditorResult = ({NewNotebook notebook, CatalogItem? template});
+typedef NotebookEditorResult = ({
+  NewNotebook notebook,
+  CatalogItem? template,
+
+  /// The planner's colourway (its PDF in the pack).
+  String variant,
+});
 
 /// The first page of a planner, as the editor's page preview.
 class _TemplatePreview extends ConsumerWidget {
-  const _TemplatePreview({required this.template});
+  const _TemplatePreview({required this.template, required this.file});
 
   final CatalogItem template;
+  final String file;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final image = ref
         .watch(
           templateImageProvider((
-            template: templatePage(template, 1),
+            template: templatePage(template, 1, file: file),
             width: 360,
           )),
         )
@@ -359,6 +382,46 @@ class _TemplatePreview extends ConsumerWidget {
               ),
               child: RawImage(image: image, fit: BoxFit.contain),
             ),
+    );
+  }
+}
+
+/// Swatches for a planner's colourways, when it has more than one.
+class _ColourwayPicker extends ConsumerWidget {
+  const _ColourwayPicker({
+    required this.template,
+    required this.selected,
+    required this.onChanged,
+  });
+
+  final CatalogItem template;
+  final String selected;
+  final ValueChanged<String> onChanged;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final variants =
+        ref.watch(templateSpecProvider(template)).value?.variants ?? const [];
+    if (variants.length < 2) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.only(top: 12),
+      child: Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          Text('Colours', style: Theme.of(context).textTheme.labelLarge),
+          for (final v in variants)
+            ChoiceChip(
+              avatar: CircleAvatar(
+                backgroundColor: Color(v.color ?? 0xFF888888),
+              ),
+              label: Text(v.name),
+              selected: v.file == selected,
+              onSelected: (_) => onChanged(v.file),
+            ),
+        ],
+      ),
     );
   }
 }

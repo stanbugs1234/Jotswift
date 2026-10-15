@@ -1,0 +1,15 @@
+{
+  "kind": "template",
+  "name": "Notes Spreads",
+  "version": 1,
+  "unlock": {
+    "free": true
+  },
+  "category": "spreads",
+  "tags": [
+    "notes",
+    "spreads",
+    "free",
+    "undated"
+  ]
+}

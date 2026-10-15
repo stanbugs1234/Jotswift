@@ -1,0 +1,14 @@
+{
+  "_comment": "Spread planners made by tool/make_spreads.py. Prices are US dollars for docs/pricing.md.",
+  "planners": {
+    "spread_notes": {
+      "name": "Notes Spreads",
+      "short": "Notes",
+      "tags": ["notes", "spreads", "free", "undated"],
+      "unlock": { "free": true },
+      "sections": [
+        { "tab": "Notes", "pages": ["notes.lined", "notes.dotted", "notes.grid", "notes.blank", "notes.cornell"] }
+      ]
+    }
+  }
+}

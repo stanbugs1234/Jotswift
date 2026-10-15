@@ -101,10 +101,12 @@ CatalogItem template(
   String id,
   Map<String, Object?> spec, {
   int version = 1,
+  List<String> extraPdfs = const [],
 }) {
   final pack = zip({
     'template.pdf': utf8.encode('%PDF-$version'),
     'template.json': utf8.encode(jsonEncode(spec)),
+    for (final f in extraPdfs) f: utf8.encode('%PDF-$version-$f'),
   });
   final path = 'catalog/$id/$version/pack.zip';
   downloader.files[path] = pack;
@@ -124,7 +126,56 @@ CatalogItem template(
   })!;
 }
 
+const colourPlannerJson = {
+  ...plannerJson,
+  'variants': [
+    {'name': 'Classic', 'file': 'template.pdf', 'color': '#2C3E66'},
+    {'name': 'Pastel', 'file': 'template_pastel.pdf', 'color': '#7E6AAE'},
+  ],
+};
+
 void main() {
+  test('colourways are read from template.json', () {
+    final spec = TemplateSpec.fromJson(
+      Uint8List.fromList(utf8.encode(jsonEncode(colourPlannerJson))),
+    );
+    expect(spec.variants.map((v) => v.file), [
+      'template.pdf',
+      'template_pastel.pdf',
+    ]);
+    expect(spec.variants.last.color, 0xFF7E6AAE);
+    final plain = TemplateSpec.fromJson(
+      Uint8List.fromList(utf8.encode(jsonEncode(plannerJson))),
+    );
+    expect(plain.variants, isEmpty);
+  });
+
+  test('a page remembers its colourway; older pages use template.pdf', () {
+    const pastel = PageTemplate(
+      itemId: 'p',
+      version: 1,
+      pdfPage: 2,
+      pack: 'x',
+      sha256: 'y',
+      bytes: 3,
+      file: 'template_pastel.pdf',
+    );
+    expect(PageTemplate.fromMap(pastel.toMap()), pastel);
+    final old = {...pastel.toMap()}..remove('file');
+    expect(PageTemplate.fromMap(old)!.file, 'template.pdf');
+    expect(
+      const PageTemplate(
+        itemId: 'p',
+        version: 1,
+        pdfPage: 2,
+        pack: 'x',
+        sha256: 'y',
+        bytes: 3,
+      ).toMap().containsKey('file'),
+      isFalse,
+    );
+  });
+
   test('template.json is read for planners and single pages', () {
     final planner = TemplateSpec.fromJson(
       Uint8List.fromList(utf8.encode(jsonEncode(plannerJson))),
@@ -252,6 +303,66 @@ void main() {
       final months = await repo.watchPages(nb.id, sections[1].id).first;
       expect(months.map((p) => p.title), ['January', 'February']);
       expect(months.map((p) => p.template!.pdfPage), [2, 3]);
+    });
+
+    testWidgets('a planner can start in another colourway', (tester) async {
+      final planner = template(
+        downloader,
+        'planner',
+        colourPlannerJson,
+        extraPdfs: ['template_pastel.pdf'],
+      );
+      final auth = await pumpApp(
+        tester,
+        skins,
+        size: const Size(900, 2600),
+        overrides: overrides([planner]),
+      );
+      uid = auth.currentUser!.uid;
+
+      await tester.tap(find.text('New notebook').last);
+      await settle(tester);
+      await tester.tap(find.text('2027 Weekly Planner'));
+      await settle(tester);
+      expect(find.text('Colours'), findsOneWidget);
+      // ("Pastel" is also a notebook style; pick the colourway.)
+      await tester.tap(
+        find.descendant(
+          of: find.ancestor(
+            of: find.text('Colours'),
+            matching: find.byType(Wrap),
+          ),
+          matching: find.text('Pastel'),
+        ),
+      );
+      await settle(tester);
+      await tester.tap(find.text('Create'));
+      await settle(tester);
+
+      final repo = backend.notebooks(uid);
+      final nb = (await repo.watchNotebooks().first).single;
+      final sections = await repo.watchSections(nb.id).first;
+      final pages = await repo.watchPages(nb.id, sections[1].id).first;
+      expect(pages.map((p) => p.template!.file), [
+        'template_pastel.pdf',
+        'template_pastel.pdf',
+      ]);
+      expect(renderer.opened, contains('planner@1/template_pastel.pdf'));
+    });
+
+    testWidgets('planners with one look show no colour choice', (tester) async {
+      final planner = template(downloader, 'planner', plannerJson);
+      await pumpApp(
+        tester,
+        skins,
+        size: const Size(900, 2600),
+        overrides: overrides([planner]),
+      );
+      await tester.tap(find.text('New notebook').last);
+      await settle(tester);
+      await tester.tap(find.text('2027 Weekly Planner'));
+      await settle(tester);
+      expect(find.text('Colours'), findsNothing);
     });
 
     Future<(ProviderContainer, String, Map<int, String>)> pumpPlannerPage(

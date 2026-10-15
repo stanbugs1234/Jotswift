@@ -9,6 +9,9 @@ enum TemplateMode { notebook, pages }
 /// One PDF page offered by a template, with its title.
 typedef TemplatePage = ({int pdfPage, String title});
 
+/// A colourway of a template: the same pages in another PDF of its pack.
+typedef TemplateVariant = ({String name, String file, int? color});
+
 /// A template's `template.json`.
 ///
 /// ```jsonc
@@ -20,7 +23,7 @@ typedef TemplatePage = ({int pdfPage, String title});
 /// ```
 @immutable
 class TemplateSpec {
-  const TemplateSpec(this.mode, this.sections);
+  const TemplateSpec(this.mode, this.sections, {this.variants = const []});
 
   /// Reads `template.json`. Entries without a page number are skipped.
   factory TemplateSpec.fromJson(Uint8List bytes) {
@@ -30,17 +33,31 @@ class TemplateSpec {
         if (p['pdfPage'] case final int n)
           (pdfPage: n, title: p['title'] as String? ?? ''),
     ];
+    final variants = <TemplateVariant>[
+      for (final v in (json['variants'] as List? ?? const []).whereType<Map>())
+        if ((v['name'], v['file']) case (final String name, final String file))
+          (name: name, file: file, color: _hex(v['color'])),
+    ];
     if (json['mode'] == 'notebook') {
-      return TemplateSpec(TemplateMode.notebook, [
+      return TemplateSpec(TemplateMode.notebook, variants: variants, [
         for (final s
             in (json['sections'] as List? ?? const []).whereType<Map>())
           (title: s['title'] as String? ?? 'Pages', pages: pages(s['pages'])),
       ]);
     }
-    return TemplateSpec(TemplateMode.pages, [
+    return TemplateSpec(TemplateMode.pages, variants: variants, [
       (title: 'Pages', pages: pages(json['pages'])),
     ]);
   }
+
+  static int? _hex(Object? s) =>
+      s is String && RegExp(r'^#[0-9a-fA-F]{6}$').hasMatch(s)
+      ? 0xFF000000 | int.parse(s.substring(1), radix: 16)
+      : null;
+
+  /// Colourways to choose from when making a notebook; empty for templates
+  /// with one look.
+  final List<TemplateVariant> variants;
 
   final TemplateMode mode;
   final List<({String title, List<TemplatePage> pages})> sections;

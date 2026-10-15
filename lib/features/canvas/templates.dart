@@ -19,6 +19,7 @@ typedef TemplateFileKey = ({
   String pack,
   String sha256,
   int bytes,
+  String file,
 });
 
 extension PageTemplateFile on PageTemplate {
@@ -28,17 +29,24 @@ extension PageTemplateFile on PageTemplate {
     pack: pack,
     sha256: sha256,
     bytes: bytes,
+    file: file,
   );
 }
 
 /// A reference to [pdfPage] of [item]'s current version, for a new page.
-PageTemplate templatePage(CatalogItem item, int pdfPage) => PageTemplate(
+/// [file] picks a colourway's PDF.
+PageTemplate templatePage(
+  CatalogItem item,
+  int pdfPage, {
+  String file = PageTemplate.defaultFile,
+}) => PageTemplate(
   itemId: item.id,
   version: item.version,
   pdfPage: pdfPage,
   pack: item.files!.pack,
   sha256: item.files!.sha256,
   bytes: item.files!.bytes,
+  file: file,
 );
 
 /// The listing of a template version, rebuilt from what a page saved, so
@@ -59,11 +67,16 @@ final templatePdfProvider = FutureProvider.family<PdfFile, TemplateFileKey>((
   key,
 ) async {
   final files = await ref.watch(packCacheProvider).files(_itemFor(key));
-  final pdf = files['template.pdf'];
-  if (pdf == null) throw StateError('${key.itemId} has no template.pdf');
+  final pdf = files[key.file];
+  if (pdf == null) throw StateError('${key.itemId} has no ${key.file}');
   return ref
       .watch(pdfRendererProvider)
-      .open(pdf, name: '${key.itemId}@${key.version}');
+      .open(
+        pdf,
+        name: key.file == PageTemplate.defaultFile
+            ? '${key.itemId}@${key.version}'
+            : '${key.itemId}@${key.version}/${key.file}',
+      );
 });
 
 /// A template's `template.json`: its mode and its pages with titles.
@@ -137,8 +150,9 @@ final notebookTemplatePagesProvider =
 Future<Notebook> createNotebookFromTemplate(
   Ref ref,
   NewNotebook notebook,
-  CatalogItem item,
-) async {
+  CatalogItem item, {
+  String file = PageTemplate.defaultFile,
+}) async {
   final spec = await ref.read(templateSpecProvider(item).future);
   final repo = ref.read(notebookRepositoryProvider);
   final created = await repo.createNotebook(notebook);
@@ -150,7 +164,11 @@ Future<Notebook> createNotebookFromTemplate(
     if (i == 0) await repo.renameSection(created.id, sectionId, section.title);
     await repo.createPages(created.id, sectionId, [
       for (final p in section.pages)
-        (title: p.title, paper: null, template: templatePage(item, p.pdfPage)),
+        (
+          title: p.title,
+          paper: null,
+          template: templatePage(item, p.pdfPage, file: file),
+        ),
     ]);
   }
   return created;
@@ -158,9 +176,12 @@ Future<Notebook> createNotebookFromTemplate(
 
 /// What [createNotebookFromTemplate] needs, so widgets can call it.
 final createFromTemplateProvider =
-    Provider<Future<Notebook> Function(NewNotebook, CatalogItem)>(
+    Provider<
+      Future<Notebook> Function(NewNotebook, CatalogItem, {String file})
+    >(
       (ref) =>
-          (notebook, item) => createNotebookFromTemplate(ref, notebook, item),
+          (notebook, item, {file = PageTemplate.defaultFile}) =>
+              createNotebookFromTemplate(ref, notebook, item, file: file),
     );
 
 /// The pages a NewPage list gets from a single-page template.

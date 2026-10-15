@@ -69,7 +69,7 @@ def pack_files(folder, kind):
     if kind == "cover":
         return ["cover.webp"]
     if kind == "template":
-        return ["template.pdf", "template.json"]
+        return ["template.pdf", "template.json", *variant_files(folder)]
     if kind == "stickers":
         images = sorted(
             f.relative_to(folder).as_posix() for f in (folder / "stickers").glob("*.webp")
@@ -79,6 +79,17 @@ def pack_files(folder, kind):
 
 
 PACKED_KINDS = {"cover", "stickers", "template"}
+
+
+def variant_files(folder):
+    """A template's colourway PDFs besides template.pdf, from the
+    "variants" in its template.json."""
+    try:
+        spec = json.loads((folder / "template.json").read_text())
+    except (OSError, json.JSONDecodeError):
+        return []
+    files = [v.get("file") for v in spec.get("variants", []) if isinstance(v, dict)]
+    return sorted({f for f in files if isinstance(f, str) and f != "template.pdf"})
 
 
 def pdf_page_count(path):
@@ -214,6 +225,18 @@ def check(item_id):
                 n = p.get("pdfPage") if isinstance(p, dict) else None
                 need(isinstance(n, int) and 1 <= n <= count, f"pdfPage {n} is not a page of template.pdf ({count} pages)")
                 need(isinstance(p, dict) and isinstance(p.get("title"), str), f"page {n} needs a title")
+            variants = spec.get("variants", [])
+            need(isinstance(variants, list), '"variants" must be a list')
+            for v in variants if isinstance(variants, list) else []:
+                name, file = (v.get("name"), v.get("file")) if isinstance(v, dict) else (None, None)
+                need(isinstance(name, str) and name, "each variant needs a name")
+                need(isinstance(file, str) and re.fullmatch(r"template[a-z0-9_]*\.pdf", file or ""),
+                     f"variant file {file!r} must be template<_name>.pdf")
+                if isinstance(file, str) and (folder / file).exists():
+                    need(pdf_page_count(folder / file) == count,
+                         f"{file} has {pdf_page_count(folder / file)} pages; template.pdf has {count}")
+                elif isinstance(file, str):
+                    problems.append(f"variant file {file} is missing")
     elif kind == "paper":
         paper = listing.get("paper")
         if not isinstance(paper, dict):

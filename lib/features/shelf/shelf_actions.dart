@@ -52,7 +52,11 @@ Future<void> createNotebookAt(
       ? await ref
             .read(notebookRepositoryProvider)
             .createNotebook(result.notebook)
-      : await ref.read(createFromTemplateProvider)(result.notebook, planner);
+      : await ref.read(createFromTemplateProvider)(
+          result.notebook,
+          planner,
+          file: result.variant,
+        );
   if (context.mounted) await context.push('/notebooks/${notebook.id}');
 }
 

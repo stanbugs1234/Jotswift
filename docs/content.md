@@ -180,7 +180,8 @@ python3 tool/make_covers.py all     # 3 packs of 12: textures, patterns, seasons
   python3 tool/make_diary.py --list
   ```
   Styles, page bodies and prices are in `BOOKS` in `tool/make_diary.py`. Dated items are named `<book>_<year>` and sold as `planner_<book>_<year>`; make next year's each autumn.
-- **Template categories** decide the row on the Templates screen: `planners` (or no category) for dated planners, `diaries`, `journals`, `study`, `work`, `wellness`, `lifestyle`, `creative`, and `pages` for general page packs.
+- **Spread planners** (landscape two-page spreads with rainbow tabs, undated, in Classic, Pastel and Neutral colourways) are listed in `tool/spreads.json` and made with `python3 tool/make_spreads.py all`. Layouts live in `tool/spreads/` (one module per section, drawn with `tool/spreads/kit.py`). Each pack holds a PDF per colourway, listed as `"variants"` in template.json; people pick the colours when they make the notebook.
+- **Template categories** decide the row on the Templates screen: `planners` (or no category) for dated planners, `spreads`, `diaries`, `journals`, `study`, `work`, `wellness`, `lifestyle`, `creative`, and `pages` for general page packs.
 - **template.json** says how the PDF is used:
   ```jsonc
   // A planner: every listed page becomes a page of a new notebook, in sections.

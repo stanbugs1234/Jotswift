@@ -13,7 +13,11 @@ class PageTemplate {
     required this.pack,
     required this.sha256,
     required this.bytes,
+    this.file = defaultFile,
   });
+
+  /// The PDF in the pack most templates have; colourways add others.
+  static const defaultFile = 'template.pdf';
 
   static PageTemplate? fromMap(Object? map) {
     if (map is! Map) return null;
@@ -35,6 +39,7 @@ class PageTemplate {
       pack: pack,
       sha256: sha256,
       bytes: bytes,
+      file: map['file'] as String? ?? defaultFile,
     );
   }
 
@@ -49,6 +54,9 @@ class PageTemplate {
   final String sha256;
   final int bytes;
 
+  /// Which PDF in the pack: a colourway's, or [defaultFile].
+  final String file;
+
   Map<String, Object?> toMap() => {
     'itemId': itemId,
     'version': version,
@@ -56,6 +64,7 @@ class PageTemplate {
     'pack': pack,
     'sha256': sha256,
     'bytes': bytes,
+    if (file != defaultFile) 'file': file,
   };
 
   @override
@@ -63,8 +72,9 @@ class PageTemplate {
       other is PageTemplate &&
       other.itemId == itemId &&
       other.version == version &&
-      other.pdfPage == pdfPage;
+      other.pdfPage == pdfPage &&
+      other.file == file;
 
   @override
-  int get hashCode => Object.hash(itemId, version, pdfPage);
+  int get hashCode => Object.hash(itemId, version, pdfPage, file);
 }
