@@ -12,7 +12,10 @@
 #     ~/.appstoreconnect/private_keys/AuthKey_<ASC_KEY_ID>.p8 (never
 #     committed).
 #   - The Apple Distribution certificate for team UGSW9JFYRB in the
-#     keychain. Xcode's automatic signing makes the App Store profile.
+#     keychain, and the App Store provisioning profile "Jotswift App
+#     Store" installed (made with the App Store Connect API; it lasts a
+#     year, and can be downloaded again from developer.apple.com →
+#     Profiles, then opened to install).
 #
 # Usage, from the repo root with a clean working tree:
 #   tool/release_testflight.sh
@@ -49,11 +52,19 @@ flutter test --exclude-tags golden
 echo "==> Bumping version: ${current_version} -> ${next_version}"
 sed -i '' "s/^version: ${current_version}\$/version: ${next_version}/" pubspec.yaml
 
-echo "==> flutter build ipa"
-# The API key lets Xcode create or refresh the App Store profile itself.
-flutter build ipa --release \
-  --export-options-plist=ios/ExportOptions.plist \
+echo "==> flutter build xcarchive"
+flutter build xcarchive --release \
   ${REVENUECAT_APPLE_KEY:+--dart-define=REVENUECAT_APPLE_KEY=$REVENUECAT_APPLE_KEY}
+
+# Signed here with the App Store profile "Jotswift App Store" (see the
+# requirements above) rather than by flutter's automatic signing, which
+# needs an Apple account signed in to Xcode.
+echo "==> Exporting the App Store build"
+rm -rf build/ios/ipa
+xcodebuild -exportArchive \
+  -archivePath build/ios/archive/Runner.xcarchive \
+  -exportPath build/ios/ipa \
+  -exportOptionsPlist ios/ExportOptions.plist
 
 ipa_path=$(find build/ios/ipa -maxdepth 1 -name '*.ipa' | head -n1)
 if [[ -z "$ipa_path" ]]; then
