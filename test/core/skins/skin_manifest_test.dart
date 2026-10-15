@@ -11,7 +11,6 @@ Map<String, dynamic> validJson() => jsonDecode('''
   "version": 2,
   "name": "Test",
   "description": "A skin for tests.",
-  "tier": "free",
   "brightness": "light",
   "colors": {
     "primary": "#112233", "onPrimary": "#FFFFFF",
@@ -33,8 +32,7 @@ void main() {
 
       expect(skin.id, 'test_skin');
       expect(skin.version, 2);
-      expect(skin.tier, SkinTier.free);
-      expect(skin.isFree, isTrue);
+      expect(skin.pro, isFalse);
       expect(skin.brightness, Brightness.light);
       expect(skin.colors.primary, const Color(0xFF112233));
       expect(skin.paper.pattern, PaperPattern.grid);
@@ -45,7 +43,6 @@ void main() {
         const Color(0x80FF0000),
       ]);
       expect(skin.typography.accent, 'Caveat');
-      expect(skin.stickers, isEmpty);
     });
 
     void expectInvalid(
@@ -94,7 +91,7 @@ void main() {
     });
 
     test('rejects unknown enum values', () {
-      expectInvalid((j) => j['tier'] = 'gold', '"tier"');
+      expectInvalid((j) => j['brightness'] = 'gold', '"brightness"');
       expectInvalid((j) => (j['paper'] as Map)['pattern'] = 'hex', 'pattern');
     });
 
@@ -102,13 +99,9 @@ void main() {
       expectInvalid((j) => (j['paper'] as Map)['spacing'] = 2, 'spacing');
     });
 
-    test('requires a productId for paid skins', () {
-      expectInvalid((j) => j['tier'] = 'paid', 'productId');
-
-      final json = validJson()
-        ..['tier'] = 'paid'
-        ..['productId'] = 'skin_test';
-      expect(SkinManifest.fromJson(json).productId, 'skin_test');
+    test('reads whether a style is in Pro', () {
+      expect(SkinManifest.fromJson(validJson()..['pro'] = true).pro, isTrue);
+      expectInvalid((j) => j['pro'] = 'yes', 'pro');
     });
   });
 

@@ -18,7 +18,6 @@ class Entitlements {
   const Entitlements({
     this.pro = false,
     this.proUntil,
-    this.ownedSkinIds = const {},
     this.products = const {},
     this.grants = const {},
   });
@@ -49,7 +48,6 @@ class Entitlements {
 
   /// When Pro ends unless it renews (null: no end date known).
   final DateTime? proUntil;
-  final Set<String> ownedSkinIds;
 
   /// Store products bought (packs, planners, bundles).
   final Set<String> products;
@@ -65,7 +63,6 @@ class Entitlements {
       (final a?, final b?) => a.isAfter(b) ? a : b,
       (final a, final b) => a ?? b,
     },
-    ownedSkinIds: {...ownedSkinIds, ...other.ownedSkinIds},
     products: {...products, ...other.products},
     grants: {...grants, ...other.grants},
   );
@@ -83,18 +80,14 @@ class Entitlements {
       item.unlock.products.any(products.contains) ||
       grants.contains(item.id);
 
-  bool canUseSkin(SkinManifest skin) => switch (skin.tier) {
-    SkinTier.free => true,
-    SkinTier.paid => ownedSkinIds.contains(skin.id),
-    SkinTier.pro => pro,
-  };
+  /// Whether [skin] may be chosen for notebooks.
+  bool canUseSkin(SkinManifest skin) => !skin.pro || pro;
 
   @override
   bool operator ==(Object other) =>
       other is Entitlements &&
       other.pro == pro &&
       other.proUntil == proUntil &&
-      setEquals(other.ownedSkinIds, ownedSkinIds) &&
       setEquals(other.products, products) &&
       setEquals(other.grants, grants);
 
@@ -102,7 +95,6 @@ class Entitlements {
   int get hashCode => Object.hash(
     pro,
     proUntil,
-    Object.hashAllUnordered(ownedSkinIds),
     Object.hashAllUnordered(products),
     Object.hashAllUnordered(grants),
   );

@@ -77,43 +77,41 @@ UI code never calls Firestore directly. It always goes through a repository, so 
 
 ```
 users/{uid}
-  displayName, email, activeSkinId, createdAt
-  entitlements: { pro: bool, skins: [skinId...] }   # written only by Cloud Function
+  activeSkinId, appearance, updatedAt               # settings, synced across devices
+  tester: bool                                      # set only by tool/catalog.py
+  entitlements: { pro, proUntil, products[], grants[], updatedAt }
+                                                    # written only by the RevenueCat webhook
 
 users/{uid}/notebooks/{notebookId}
-  title, color, skinId?, order, createdAt, updatedAt, deleted
+  title, cover {color | art | photo}, paper, paperSize, orientation,
+  collectionId (its style), categoryId?, groupId?, order, lastOpenedAt, updatedAt
 
 users/{uid}/notebooks/{nbId}/sections/{sectionId}
-  title, color, order
+  title, order
+
+users/{uid}/categories/{id}, users/{uid}/groups/{id}  # the shelf
+users/{uid}/favoritePapers/{key}
 
 users/{uid}/pages/{pageId}                           # flat collection: easy queries across notebooks
-  notebookId, sectionId, title, type: note|planner|todo|calendar
-  template: blank|lined|grid|dot|plannerDaily|...
-  date? (planner pages), order, updatedAt, deleted, size {w,h}
+  notebookId, sectionId, title, order, paper?,
+  template? {itemId, version, pdfPage, pack, sha256, bytes}, updatedAt
 
 users/{uid}/pages/{pageId}/strokes/{strokeId}        # one doc per stroke (append-only)
-  points: [x,y,pressure,...] (packed list / base64 Float32), tool, color, width,
-  createdAt, deviceId, deleted (tombstone for eraser)
+  points (packed), tool, color, width, createdAt, deleted (tombstone)
 
-users/{uid}/pages/{pageId}/elements/{elementId}      # text boxes, images, stickers, shapes
-  kind, x, y, w, h, z, data{...}, updatedAt
+users/{uid}/pages/{pageId}/elements/{elementId}      # stickers now; text boxes and images later
+  kind, frame {x, y, w, h, rotation}, z, data{...}, deleted
 
-users/{uid}/tasks/{taskId}
-  title, notes, done, dueDate?, listId, priority, order, pageId?, completedAt
+users/{uid}/tasks, taskLists, events                 # Phase 3
 
-users/{uid}/taskLists/{listId}
-  title, color, order
-
-users/{uid}/events/{eventId}
-  title, start, end, allDay, color, recurrence (RRULE string), notes, reminderMinutes[]
-
-skins/{skinId}                                       # public catalog, read-only to clients
-  name, version, price tier, productId, previewUrl, manifestUrl, free: bool
+catalog/{itemId}                                     # covers, papers, stickers, templates,
+  kind, name, version, format, unlock {free, pro, products[]},   collections; read-only
+  visibility, collectionId?, category, tags, files {pack, sha256, bytes, preview}, ...
 ```
 
 **Why one stroke per document:** strokes are append-only and each has a unique ID. Two devices adding ink at the same time never conflict. Erasing marks a stroke `deleted` (a tombstone) instead of removing it. This avoids the 1 MB Firestore document limit and makes sync close to conflict-free. If a page grows very large (thousands of strokes), a Cloud Function can **compact** old strokes into a snapshot blob in Cloud Storage.
 
-**Security rules:** a user can only read and write `users/{uid}/**` when `request.auth.uid == uid`. The `entitlements` field is read-only to clients.
+**Security rules:** a user can only read and write `users/{uid}/**` when `request.auth.uid == uid`. The `entitlements` and `tester` fields are read-only to clients. Catalog packs in Storage download only for people who may use them (`firebase/storage.rules`).
 
 ---
 
@@ -138,39 +136,38 @@ skins/{skinId}                                       # public catalog, read-only
 
 ---
 
-## 6. Skins system
+## 6. Notebook styles and content
 
-> **Changing:** Notely is moving to a Noteshelf-style model: covers, paper, templates and stickers on each notebook, with a plain light/dark interface. See [docs/skins-plan.md](docs/skins-plan.md). This section describes the current skins.
+Notely works like Noteshelf. The app's screens use a plain light or dark theme (Settings → Appearance). Each notebook has its own **cover**, **paper**, **style** and pages, which can come from **templates** and carry **stickers**. All of it is data, not code. [docs/content.md](docs/content.md) explains how to make and publish each kind, and [docs/skins-plan.md](docs/skins-plan.md) has the product plan behind it.
 
-A skin is **data, not code**, so new skins can be sold without shipping an app update.
-
-**Skin manifest:** a JSON file per skin with colors, paper style, ink palette, fonts and corner radius. Each skin has one brightness, so a dark look is its own skin (e.g. *Minimal Dark*). The full format and how to make a skin are in [docs/skins.md](docs/skins.md).
-
-**In the app:**
-- A `SkinEngine` loads the manifest and builds a Flutter `ThemeData` plus a custom `ThemeExtension<NotelySkin>`. The extension carries the paper texture, template art, stickers and decorative assets.
-- Skins can apply app-wide (the default) or per notebook (a Pro feature).
-- Assets are downloaded on demand and cached with `flutter_cache_manager`.
-- **Free skins** are bundled in the app so they work offline on first launch: e.g. *Classic*, *Minimal Dark*, *Pastel* and *Kraft Paper*.
-- **Paid skins** are fetched only once the entitlement exists. Store previews use low-resolution preview images.
+- **Notebook styles** (`assets/skins/`):
+  - Bundled with the app: Classic, Minimal Dark, Pastel, Kraft Paper, and Botanical, which is included in Pro.
+  - A `SkinEngine` turns a manifest into the `NotelySkin` theme extension, which draws a notebook's pages.
+- **The catalog:**
+  - Covers, papers, sticker packs, PDF templates and collections are published with `tool/catalog.py` to Firestore `catalog/` and Storage, with no app update.
+  - Packs download on first use, are checked against their SHA-256, and are kept on the device by version.
+- **Templates** are PDFs (pdfrx), with page links and pages pinned to the template version they were made from.
 
 ---
 
 ## 7. Monetization and entitlements
 
-**Products and recommended prices (USD)**
+**Products and recommended prices (USD)** (product ids in [docs/skins-plan.md](docs/skins-plan.md) §7)
 | Product | Price | Store type |
 |---|---|---|
-| Individual skin | **$1.99** ($2.99 for premium skins with extra templates and stickers) | Non-consumable |
-| Skin bundle (4–5 themed skins) | **$5.99** (about 30–40% off buying them one by one) | Non-consumable |
+| Small pack (stickers, study pages) | **$1.99** | Non-consumable |
+| Collection pack (covers + papers + planner + stickers) | **$2.99** | Non-consumable |
+| Dated planner (one year) | **$3.99** | Non-consumable |
+| Bundle (several collections) | **$5.99** | Non-consumable |
 | **Notely Pro**, monthly | **$2.99/mo** | Auto-renewing subscription |
 | **Notely Pro**, yearly | **$19.99/yr** (about 45% off monthly), with a **7-day free trial** | Auto-renewing subscription |
 | Lifetime Pro (add later, after launch) | $49.99 | Non-consumable |
 
 **Why these numbers**
 - Note apps like Goodnotes and Notability charge roughly $10–20 a year. Notely also includes a planner and calendar, so $19.99/yr sits at the top of that range but stays competitive.
-- Small skin prices ($1.99) are impulse buys. Bundles raise the average order.
+- Small pack prices ($1.99) are impulse buys. Bundles raise the average order.
 - Push the **yearly** plan: show it first and use the free trial only on yearly. Yearly subscribers stay much longer.
-- **Pro includes a "Pro skins" collection** (e.g. one new skin each month for subscribers). This gives skin lovers a reason to subscribe instead of buying one skin at a time. Other skins stay sold individually.
+- **Pro includes everything marked Pro**, plus a new collection or planner each month. Packs are also sold on their own, for people who don't want a subscription.
 - Apple and Google take 15% under their small-business programs (under $1M/yr). Web purchases through Stripe cost about 3%.
 - Launch with these prices, then A/B test with RevenueCat Experiments once there's traffic. Check current competitor prices before launch.
 
@@ -180,17 +177,18 @@ A skin is **data, not code**, so new skins can be sold without shipping an app u
 | 3 notebooks, unlimited pages | Unlimited notebooks |
 | Pen, highlighter, eraser, text | Shapes, lasso transform, custom pen presets, pixel eraser |
 | Basic planner + to-do + calendar | Recurring events, reminders, calendar templates, habit tracker |
-| 4 free skins | Per-notebook skins, all "Pro-included" skins, sticker packs |
+| Free styles, covers, papers, Basics stickers, the free planner | Everything marked Pro (styles, covers, papers, planners, stickers) |
 | Sync across devices | PDF import/annotate, PDF export, handwriting search (later) |
 
-Sticker packs, collection packs and dated planners are sold too; see [docs/skins-plan.md](docs/skins-plan.md) §7.
 
 **How purchases flow**
 - **iOS / Android:** purchases must go through Apple / Google in-app purchase for digital goods. Use the `purchases_flutter` (RevenueCat) SDK.
 - **Web:** RevenueCat Web Billing (backed by Stripe) or Stripe Checkout directly.
 - **Single source of truth:** a RevenueCat webhook calls a Cloud Function, which writes `users/{uid}.entitlements`. The app reads entitlements from Firestore and RevenueCat, so something bought on the iPad unlocks on the web too.
 - The RevenueCat `appUserID` is set to the Firebase `uid`.
-- A `FeatureGate` provider (`ref.watch(canUse(Feature.shapes))`) is the only place feature checks happen.
+- Right after a purchase, the app trusts the store receipt on that device, so the unlock doesn't wait for the webhook.
+- Feature checks live in `lib/core/entitlements/` (`canCreateNotebookProvider` for the notebook limit). The limit only applies once the store is open.
+- **Built (milestone 8):** the store code, paywall and webhook. Turning them on needs the accounts in [docs/store-setup.md](docs/store-setup.md).
 
 ---
 
@@ -230,20 +228,20 @@ You can handwrite anywhere on the page, and the structured widgets stay interact
   - [ ] Apple sign-in: enable it on the App ID and in Firebase; Services ID + key for Android/web
 - [x] Responsive app shell: phone (bottom nav), tablet and web (sidebar). The notebooks drawer comes with Phase 2
 
-### Phase 1: Skins (3–4 weeks), built first
+### Phase 1: Styles and content (done, then reworked Noteshelf-style; see docs/noteshelf-implementation.md)
 - [x] Skin manifest format + `SkinEngine` (manifest → ThemeData + `ThemeExtension<NotelySkin>`)
 - [x] 4 bundled free skins (Classic, Minimal Dark, Pastel, Kraft Paper)
-- [x] Skin picker screen with live preview on sample pages
-- [ ] Skin catalog in Firestore; paid skin asset download and caching (needs Firebase)
+- [x] Notebook style picker; Noteshelf-style shelf, covers and new-notebook screen
+- [x] Catalog in Firestore and Storage: covers, papers, stickers, templates, collections, downloaded and cached
 - [x] Golden tests: every skin on every page type
-- [x] Skin authoring guide (`docs/skins.md`) so we can make new skins without code changes
+- [x] Content guide (`docs/content.md`): styles, covers, papers, stickers, templates and collections
 
 ### Phase 2: Core notebook MVP (4–6 weeks)
 - [x] Notebooks / sections / pages: create, rename, delete (Firestore + offline)
 - [ ] Tablet sidebar with the notebook tree (currently the same screens as phones)
 - [ ] **Ink spike on real devices:** pressure ink on an iPad, an Android tablet and a phone; measure latency and FPS with 2,000+ strokes on a page (**needs devices**)
 - [x] Canvas: pen, highlighter, stroke eraser, undo/redo, zoom/pan, palm rejection, phone Draw/Scroll toggle
-- [ ] Page templates (blank, lined, grid, dot), drawn from the active skin
+- [x] Page paper (blank, lined, narrow, grid, dot, music, Cornell) and PDF templates with links
 - [ ] Text boxes and image insert
 - [ ] Offline mode and sync status indicator
 - [x] Web: read-only ink rendering
@@ -257,17 +255,19 @@ You can handwrite anywhere on the page, and the structured widgets stay interact
 - [ ] Simple reminders (local notifications)
 
 ### Phase 4: Store and monetization (2–3 weeks)
-- [ ] RevenueCat set up for App Store, Play Store and Web; webhook Cloud Function → entitlements
-- [ ] Store UI with previews and "try before you buy" (preview the skin on the current page)
-- [ ] Feature gates for Pro features
-- [ ] Restore purchases
+- [x] Purchases code (RevenueCat) and webhook Cloud Function → entitlements, tested
+- [ ] Accounts and products set up ([docs/store-setup.md](docs/store-setup.md)); webhook deployed; sandbox purchases on the iPad
+- [x] Templates screen with previews, item pages and the Pro paywall
+- [ ] "Try it": write on a sample page before buying
+- [x] Feature gate: 3 notebooks on free
+- [x] Restore purchases
 
 ### Phase 5: Polish and growth (ongoing)
 - [ ] Handwriting recognition and search (`google_mlkit_digital_ink_recognition` on mobile; a server-side option for web)
 - [ ] PDF import/annotate and export
 - [ ] Google / Outlook calendar sync
 - [ ] Shared notebooks (read-only links first, then collaboration)
-- [ ] Habit tracker, journal templates, sticker packs
+- [ ] More content: journals, study packs, sticker art, the 2028 planner
 - [ ] Desktop builds (macOS / Windows)
 
 ### Launch checklist
@@ -279,9 +279,10 @@ You can handwrite anywhere on the page, and the structured widgets stay interact
 ---
 
 ## 10. Testing strategy
-- **Unit:** models, stroke encoding, skin manifest parsing, feature gates.
+- **Unit:** models, stroke encoding, manifest and listing parsing, unlock rules, feature gates.
 - **Widget / golden tests:** each skin rendered on each page type, to catch theming regressions.
-- **Firestore rules:** Firebase Emulator Suite + `@firebase/rules-unit-testing`.
+- **Firestore and Storage rules:** Firebase Emulator Suite + `@firebase/rules-unit-testing`.
+- **Cloud Functions:** the RevenueCat webhook with recorded events against the Firestore emulator.
 - **Integration:** `integration_test` on a physical iPad, an Android tablet, an iPhone and an Android phone (pen input can't be fully simulated).
 - **Manual sync matrix:** phone/tablet offline → write → reconnect → check the web; web typing and tablet inking on the same page at once.
 
@@ -294,7 +295,7 @@ You can handwrite anywhere on the page, and the structured widgets stay interact
 | Firestore cost from many stroke docs | Batch writes, compact old strokes into Storage blobs, compact point encoding |
 | Sync conflicts | Append-only strokes + tombstones; last-write-wins only for element moves and metadata |
 | App Store rejection over payments | Native IAP on mobile; web purchases only on web; RevenueCat to unify |
-| Skin assets bloating the app | Bundle only free skins; paid skins downloaded on demand |
+| Content bloating the app | Only styles are bundled; covers, stickers and templates download on demand |
 | Scope creep | Ship Phases 1–3 as a free beta before building the store |
 
 ---

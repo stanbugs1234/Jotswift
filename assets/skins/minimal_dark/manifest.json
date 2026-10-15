@@ -4,7 +4,6 @@
   "version": 1,
   "name": "Minimal Dark",
   "description": "Charcoal pages and soft dot grid, easy on the eyes at night.",
-  "tier": "free",
   "brightness": "dark",
   "colors": {
     "primary": "#8AB4F8",

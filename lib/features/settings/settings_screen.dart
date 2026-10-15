@@ -7,6 +7,7 @@ import '../../core/purchases/purchases_providers.dart';
 import '../../core/settings/appearance.dart';
 import '../../core/skins/skin_providers.dart';
 import '../auth/auth_repository.dart';
+import '../skins/notebook_style_screen.dart';
 import '../store/paywall.dart';
 import '../store/store_actions.dart';
 import '../store/store_screen.dart';
@@ -78,7 +79,7 @@ class SettingsScreen extends ConsumerWidget {
             title: const Text('Notebook style'),
             subtitle: Text(skin.name),
             trailing: const Icon(Icons.chevron_right),
-            onTap: () => context.push('/settings/skins'),
+            onTap: () => context.push(notebookStylePath),
           ),
           const Divider(),
           ListTile(

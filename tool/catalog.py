@@ -1,7 +1,7 @@
 """Checks and publishes catalog items (covers, papers, ...).
 
 Each item lives in catalog/<id>/:
-  listing.json   what it is and how it's offered (see docs/catalog.md)
+  listing.json   what it is and how it's offered (see docs/content.md)
   cover.webp     covers: the cover image, 1536 x 2048
   stickers.json  sticker packs: {"stickers": [{"file": "stickers/x.webp", "name": "X"}]}
   stickers/      sticker packs: transparent WebP images, at most 1024 px

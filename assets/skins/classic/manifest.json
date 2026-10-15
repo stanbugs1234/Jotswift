@@ -4,7 +4,6 @@
   "version": 1,
   "name": "Classic",
   "description": "Crisp white pages and navy ink, like a good school notebook.",
-  "tier": "free",
   "brightness": "light",
   "colors": {
     "primary": "#2C4A7C",

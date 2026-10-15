@@ -126,12 +126,9 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('Pastel'));
       await tester.pumpAndSettle();
-      await tester.scrollUntilVisible(find.text('Use for my notebooks'), 200);
-      await tester.tap(find.text('Use for my notebooks'));
-      await tester.pumpAndSettle();
 
       expect(find.text('In use'), findsOneWidget);
-      for (var i = 0; i < 3; i++) {
+      for (var i = 0; i < 2; i++) {
         await tester.pageBack();
         await tester.pumpAndSettle();
       }
@@ -149,9 +146,7 @@ void main() {
       expect(await sampleStyle(tester), 'minimal_dark');
     });
 
-    testWidgets('locked styles can be previewed but not applied', (
-      tester,
-    ) async {
+    testWidgets('a Pro style asks for Pro', (tester) async {
       await pumpApp(tester, skins);
 
       await tester.tap(find.byTooltip('Settings'));
@@ -163,38 +158,11 @@ void main() {
       await tester.tap(find.text('Botanical'));
       await tester.pumpAndSettle();
 
-      // The preview screen is drawn in the Botanical style.
-      expect(
-        skinAt(tester, find.byWidgetPredicate((w) => w is SegmentedButton)),
-        'botanical',
-      );
-      await tester.scrollUntilVisible(find.text('Unlock this style'), 200);
-      final button = tester.widget<ButtonStyleButton>(
-        find.ancestor(
-          of: find.text('Unlock this style'),
-          matching: find.byWidgetPredicate((w) => w is ButtonStyleButton),
-        ),
-      );
-      expect(button.onPressed, isNull);
-    });
-
-    testWidgets('the preview switches between page types', (tester) async {
-      await pumpApp(tester, skins);
-
-      await tester.tap(find.byTooltip('Settings'));
+      expect(find.text('Botanical is included in Notely Pro.'), findsOneWidget);
+      await tester.tapAt(const Offset(10, 10));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Notebook style'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Kraft Paper'));
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.byTooltip('To-do'));
-      await tester.pumpAndSettle();
-      expect(find.text('This week'), findsOneWidget);
-
-      await tester.tap(find.byTooltip('Planner'));
-      await tester.pumpAndSettle();
-      expect(find.text('SCHEDULE'), findsOneWidget);
+      expect(find.text('In use'), findsOneWidget, reason: 'Classic still');
+      expect(find.text('Botanical is included in Notely Pro.'), findsNothing);
     });
   });
 

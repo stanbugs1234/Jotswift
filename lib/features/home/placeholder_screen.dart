@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/skins/skin_providers.dart';
 import '../../core/skins/widgets/page_style.dart';
+import '../skins/notebook_style_screen.dart';
 import '../skins/sample_pages.dart';
 
 /// A tab that isn't built yet. Shows a sample page in the default notebook
@@ -29,9 +30,9 @@ class PlaceholderScreen extends ConsumerWidget {
         title: Text(title),
         actions: [
           IconButton(
-            tooltip: 'Notebook styles',
+            tooltip: 'Notebook style',
             icon: const Icon(Icons.palette_outlined),
-            onPressed: () => context.push('/settings/skins'),
+            onPressed: () => context.push(notebookStylePath),
           ),
           IconButton(
             tooltip: 'Settings',

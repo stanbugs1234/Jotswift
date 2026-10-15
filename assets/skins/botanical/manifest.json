@@ -4,8 +4,7 @@
   "version": 1,
   "name": "Botanical",
   "description": "Sage greens and terracotta on cream, for calm, leafy pages.",
-  "tier": "paid",
-  "productId": "skin_botanical",
+  "pro": true,
   "brightness": "light",
   "colors": {
     "primary": "#4F7B5A",

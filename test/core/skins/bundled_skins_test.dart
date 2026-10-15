@@ -42,7 +42,7 @@ void main() {
   });
 
   test('ships the four free skins from the plan, with classic as default', () {
-    expect(skins.where((s) => s.isFree).map((s) => s.id), [
+    expect(skins.where((s) => !s.pro).map((s) => s.id), [
       'classic',
       'minimal_dark',
       'pastel',

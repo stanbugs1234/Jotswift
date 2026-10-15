@@ -2,7 +2,7 @@
 
 Notely's look and its store are modeled on **Noteshelf 3**. This replaces the
 app-wide skins in [PLAN.md](../PLAN.md) §6 and adds to the store plan in §7.
-The current manifest format is in [skins.md](skins.md).
+How to make and publish content is in [content.md](content.md).
 
 **Summary**
 - **Like Noteshelf**, the personality lives **on each notebook**, not on the app. Each notebook has a **cover** and **paper**, and planners and journals are **templates**. **Stickers** go on any page. The app itself is a clean light/dark interface.
@@ -230,7 +230,7 @@ An item inside an owned collection is unlocked too. RevenueCat needs only **one*
 The source files live in the repo under `catalog/<id>/`, so every change is reviewed.
 
 1. **Make it:** design the cover, paper, template or stickers, and write the listing.
-2. **Check it** with `tool/catalog_check`: sizes and dimensions, PDF page count, links that point to real pages, contrast for papers (the rules in skins.md), and preview renders. It runs in CI.
+2. **Check it** with `tool/catalog_check`: sizes and dimensions, PDF page count, links that point to real pages, contrast for papers (the rules in content.md), and preview renders. It runs in CI.
 3. **Publish to testers** with `tool/publish_catalog <id> --testers`. It zips, uploads and writes the listing as `testers`.
 4. **Set up products** for paid items, and wait for Apple's review.
 5. **Release** with `tool/publish_catalog <id> --public`.

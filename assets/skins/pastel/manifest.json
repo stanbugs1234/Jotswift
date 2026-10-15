@@ -4,7 +4,6 @@
   "version": 1,
   "name": "Pastel",
   "description": "Blush pink and lavender with a soft grid for cheerful planning.",
-  "tier": "free",
   "brightness": "light",
   "colors": {
     "primary": "#A3557F",

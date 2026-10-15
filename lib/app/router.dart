@@ -11,8 +11,7 @@ import '../features/settings/settings_screen.dart';
 import '../features/shelf/shelf_screen.dart';
 import '../features/shelf/shelf_view.dart';
 import '../features/skins/sample_pages.dart';
-import '../features/skins/skin_detail_screen.dart';
-import '../features/skins/skin_picker_screen.dart';
+import '../features/skins/notebook_style_screen.dart';
 import '../features/store/store_item_screen.dart';
 import '../features/store/store_screen.dart';
 import 'shell.dart';
@@ -97,15 +96,8 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const SettingsScreen(),
         routes: [
           GoRoute(
-            path: 'skins',
-            builder: (context, state) => const SkinPickerScreen(),
-            routes: [
-              GoRoute(
-                path: ':id',
-                builder: (context, state) =>
-                    SkinDetailScreen(skinId: state.pathParameters['id']!),
-              ),
-            ],
+            path: 'style',
+            builder: (context, state) => const NotebookStyleScreen(),
           ),
         ],
       ),

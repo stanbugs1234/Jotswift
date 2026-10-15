@@ -18,7 +18,7 @@ individually as well as through Pro, and templates are PDFs.
 | 6 | Stickers ✅ | M | Sticker art (placeholder pack published) |
 | 7 | PDF templates and dated planners ✅ | L | Planner designs (a generated 2027 planner is published) |
 | 8 | Store and purchases ✅ (switched on once accounts exist) | L | App Store Connect, Play Console, RevenueCat and Stripe accounts and products: see [store-setup.md](store-setup.md) |
-| 9 | Clean-up and docs | S | — |
+| 9 | Clean-up and docs ✅ | S | — |
 
 ---
 
@@ -115,7 +115,7 @@ The editor saves a concrete paper and style, so later changes to the default sty
 - Storage: previews are readable when signed in. A pack is readable only if `canUseItem` passes; it looks up the listing and the user's entitlements in Firestore. The Storage service account was given `roles/firebaserules.firestoreServiceAgent` so these rules can read Firestore.
 - Rules tests cover free, Pro, product, grant and visitor access. The Firestore and Storage test files run one at a time, as they share the emulator's database.
 
-**Tools:** `tool/catalog.py` (Python, like the icon script) runs `check`, `publish <id> --testers|--public|--hidden|--retired [--dry-run]` and `set-tester <uid> on|off`. It uses the gcloud login. CI runs `check`. Guide: [catalog.md](catalog.md).
+**Tools:** `tool/catalog.py` (Python, like the icon script) runs `check`, `publish <id> --testers|--public|--hidden|--retired [--dry-run]` and `set-tester <uid> on|off`. It uses the gcloud login. CI runs `check`. Guide: [content.md](content.md).
 
 **Published:** the free covers Night Sky and Terrazzo, and the free paper Sage Dot.
 
@@ -211,11 +211,16 @@ Built and tested. It switches on when a build has a RevenueCat key. Until then t
 
 ---
 
-## Milestone 9: Clean-up and docs
+## Milestone 9: Clean-up and docs ✅
 
-- Remove the unused skin code: `SkinManifest`'s commerce fields, `skin_picker_screen.dart`, `skin_detail_screen.dart`, and the old `skins` rules. The interface theme and the manifest parser keep only what they still use.
-- Rewrite [skins.md](skins.md) as **content.md**: how to make covers, papers, templates, sticker packs and collections, and how to release them.
-- Update PLAN.md §4, §6, §7 and the roadmap.
+- **Skin store code removed:**
+  - `SkinTier`, `productId`, the unused `stickers` and `paper.texture` manifest fields, `ownedSkinIds`, and the skin picker and detail screens.
+  - A style now has one optional flag, `"pro": true`. Botanical uses it, so it's included in Pro instead of being a separate purchase that couldn't be bought.
+  - The old `skins/{id}` Firestore rules were already gone.
+- **Settings → Notebook style** is one screen: tap a style to make it the default. A Pro style shows the paywall first.
+- **A notebook keeps its own style** even if that style is no longer unlocked. This matches the rule that only new use is locked.
+- **One guide:** skins.md and catalog.md are merged into [content.md](content.md).
+- **PLAN.md** updated: §4 data model, §6 content, §7 products and purchases, the roadmap and the testing notes.
 
 ---
 

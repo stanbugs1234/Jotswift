@@ -72,58 +72,23 @@ void main() {
     }
   });
 
-  test('an owned paid skin can be used', () async {
+  test('a Pro style needs Notely Pro', () async {
+    final botanical = skinById(skins, 'botanical');
+    expect(botanical.pro, isTrue);
+    expect(Entitlements.none.canUseSkin(botanical), isFalse);
+    expect(Entitlements.none.canUseSkin(skinById(skins, 'kraft')), isTrue);
+
     final container = await makeContainer(
       skins,
       overrides: [
-        entitlementsProvider.overrideWithValue(
-          const Entitlements(ownedSkinIds: {'botanical'}),
-        ),
+        entitlementsProvider.overrideWithValue(const Entitlements(pro: true)),
       ],
     );
-    final botanical = skinById(skins, 'botanical');
-
     expect(
       await container.read(activeSkinIdProvider.notifier).select(botanical),
       isTrue,
     );
     expect(container.read(activeSkinProvider).id, 'botanical');
-  });
-
-  group('Entitlements.canUseSkin', () {
-    SkinManifest withTier(SkinTier tier) {
-      final s = skinById(skins, 'classic');
-      return SkinManifest(
-        id: 'x',
-        version: 1,
-        name: 'X',
-        description: '',
-        tier: tier,
-        productId: 'skin_x',
-        brightness: s.brightness,
-        colors: s.colors,
-        paper: s.paper,
-        inkColors: s.inkColors,
-        typography: s.typography,
-        cornerRadius: s.cornerRadius,
-      );
-    }
-
-    test('free skins are always usable', () {
-      expect(Entitlements.none.canUseSkin(withTier(SkinTier.free)), isTrue);
-    });
-
-    test('paid skins need to be owned', () {
-      final paid = withTier(SkinTier.paid);
-      expect(Entitlements.none.canUseSkin(paid), isFalse);
-      expect(const Entitlements(ownedSkinIds: {'x'}).canUseSkin(paid), isTrue);
-    });
-
-    test('pro skins need Notely Pro', () {
-      final pro = withTier(SkinTier.pro);
-      expect(Entitlements.none.canUseSkin(pro), isFalse);
-      expect(const Entitlements(pro: true).canUseSkin(pro), isTrue);
-    });
   });
 
   group('notebook styles', () {
@@ -173,20 +138,20 @@ void main() {
       expect(container.read(notebookStyleProvider(id)).id, 'pastel');
     });
 
-    test('a locked style falls back to the default style', () async {
+    test('a notebook keeps a style that is no longer unlocked', () async {
       final (container, id) = await withNotebook(
         'botanical',
         prefs: {'activeSkinId': 'kraft'},
       );
-      expect(container.read(notebookSkinProvider(id)).id, 'kraft');
+      expect(container.read(notebookSkinProvider(id)).id, 'botanical');
     });
 
-    test('an owned style is used', () async {
+    test('a missing style falls back to the default style', () async {
       final (container, id) = await withNotebook(
-        'botanical',
-        entitlements: const Entitlements(ownedSkinIds: {'botanical'}),
+        'retired_style',
+        prefs: {'activeSkinId': 'kraft'},
       );
-      expect(container.read(notebookSkinProvider(id)).id, 'botanical');
+      expect(container.read(notebookSkinProvider(id)).id, 'kraft');
     });
   });
 

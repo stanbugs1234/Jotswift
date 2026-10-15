@@ -76,14 +76,17 @@ final activeSkinProvider = Provider<SkinManifest>(
 );
 
 /// The style a notebook's pages are drawn in: its own, else the default.
+/// A notebook keeps its style even if that style is no longer unlocked.
 final notebookSkinProvider = Provider.family<SkinManifest, String>((
   ref,
   notebookId,
 ) {
   final own = ref.watch(notebookProvider(notebookId)).value?.collectionId;
-  return own == null
-      ? ref.watch(activeSkinProvider)
-      : _usableSkin(ref, own, fallback: ref.watch(activeSkinProvider));
+  return ref
+          .watch(bundledSkinsProvider)
+          .where((s) => s.id == own)
+          .firstOrNull ??
+      ref.watch(activeSkinProvider);
 });
 
 /// The page style of a notebook, ready to put in a [Theme].

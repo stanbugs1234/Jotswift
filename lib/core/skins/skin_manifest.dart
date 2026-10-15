@@ -4,18 +4,6 @@ import '../paper/paper_style.dart';
 
 export '../paper/paper_style.dart' show PaperPattern;
 
-/// Who can use a skin.
-enum SkinTier {
-  /// Bundled with the app and available to everyone.
-  free,
-
-  /// Sold individually or in a bundle.
-  paid,
-
-  /// Included with a Notely Pro subscription.
-  pro,
-}
-
 /// Thrown when a skin manifest is missing a field or has a bad value.
 class SkinManifestException implements Exception {
   SkinManifestException(this.skinId, this.message);
@@ -60,7 +48,6 @@ class SkinPaper {
     required this.pattern,
     required this.spacing,
     this.marginColor,
-    this.texture,
   });
 
   final Color color;
@@ -70,9 +57,6 @@ class SkinPaper {
 
   /// Distance between lines, grid cells or dots, in page units.
   final double spacing;
-
-  /// Optional texture image, relative to the skin's folder.
-  final String? texture;
 
   PaperStyle get style => PaperStyle(
     color: color,
@@ -98,22 +82,20 @@ class SkinTypography {
   final String accent;
 }
 
-/// A parsed skin manifest (see docs/skins.md for the format).
+/// A parsed skin manifest (see docs/content.md for the format).
 class SkinManifest {
   const SkinManifest({
     required this.id,
     required this.version,
     required this.name,
     required this.description,
-    required this.tier,
     required this.brightness,
     required this.colors,
     required this.paper,
     required this.inkColors,
     required this.typography,
     required this.cornerRadius,
-    this.productId,
-    this.stickers = const [],
+    this.pro = false,
   });
 
   factory SkinManifest.fromJson(Map<String, dynamic> json) {
@@ -135,12 +117,6 @@ class SkinManifest {
       );
     }
 
-    final tier = r.enumValue('tier', SkinTier.values);
-    final productId = r.optionalString('productId');
-    if (tier == SkinTier.paid && productId == null) {
-      throw SkinManifestException(id, 'paid skins need a "productId"');
-    }
-
     final colors = r.child('colors');
     final paper = r.child('paper');
     final typography = r.child('typography');
@@ -160,8 +136,7 @@ class SkinManifest {
       version: r.integer('version'),
       name: r.string('name'),
       description: r.string('description'),
-      tier: tier,
-      productId: productId,
+      pro: r.optionalBool('pro'),
       brightness: r.enumValue('brightness', Brightness.values),
       colors: SkinColors(
         primary: colors.colorField('primary'),
@@ -180,7 +155,6 @@ class SkinManifest {
         marginColor: paper.optionalColorField('marginColor'),
         pattern: paper.enumValue('pattern', PaperPattern.values),
         spacing: spacing,
-        texture: paper.optionalString('texture'),
       ),
       inkColors: inkColors.toList(),
       typography: SkinTypography(
@@ -189,7 +163,6 @@ class SkinManifest {
         accent: typography.string('accent'),
       ),
       cornerRadius: r.number('cornerRadius'),
-      stickers: r.optionalList('stickers').cast<String>(),
     );
   }
 
@@ -202,10 +175,10 @@ class SkinManifest {
   final int version;
   final String name;
   final String description;
-  final SkinTier tier;
 
-  /// The store product that unlocks this skin (paid skins only).
-  final String? productId;
+  /// Included in Notely Pro rather than free. Notebooks already using it
+  /// keep it when Pro ends; only choosing it again needs Pro.
+  final bool pro;
   final Brightness brightness;
   final SkinColors colors;
   final SkinPaper paper;
@@ -214,11 +187,6 @@ class SkinManifest {
   final List<Color> inkColors;
   final SkinTypography typography;
   final double cornerRadius;
-
-  /// Sticker image paths, relative to the skin's folder.
-  final List<String> stickers;
-
-  bool get isFree => tier == SkinTier.free;
 }
 
 /// Parses "#RRGGBB" or "#AARRGGBB". Returns null if [value] is malformed.
@@ -277,8 +245,12 @@ class _Reader {
     return value;
   }
 
-  List<dynamic> optionalList(String key) =>
-      json[key] == null ? const [] : list(key);
+  bool optionalBool(String key) {
+    final value = json[key];
+    if (value == null) return false;
+    if (value is! bool) _fail(key, 'true or false');
+    return value;
+  }
 
   T enumValue<T extends Enum>(String key, List<T> values) {
     final value = json[key];

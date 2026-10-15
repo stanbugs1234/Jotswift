@@ -1,15 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../core/entitlements/entitlements.dart';
 import '../../core/skins/skin_manifest.dart';
 import '../../core/skins/skin_providers.dart';
+import '../store/paywall.dart';
 import 'sample_pages.dart';
 
-/// Lists every notebook style. Tapping one opens a full preview.
-class SkinPickerScreen extends ConsumerWidget {
-  const SkinPickerScreen({super.key});
+const notebookStylePath = '/settings/style';
+
+/// Picks the default style for notebooks that don't choose their own.
+/// Each notebook can still pick its own style in its editor.
+class NotebookStyleScreen extends ConsumerWidget {
+  const NotebookStyleScreen({super.key});
+
+  Future<void> _pick(
+    BuildContext context,
+    WidgetRef ref,
+    SkinManifest skin,
+  ) async {
+    if (!ref.read(entitlementsProvider).canUseSkin(skin)) {
+      final pro = await showPaywall(
+        context,
+        ref,
+        reason: '${skin.name} is included in Notely Pro.',
+      );
+      if (!pro) return;
+    }
+    await ref.read(activeSkinIdProvider.notifier).select(skin);
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(content: Text('New notebooks now use ${skin.name}')),
+      );
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -18,7 +43,7 @@ class SkinPickerScreen extends ConsumerWidget {
     final entitlements = ref.watch(entitlementsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Notebook styles')),
+      appBar: AppBar(title: const Text('Notebook style')),
       body: GridView.builder(
         padding: const EdgeInsets.all(16),
         gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
@@ -32,7 +57,7 @@ class SkinPickerScreen extends ConsumerWidget {
           skin: skins[i],
           isActive: skins[i].id == activeId,
           isLocked: !entitlements.canUseSkin(skins[i]),
-          onTap: () => context.push('/settings/skins/${skins[i].id}'),
+          onTap: () => _pick(context, ref, skins[i]),
         ),
       ),
     );
@@ -59,11 +84,8 @@ class SkinCard extends ConsumerWidget {
     final theme = ref.watch(skinEngineProvider).buildTheme(skin);
     final status = isActive
         ? 'In use'
-        : isLocked
-        ? switch (skin.tier) {
-            SkinTier.pro => 'Pro',
-            _ => 'Premium',
-          }
+        : skin.pro
+        ? 'Pro'
         : 'Free';
 
     return Semantics(

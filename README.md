@@ -2,7 +2,7 @@
 
 Handwritten notes, a daily planner, calendar and to-do lists for iOS and Android phones and tablets, with a web app for viewing and typing. The look comes from swappable **skins**.
 
-See [PLAN.md](PLAN.md) for the product plan and roadmap, and [docs/skins.md](docs/skins.md) to make a new skin.
+See [PLAN.md](PLAN.md) for the product plan and roadmap, and [docs/content.md](docs/content.md) to make notebook styles, covers, papers, stickers and templates.
 
 ## Status
 
