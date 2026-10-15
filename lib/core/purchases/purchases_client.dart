@@ -8,7 +8,10 @@ import '../entitlements/entitlements.dart';
 abstract final class ProProducts {
   static const yearly = 'pro_yearly';
   static const monthly = 'pro_monthly';
-  static const all = [yearly, monthly];
+
+  /// Bought once, never renews. Offered only once the stores sell it.
+  static const lifetime = 'pro_lifetime';
+  static const all = [yearly, monthly, lifetime];
 
   static bool isPro(String productId) => productId.startsWith('pro_');
 }

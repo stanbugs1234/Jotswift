@@ -1,5 +1,7 @@
 # Setting up the store
 
+The full list of products and prices to create is in [pricing.md](pricing.md).
+
 Jotswift's store code is built and tested, but it stays switched off until the
 accounts below exist. Until then, the Templates screen shows prices as
 "Coming soon", Buy buttons are disabled, and there's no notebook limit.

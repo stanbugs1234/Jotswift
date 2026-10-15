@@ -157,7 +157,7 @@ Jotswift works like Noteshelf. The app's screens use a plain light or dark theme
 
 ## 7. Monetization and entitlements
 
-**Products and recommended prices (USD)** (product ids in [docs/skins-plan.md](docs/skins-plan.md) §7)
+**Products and recommended prices (USD)** (every product id and price: [docs/pricing.md](docs/pricing.md), made by `tool/pricing.py`)
 | Product | Price | Store type |
 |---|---|---|
 | Small pack (stickers, study pages) | **$1.99** | Non-consumable |
@@ -166,7 +166,7 @@ Jotswift works like Noteshelf. The app's screens use a plain light or dark theme
 | Bundle (several collections) | **$5.99** | Non-consumable |
 | **Jotswift Pro**, monthly | **$2.99/mo** | Auto-renewing subscription |
 | **Jotswift Pro**, yearly | **$19.99/yr** (about 45% off monthly), with a **7-day free trial** | Auto-renewing subscription |
-| Lifetime Pro (add later, after launch) | $49.99 | Non-consumable |
+| **Jotswift Pro**, lifetime (shown once the stores sell it) | **$29.99** | Non-consumable |
 
 **Why these numbers**
 - Note apps like Goodnotes and Notability charge roughly $10–20 a year. Jotswift also includes a planner and calendar, so $19.99/yr sits at the top of that range but stays competitive.

@@ -407,6 +407,38 @@ void main() {
       expect(find.text('Jotswift Pro'), findsNothing, reason: 'no banner');
     });
 
+    testWidgets('Pro can be bought once when the store sells lifetime', (
+      tester,
+    ) async {
+      final store = await open(
+        tester,
+        store: FakePurchases(
+          prices: {
+            ProProducts.yearly: r'$19.99',
+            ProProducts.monthly: r'$2.99',
+            ProProducts.lifetime: r'$29.99',
+          },
+        ),
+      );
+      await tester.tap(find.text('Jotswift Pro'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Lifetime'));
+      await tester.pumpAndSettle();
+      expect(find.text(r'$29.99'), findsOneWidget);
+      expect(find.text('One payment, yours to keep'), findsOneWidget);
+      await tester.tap(find.text('Buy once'));
+      await tester.pumpAndSettle();
+      expect(store.bought, {ProProducts.lifetime});
+      expect(find.text('Jotswift Pro'), findsNothing, reason: 'no banner');
+    });
+
+    testWidgets('no lifetime option until the store sells it', (tester) async {
+      await open(tester);
+      await tester.tap(find.text('Jotswift Pro'));
+      await tester.pumpAndSettle();
+      expect(find.text('Lifetime'), findsNothing);
+    });
+
     testWidgets('restore purchases', (tester) async {
       final store = await open(tester);
       await tester.tap(find.text('Restore purchases'));

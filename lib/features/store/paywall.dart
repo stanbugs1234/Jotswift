@@ -53,7 +53,13 @@ class _PaywallState extends ConsumerState<Paywall> {
     });
     final yearly = ref.watch(storeOfferProvider(ProProducts.yearly)).value;
     final monthly = ref.watch(storeOfferProvider(ProProducts.monthly)).value;
-    final chosen = _plan == ProProducts.yearly ? yearly : monthly;
+    final lifetime = ref.watch(storeOfferProvider(ProProducts.lifetime)).value;
+    final chosen = switch (_plan) {
+      ProProducts.yearly => yearly,
+      ProProducts.lifetime => lifetime,
+      _ => monthly,
+    };
+    final once = _plan == ProProducts.lifetime;
     final trial = chosen?.trialDays;
 
     Widget benefit(IconData icon, String text) => ListTile(
@@ -63,7 +69,7 @@ class _PaywallState extends ConsumerState<Paywall> {
       title: Text(text),
     );
 
-    Widget plan(String id, String label, StoreOffer? offer, String per) {
+    Widget plan(String id, String label, StoreOffer? offer, String? per) {
       final selected = _plan == id;
       return Card(
         margin: const EdgeInsets.only(bottom: 8),
@@ -85,10 +91,11 @@ class _PaywallState extends ConsumerState<Paywall> {
           title: Text(label),
           subtitle: switch (offer?.trialDays) {
             final days? => Text('$days days free'),
+            null when per == null => const Text('One payment, yours to keep'),
             null => null,
           },
           trailing: Text(
-            offer == null ? '' : '${offer.price}/$per',
+            offer == null ? '' : '${offer.price}${per == null ? '' : '/$per'}',
             style: theme.textTheme.titleMedium,
           ),
         ),
@@ -135,6 +142,8 @@ class _PaywallState extends ConsumerState<Paywall> {
               else ...[
                 plan(ProProducts.yearly, 'Yearly', yearly, 'year'),
                 plan(ProProducts.monthly, 'Monthly', monthly, 'month'),
+                if (lifetime != null)
+                  plan(ProProducts.lifetime, 'Lifetime', lifetime, null),
                 const SizedBox(height: 8),
                 FilledButton(
                   onPressed: _busy || chosen == null ? null : _subscribe,
@@ -143,17 +152,23 @@ class _PaywallState extends ConsumerState<Paywall> {
                           dimension: 20,
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
-                      : Text(trial != null ? 'Start free trial' : 'Subscribe'),
+                      : Text(switch ((once, trial)) {
+                          (true, _) => 'Buy once',
+                          (false, _?) => 'Start free trial',
+                          (false, null) => 'Subscribe',
+                        }),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  [
-                    if (trial != null && chosen != null)
-                      '$trial days free, then ${chosen.price} '
-                          '${_plan == ProProducts.yearly ? 'a year' : 'a month'}.',
-                    'Renews automatically until you cancel. Cancel any '
-                        'time in your store account settings.',
-                  ].join(' '),
+                  once
+                      ? 'One payment. No subscription, nothing renews.'
+                      : [
+                          if (trial != null && chosen != null)
+                            '$trial days free, then ${chosen.price} '
+                                '${_plan == ProProducts.yearly ? 'a year' : 'a month'}.',
+                          'Renews automatically until you cancel. Cancel any '
+                              'time in your store account settings.',
+                        ].join(' '),
                   textAlign: TextAlign.center,
                   style: theme.textTheme.bodySmall,
                 ),
