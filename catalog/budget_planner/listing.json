@@ -1,0 +1,15 @@
+{
+  "kind": "template",
+  "name": "Monthly Budget Planner",
+  "version": 1,
+  "unlock": {},
+  "collectionId": "budget",
+  "category": "planners",
+  "tags": [
+    "budget",
+    "finance",
+    "money",
+    "undated",
+    "monthly"
+  ]
+}

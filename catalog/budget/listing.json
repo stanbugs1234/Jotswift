@@ -1,0 +1,18 @@
+{
+  "kind": "collection",
+  "name": "Budget",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "pack_budget"
+    ]
+  },
+  "tags": [
+    "budget",
+    "finance",
+    "money",
+    "undated",
+    "monthly"
+  ]
+}

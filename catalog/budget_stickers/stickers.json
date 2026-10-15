@@ -1,0 +1,36 @@
+{
+  "stickers": [
+    {
+      "file": "stickers/label_paid.webp",
+      "name": "Paid"
+    },
+    {
+      "file": "stickers/label_due.webp",
+      "name": "Due"
+    },
+    {
+      "file": "stickers/label_payday.webp",
+      "name": "Payday"
+    },
+    {
+      "file": "stickers/label_saved.webp",
+      "name": "Saved!"
+    },
+    {
+      "file": "stickers/label_no_spend.webp",
+      "name": "No spend"
+    },
+    {
+      "file": "stickers/label_over_budget.webp",
+      "name": "Over budget"
+    },
+    {
+      "file": "stickers/label_bill.webp",
+      "name": "Bill"
+    },
+    {
+      "file": "stickers/label_goal_met.webp",
+      "name": "Goal met"
+    }
+  ]
+}

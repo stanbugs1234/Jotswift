@@ -1,0 +1,84 @@
+{
+  "mode": "notebook",
+  "sections": [
+    {
+      "title": "Year",
+      "pages": [
+        {
+          "pdfPage": 1,
+          "title": "Year at a glance"
+        }
+      ]
+    },
+    {
+      "title": "Months",
+      "pages": [
+        {
+          "pdfPage": 2,
+          "title": "January"
+        },
+        {
+          "pdfPage": 3,
+          "title": "February"
+        },
+        {
+          "pdfPage": 4,
+          "title": "March"
+        },
+        {
+          "pdfPage": 5,
+          "title": "April"
+        },
+        {
+          "pdfPage": 6,
+          "title": "May"
+        },
+        {
+          "pdfPage": 7,
+          "title": "June"
+        },
+        {
+          "pdfPage": 8,
+          "title": "July"
+        },
+        {
+          "pdfPage": 9,
+          "title": "August"
+        },
+        {
+          "pdfPage": 10,
+          "title": "September"
+        },
+        {
+          "pdfPage": 11,
+          "title": "October"
+        },
+        {
+          "pdfPage": 12,
+          "title": "November"
+        },
+        {
+          "pdfPage": 13,
+          "title": "December"
+        }
+      ]
+    },
+    {
+      "title": "Trackers",
+      "pages": [
+        {
+          "pdfPage": 14,
+          "title": "Bills"
+        },
+        {
+          "pdfPage": 15,
+          "title": "Savings goals"
+        },
+        {
+          "pdfPage": 16,
+          "title": "Debt payoff"
+        }
+      ]
+    }
+  ]
+}
