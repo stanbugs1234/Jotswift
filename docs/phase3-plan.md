@@ -5,7 +5,7 @@ The three tabs that are still placeholders, built in four steps. Each step ships
 | # | Step | What you get |
 |---|---|---|
 | 10 | **To-do** ✅ | Task lists, typed tasks with due dates and priority, and Today and Upcoming views. Works on the web too. |
-| 11 | **Calendar** | Events with month, week and day views, all-day events, colors and repeats. |
+| 11 | **Calendar** ✅ | Events with month, week and day views, all-day events, colors and repeats. |
 | 12 | **Planner** | A page per day: the day's events and tasks next to a free ink area. |
 | 13 | **Reminders** | Local notifications for tasks and events. |
 
@@ -39,7 +39,20 @@ Built as planned: `lib/features/tasks/`, with 22 tests (date maths, views, both 
 - Handwritten tasks (an ink snippet as the title).
 - Linking a task to a notebook page.
 
-## 11. Calendar
+## 11. Calendar ✅
+
+Built in `lib/features/calendar/`, with 17 tests:
+- **Repeats:** every N days, chosen weekdays, monthly on the 31st, February 29, and daylight-saving changes.
+- **Which days an event appears on.**
+- **Side-by-side layout** of overlapping events.
+- **Both storage backends.**
+- **The screens.**
+
+**Details:**
+- All-day events store `startDay`/`endDay` as calendar days. Timed events store `start`/`end` in milliseconds.
+- Each repeat keeps the first event's local clock time.
+- Editing a repeating event changes every repeat. Moving or deleting a single repeat comes later.
+- **Not yet:** tapping a day to open it in the Planner. That comes with the Planner itself.
 
 **Data:**
 - `users/{uid}/events/{id}`: `title, start, end, allDay, color, recurrence, notes, reminderMinutes[]`.

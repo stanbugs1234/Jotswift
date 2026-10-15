@@ -99,7 +99,7 @@ void main() {
 
       for (final (tab, title) in [
         ('Planner', 'Planner'),
-        ('Calendar', 'Calendar'),
+        ('Calendar', 'Month'),
         ('To-do', 'Today'),
         ('Notebooks', 'Notebooks'),
       ]) {

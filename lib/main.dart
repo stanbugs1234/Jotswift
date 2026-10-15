@@ -20,6 +20,8 @@ import 'core/skins/skin_providers.dart';
 import 'core/skins/skin_repository.dart';
 import 'features/auth/auth_repository.dart';
 import 'features/auth/firebase_auth_repository.dart';
+import 'features/calendar/calendar_providers.dart';
+import 'features/calendar/data/event_repository.dart';
 import 'features/notebooks/data/cover_photos.dart';
 import 'features/notebooks/data/firestore_notes_backend.dart';
 import 'features/notebooks/notes_providers.dart';
@@ -74,6 +76,7 @@ Future<List<Override>> _backendOverrides() async {
     ),
     notesBackendProvider.overrideWithValue(FirestoreNotesBackend(firestore)),
     tasksBackendProvider.overrideWithValue(FirestoreTasksBackend(firestore)),
+    eventsBackendProvider.overrideWithValue(FirestoreEventsBackend(firestore)),
     coverPhotoStoreProvider.overrideWithValue(
       FirebaseCoverPhotoStore(FirebaseStorage.instance),
     ),

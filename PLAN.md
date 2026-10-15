@@ -105,7 +105,9 @@ users/{uid}/pages/{pageId}/elements/{elementId}      # stickers now; text boxes 
 users/{uid}/taskLists/{id}                           # title, color, order
 users/{uid}/tasks/{id}                               # title, notes, done, due ("YYYY-MM-DD"),
                                                      # priority 0-3, listId?, order, createdAt, completedAt?
-users/{uid}/events                                   # Phase 3
+users/{uid}/events/{id}                              # title, notes, color, allDay,
+                                                     # start/end (ms) or startDay/endDay,
+                                                     # recurrence {freq, interval, weekdays[], until?, count?}
 
 catalog/{itemId}                                     # covers, papers, stickers, templates,
   kind, name, version, format, unlock {free, pro, products[]},   collections; read-only
@@ -253,7 +255,7 @@ You can handwrite anywhere on the page, and the structured widgets stay interact
 
 ### Phase 3: Planner, to-do, calendar (4–5 weeks)
 - [x] Tasks and task lists (editable on web); plan in [docs/phase3-plan.md](docs/phase3-plan.md)
-- [ ] Events and calendar month/week/day views (editable on web)
+- [x] Events and calendar month/week/day views (editable on web)
 - [ ] Daily planner page type with live task/event widgets plus a free ink area
 - [ ] Simple reminders (local notifications)
 

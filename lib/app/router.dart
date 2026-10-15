@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../features/auth/auth_repository.dart';
 import '../features/auth/sign_in_screen.dart';
+import '../features/calendar/calendar_screen.dart';
 import '../features/home/placeholder_screen.dart';
 import '../features/notebooks/notebook_screen.dart';
 import '../features/notebooks/page_screen.dart';
@@ -77,7 +78,14 @@ final routerProvider = Provider<GoRouter>((ref) {
             ],
           ),
           _tab('/planner', 'Planner', SamplePageKind.planner, 'Phase 3'),
-          _tab('/calendar', 'Calendar', SamplePageKind.calendar, 'Phase 3'),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/calendar',
+                builder: (context, state) => const CalendarScreen(),
+              ),
+            ],
+          ),
           StatefulShellBranch(
             routes: [
               GoRoute(
