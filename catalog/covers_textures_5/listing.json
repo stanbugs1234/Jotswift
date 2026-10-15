@@ -1,0 +1,16 @@
+{
+  "kind": "cover",
+  "name": "Cork",
+  "version": 1,
+  "unlock": {},
+  "collectionId": "covers_textures",
+  "category": "covers",
+  "color": "#C8955E",
+  "tags": [
+    "covers",
+    "textures",
+    "leather",
+    "linen",
+    "marble"
+  ]
+}

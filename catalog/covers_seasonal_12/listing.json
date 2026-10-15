@@ -1,0 +1,14 @@
+{
+  "kind": "cover",
+  "name": "New year",
+  "version": 1,
+  "unlock": {},
+  "collectionId": "covers_seasonal",
+  "category": "covers",
+  "color": "#1B1B1F",
+  "tags": [
+    "covers",
+    "seasons",
+    "holidays"
+  ]
+}

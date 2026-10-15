@@ -1,0 +1,17 @@
+{
+  "kind": "stickers",
+  "name": "Faces",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "pack_stickers_emoji"
+    ]
+  },
+  "category": "stickers",
+  "tags": [
+    "emoji",
+    "mood",
+    "faces"
+  ]
+}

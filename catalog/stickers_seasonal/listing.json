@@ -1,0 +1,17 @@
+{
+  "kind": "stickers",
+  "name": "Seasons & Holidays",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "pack_stickers_seasonal"
+    ]
+  },
+  "category": "stickers",
+  "tags": [
+    "holidays",
+    "seasons",
+    "festive"
+  ]
+}

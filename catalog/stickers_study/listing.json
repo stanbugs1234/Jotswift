@@ -1,0 +1,17 @@
+{
+  "kind": "stickers",
+  "name": "Study Stickers",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "pack_stickers_study"
+    ]
+  },
+  "category": "stickers",
+  "tags": [
+    "school",
+    "study",
+    "labels"
+  ]
+}

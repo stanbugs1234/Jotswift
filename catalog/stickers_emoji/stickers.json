@@ -1,0 +1,84 @@
+{
+  "stickers": [
+    {
+      "file": "stickers/smile.webp",
+      "name": "Smile"
+    },
+    {
+      "file": "stickers/grin.webp",
+      "name": "Grin"
+    },
+    {
+      "file": "stickers/laugh.webp",
+      "name": "Laugh"
+    },
+    {
+      "file": "stickers/wink.webp",
+      "name": "Wink"
+    },
+    {
+      "file": "stickers/love.webp",
+      "name": "Love"
+    },
+    {
+      "file": "stickers/blush.webp",
+      "name": "Blush"
+    },
+    {
+      "file": "stickers/starstruck.webp",
+      "name": "Starstruck"
+    },
+    {
+      "file": "stickers/party.webp",
+      "name": "Party"
+    },
+    {
+      "file": "stickers/cool.webp",
+      "name": "Cool"
+    },
+    {
+      "file": "stickers/silly.webp",
+      "name": "Silly"
+    },
+    {
+      "file": "stickers/think.webp",
+      "name": "Think"
+    },
+    {
+      "file": "stickers/neutral.webp",
+      "name": "Neutral"
+    },
+    {
+      "file": "stickers/surprised.webp",
+      "name": "Surprised"
+    },
+    {
+      "file": "stickers/nervous.webp",
+      "name": "Nervous"
+    },
+    {
+      "file": "stickers/tired.webp",
+      "name": "Tired"
+    },
+    {
+      "file": "stickers/sleepy.webp",
+      "name": "Sleepy"
+    },
+    {
+      "file": "stickers/sad.webp",
+      "name": "Sad"
+    },
+    {
+      "file": "stickers/cry.webp",
+      "name": "Cry"
+    },
+    {
+      "file": "stickers/angry.webp",
+      "name": "Angry"
+    },
+    {
+      "file": "stickers/sick.webp",
+      "name": "Sick"
+    }
+  ]
+}

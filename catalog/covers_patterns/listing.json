@@ -1,0 +1,17 @@
+{
+  "kind": "collection",
+  "name": "Pattern Covers",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "pack_covers_patterns"
+    ]
+  },
+  "tags": [
+    "covers",
+    "patterns",
+    "stripes",
+    "plaid"
+  ]
+}

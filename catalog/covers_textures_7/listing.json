@@ -1,0 +1,16 @@
+{
+  "kind": "cover",
+  "name": "Velvet",
+  "version": 1,
+  "unlock": {},
+  "collectionId": "covers_textures",
+  "category": "covers",
+  "color": "#5B2A4A",
+  "tags": [
+    "covers",
+    "textures",
+    "leather",
+    "linen",
+    "marble"
+  ]
+}

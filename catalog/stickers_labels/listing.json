@@ -1,0 +1,17 @@
+{
+  "kind": "stickers",
+  "name": "Labels & Tabs",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "pack_stickers_labels"
+    ]
+  },
+  "category": "stickers",
+  "tags": [
+    "labels",
+    "banners",
+    "headers"
+  ]
+}

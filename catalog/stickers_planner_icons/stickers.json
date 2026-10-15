@@ -1,0 +1,108 @@
+{
+  "stickers": [
+    {
+      "file": "stickers/calendar.webp",
+      "name": "Calendar"
+    },
+    {
+      "file": "stickers/clock.webp",
+      "name": "Clock"
+    },
+    {
+      "file": "stickers/bell.webp",
+      "name": "Bell"
+    },
+    {
+      "file": "stickers/phone.webp",
+      "name": "Phone"
+    },
+    {
+      "file": "stickers/mail.webp",
+      "name": "Mail"
+    },
+    {
+      "file": "stickers/cart.webp",
+      "name": "Cart"
+    },
+    {
+      "file": "stickers/dumbbell.webp",
+      "name": "Dumbbell"
+    },
+    {
+      "file": "stickers/heart.webp",
+      "name": "Heart"
+    },
+    {
+      "file": "stickers/star.webp",
+      "name": "Star"
+    },
+    {
+      "file": "stickers/house.webp",
+      "name": "House"
+    },
+    {
+      "file": "stickers/car.webp",
+      "name": "Car"
+    },
+    {
+      "file": "stickers/plane.webp",
+      "name": "Plane"
+    },
+    {
+      "file": "stickers/book.webp",
+      "name": "Book"
+    },
+    {
+      "file": "stickers/pencil.webp",
+      "name": "Pencil"
+    },
+    {
+      "file": "stickers/cake.webp",
+      "name": "Cake"
+    },
+    {
+      "file": "stickers/gift.webp",
+      "name": "Gift"
+    },
+    {
+      "file": "stickers/coffee.webp",
+      "name": "Coffee"
+    },
+    {
+      "file": "stickers/pill.webp",
+      "name": "Pill"
+    },
+    {
+      "file": "stickers/money.webp",
+      "name": "Money"
+    },
+    {
+      "file": "stickers/music.webp",
+      "name": "Music"
+    },
+    {
+      "file": "stickers/camera.webp",
+      "name": "Camera"
+    },
+    {
+      "file": "stickers/check.webp",
+      "name": "Check"
+    },
+    {
+      "file": "stickers/flag.webp",
+      "name": "Flag"
+    },
+    {
+      "file": "stickers/idea.webp",
+      "name": "Idea"
+    },
+    {
+      "file": "stickers/pet.webp",
+      "name": "Pet"
+    },
+    {
+      "file": "stickers/plant.webp",
+      "name": "Plant"
+    }
+  ]
+}

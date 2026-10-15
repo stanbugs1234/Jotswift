@@ -1,0 +1,17 @@
+{
+  "kind": "stickers",
+  "name": "Washi Tape",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "pack_stickers_washi"
+    ]
+  },
+  "category": "stickers",
+  "tags": [
+    "washi",
+    "tape",
+    "decor"
+  ]
+}

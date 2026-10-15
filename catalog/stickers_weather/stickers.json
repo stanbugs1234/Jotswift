@@ -1,0 +1,72 @@
+{
+  "stickers": [
+    {
+      "file": "stickers/sunny.webp",
+      "name": "Sunny"
+    },
+    {
+      "file": "stickers/partly.webp",
+      "name": "Partly cloudy"
+    },
+    {
+      "file": "stickers/cloudy.webp",
+      "name": "Cloudy"
+    },
+    {
+      "file": "stickers/rain.webp",
+      "name": "Rain"
+    },
+    {
+      "file": "stickers/storm.webp",
+      "name": "Storm"
+    },
+    {
+      "file": "stickers/snow.webp",
+      "name": "Snow"
+    },
+    {
+      "file": "stickers/wind.webp",
+      "name": "Wind"
+    },
+    {
+      "file": "stickers/rainbow.webp",
+      "name": "Rainbow"
+    },
+    {
+      "file": "stickers/hot.webp",
+      "name": "Hot"
+    },
+    {
+      "file": "stickers/moon0.webp",
+      "name": "New moon"
+    },
+    {
+      "file": "stickers/moon1.webp",
+      "name": "Waxing crescent"
+    },
+    {
+      "file": "stickers/moon2.webp",
+      "name": "First quarter"
+    },
+    {
+      "file": "stickers/moon3.webp",
+      "name": "Waxing gibbous"
+    },
+    {
+      "file": "stickers/moon4.webp",
+      "name": "Full moon"
+    },
+    {
+      "file": "stickers/moon5.webp",
+      "name": "Waning gibbous"
+    },
+    {
+      "file": "stickers/moon6.webp",
+      "name": "Last quarter"
+    },
+    {
+      "file": "stickers/moon7.webp",
+      "name": "Waning crescent"
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "stickers": [
+    {
+      "file": "stickers/heart.webp",
+      "name": "Heart"
+    },
+    {
+      "file": "stickers/clover.webp",
+      "name": "Clover"
+    },
+    {
+      "file": "stickers/egg.webp",
+      "name": "Egg"
+    },
+    {
+      "file": "stickers/flower.webp",
+      "name": "Flower"
+    },
+    {
+      "file": "stickers/sun.webp",
+      "name": "Sun"
+    },
+    {
+      "file": "stickers/umbrella.webp",
+      "name": "Umbrella"
+    },
+    {
+      "file": "stickers/firework.webp",
+      "name": "Firework"
+    },
+    {
+      "file": "stickers/leaf.webp",
+      "name": "Leaf"
+    },
+    {
+      "file": "stickers/pumpkin.webp",
+      "name": "Pumpkin"
+    },
+    {
+      "file": "stickers/ghost.webp",
+      "name": "Ghost"
+    },
+    {
+      "file": "stickers/snowflake.webp",
+      "name": "Snowflake"
+    },
+    {
+      "file": "stickers/tree.webp",
+      "name": "Tree"
+    },
+    {
+      "file": "stickers/gift.webp",
+      "name": "Gift"
+    },
+    {
+      "file": "stickers/candle.webp",
+      "name": "Candle"
+    },
+    {
+      "file": "stickers/balloon.webp",
+      "name": "Balloon"
+    }
+  ]
+}

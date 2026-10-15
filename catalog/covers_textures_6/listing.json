@@ -1,0 +1,16 @@
+{
+  "kind": "cover",
+  "name": "Denim",
+  "version": 1,
+  "unlock": {},
+  "collectionId": "covers_textures",
+  "category": "covers",
+  "color": "#3D5A80",
+  "tags": [
+    "covers",
+    "textures",
+    "leather",
+    "linen",
+    "marble"
+  ]
+}

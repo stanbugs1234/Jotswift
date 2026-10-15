@@ -1,0 +1,16 @@
+{
+  "kind": "cover",
+  "name": "Leather",
+  "version": 1,
+  "unlock": {},
+  "collectionId": "covers_textures",
+  "category": "covers",
+  "color": "#7A4A30",
+  "tags": [
+    "covers",
+    "textures",
+    "leather",
+    "linen",
+    "marble"
+  ]
+}

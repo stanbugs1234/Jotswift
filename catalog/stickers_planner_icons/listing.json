@@ -1,0 +1,17 @@
+{
+  "kind": "stickers",
+  "name": "Planner Icons",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "pack_stickers_planner_icons"
+    ]
+  },
+  "category": "stickers",
+  "tags": [
+    "icons",
+    "planner",
+    "everyday"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "kind": "cover",
+  "name": "Terrazzo",
+  "version": 1,
+  "unlock": {},
+  "collectionId": "covers_textures",
+  "category": "covers",
+  "color": "#F1ECE4",
+  "tags": [
+    "covers",
+    "textures",
+    "leather",
+    "linen",
+    "marble"
+  ]
+}

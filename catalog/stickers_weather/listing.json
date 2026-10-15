@@ -1,0 +1,17 @@
+{
+  "kind": "stickers",
+  "name": "Weather & Moon",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "pack_stickers_weather"
+    ]
+  },
+  "category": "stickers",
+  "tags": [
+    "weather",
+    "moon",
+    "sky"
+  ]
+}

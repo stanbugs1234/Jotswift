@@ -144,6 +144,12 @@ lowercase letters, digits and `_`. An id can never be reused.
   }
   ```
 
+### Sticker and cover packs drawn in code
+```sh
+python3 tool/make_stickers.py all   # 7 packs: planner icons, washi tape, labels, study, seasons, faces, weather & moon
+python3 tool/make_covers.py all     # 3 packs of 12: textures, patterns, seasons (each pack is a collection of covers)
+```
+
 ### Sticker packs
 - **Files:**
   - `stickers.json`, which lists every image

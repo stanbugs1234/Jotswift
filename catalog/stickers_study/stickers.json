@@ -1,0 +1,84 @@
+{
+  "stickers": [
+    {
+      "file": "stickers/exam.webp",
+      "name": "Exam"
+    },
+    {
+      "file": "stickers/quiz.webp",
+      "name": "Quiz"
+    },
+    {
+      "file": "stickers/homework.webp",
+      "name": "Homework"
+    },
+    {
+      "file": "stickers/study.webp",
+      "name": "Study"
+    },
+    {
+      "file": "stickers/read.webp",
+      "name": "Read"
+    },
+    {
+      "file": "stickers/lab.webp",
+      "name": "Lab"
+    },
+    {
+      "file": "stickers/project.webp",
+      "name": "Project"
+    },
+    {
+      "file": "stickers/group_work.webp",
+      "name": "Group work"
+    },
+    {
+      "file": "stickers/office_hours.webp",
+      "name": "Office hours"
+    },
+    {
+      "file": "stickers/class.webp",
+      "name": "Class"
+    },
+    {
+      "file": "stickers/icon_book.webp",
+      "name": "Book"
+    },
+    {
+      "file": "stickers/icon_pencil.webp",
+      "name": "Pencil"
+    },
+    {
+      "file": "stickers/icon_idea.webp",
+      "name": "Idea"
+    },
+    {
+      "file": "stickers/icon_calendar.webp",
+      "name": "Calendar"
+    },
+    {
+      "file": "stickers/icon_clock.webp",
+      "name": "Clock"
+    },
+    {
+      "file": "stickers/icon_check.webp",
+      "name": "Check"
+    },
+    {
+      "file": "stickers/icon_flag.webp",
+      "name": "Flag"
+    },
+    {
+      "file": "stickers/icon_coffee.webp",
+      "name": "Coffee"
+    },
+    {
+      "file": "stickers/icon_star.webp",
+      "name": "Star"
+    },
+    {
+      "file": "stickers/icon_music.webp",
+      "name": "Music"
+    }
+  ]
+}

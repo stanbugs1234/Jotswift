@@ -1,0 +1,68 @@
+{
+  "stickers": [
+    {
+      "file": "stickers/to_do.webp",
+      "name": "To do"
+    },
+    {
+      "file": "stickers/notes.webp",
+      "name": "Notes"
+    },
+    {
+      "file": "stickers/important.webp",
+      "name": "Important"
+    },
+    {
+      "file": "stickers/due.webp",
+      "name": "Due"
+    },
+    {
+      "file": "stickers/done.webp",
+      "name": "Done!"
+    },
+    {
+      "file": "stickers/ideas.webp",
+      "name": "Ideas"
+    },
+    {
+      "file": "stickers/goals.webp",
+      "name": "Goals"
+    },
+    {
+      "file": "stickers/this_week.webp",
+      "name": "This week"
+    },
+    {
+      "file": "stickers/today.webp",
+      "name": "Today"
+    },
+    {
+      "file": "stickers/remember.webp",
+      "name": "Remember"
+    },
+    {
+      "file": "stickers/meeting.webp",
+      "name": "Meeting"
+    },
+    {
+      "file": "stickers/birthday.webp",
+      "name": "Birthday"
+    },
+    {
+      "file": "stickers/payday.webp",
+      "name": "Payday"
+    },
+    {
+      "file": "stickers/appointment.webp",
+      "name": "Appointment"
+    },
+    {
+      "file": "stickers/deadline.webp",
+      "name": "Deadline"
+    },
+    {
+      "file": "stickers/weekend.webp",
+      "name": "Weekend"
+    }
+  ]
+}
