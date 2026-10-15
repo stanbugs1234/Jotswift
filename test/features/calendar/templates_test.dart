@@ -50,6 +50,9 @@ void main() {
       tester,
       skins,
       size: size,
+      // Template art moves forever at full animation; reduced keeps it
+      // still so the screen can settle.
+      prefs: {'animationLevel': 'reduced'},
       overrides: [
         todayProvider.overrideWithValue(today),
         eventsBackendProvider.overrideWithValue(InMemoryEventsBackend()),
@@ -157,6 +160,28 @@ void main() {
     );
     await tester.tap(find.bySemanticsLabel(RegExp('^Wall Calendar, Pro')));
     await tester.pumpAndSettle();
-    expect(find.textContaining('included in Jotswift Pro'), findsOneWidget);
+    expect(find.text('Included in Jotswift Pro'), findsOneWidget);
+    expect(find.text('Purchases open soon.'), findsOneWidget);
+    expect(find.text('Comes with the Wall flip month animation.'), findsOne);
+  });
+
+  test('a template unlocks on its own, with the bundle or with Pro', () {
+    final wall = calendarTemplateById('wall');
+    expect(canUseCalendarTemplate(Entitlements.none, wall), isFalse);
+    expect(canUseCalendarTemplate(Entitlements.none, classicCalendar), isTrue);
+    for (final e in [
+      const Entitlements(products: {'pack_calendar_wall'}),
+      const Entitlements(products: {calendarTemplatesBundle}),
+      const Entitlements(pro: true),
+    ]) {
+      expect(canUseCalendarTemplate(e, wall), isTrue);
+    }
+    expect(
+      canUseCalendarTemplate(
+        const Entitlements(products: {'pack_calendar_paper'}),
+        wall,
+      ),
+      isFalse,
+    );
   });
 }

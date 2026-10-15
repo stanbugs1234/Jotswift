@@ -6,6 +6,7 @@ import '../../tasks/task_providers.dart' show todayProvider;
 import '../calendar_providers.dart';
 import '../domain/event.dart';
 import '../event_editor.dart';
+import '../templates/calendar_art.dart';
 import '../templates/calendar_look.dart';
 import '../templates/calendar_template.dart';
 
@@ -28,17 +29,36 @@ class MonthView extends ConsumerWidget {
       builder: (context, constraints) {
         final wide = constraints.maxWidth >= 840;
         final look = CalendarLook.of(context);
+        final scene =
+            look.art == CalendarArt.wall || look.art == CalendarArt.seasons;
+        final overlay =
+            look.art == CalendarArt.botanical || look.art == CalendarArt.chalk;
+        Widget monthGrid = _MonthGrid(
+          focus: focus,
+          days: days,
+          occurrences: occurrences,
+          showTitles: constraints.maxWidth >= 600,
+        );
+        if (overlay) {
+          monthGrid = Stack(
+            children: [
+              monthGrid,
+              Positioned.fill(child: GridArtOverlay(template: look)),
+            ],
+          );
+        }
         final grid = Column(
           children: [
-            if (look.bigMonthNumber) _BigMonthHeading(month: focus),
-            Expanded(
-              child: _MonthGrid(
-                focus: focus,
-                days: days,
-                occurrences: occurrences,
-                showTitles: constraints.maxWidth >= 600,
+            if (scene)
+              SizedBox(
+                height: (constraints.maxHeight * (wide ? 0.26 : 0.18)).clamp(
+                  70.0,
+                  220.0,
+                ),
+                child: MonthArtHeader(template: look, month: focus.month),
               ),
-            ),
+            if (look.bigMonthNumber) _BigMonthHeading(month: focus),
+            Expanded(child: monthGrid),
           ],
         );
         final agenda = _Agenda(
@@ -136,59 +156,65 @@ class _MonthGrid extends ConsumerWidget {
                   : null,
             ),
             padding: const EdgeInsets.all(3),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (isToday)
-                  TodayMark(
-                    text: '${day.day}',
-                    style: theme.textTheme.labelMedium,
-                  )
-                else
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                    child: Text(
-                      '${day.day}',
-                      style: theme.textTheme.labelMedium?.copyWith(
-                        color: inMonth ? null : theme.colorScheme.outline,
+            // Short cells (art above the grid on phones) cut off what
+            // doesn't fit.
+            clipBehavior: Clip.hardEdge,
+            child: SingleChildScrollView(
+              physics: const NeverScrollableScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (isToday)
+                    TodayMark(
+                      text: '${day.day}',
+                      style: theme.textTheme.labelMedium,
+                    )
+                  else
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                      child: Text(
+                        '${day.day}',
+                        style: theme.textTheme.labelMedium?.copyWith(
+                          color: inMonth ? null : theme.colorScheme.outline,
+                        ),
                       ),
                     ),
-                  ),
-                if (showTitles)
-                  for (final o in events.take(3))
-                    _EventChip(occurrence: o, look: look.events)
-                else if (events.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4, left: 4),
-                    child: Wrap(
-                      spacing: 3,
-                      children: [
-                        for (final o in events.take(4))
-                          Container(
-                            width: 6,
-                            height: 6,
-                            decoration: BoxDecoration(
-                              color: Color(o.color),
-                              shape: BoxShape.circle,
-                              boxShadow: look.dark
-                                  ? [
-                                      BoxShadow(
-                                        color: Color(o.color),
-                                        blurRadius: 4,
-                                      ),
-                                    ]
-                                  : null,
+                  if (showTitles)
+                    for (final o in events.take(3))
+                      _EventChip(occurrence: o, look: look.events)
+                  else if (events.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4, left: 4),
+                      child: Wrap(
+                        spacing: 3,
+                        children: [
+                          for (final o in events.take(4))
+                            Container(
+                              width: 6,
+                              height: 6,
+                              decoration: BoxDecoration(
+                                color: Color(o.color),
+                                shape: BoxShape.circle,
+                                boxShadow: look.dark
+                                    ? [
+                                        BoxShadow(
+                                          color: Color(o.color),
+                                          blurRadius: 4,
+                                        ),
+                                      ]
+                                    : null,
+                              ),
                             ),
-                          ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                if (showTitles && events.length > 3)
-                  Text(
-                    '+${events.length - 3}',
-                    style: theme.textTheme.labelSmall,
-                  ),
-              ],
+                  if (showTitles && events.length > 3)
+                    Text(
+                      '+${events.length - 3}',
+                      style: theme.textTheme.labelSmall,
+                    ),
+                ],
+              ),
             ),
           ),
         ),

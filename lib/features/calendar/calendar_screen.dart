@@ -11,6 +11,7 @@ import '../planner/planner_screen.dart' show openPlannerDay;
 import '../tasks/task_providers.dart' show todayProvider;
 import 'calendar_providers.dart';
 import 'calendars_panel.dart';
+import 'templates/calendar_art.dart';
 import 'templates/calendar_look.dart';
 import 'templates/calendar_templates_screen.dart';
 import 'domain/event.dart';
@@ -81,7 +82,10 @@ class CalendarScreen extends ConsumerWidget {
     };
 
     return CalendarLook(
-      template: ref.watch(calendarTemplateProvider),
+      template: seasonalTemplate(
+        ref.watch(calendarTemplateProvider),
+        day.month,
+      ),
       child: LayoutBuilder(
         builder: (context, constraints) {
           final showPanel = constraints.maxWidth >= calendarsPanelBreakpoint;

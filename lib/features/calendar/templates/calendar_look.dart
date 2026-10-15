@@ -70,7 +70,8 @@ class _LookScope extends InheritedWidget {
   final CalendarTemplate template;
 
   @override
-  bool updateShouldNotify(_LookScope old) => old.template != template;
+  // Not ==, which compares ids: Seasons recolours the same template.
+  bool updateShouldNotify(_LookScope old) => !identical(old.template, template);
 }
 
 /// A day number marked as today in the template's way.

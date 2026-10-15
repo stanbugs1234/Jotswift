@@ -3,9 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/entitlements/entitlements.dart';
 import '../../../core/motion/period_transition.dart';
+import '../../../core/purchases/purchases_providers.dart';
 import '../../store/paywall.dart';
+import '../../store/store_actions.dart';
 import '../calendar_providers.dart';
 import '../domain/event.dart';
+import 'calendar_art.dart';
 import 'calendar_look.dart';
 import 'calendar_template.dart';
 
@@ -65,14 +68,17 @@ class _CalendarTemplatesPickerState
   );
 
   Future<void> _pick(CalendarTemplate t) async {
-    final entitlements = ref.read(entitlementsProvider);
-    if (!canUseCalendarTemplate(entitlements, t)) {
-      final unlocked = await showPaywall(
-        context,
-        ref,
-        reason: '${t.name} is included in Jotswift Pro.',
+    if (!canUseCalendarTemplate(ref.read(entitlementsProvider), t)) {
+      await showModalBottomSheet<void>(
+        context: context,
+        showDragHandle: true,
+        isScrollControlled: true,
+        builder: (_) => _UnlockSheet(template: t),
       );
-      if (!unlocked) return;
+      if (!mounted ||
+          !canUseCalendarTemplate(ref.read(entitlementsProvider), t)) {
+        return;
+      }
     }
     await ref.read(calendarTemplateSettingProvider.notifier).select(t);
     _demo();
@@ -246,20 +252,14 @@ class TemplatePreview extends StatelessWidget {
   final CalendarTemplate template;
   final Day month;
 
-  static const _sample = {
-    3: 0xFF1F8A99,
-    9: 0xFFC8553D,
-    14: 0xFF7B4FA0,
-    22: 0xFFD4A017,
-  };
-
   @override
   Widget build(BuildContext context) {
     final local = MaterialLocalizations.of(context);
     final today = Day.of(DateTime.now());
     final first = startOfWeek(month, local.firstDayOfWeekIndex);
+    final look = seasonalTemplate(template, month.month);
     return CalendarLook(
-      template: template,
+      template: look,
       child: Builder(
         builder: (context) {
           final theme = Theme.of(context);
@@ -284,29 +284,42 @@ class TemplatePreview extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 4),
+                  if (look.art == CalendarArt.wall ||
+                      look.art == CalendarArt.seasons)
+                    Expanded(
+                      flex: 2,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(4),
+                        child: MonthArtHeader(
+                          template: look,
+                          month: month.month,
+                        ),
+                      ),
+                    ),
                   Expanded(
-                    child: Column(
+                    flex: 5,
+                    child: Stack(
                       children: [
-                        for (var r = 0; r < 6; r++)
-                          Expanded(
-                            child: Row(
-                              children: [
-                                for (var c = 0; c < 7; c++)
-                                  Expanded(
-                                    child: _PreviewDay(
-                                      day: first.addDays(r * 7 + c),
-                                      inMonth:
-                                          first.addDays(r * 7 + c).month ==
-                                          month.month,
-                                      isToday:
-                                          first.addDays(r * 7 + c) == today,
-                                      event:
-                                          _sample[first.addDays(r * 7 + c).day],
-                                      seed: r * 7 + c,
-                                      style: small,
-                                    ),
-                                  ),
-                              ],
+                        _PreviewGrid(
+                          first: first,
+                          month: month,
+                          today: today,
+                          style: small,
+                        ),
+                        if (look.art == CalendarArt.botanical ||
+                            look.art == CalendarArt.chalk)
+                          Positioned.fill(
+                            child: Transform.scale(
+                              scale: 0.6,
+                              child: OverflowBox(
+                                maxWidth: double.infinity,
+                                maxHeight: double.infinity,
+                                child: SizedBox(
+                                  width: 260,
+                                  height: 220,
+                                  child: GridArtOverlay(template: look),
+                                ),
+                              ),
                             ),
                           ),
                       ],
@@ -318,6 +331,55 @@ class TemplatePreview extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+}
+
+/// The days of a preview month.
+class _PreviewGrid extends StatelessWidget {
+  const _PreviewGrid({
+    required this.first,
+    required this.month,
+    required this.today,
+    required this.style,
+  });
+
+  final Day first;
+  final Day month;
+  final Day today;
+  final TextStyle style;
+
+  static const _sample = {
+    3: 0xFF1F8A99,
+    9: 0xFFC8553D,
+    14: 0xFF7B4FA0,
+    22: 0xFFD4A017,
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    final small = style;
+    return Column(
+      children: [
+        for (var r = 0; r < 6; r++)
+          Expanded(
+            child: Row(
+              children: [
+                for (var c = 0; c < 7; c++)
+                  Expanded(
+                    child: _PreviewDay(
+                      day: first.addDays(r * 7 + c),
+                      inMonth: first.addDays(r * 7 + c).month == month.month,
+                      isToday: first.addDays(r * 7 + c) == today,
+                      event: _sample[first.addDays(r * 7 + c).day],
+                      seed: r * 7 + c,
+                      style: small,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+      ],
     );
   }
 }
@@ -367,6 +429,126 @@ class _PreviewDay extends StatelessWidget {
                 bottom: 1,
                 child: Container(width: 10, height: 2.5, color: Color(event!)),
               ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// How to get a paid template: on its own, all of them, or with Pro.
+class _UnlockSheet extends ConsumerStatefulWidget {
+  const _UnlockSheet({required this.template});
+
+  final CalendarTemplate template;
+
+  @override
+  ConsumerState<_UnlockSheet> createState() => _UnlockSheetState();
+}
+
+class _UnlockSheetState extends ConsumerState<_UnlockSheet> {
+  var _busy = false;
+
+  Future<void> _buy(String product) async {
+    setState(() => _busy = true);
+    final bought = await buyProduct(context, ref, product);
+    if (!mounted) return;
+    setState(() => _busy = false);
+    if (bought) Navigator.pop(context);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final t = widget.template;
+    final available = ref.watch(purchasesClientProvider).isAvailable;
+    final single = ref.watch(storeOfferProvider(t.productId!)).value;
+    final bundle = ref.watch(storeOfferProvider(calendarTemplatesBundle)).value;
+    // Close as soon as the template is unlocked (bought, restored or Pro).
+    ref.listen(
+      entitlementsProvider.select((e) => canUseCalendarTemplate(e, t)),
+      (was, now) {
+        if (now && !(was ?? false) && context.mounted) Navigator.pop(context);
+      },
+    );
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: 110,
+                  height: 140,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: TemplatePreview(
+                      template: t,
+                      month: Day.of(DateTime.now()).firstOfMonth,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(t.name, style: theme.textTheme.titleLarge),
+                      const SizedBox(height: 4),
+                      Text(t.description),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Comes with the ${t.animation.label} month animation.',
+                        style: theme.textTheme.bodySmall,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            if (!available)
+              const Padding(
+                padding: EdgeInsets.only(bottom: 12),
+                child: Text('Purchases open soon.'),
+              )
+            else ...[
+              FilledButton(
+                onPressed: _busy || single == null
+                    ? null
+                    : () => _buy(t.productId!),
+                child: Text(
+                  single == null
+                      ? 'Buy ${t.name}'
+                      : 'Buy ${t.name} · ${single.price}',
+                ),
+              ),
+              const SizedBox(height: 8),
+              OutlinedButton(
+                onPressed: _busy || bundle == null
+                    ? null
+                    : () => _buy(calendarTemplatesBundle),
+                child: Text(
+                  bundle == null
+                      ? 'All 7 templates'
+                      : 'All 7 templates · ${bundle.price}',
+                ),
+              ),
+              const SizedBox(height: 8),
+            ],
+            OutlinedButton.icon(
+              icon: const Icon(Icons.auto_awesome),
+              label: const Text('Included in Jotswift Pro'),
+              onPressed: () => showPaywall(
+                context,
+                ref,
+                reason: '${t.name} and every other template come with Pro.',
+              ),
+            ),
           ],
         ),
       ),

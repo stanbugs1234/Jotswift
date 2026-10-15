@@ -90,6 +90,34 @@ class CalendarTemplate {
 
   bool get free => productId == null;
 
+  /// This template with other colours (Seasons changes with the month).
+  CalendarTemplate copyWith({Color? accent, Color? background}) =>
+      CalendarTemplate(
+        id: id,
+        name: name,
+        description: description,
+        animation: animation,
+        background: background ?? this.background,
+        cell: cell,
+        text: text,
+        muted: muted,
+        grid: grid,
+        accent: accent ?? this.accent,
+        onAccent: onAccent,
+        dark: dark,
+        weekend: weekend,
+        weekdayColors: weekdayColors,
+        headingFont: headingFont,
+        bodyFont: bodyFont,
+        gridLines: gridLines,
+        today: today,
+        events: events,
+        art: art,
+        bigMonthNumber: bigMonthNumber,
+        cornerRadius: cornerRadius,
+        productId: productId,
+      );
+
   /// The app's [base] theme recoloured for this template, so every
   /// Calendar view picks the look up through `Theme.of`.
   ThemeData theme(ThemeData base, FontResolver fonts) {
