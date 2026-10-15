@@ -149,6 +149,28 @@
         {"tab": "Projects", "pages": ["life.project", "life.project", "life.swot", "life.matrix"]},
         {"tab": "Notes", "pages": ["notes.lined", "notes.dotted"]}
       ]
+    },
+    "spread_life": {
+      "name": "All-in-One Life Planner (40+ in 1, undated)",
+      "short": "Life Planner",
+      "price": "9.99",
+      "tags": ["all-in-one", "40+ in 1", "life planner", "undated", "spreads", "bundle"],
+      "unlock": { "pro": true, "products": ["planner_life_all_in_one"] },
+      "sections": [
+        {"tab": "Year", "pages": ["plan.year", "plan.goals", "plan.vision"]},
+        {"tab": "Months", "pages": [{"layout": "plan.month", "repeat": 12, "title": "Month {n}"}]},
+        {"tab": "Weeks", "pages": [{"layout": "plan.week", "repeat": 52, "title": "Week {n}"}]},
+        {"tab": "Days", "pages": [{"layout": "plan.day", "repeat": 31, "title": "Day {n}"}]},
+        {"tab": "Budget", "pages": [{"layout": "money.budget", "repeat": 12, "title": "Budget {n}"}, "money.expenses", "money.bills", "money.subscriptions", "money.savings", "money.funds", "money.debt", "money.year_money"]},
+        {"tab": "Habits", "pages": [{"layout": "habits.circle_tracker", "repeat": 12, "title": "Circle {n}"}, {"layout": "habits.habit_month", "repeat": 12, "title": "Habits {n}"}, "habits.mood_year", "habits.sleep_water"]},
+        {"tab": "Goals", "pages": ["life.smart", "life.plan_90", "life.swot", "life.project", "life.matrix", "life.mind_map", {"layout": "life.review", "repeat": 4, "title": "Review {n}"}]},
+        {"tab": "Health", "pages": [{"layout": "life.workout", "repeat": 4, "title": "Workout {n}"}, {"layout": "life.meals", "repeat": 4, "title": "Meal plan {n}"}, {"layout": "life.food", "repeat": 4, "title": "Food diary {n}"}, "life.body", "life.medication"]},
+        {"tab": "Home", "pages": ["life.cleaning", {"layout": "life.chores", "repeat": 2, "title": "Chores {n}"}, {"layout": "life.recipe", "repeat": 6, "title": "Recipe {n}"}, "life.contacts", "life.home_care"]},
+        {"tab": "Study", "pages": ["life.timetable", "life.grades", "life.assignments", "life.exams", {"layout": "life.study", "repeat": 4, "title": "Study week {n}"}]},
+        {"tab": "Care", "title": "Self-care", "pages": ["life.self_care", "life.affirmations", {"layout": "life.gratitude", "repeat": 4, "title": "Gratitude {n}"}, {"layout": "life.reflection", "repeat": 6, "title": "Reflection {n}"}, "life.reading", "life.bucket"]},
+        {"tab": "Work", "pages": ["life.clients", {"layout": "life.income", "repeat": 4, "title": "Income {n}"}, "life.invoices", {"layout": "life.content", "repeat": 4, "title": "Content {n}"}, {"layout": "life.meeting", "repeat": 4, "title": "Meeting {n}"}]},
+        {"tab": "Notes", "pages": ["notes.lined", "notes.dotted", "notes.grid", "notes.blank", "notes.cornell"]}
+      ]
     }
   }
 }

@@ -93,6 +93,21 @@ it doesn't sell templates one at a time.
 | `pack_kawaii` | Kawaii | kawaii (planner, pages, covers, papers, stickers) | $2.99 |
 | `pack_budget` | Budget | budget (planner, pages, covers, papers, stickers) | $2.99 |
 
+## Spread planners
+
+| Product id | Name | Unlocks | Price |
+|---|---|---|---|
+| `planner_spread_weekly` | Weekly Planner (undated) | spread_weekly | $2.99 |
+| `planner_spread_daily` | Daily Planner (undated) | spread_daily | $2.99 |
+| `planner_spread_budget` | Budget Planner (undated) | spread_budget | $2.99 |
+| `planner_spread_habits` | Habit Tracker Planner (undated) | spread_habits | $1.99 |
+| `planner_spread_goals` | Goals & Productivity Planner (undated) | spread_goals | $1.99 |
+| `planner_spread_health` | Health & Fitness Planner (undated) | spread_health | $1.99 |
+| `planner_spread_home` | Home & Family Planner (undated) | spread_home | $1.99 |
+| `planner_spread_student` | Student Planner (undated) | spread_student | $1.99 |
+| `planner_spread_selfcare` | Self-care Journal (undated) | spread_selfcare | $1.99 |
+| `planner_spread_work` | Work & Business Planner (undated) | spread_work | $1.99 |
+
 ## Calendar templates
 
 | Product id | Name | Unlocks | Price |
@@ -116,5 +131,6 @@ it doesn't sell templates one at a time.
 | `bundle_journals` | Journal bundle | journal_sunrise_sunset, journal_gratitude, journal_five_year, journal_reflect, bujo_kit | $5.99 |
 | `bundle_stickers` | Every sticker pack | stickers_planner_icons, stickers_washi, stickers_labels, stickers_study, stickers_seasonal, stickers_emoji, stickers_weather | $5.99 |
 | `bundle_calendar_templates` | Every calendar template | calendar_paper, calendar_wall, calendar_botanical, calendar_pastel, calendar_bold, calendar_chalkboard, calendar_seasons | $4.99 |
+| `planner_life_all_in_one` | All-in-One Life Planner (every spread planner) | spread_life, spread_weekly, spread_daily, spread_budget, spread_habits, spread_goals, spread_health, spread_home, spread_student, spread_selfcare, spread_work | $9.99 |
 
-62 products in all.
+73 products in all.

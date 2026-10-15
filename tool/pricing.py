@@ -58,6 +58,14 @@ def rows():
     for cid, spec in list(collections.items()) + [("budget", {"name": "Budget"})]:
         out.append(("Collections", f"pack_{cid}", spec["name"], f"{cid} (planner, pages, covers, papers, stickers)",
                     COLLECTION_PRICE))
+    bundle_ids = set(json.loads((ROOT / "tool" / "bundles.json").read_text())["bundles"])
+    spread_planners = json.loads((ROOT / "tool" / "spreads.json").read_text())["planners"]
+    for item, planner in spread_planners.items():
+        if planner["unlock"].get("free"):
+            continue
+        for product in planner["unlock"]["products"]:
+            if product not in bundle_ids:  # the Life Planner is listed with the bundles
+                out.append(("Spread planners", product, planner["name"], item, planner["price"]))
     calendar_products = make_calendar_listings.products()
     for tid, (name, _) in make_calendar_listings.TEMPLATES.items():
         out.append(("Calendar templates", calendar_products[tid], name, f"calendar_{tid}", CALENDAR_TEMPLATE_PRICE))

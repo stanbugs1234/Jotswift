@@ -1,0 +1,20 @@
+{
+  "kind": "template",
+  "name": "All-in-One Life Planner (40+ in 1, undated)",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "planner_life_all_in_one"
+    ]
+  },
+  "category": "spreads",
+  "tags": [
+    "all-in-one",
+    "40+ in 1",
+    "life planner",
+    "undated",
+    "spreads",
+    "bundle"
+  ]
+}

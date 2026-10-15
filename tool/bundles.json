@@ -39,6 +39,12 @@
       "price": "4.99",
       "items": ["calendar_paper", "calendar_wall", "calendar_botanical", "calendar_pastel",
                 "calendar_bold", "calendar_chalkboard", "calendar_seasons"]
+    },
+    "planner_life_all_in_one": {
+      "name": "All-in-One Life Planner (every spread planner)",
+      "price": "9.99",
+      "items": ["spread_life", "spread_weekly", "spread_daily", "spread_budget", "spread_habits", "spread_goals",
+                "spread_health", "spread_home", "spread_student", "spread_selfcare", "spread_work"]
     }
   }
 }
