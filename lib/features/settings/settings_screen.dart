@@ -6,12 +6,12 @@ import '../../core/entitlements/entitlements.dart';
 import '../../core/purchases/purchases_providers.dart';
 import '../../core/input/finger_drawing.dart';
 import '../../core/motion/motion.dart';
-import '../../core/motion/period_transition.dart';
 import '../../core/settings/appearance.dart';
 import '../../core/skins/skin_providers.dart';
 import '../auth/auth_repository.dart';
-import '../calendar/calendar_providers.dart'
-    show monthAnimationChoiceProvider, monthAnimationSettingProvider;
+import '../calendar/calendar_providers.dart' show monthAnimationProvider;
+import '../calendar/templates/calendar_look.dart' show calendarTemplateProvider;
+import '../calendar/templates/calendar_templates_screen.dart';
 import '../skins/notebook_style_screen.dart';
 import '../store/paywall.dart';
 import '../store/store_actions.dart';
@@ -145,22 +145,13 @@ class SettingsScreen extends ConsumerWidget {
           ),
           ListTile(
             leading: const Icon(Icons.calendar_month_outlined),
-            title: const Text('Calendar month animation'),
-            subtitle: const Text('How the Calendar moves between months.'),
-            trailing: DropdownButton<PeriodAnimation?>(
-              value: ref.watch(monthAnimationChoiceProvider),
-              underline: const SizedBox.shrink(),
-              items: [
-                const DropdownMenuItem(
-                  value: null,
-                  child: Text("Template's choice"),
-                ),
-                for (final a in PeriodAnimation.values)
-                  DropdownMenuItem(value: a, child: Text(a.label)),
-              ],
-              onChanged: (a) =>
-                  ref.read(monthAnimationSettingProvider.notifier).set(a),
+            title: const Text('Calendar template & animation'),
+            subtitle: Text(
+              '${ref.watch(calendarTemplateProvider).name} · '
+              '${ref.watch(monthAnimationProvider).label}',
             ),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => showCalendarTemplates(context),
           ),
           ListTile(
             leading: const Icon(Icons.palette_outlined),

@@ -6,6 +6,8 @@ import '../../tasks/task_providers.dart' show todayProvider;
 import '../calendar_providers.dart';
 import '../domain/event.dart';
 import '../event_editor.dart';
+import '../templates/calendar_look.dart';
+import '../templates/calendar_template.dart';
 
 /// A month grid with the chosen day's events beside it (wide) or below.
 class MonthView extends ConsumerWidget {
@@ -25,11 +27,19 @@ class MonthView extends ConsumerWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final wide = constraints.maxWidth >= 840;
-        final grid = _MonthGrid(
-          focus: focus,
-          days: days,
-          occurrences: occurrences,
-          showTitles: constraints.maxWidth >= 600,
+        final look = CalendarLook.of(context);
+        final grid = Column(
+          children: [
+            if (look.bigMonthNumber) _BigMonthHeading(month: focus),
+            Expanded(
+              child: _MonthGrid(
+                focus: focus,
+                days: days,
+                occurrences: occurrences,
+                showTitles: constraints.maxWidth >= 600,
+              ),
+            ),
+          ],
         );
         final agenda = _Agenda(
           day: focus,
@@ -79,8 +89,10 @@ class _MonthGrid extends ConsumerWidget {
     final theme = Theme.of(context);
     final local = MaterialLocalizations.of(context);
     final today = ref.watch(todayProvider);
+    final look = CalendarLook.of(context);
 
     Widget cell(Day day) {
+      final weekend = day.weekday >= DateTime.saturday;
       final inMonth = day.month == focus.month;
       final selected = day == focus;
       final isToday = day == today;
@@ -110,62 +122,41 @@ class _MonthGrid extends ConsumerWidget {
             );
           },
           child: Container(
+            margin: EdgeInsets.all(look.cornerRadius > 0 ? 2 : 0),
             decoration: BoxDecoration(
               color: selected
-                  ? theme.colorScheme.primary.withValues(alpha: 0.10)
+                  ? look.accent.withValues(alpha: 0.12)
+                  : weekend && look.weekend != null
+                  ? look.weekend
+                  : look.cornerRadius > 0
+                  ? look.cell
                   : null,
-              border: Border.all(
-                color: theme.colorScheme.outlineVariant,
-                width: 0.5,
-              ),
+              borderRadius: look.cornerRadius > 0
+                  ? BorderRadius.circular(look.cornerRadius)
+                  : null,
             ),
             padding: const EdgeInsets.all(3),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 5),
-                  decoration: BoxDecoration(
-                    color: isToday ? theme.colorScheme.primary : null,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Text(
-                    '${day.day}',
-                    style: theme.textTheme.labelMedium?.copyWith(
-                      color: isToday
-                          ? theme.colorScheme.onPrimary
-                          : inMonth
-                          ? null
-                          : theme.colorScheme.outline,
+                if (isToday)
+                  TodayMark(
+                    text: '${day.day}',
+                    style: theme.textTheme.labelMedium,
+                  )
+                else
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    child: Text(
+                      '${day.day}',
+                      style: theme.textTheme.labelMedium?.copyWith(
+                        color: inMonth ? null : theme.colorScheme.outline,
+                      ),
                     ),
                   ),
-                ),
                 if (showTitles)
                   for (final o in events.take(3))
-                    Container(
-                      margin: const EdgeInsets.only(top: 2),
-                      padding: const EdgeInsets.symmetric(horizontal: 3),
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: Color(o.color).withValues(alpha: 0.85),
-                        borderRadius: BorderRadius.circular(3),
-                      ),
-                      child: Text(
-                        o.event.title,
-                        maxLines: 1,
-                        overflow: TextOverflow.clip,
-                        style: TextStyle(
-                          fontSize: 11,
-                          color:
-                              ThemeData.estimateBrightnessForColor(
-                                    Color(o.color),
-                                  ) ==
-                                  Brightness.dark
-                              ? Colors.white
-                              : Colors.black,
-                        ),
-                      ),
-                    )
+                    _EventChip(occurrence: o, look: look.events)
                 else if (events.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.only(top: 4, left: 4),
@@ -173,7 +164,22 @@ class _MonthGrid extends ConsumerWidget {
                       spacing: 3,
                       children: [
                         for (final o in events.take(4))
-                          Icon(Icons.circle, size: 6, color: Color(o.color)),
+                          Container(
+                            width: 6,
+                            height: 6,
+                            decoration: BoxDecoration(
+                              color: Color(o.color),
+                              shape: BoxShape.circle,
+                              boxShadow: look.dark
+                                  ? [
+                                      BoxShadow(
+                                        color: Color(o.color),
+                                        blurRadius: 4,
+                                      ),
+                                    ]
+                                  : null,
+                            ),
+                          ),
                       ],
                     ),
                   ),
@@ -195,13 +201,10 @@ class _MonthGrid extends ConsumerWidget {
           children: [
             for (var i = 0; i < 7; i++)
               Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 6),
-                  child: Text(
-                    local.narrowWeekdays[(local.firstDayOfWeekIndex + i) % 7],
-                    textAlign: TextAlign.center,
-                    style: theme.textTheme.labelSmall,
-                  ),
+                child: _WeekdayHeading(
+                  index: (local.firstDayOfWeekIndex + i) % 7,
+                  label:
+                      local.narrowWeekdays[(local.firstDayOfWeekIndex + i) % 7],
                 ),
               ),
           ],
@@ -215,7 +218,18 @@ class _MonthGrid extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       for (var i = 0; i < 7; i++)
-                        Expanded(child: cell(days[w * 7 + i])),
+                        Expanded(
+                          child: look.cornerRadius > 0
+                              ? cell(days[w * 7 + i])
+                              : CustomPaint(
+                                  foregroundPainter: CellEdges(
+                                    look.gridLines,
+                                    look.grid,
+                                    seed: w * 7 + i,
+                                  ),
+                                  child: cell(days[w * 7 + i]),
+                                ),
+                        ),
                     ],
                   ),
                 ),
@@ -283,6 +297,150 @@ class _Agenda extends ConsumerWidget {
             onTap: () => showEventEditor(context, event: o.event),
           ),
       ],
+    );
+  }
+}
+
+/// A weekday letter; Pastel gives each day its own colour.
+class _WeekdayHeading extends StatelessWidget {
+  const _WeekdayHeading({required this.index, required this.label});
+
+  /// 0 Sunday ... 6 Saturday, as in MaterialLocalizations.
+  final int index;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final look = CalendarLook.of(context);
+    final style = Theme.of(context).textTheme.labelSmall;
+    final colors = look.weekdayColors;
+    if (colors == null) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 6),
+        child: Text(label, textAlign: TextAlign.center, style: style),
+      );
+    }
+    // The colours run Monday first.
+    final color = colors[(index + 6) % 7];
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 4),
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.55),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        label,
+        textAlign: TextAlign.center,
+        style: style?.copyWith(fontWeight: FontWeight.w700),
+      ),
+    );
+  }
+}
+
+/// An event in a month cell, drawn the template's way.
+class _EventChip extends StatelessWidget {
+  const _EventChip({required this.occurrence, required this.look});
+
+  final Occurrence occurrence;
+  final EventLook look;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = Color(occurrence.color);
+    final onColor =
+        ThemeData.estimateBrightnessForColor(color) == Brightness.dark
+        ? Colors.white
+        : Colors.black;
+    final text = Theme.of(context).colorScheme.onSurface;
+    final (decoration, textColor) = switch (look) {
+      EventLook.filled => (
+        BoxDecoration(
+          color: color.withValues(alpha: 0.85),
+          borderRadius: BorderRadius.circular(3),
+        ),
+        onColor,
+      ),
+      EventLook.outline => (
+        BoxDecoration(
+          border: Border.all(color: color, width: 1),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        text,
+      ),
+      EventLook.bar => (
+        BoxDecoration(
+          border: Border(left: BorderSide(color: color, width: 3)),
+        ),
+        text,
+      ),
+      EventLook.dot => (const BoxDecoration(), text),
+    };
+    return Container(
+      margin: const EdgeInsets.only(top: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 3),
+      width: double.infinity,
+      decoration: decoration,
+      child: Row(
+        children: [
+          if (look == EventLook.dot)
+            Container(
+              width: 6,
+              height: 6,
+              margin: const EdgeInsets.only(right: 3),
+              decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+            ),
+          Expanded(
+            child: Text(
+              occurrence.event.title,
+              maxLines: 1,
+              overflow: TextOverflow.clip,
+              style: TextStyle(fontSize: 11, color: textColor),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Bold Modern's heading: the month as a huge number beside its name.
+class _BigMonthHeading extends StatelessWidget {
+  const _BigMonthHeading({required this.month});
+
+  final Day month;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final look = CalendarLook.of(context);
+    final local = MaterialLocalizations.of(context);
+    final name = local.formatMonthYear(month.toDateTime());
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Text(
+            month.month.toString().padLeft(2, '0'),
+            style: theme.textTheme.displayMedium?.copyWith(
+              color: look.accent,
+              fontWeight: FontWeight.w900,
+              height: 0.9,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              name.toUpperCase(),
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w800,
+                letterSpacing: 2,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

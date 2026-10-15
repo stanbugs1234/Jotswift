@@ -11,6 +11,8 @@ import '../planner/planner_screen.dart' show openPlannerDay;
 import '../tasks/task_providers.dart' show todayProvider;
 import 'calendar_providers.dart';
 import 'calendars_panel.dart';
+import 'templates/calendar_look.dart';
+import 'templates/calendar_templates_screen.dart';
 import 'domain/event.dart';
 import 'event_editor.dart';
 import 'time_grid.dart';
@@ -78,12 +80,23 @@ class CalendarScreen extends ConsumerWidget {
       CalendarMode.agenda => Day(0, 1, 1),
     };
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final showPanel = constraints.maxWidth >= calendarsPanelBreakpoint;
-        final narrow = constraints.maxWidth < 600;
-        return _scaffold(context, ref, title, body, period, showPanel, narrow);
-      },
+    return CalendarLook(
+      template: ref.watch(calendarTemplateProvider),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final showPanel = constraints.maxWidth >= calendarsPanelBreakpoint;
+          final narrow = constraints.maxWidth < 600;
+          return _scaffold(
+            context,
+            ref,
+            title,
+            body,
+            period,
+            showPanel,
+            narrow,
+          );
+        },
+      ),
     );
   }
 
@@ -157,6 +170,7 @@ class CalendarScreen extends ConsumerWidget {
               tooltip: 'More',
               onSelected: (choice) => switch (choice) {
                 'calendars' => showCalendarsSheet(context),
+                'templates' => showCalendarTemplates(context),
                 'planner' => openPlannerDay(context, ref, day),
                 _ => context.push('/settings'),
               },
@@ -164,6 +178,10 @@ class CalendarScreen extends ConsumerWidget {
                 const PopupMenuItem(
                   value: 'calendars',
                   child: Text('Calendars'),
+                ),
+                const PopupMenuItem(
+                  value: 'templates',
+                  child: Text('Templates & animation'),
                 ),
                 if (state.mode == CalendarMode.day)
                   const PopupMenuItem(
@@ -173,12 +191,18 @@ class CalendarScreen extends ConsumerWidget {
                 const PopupMenuItem(value: 'settings', child: Text('Settings')),
               ],
             )
-          else
+          else ...[
+            IconButton(
+              tooltip: 'Templates & animation',
+              icon: const Icon(Icons.palette_outlined),
+              onPressed: () => showCalendarTemplates(context),
+            ),
             IconButton(
               tooltip: 'Settings',
               icon: const Icon(Icons.settings_outlined),
               onPressed: () => context.push('/settings'),
             ),
+          ],
         ],
         // Phones choose the view from a menu (see actions).
         bottom: narrow

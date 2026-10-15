@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../tasks/task_providers.dart' show todayProvider;
 import '../calendar_providers.dart';
 import '../domain/event.dart';
+import '../templates/calendar_look.dart';
 
 /// Called with the tapped month's first day and where it is on screen.
 typedef MonthTap = void Function(Day month, Rect from);
@@ -190,21 +191,9 @@ class _MiniDay extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         if (isToday)
-          Container(
-            width: size * 0.9,
-            height: size * 0.9,
-            decoration: BoxDecoration(
-              color: scheme.primary,
-              shape: BoxShape.circle,
-            ),
-          ),
-        Text(
-          '${day.day}',
-          style: style.copyWith(
-            color: isToday ? scheme.onPrimary : scheme.onSurface,
-            fontWeight: isToday ? FontWeight.w700 : null,
-          ),
-        ),
+          TodayMark(text: '${day.day}', style: style, size: size * 0.9)
+        else
+          Text('${day.day}', style: style.copyWith(color: scheme.onSurface)),
         if (dot != null && !isToday)
           Positioned(
             bottom: 0,

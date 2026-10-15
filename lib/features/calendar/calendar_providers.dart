@@ -11,6 +11,7 @@ import '../tasks/task_providers.dart' show todayProvider;
 import 'data/calendar_repository.dart';
 import 'data/event_repository.dart';
 import 'domain/event.dart';
+import 'templates/calendar_look.dart';
 
 /// Overridden in `main()` with Firestore when Firebase is set up.
 final eventsBackendProvider = Provider<EventsBackend>(
@@ -263,5 +264,7 @@ final monthAnimationChoiceProvider = Provider<PeriodAnimation?>(
 
 /// The animation months and years actually use.
 final monthAnimationProvider = Provider<PeriodAnimation>(
-  (ref) => ref.watch(monthAnimationChoiceProvider) ?? PeriodAnimation.slide,
+  (ref) =>
+      ref.watch(monthAnimationChoiceProvider) ??
+      ref.watch(calendarTemplateProvider).animation,
 );
