@@ -221,7 +221,7 @@ You can handwrite anywhere on the page, and the structured widgets stay interact
 - [x] Register the iOS and Android apps in Firebase; `lib/firebase_options.dart`
 - [x] Register the web app config
 - [x] Firestore security rules + emulator tests (`firebase/`)
-- [ ] Publish the rules to the live database
+- [x] Publish the rules to the live database
 - [ ] Auth: sign in with Apple, Google and email (required, see §1); account deletion (required by Apple)
   - [x] Sign-in and settings screens, auth interface, stand-in auth for development
   - [x] Firebase Auth implementation (email, Google, Apple)
