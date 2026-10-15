@@ -5,7 +5,11 @@ Each item lives in catalog/<id>/:
   cover.webp     covers: the cover image, 1536 x 2048
   stickers.json  sticker packs: {"stickers": [{"file": "stickers/x.webp", "name": "X"}]}
   stickers/      sticker packs: transparent WebP images, at most 1024 px
-  preview.webp   covers and sticker packs: a small preview, at most 512 px wide
+  template.pdf   templates: the pages (make them with tool/make_planner.py)
+  template.json  templates: {"mode": "notebook", "sections": [...]} or
+                 {"mode": "pages", "pages": [...]}
+  preview.webp   covers, sticker packs and templates: a small preview,
+                 at most 512 px wide
 
 Usage, from the repo root:
   python3 tool/catalog.py check [id ...]
@@ -51,6 +55,8 @@ def pack_files(folder, kind):
     """The files of an item that go into its pack.zip, in a fixed order."""
     if kind == "cover":
         return ["cover.webp"]
+    if kind == "template":
+        return ["template.pdf", "template.json"]
     if kind == "stickers":
         images = sorted(
             f.relative_to(folder).as_posix() for f in (folder / "stickers").glob("*.webp")
@@ -59,7 +65,21 @@ def pack_files(folder, kind):
     return []
 
 
-PACKED_KINDS = {"cover", "stickers"}
+PACKED_KINDS = {"cover", "stickers", "template"}
+
+
+def pdf_page_count(path):
+    """Counts a PDF's pages (enough to check template.json against)."""
+    return len(re.findall(rb"/Type\s*/Page(?![a-zA-Z])", path.read_bytes()))
+
+
+def template_spec(folder):
+    spec = json.loads((folder / "template.json").read_text())
+    if spec.get("mode") == "notebook":
+        pages = [p for s in spec.get("sections", []) for p in s.get("pages", [])]
+    else:
+        pages = spec.get("pages", [])
+    return spec, pages
 
 
 class CheckError(Exception):
@@ -161,6 +181,26 @@ def check(item_id):
         for f in (folder / "stickers").glob("*.webp") if (folder / "stickers").exists() else []:
             rel = f.relative_to(folder).as_posix()
             need(rel in listed, f"{rel}: not listed in stickers.json")
+    elif kind == "template":
+        need((folder / "preview.webp").exists(), "preview.webp is missing")
+        pdf = folder / "template.pdf"
+        if not pdf.exists() or not pdf.read_bytes().startswith(b"%PDF"):
+            problems.append("template.pdf is missing or not a PDF")
+        elif not (folder / "template.json").exists():
+            problems.append("template.json is missing")
+        else:
+            try:
+                spec, pages = template_spec(folder)
+            except (json.JSONDecodeError, AttributeError):
+                spec, pages = {}, []
+                problems.append("template.json is not valid")
+            need(spec.get("mode") in ("notebook", "pages"), 'template.json "mode" must be "notebook" or "pages"')
+            need(pages, "template.json lists no pages")
+            count = pdf_page_count(pdf)
+            for p in pages:
+                n = p.get("pdfPage") if isinstance(p, dict) else None
+                need(isinstance(n, int) and 1 <= n <= count, f"pdfPage {n} is not a page of template.pdf ({count} pages)")
+                need(isinstance(p, dict) and isinstance(p.get("title"), str), f"page {n} needs a title")
     elif kind == "paper":
         paper = listing.get("paper")
         if not isinstance(paper, dict):
@@ -179,7 +219,7 @@ def check(item_id):
     elif kind in KINDS:
         problems.append(f"{kind} items can't be published yet")
 
-    if kind in ("cover", "stickers") and (folder / "preview.webp").exists():
+    if kind in ("cover", "stickers", "template") and (folder / "preview.webp").exists():
         with Image.open(folder / "preview.webp") as im:
             need(im.format == "WEBP", "preview.webp must be a WebP image")
             need(im.size[0] <= MAX_PREVIEW_WIDTH, f"preview.webp must be at most {MAX_PREVIEW_WIDTH} px wide")
@@ -292,6 +332,10 @@ def publish(item_id, visibility, dry_run):
         doc["collectionId"] = listing["collectionId"]
     if kind == "cover":
         doc["color"] = argb(listing["color"])
+    if kind == "template":
+        spec, pages = template_spec(folder)
+        doc["templateMode"] = spec["mode"]
+        doc["pageCount"] = len(pages)
     if kind == "paper":
         p = listing["paper"]
         doc["paper"] = {

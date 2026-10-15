@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import '../paper/paper_style.dart';
+import 'template_spec.dart';
 
 /// What a catalog item is. Kinds this version doesn't know are kept as
 /// [unknown] and never shown.
@@ -103,6 +104,8 @@ class CatalogItem {
     this.files,
     this.color,
     this.paper,
+    this.templateMode,
+    this.pageCount,
   });
 
   /// Reads a listing. Returns null if it's missing what every item needs.
@@ -130,6 +133,12 @@ class CatalogItem {
       files: CatalogFiles.fromMap(map['files']),
       color: map['color'] as int?,
       paper: PaperStyle.fromMap(map['paper']),
+      templateMode: switch (map['templateMode']) {
+        'notebook' => TemplateMode.notebook,
+        'pages' => TemplateMode.pages,
+        _ => null,
+      },
+      pageCount: map['pageCount'] as int?,
     );
   }
 
@@ -157,12 +166,19 @@ class CatalogItem {
   /// Papers: the paper itself (small enough to live in the listing).
   final PaperStyle? paper;
 
+  /// Templates: whether it makes a whole notebook or single pages.
+  final TemplateMode? templateMode;
+
+  /// Templates: how many PDF pages it has.
+  final int? pageCount;
+
   /// Whether this app version can use the item at all.
   bool get isReadable =>
       format <= supportedFormat &&
       kind != CatalogKind.unknown &&
       switch (kind) {
         CatalogKind.cover || CatalogKind.stickers => files != null,
+        CatalogKind.template => files != null && templateMode != null,
         CatalogKind.paper => paper != null,
         _ => true,
       };

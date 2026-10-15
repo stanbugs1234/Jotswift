@@ -41,8 +41,21 @@ abstract interface class NotebookRepository {
     String notebookId,
     String sectionId, {
     PaperStyle? paper,
+    PageTemplate? template,
+    String title = '',
   });
   Future<void> renamePage(String pageId, String title);
+
+  /// Adds [pages] to the end of a section, in order (e.g. a planner's
+  /// hundreds of pages at once).
+  Future<void> createPages(
+    String notebookId,
+    String sectionId,
+    List<NewPage> pages,
+  );
+
+  /// Every page of a notebook, in every section (to follow links).
+  Stream<List<NotePage>> watchNotebookPages(String notebookId);
 
   /// Gives one page its own paper, or (with null) goes back to the
   /// notebook's paper.
@@ -84,6 +97,9 @@ abstract interface class FavoritePapersRepository {
   Stream<List<PaperStyle>> watchFavoritePapers();
   Future<void> setFavoritePaper(PaperStyle paper, {required bool favorite});
 }
+
+/// A page to add with [NotebookRepository.createPages].
+typedef NewPage = ({String title, PaperStyle? paper, PageTemplate? template});
 
 /// Ink strokes for one signed-in user's pages.
 abstract interface class StrokeRepository {

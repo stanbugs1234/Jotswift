@@ -83,7 +83,11 @@ class PackCache {
         if (f.isFile && _isSafeName(f.name)) f.name: f.readBytes()!,
     };
     await _disk.write(item.id, item.version, files);
-    unawaited(_disk.removeOtherVersions(item.id, item.version));
+    // Pages keep the template version they were made with, so templates
+    // keep their old versions.
+    if (item.kind != CatalogKind.template) {
+      unawaited(_disk.removeOtherVersions(item.id, item.version));
+    }
     return _memory[key] = files;
   }
 

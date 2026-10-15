@@ -1,0 +1,17 @@
+{
+  "mode": "pages",
+  "pages": [
+    {
+      "pdfPage": 1,
+      "title": "To-do list"
+    },
+    {
+      "pdfPage": 2,
+      "title": "Meeting notes"
+    },
+    {
+      "pdfPage": 3,
+      "title": "Habit tracker"
+    }
+  ]
+}

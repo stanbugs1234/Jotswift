@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -8,11 +9,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/paper/paper_style.dart';
 import '../../core/skins/notely_skin.dart';
 import '../../core/skins/widgets/paper.dart';
+import '../notebooks/domain/notebook_models.dart';
 import '../notebooks/notes_providers.dart';
 import 'domain/page_element.dart';
 import 'domain/stroke.dart';
 import 'ink_tools.dart';
 import 'stickers.dart';
+import 'templates.dart';
 import 'stroke_painter.dart';
 
 /// Ruling on full-size pages is drawn larger than on the small previews.
@@ -30,9 +33,17 @@ const _paperScale = 1.6;
 /// - A mouse draws in draw mode and drags the page in hand mode; the wheel
 ///   scrolls, and Ctrl + wheel zooms.
 class PageCanvas extends ConsumerStatefulWidget {
-  const PageCanvas({required this.pageId, this.readOnly = false, super.key});
+  const PageCanvas({
+    required this.pageId,
+    this.readOnly = false,
+    this.onOpenPage,
+    super.key,
+  });
 
   final String pageId;
+
+  /// Opens another page of the notebook (when a template link is tapped).
+  final ValueChanged<String>? onOpenPage;
 
   /// View only: no drawing (used on the web).
   final bool readOnly;
@@ -64,6 +75,14 @@ class _PageCanvasState extends ConsumerState<PageCanvas> {
 
   // Scrolling and zooming: screen positions of the non-drawing pointers.
   final _navPointers = <int, Offset>{};
+
+  /// Where and when each scrolling pointer went down, to tell taps (which
+  /// follow template links) from drags.
+  final _navStarts = <int, (Offset, Duration)>{};
+
+  /// Template pages are drawn this many pixels wide: sharp at fit-to-width
+  /// on a tablet, without holding a huge image.
+  static const _templateWidth = 1600;
 
   // Stickers (select tool).
   String? _selectedId;
@@ -155,6 +174,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas> {
         _cancelDrawing();
       }
       _navPointers[e.pointer] = e.localPosition;
+      _navStarts[e.pointer] = (e.localPosition, e.timeStamp);
     }
   }
 
@@ -205,6 +225,13 @@ class _PageCanvasState extends ConsumerState<PageCanvas> {
 
   void _onPointerUp(PointerEvent e) {
     if (e.pointer == _drag?.pointer) _finishDrag();
+    final start = _navStarts.remove(e.pointer);
+    if (start != null &&
+        _navPointers.length == 1 &&
+        (e.localPosition - start.$1).distance < 10 &&
+        e.timeStamp - start.$2 < const Duration(milliseconds: 400)) {
+      _followLinkAt(e.localPosition);
+    }
     if (e.pointer == _drawPointer) {
       if (_erasing) {
         _finishErasing();
@@ -215,7 +242,50 @@ class _PageCanvasState extends ConsumerState<PageCanvas> {
     _navPointers.remove(e.pointer);
   }
 
+  /// Opens the page a template link at [screen] points to, if any.
+  /// Returns whether [screen] was on a link.
+  bool _followLinkAt(Offset screen) {
+    final page = ref.read(pageProvider(widget.pageId)).value;
+    final template = page?.template;
+    final image = template == null ? null : _templateImage(template);
+    if (page == null || template == null || image == null) return false;
+    final links = ref.read(templateLinksProvider(template)).value ?? [];
+    final drawn = _templateRect(image);
+    final point = _toPage(screen);
+    final at = Offset(
+      (point.dx - drawn.left) / drawn.width,
+      (point.dy - drawn.top) / drawn.height,
+    );
+    for (final link in links) {
+      if (!link.area.contains(at)) continue;
+      final target = ref
+          .read(notebookTemplatePagesProvider(page.notebookId))
+          .value?[(template.itemId, link.targetPage)];
+      if (target != null && target != widget.pageId) {
+        widget.onOpenPage?.call(target);
+      }
+      return true;
+    }
+    return false;
+  }
+
+  ui.Image? _templateImage(PageTemplate template) => ref
+      .read(templateImageProvider((template: template, width: _templateWidth)))
+      .value;
+
+  /// Where a template page's image sits on the page: as large as fits,
+  /// centered.
+  Rect _templateRect(ui.Image image) {
+    final fitted = applyBoxFit(
+      BoxFit.contain,
+      Size(image.width.toDouble(), image.height.toDouble()),
+      _pageSize,
+    ).destination;
+    return Alignment.center.inscribe(fitted, Offset.zero & _pageSize);
+  }
+
   void _onPointerCancel(PointerEvent e) {
+    _navStarts.remove(e.pointer);
     if (e.pointer == _drag?.pointer) setState(() => _drag = null);
     if (e.pointer == _drawPointer) _cancelDrawing();
     _navPointers.remove(e.pointer);
@@ -284,8 +354,21 @@ class _PageCanvasState extends ConsumerState<PageCanvas> {
 
   void _finishStroke() {
     final stroke = _live.value;
+    final kind = _drawKind;
     _drawPointer = null;
     if (stroke == null) return;
+    // A quick finger or mouse tap on a template link follows the link
+    // instead of leaving a dot. (A stylus always writes.)
+    final bounds = stroke.bounds;
+    final first = stroke.points.first;
+    if (kind != PointerDeviceKind.stylus &&
+        kind != PointerDeviceKind.invertedStylus &&
+        bounds.longestSide * _scale < 10 &&
+        DateTime.now().millisecondsSinceEpoch - stroke.createdAt < 400 &&
+        _followLinkAt(Offset(first.x, first.y) * _scale + _offset)) {
+      _live.value = null;
+      return;
+    }
     // The live stroke stays on screen until the saved copy arrives (see
     // build), so it doesn't flicker.
     ref.read(inkHistoryProvider(widget.pageId).notifier).addStroke(stroke);
@@ -536,6 +619,27 @@ class _PageCanvasState extends ConsumerState<PageCanvas> {
     // Keep the history notifier alive while the page is open.
     ref.watch(inkHistoryProvider(widget.pageId));
 
+    final template = ref.watch(pageProvider(widget.pageId)).value?.template;
+    final templateImage = template == null
+        ? null
+        : ref
+              .watch(
+                templateImageProvider((
+                  template: template,
+                  width: _templateWidth,
+                )),
+              )
+              .value;
+    if (template != null) {
+      // Load links and the notebook's pages now, so taps answer at once.
+      ref.watch(templateLinksProvider(template));
+      final notebookId = ref
+          .watch(pageProvider(widget.pageId))
+          .value!
+          .notebookId;
+      ref.watch(notebookTemplatePagesProvider(notebookId));
+    }
+
     final saved = ref.watch(elementsProvider(widget.pageId)).value ?? [];
     _reconcileElements(saved);
     final elements = _shownElements();
@@ -572,6 +676,11 @@ class _PageCanvasState extends ConsumerState<PageCanvas> {
                     child: _PageSurface(
                       size: _pageSize,
                       paper: paper,
+                      hasTemplate: template != null,
+                      templateImage: templateImage,
+                      templateRect: templateImage == null
+                          ? null
+                          : _templateRect(templateImage),
                       elements: elements,
                       selected: selected?.frame,
                       handleScale: _handleSize / _scale,
@@ -593,6 +702,9 @@ class _PageSurface extends StatelessWidget {
   const _PageSurface({
     required this.size,
     required this.paper,
+    required this.hasTemplate,
+    required this.templateImage,
+    required this.templateRect,
     required this.elements,
     required this.selected,
     required this.handleScale,
@@ -602,6 +714,13 @@ class _PageSurface extends StatelessWidget {
 
   final Size size;
   final PaperStyle paper;
+
+  /// The page shows a template page instead of paper.
+  final bool hasTemplate;
+
+  /// The template page's image (null while it loads) and where it goes.
+  final ui.Image? templateImage;
+  final Rect? templateRect;
   final List<PageElement> elements;
 
   /// The selected sticker's frame, to draw its outline and handles.
@@ -629,11 +748,22 @@ class _PageSurface extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          RepaintBoundary(
-            child: CustomPaint(
-              painter: PaperPainter(paper, scale: _paperScale),
-            ),
-          ),
+          if (!hasTemplate)
+            RepaintBoundary(
+              child: CustomPaint(
+                painter: PaperPainter(paper, scale: _paperScale),
+              ),
+            )
+          else ...[
+            const ColoredBox(color: Colors.white),
+            if ((templateImage, templateRect) case (final image?, final rect?))
+              Positioned.fromRect(
+                rect: rect,
+                child: RawImage(image: image, fit: BoxFit.fill),
+              )
+            else
+              const Center(child: CircularProgressIndicator()),
+          ],
           for (final e in elements)
             Positioned(
               left: e.frame.center.dx - e.frame.width / 2,

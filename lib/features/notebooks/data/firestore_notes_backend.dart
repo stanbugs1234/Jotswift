@@ -375,6 +375,8 @@ class _FirestoreUserNotes
     String notebookId,
     String sectionId, {
     PaperStyle? paper,
+    PageTemplate? template,
+    String title = '',
   }) async {
     final existing = await _pages
         .where('notebookId', isEqualTo: notebookId)
@@ -389,15 +391,61 @@ class _FirestoreUserNotes
       id: ref.id,
       notebookId: notebookId,
       sectionId: sectionId,
-      title: '',
+      title: title,
       order: last + 1,
       createdAt: now,
       updatedAt: now,
       paper: paper,
+      template: template,
     );
     _commitInBackground(ref.firestore.batch()..set(ref, page.toMap()));
     return page;
   }
+
+  @override
+  Future<void> createPages(
+    String notebookId,
+    String sectionId,
+    List<NewPage> pages,
+  ) async {
+    final existing = await _pages
+        .where('notebookId', isEqualTo: notebookId)
+        .where('sectionId', isEqualTo: sectionId)
+        .get();
+    var last = existing.docs
+        .map((d) => (d.data()['order'] as num?)?.toDouble() ?? 0)
+        .fold<double>(0, max);
+    final now = nowMillis();
+    for (var i = 0; i < pages.length; i += _batchLimit) {
+      final batch = _user.firestore.batch();
+      for (final spec in pages.skip(i).take(_batchLimit)) {
+        final ref = _pages.doc();
+        batch.set(
+          ref,
+          NotePage(
+            id: ref.id,
+            notebookId: notebookId,
+            sectionId: sectionId,
+            title: spec.title,
+            order: ++last,
+            createdAt: now,
+            updatedAt: now,
+            paper: spec.paper,
+            template: spec.template,
+          ).toMap(),
+        );
+      }
+      _commitInBackground(batch);
+    }
+  }
+
+  @override
+  Stream<List<NotePage>> watchNotebookPages(String notebookId) => _pages
+      .where('notebookId', isEqualTo: notebookId)
+      .snapshots()
+      .map(
+        (snap) => [for (final d in snap.docs) NotePage.fromMap(d.id, d.data())],
+      );
 
   @override
   Future<void> renamePage(String pageId, String title) async => _pages

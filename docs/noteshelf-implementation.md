@@ -16,7 +16,7 @@ individually as well as through Pro, and templates are PDFs.
 | 4 | New-notebook flow and per-page paper ✅ | L | Turn on Firebase Storage (needs the Blaze plan) ✅ |
 | 5 | Catalog and downloads (free items only) ✅ | L | — |
 | 6 | Stickers ✅ | M | Sticker art (placeholder pack published) |
-| 7 | PDF templates and dated planners | L | Planner designs (I can make a simple first one) |
+| 7 | PDF templates and dated planners ✅ | L | Planner designs (a generated 2027 planner is published) |
 | 8 | Store and purchases | L | App Store Connect, Play Console, RevenueCat and Stripe accounts and products |
 | 9 | Clean-up and docs | S | — |
 
@@ -135,35 +135,27 @@ The editor saves a concrete paper and style, so later changes to the default sty
 - **Web:** stickers show, but the page stays view-only.
 - **Content:** `tool/catalog.py` handles `stickers` packs (`stickers.json` + transparent WebP images, each checked). The free **Basics** pack has 16 stickers drawn in code as placeholders until real art arrives: star, heart, done, arrow, smile, sun, cloud, flower, leaf, coffee, idea, pin, important, music, sparkle and birthday.
 
-## Milestone 7: PDF templates and dated planners
+## Milestone 7: PDF templates and dated planners ✅
 
-**Rendering**
-- New dependency: `pdfrx`, which renders PDF pages on iOS, Android and the web.
-- A page with a `template` draws that PDF page as its background, rendered at the current zoom and cached. Ink is drawn on top as today.
-- The same renderer becomes **PDF import** (PLAN.md Phase 5): an imported PDF is a private template.
+**One change of approach:** a dated planner is a **ready-dated PDF per year**, as commercial planners are sold, not generic pages that the app fills with dates. Its links are ordinary **PDF links**. This keeps the app simple, lets designers' PDFs work as they are, and is the same path PDF import will take. Picking the year means picking that year's planner, which matches the `planner_<id>_<year>` products in skins-plan.md §7.
 
-**`template.json`**
-```jsonc
-{
-  "pages": [{ "key": "year", "pdfPage": 1 }, { "key": "month", "pdfPage": 2 }, …],
-  "links": [{ "on": "year", "rect": [0.1, 0.2, 0.2, 0.25], "to": "month:1" }, …],
-  "dated": { "kinds": ["year", "month", "week", "day"], "weekStarts": "monday" }
-}
-```
+**Rendering:** `lib/core/pdf/pdf_renderer.dart` hides `pdfrx` (PDFium on iOS, Android, desktop and the web) behind `PdfRenderer` and `PdfFile` (page sizes, links, render), so tests use a fake. A template page is drawn 1600 px wide (sharp at fit-to-width on a tablet), fitted inside the page, and freed when the page closes.
 
-**Using a template**
-- **A single page:** add it from the page menu.
-- **A dated planner:** pick the year and start day. The app creates every page (about 430 for a daily planner), written in batches of up to 400. It saves a map from page key to page id on the notebook, so links can jump between pages.
-- **Links:** in Scroll mode, or with a finger when a Pencil is in use, tapping a link area jumps to that page.
-- Pages store the template version they were made with (skins-plan.md §5).
+**Data:**
+- Pages gain `template {itemId, version, pdfPage, pack, sha256, bytes}`. Keeping the exact pack means a page made from version 1 still downloads version 1 after version 2 is published. Template packs keep their old versions on the device.
+- `template.json` (`TemplateSpec`) is either a planner (`mode: notebook`, sections of PDF pages with titles) or single pages (`mode: pages`). The listing records `templateMode` and `pageCount`, so pickers don't need a download.
+- Repositories add `createPages` (batched, 450 per write) and `watchNotebookPages`.
 
-**First planner:** a simple dated weekly planner that I generate from code. Your designer's planners replace it.
+**Using templates:**
+- **New notebook → Start with:** Blank pages, or a planner. A planner sets the page size from the PDF and creates every page in its sections; for example the 2027 planner gives sections 2027, Months and Weeks, 66 pages in all.
+- **Notebook menu → New page from template:** a sheet with each single-page template's pages shown as small renders.
+- **Links:** a quick finger or mouse tap on a link opens the page it points to. A finger tap there doesn't leave a dot; a Pencil tap always writes.
 
-**On the iPad:** writing speed on a PDF background, and memory use on a 400-page planner.
+**Content:** `tool/make_planner.py` writes vector PDFs (standard library only) with link annotations. The free **2027 Weekly Planner** has a year page, 12 month calendars and 53 week pages. Month tabs on every page, year and month links, week rows that open their week, and previous/next week arrows give 1,100 links, all checked with Apple's PDFKit. The free **Essentials** pack has to-do, meeting notes and habit tracker pages. `tool/catalog.py` checks templates: the PDF, `template.json`, and that page numbers exist.
 
-**Tests:** template.json parsing and link validation, dated page generation (leap years, week start), link navigation, golden of a template page with ink.
-
----
+**Not done yet:**
+- **Sharpness when zoomed:** template pages don't re-render sharper on zoom. They're drawn once at 1600 px, which gets soft beyond about 2x.
+- **PDF import** (the user's own PDFs) reuses all of this, but still needs a file picker and upload. It stays in Phase 5.
 
 ## Milestone 8: Store and purchases
 

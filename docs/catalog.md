@@ -1,6 +1,6 @@
-# Publishing covers, papers and stickers
+# Publishing covers, papers, stickers and templates
 
-New covers, papers and sticker packs go live from Firebase, without an app update. Each item is a folder in `catalog/` and is published with `tool/catalog.py`.
+New covers, papers, sticker packs and templates go live from Firebase, without an app update. Each item is a folder in `catalog/` and is published with `tool/catalog.py`.
 
 ## Make an item
 
@@ -53,6 +53,22 @@ The folder name is the item's id: lowercase letters, digits and `_`. It can neve
 { "stickers": [ { "file": "stickers/star.webp", "name": "Star" } ] }
 ```
 Stickers are placed 240 page units wide (a page is about 1400 wide) and keep their image's shape.
+
+**A template:** `template.pdf`, `template.json` and `preview.webp`. Notely makes its own with `tool/make_planner.py`, which writes all three:
+```sh
+python3 tool/make_planner.py planner 2028    # catalog/planner_2028/: a dated weekly planner
+python3 tool/make_planner.py essentials      # catalog/essentials_pages/: to-do, meetings, habits
+```
+Any PDF works, including one from a designer. `template.json` says how it's used:
+```jsonc
+// A planner: every listed PDF page becomes a page of a new notebook, in sections.
+{ "mode": "notebook", "sections": [
+    { "title": "Months", "pages": [ { "pdfPage": 2, "title": "January" } ] } ] }
+
+// Single pages, added one at a time with "New page from template".
+{ "mode": "pages", "pages": [ { "pdfPage": 1, "title": "To-do list" } ] }
+```
+Links between pages are ordinary PDF links: tapping one opens that page in the notebook. A notebook made from a template gets the page size closest to the PDF's. Pages keep the template version they were made with, so publishing a new version never moves writing on a filled page. Templates can be up to 25 MB.
 
 ## Check it
 

@@ -350,6 +350,8 @@ class _InMemoryUserData
     String notebookId,
     String sectionId, {
     PaperStyle? paper,
+    PageTemplate? template,
+    String title = '',
   }) async {
     final last = _pages.values
         .where((p) => p.sectionId == sectionId)
@@ -359,16 +361,49 @@ class _InMemoryUserData
       id: _id(),
       notebookId: notebookId,
       sectionId: sectionId,
-      title: '',
+      title: title,
       order: last + 1,
       createdAt: now,
       updatedAt: now,
       paper: paper,
+      template: template,
     );
     _pages[page.id] = page;
     _changed();
     return page;
   }
+
+  @override
+  Future<void> createPages(
+    String notebookId,
+    String sectionId,
+    List<NewPage> pages,
+  ) async {
+    var last = _pages.values
+        .where((p) => p.sectionId == sectionId)
+        .fold<double>(0, (m, p) => max(m, p.order));
+    final now = nowMillis();
+    for (final spec in pages) {
+      final page = NotePage(
+        id: _id(),
+        notebookId: notebookId,
+        sectionId: sectionId,
+        title: spec.title,
+        order: ++last,
+        createdAt: now,
+        updatedAt: now,
+        paper: spec.paper,
+        template: spec.template,
+      );
+      _pages[page.id] = page;
+    }
+    _changed();
+  }
+
+  @override
+  Stream<List<NotePage>> watchNotebookPages(String notebookId) => _watch(
+    () => _pages.values.where((p) => p.notebookId == notebookId).toList(),
+  );
 
   @override
   Future<void> renamePage(String pageId, String title) async {

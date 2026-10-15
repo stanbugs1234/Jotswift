@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/skins/skin_providers.dart';
 import '../../core/skins/widgets/page_style.dart';
@@ -89,7 +90,13 @@ class PageScreen extends ConsumerWidget {
               InkToolbar(pageId: pageId),
             const Divider(height: 1),
             Expanded(
-              child: PageCanvas(pageId: pageId, readOnly: readOnly),
+              child: PageCanvas(
+                pageId: pageId,
+                readOnly: readOnly,
+                onOpenPage: (id) => context.go(
+                  '/notebooks/${page.value!.notebookId}/pages/$id',
+                ),
+              ),
             ),
           ],
         ),

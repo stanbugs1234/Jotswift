@@ -2,9 +2,11 @@ import 'package:flutter/foundation.dart';
 
 import '../../../core/paper/paper_style.dart';
 import 'notebook_cover.dart';
+import 'page_template.dart';
 import 'shelf_models.dart';
 
 export 'notebook_cover.dart';
+export 'page_template.dart';
 export 'shelf_models.dart';
 
 /// A notebook holds sections, and each section holds pages.
@@ -240,6 +242,7 @@ class NotePage {
     required this.createdAt,
     required this.updatedAt,
     this.paper,
+    this.template,
   });
 
   factory NotePage.fromMap(String id, Map<String, dynamic> map) => NotePage(
@@ -251,6 +254,7 @@ class NotePage {
     createdAt: map['createdAt'] as int? ?? 0,
     updatedAt: map['updatedAt'] as int? ?? 0,
     paper: PaperStyle.fromMap(map['paper']),
+    template: PageTemplate.fromMap(map['template']),
   );
 
   final String id;
@@ -266,6 +270,9 @@ class NotePage {
   /// This page's paper when it differs from its notebook's.
   final PaperStyle? paper;
 
+  /// The template page it's drawn on, instead of paper.
+  final PageTemplate? template;
+
   String get displayTitle => title.trim().isEmpty ? 'Untitled page' : title;
 
   Map<String, dynamic> toMap() => {
@@ -276,6 +283,7 @@ class NotePage {
     'createdAt': createdAt,
     'updatedAt': updatedAt,
     'paper': ?paper?.toMap(),
+    'template': ?template?.toMap(),
   };
 
   NotePage copyWith({
@@ -291,5 +299,6 @@ class NotePage {
     createdAt: createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
     paper: paper == null ? this.paper : paper(),
+    template: template,
   );
 }

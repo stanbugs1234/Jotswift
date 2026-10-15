@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/paper/paper_style.dart';
 import '../../shared/dialogs.dart';
+import '../canvas/templates.dart';
 import '../shelf/shelf_actions.dart';
 import 'domain/notebook_models.dart';
 import 'notes_providers.dart';
@@ -99,6 +100,20 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
     if (mounted) _openPage(page.id);
   }
 
+  Future<void> _newPageFromTemplate(String sectionId) async {
+    final spec = await showTemplatePageSheet(context);
+    if (spec == null || !mounted) return;
+    final page = await ref
+        .read(notebookRepositoryProvider)
+        .createPage(
+          widget.notebookId,
+          sectionId,
+          template: spec.template,
+          title: spec.title,
+        );
+    if (mounted) _openPage(page.id);
+  }
+
   Future<void> _newPageWithPaper(String sectionId) async {
     final choice = await showPagePaperSheet(
       context,
@@ -138,6 +153,9 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
               tooltip: 'Notebook options',
               onSelected: (action) => switch (action) {
                 'edit' => editNotebook(context, ref, nb),
+                'template' when current != null => _newPageFromTemplate(
+                  current.id,
+                ),
                 _ when current != null => _newPageWithPaper(current.id),
                 _ => null,
               },
@@ -149,6 +167,10 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
                 PopupMenuItem(
                   value: 'page',
                   child: Text('New page with different paper'),
+                ),
+                PopupMenuItem(
+                  value: 'template',
+                  child: Text('New page from template'),
                 ),
               ],
             ),

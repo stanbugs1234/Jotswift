@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/skins/skin_providers.dart';
 import '../../shared/dialogs.dart';
 import '../notebooks/domain/notebook_models.dart';
+import '../canvas/templates.dart';
 import '../notebooks/notebook_editor.dart';
 import '../notebooks/notes_providers.dart';
 import 'shelf_view.dart';
@@ -21,7 +22,7 @@ Future<void> createNotebookAt(
   ShelfLocation location,
 ) async {
   final count = ref.read(notebooksProvider).value?.length ?? 0;
-  final spec = await NotebookEditor.show(
+  final result = await NotebookEditor.show(
     context,
     initial: NewNotebook(
       title: '',
@@ -30,10 +31,13 @@ Future<void> createNotebookAt(
       place: location.place,
     ),
   );
-  if (spec == null || !context.mounted) return;
-  final notebook = await ref
-      .read(notebookRepositoryProvider)
-      .createNotebook(spec);
+  if (result == null || !context.mounted) return;
+  final template = result.template;
+  final notebook = template == null
+      ? await ref
+            .read(notebookRepositoryProvider)
+            .createNotebook(result.notebook)
+      : await ref.read(createFromTemplateProvider)(result.notebook, template);
   if (context.mounted) await context.push('/notebooks/${notebook.id}');
 }
 
@@ -43,7 +47,7 @@ Future<void> editNotebook(
   WidgetRef ref,
   Notebook notebook,
 ) async {
-  final spec = await NotebookEditor.show(
+  final spec = (await NotebookEditor.show(
     context,
     editing: notebook,
     initial: NewNotebook(
@@ -54,7 +58,7 @@ Future<void> editNotebook(
       orientation: notebook.orientation,
       collectionId: notebook.collectionId,
     ),
-  );
+  ))?.notebook;
   if (spec == null) return;
   await ref
       .read(notebookRepositoryProvider)

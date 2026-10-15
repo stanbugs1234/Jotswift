@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/catalog/catalog_item.dart';
+import '../../core/catalog/catalog_providers.dart';
+import '../../core/catalog/template_spec.dart';
 import '../../core/paper/paper_style.dart';
 import '../../core/skins/skin_manifest.dart';
 import '../../core/skins/skin_providers.dart';
 import '../../core/skins/widgets/paper.dart';
+import '../canvas/templates.dart';
 import '../shelf/cover_view.dart';
 import 'cover_picker.dart';
 import 'domain/notebook_models.dart';
@@ -23,11 +27,11 @@ class NotebookEditor extends ConsumerStatefulWidget {
   /// The notebook being changed, or null for a new one.
   final Notebook? editing;
 
-  static Future<NewNotebook?> show(
+  static Future<NotebookEditorResult?> show(
     BuildContext context, {
     required NewNotebook initial,
     Notebook? editing,
-  }) => Navigator.of(context, rootNavigator: true).push<NewNotebook>(
+  }) => Navigator.of(context, rootNavigator: true).push<NotebookEditorResult>(
     MaterialPageRoute(
       fullscreenDialog: true,
       builder: (context) => NotebookEditor(initial: initial, editing: editing),
@@ -46,6 +50,10 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
   late PaperOrientation _orientation = widget.initial.orientation;
   late String? _styleId = widget.initial.collectionId;
 
+  /// The planner the new notebook starts from, or null for blank pages.
+  CatalogItem? _template;
+  bool _saving = false;
+
   @override
   void dispose() {
     _title.dispose();
@@ -61,23 +69,47 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
           .firstOrNull ??
       ref.read(activeSkinProvider);
 
-  void _save() {
+  Future<void> _save() async {
     final title = _title.text.trim();
     final style = _style;
+    final template = _template;
+    var (size, orientation) = (_size, _orientation);
+    if (template != null) {
+      // A planner's pages are sized to fit its PDF.
+      setState(() => _saving = true);
+      try {
+        final pdf = await ref.read(catalogTemplatePdfProvider(template).future);
+        (size, orientation) = closestPaperSize(pdf.pageSize(1));
+      } on Object catch (e) {
+        debugPrint('Could not open ${template.id}: $e');
+        if (!mounted) return;
+        setState(() => _saving = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Could not download the planner. Check your connection and '
+              'try again.',
+            ),
+          ),
+        );
+        return;
+      }
+    }
+    if (!mounted) return;
     // Save the paper and style the user saw, so later changes to the
     // default style don't change this notebook.
-    Navigator.pop(
-      context,
-      NewNotebook(
-        title: title.isEmpty ? 'Untitled notebook' : title,
+    Navigator.pop(context, (
+      notebook: NewNotebook(
+        title: title.isEmpty ? (template?.name ?? 'Untitled notebook') : title,
         cover: _cover,
         paper: _paper ?? style.paper.style,
-        paperSize: _size,
-        orientation: _orientation,
+        paperSize: size,
+        orientation: orientation,
         collectionId: style.id,
         place: widget.initial.place,
       ),
-    );
+      template: template,
+    ));
   }
 
   @override
@@ -88,6 +120,15 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
     final style = _style;
     final paper = _paper ?? style.paper.style;
     final isNew = widget.editing == null;
+    final planners = isNew
+        ? [
+            for (final t in ref.watch(
+              offeredCatalogProvider(CatalogKind.template),
+            ))
+              if (t.templateMode == TemplateMode.notebook) t,
+          ]
+        : const <CatalogItem>[];
+    final template = _template;
 
     Widget heading(String text) => Padding(
       padding: const EdgeInsets.only(top: 24, bottom: 8),
@@ -112,7 +153,7 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
           Padding(
             padding: const EdgeInsets.only(right: 8),
             child: FilledButton(
-              onPressed: _save,
+              onPressed: _saving ? null : _save,
               child: Text(isNew ? 'Create' : 'Save'),
             ),
           ),
@@ -136,22 +177,25 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
                       children: [
                         CoverView(cover: _cover),
                         const SizedBox(width: 20),
-                        AspectRatio(
-                          aspectRatio: page.width / page.height,
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: theme.colorScheme.outline,
+                        if (template != null)
+                          _TemplatePreview(template: template)
+                        else
+                          AspectRatio(
+                            aspectRatio: page.width / page.height,
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: theme.colorScheme.outline,
+                                ),
                               ),
-                            ),
-                            child: CustomPaint(
-                              painter: PaperPainter(
-                                paper,
-                                scale: 170 / page.height,
+                              child: CustomPaint(
+                                painter: PaperPainter(
+                                  paper,
+                                  scale: 170 / page.height,
+                                ),
                               ),
                             ),
                           ),
-                        ),
                       ],
                     ),
                   ),
@@ -166,16 +210,47 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
                     ),
                     onSubmitted: (_) => _save(),
                   ),
+                  if (planners.isNotEmpty) ...[
+                    heading('Start with'),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        ChoiceChip(
+                          label: const Text('Blank pages'),
+                          selected: template == null,
+                          onSelected: (_) => setState(() => _template = null),
+                        ),
+                        for (final t in planners)
+                          ChoiceChip(
+                            avatar: const Icon(Icons.event_note, size: 18),
+                            label: Text(t.name),
+                            selected: t.id == template?.id,
+                            onSelected: (_) => setState(() => _template = t),
+                          ),
+                      ],
+                    ),
+                    if (template != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: Text(
+                          '${template.pageCount ?? 'All'} pages, with links '
+                          'between them. Pages are sized to fit the planner.',
+                          style: theme.textTheme.bodySmall,
+                        ),
+                      ),
+                  ],
                   heading('Cover'),
                   CoverPicker(
                     selected: _cover,
                     onChanged: (c) => setState(() => _cover = c),
                   ),
-                  PaperPicker(
-                    selected: paper,
-                    onChanged: (p) => setState(() => _paper = p),
-                    stylePapers: ref.watch(stylePapersProvider),
-                  ),
+                  if (template == null)
+                    PaperPicker(
+                      selected: paper,
+                      onChanged: (p) => setState(() => _paper = p),
+                      stylePapers: ref.watch(stylePapersProvider),
+                    ),
                   if (!isNew)
                     Padding(
                       padding: const EdgeInsets.only(top: 8),
@@ -197,7 +272,7 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
                         ),
                     ],
                   ),
-                  if (isNew) ...[
+                  if (isNew && template == null) ...[
                     heading('Page size'),
                     SegmentedButton<PaperSize>(
                       showSelectedIcon: false,
@@ -236,6 +311,41 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// What the editor returns: the notebook, and the planner it starts from.
+typedef NotebookEditorResult = ({NewNotebook notebook, CatalogItem? template});
+
+/// The first page of a planner, as the editor's page preview.
+class _TemplatePreview extends ConsumerWidget {
+  const _TemplatePreview({required this.template});
+
+  final CatalogItem template;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final image = ref
+        .watch(
+          templateImageProvider((
+            template: templatePage(template, 1),
+            width: 360,
+          )),
+        )
+        .value;
+    return SizedBox(
+      width: 130,
+      child: image == null
+          ? const Center(child: CircularProgressIndicator())
+          : DecoratedBox(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.outline,
+                ),
+              ),
+              child: RawImage(image: image, fit: BoxFit.contain),
+            ),
     );
   }
 }
