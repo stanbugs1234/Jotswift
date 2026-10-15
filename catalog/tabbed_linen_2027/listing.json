@@ -1,0 +1,19 @@
+{
+  "kind": "template",
+  "name": "Tabbed Diary: Linen 2027",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "planner_tabbed_linen_2027"
+    ]
+  },
+  "category": "diaries",
+  "tags": [
+    "diary",
+    "tabbed",
+    "neutral",
+    "dated",
+    "2027"
+  ]
+}

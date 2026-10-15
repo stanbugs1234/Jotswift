@@ -1,0 +1,19 @@
+{
+  "kind": "template",
+  "name": "Academic Planner 2026-27",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "planner_academic_planner_2026"
+    ]
+  },
+  "category": "study",
+  "tags": [
+    "student",
+    "school year",
+    "weekly",
+    "dated",
+    "2026"
+  ]
+}

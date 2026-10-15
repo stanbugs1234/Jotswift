@@ -1,0 +1,20 @@
+{
+  "kind": "template",
+  "name": "Landscape Weekly Planner 2027",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "planner_diary_landscape_2027"
+    ]
+  },
+  "category": "diaries",
+  "tags": [
+    "planner",
+    "weekly",
+    "landscape",
+    "dated",
+    "linked",
+    "2027"
+  ]
+}

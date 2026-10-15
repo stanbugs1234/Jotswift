@@ -167,6 +167,13 @@ lowercase letters, digits and `_`. An id can never be reused.
   python3 tool/make_pack.py student_pages   # or: all, or --list
   ```
   A new layout is a function in a `tool/layouts/<category>.py` module that returns `(page, title)`, built from the helpers in `tool/layouts/kit.py`.
+- **Linked diaries and planners** (a year page, month pages, then a page per day or week, with month tabs and arrows) come from:
+  ```sh
+  python3 tool/make_diary.py all 2027          # every book for 2027
+  python3 tool/make_diary.py academic_planner 2026   # July 2026 - June 2027
+  python3 tool/make_diary.py --list
+  ```
+  Styles, page bodies and prices are in `BOOKS` in `tool/make_diary.py`. Dated items are named `<book>_<year>` and sold as `planner_<book>_<year>`; make next year's each autumn.
 - **Template categories** decide the row on the Templates screen: `planners` (or no category) for dated planners, `diaries`, `journals`, `study`, `work`, `wellness`, `lifestyle`, `creative`, and `pages` for general page packs.
 - **template.json** says how the PDF is used:
   ```jsonc

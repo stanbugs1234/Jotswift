@@ -1,0 +1,19 @@
+{
+  "kind": "template",
+  "name": "Tabbed Diary: Sorbet 2027",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "planner_tabbed_sorbet_2027"
+    ]
+  },
+  "category": "diaries",
+  "tags": [
+    "diary",
+    "tabbed",
+    "colourful",
+    "dated",
+    "2027"
+  ]
+}

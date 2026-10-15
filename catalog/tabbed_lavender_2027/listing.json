@@ -1,0 +1,19 @@
+{
+  "kind": "template",
+  "name": "Tabbed Diary: Lavender 2027",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "planner_tabbed_lavender_2027"
+    ]
+  },
+  "category": "diaries",
+  "tags": [
+    "diary",
+    "tabbed",
+    "pastel",
+    "dated",
+    "2027"
+  ]
+}

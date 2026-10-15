@@ -1,0 +1,18 @@
+{
+  "kind": "template",
+  "name": "Undated Daily Planner",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "pack_undated_daily"
+    ]
+  },
+  "category": "diaries",
+  "tags": [
+    "planner",
+    "daily",
+    "undated",
+    "linked"
+  ]
+}

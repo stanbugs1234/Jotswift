@@ -1,0 +1,284 @@
+{
+  "mode": "notebook",
+  "sections": [
+    {
+      "title": "Overview",
+      "pages": [
+        {
+          "pdfPage": 1,
+          "title": "2027"
+        }
+      ]
+    },
+    {
+      "title": "Months",
+      "pages": [
+        {
+          "pdfPage": 2,
+          "title": "January"
+        },
+        {
+          "pdfPage": 3,
+          "title": "February"
+        },
+        {
+          "pdfPage": 4,
+          "title": "March"
+        },
+        {
+          "pdfPage": 5,
+          "title": "April"
+        },
+        {
+          "pdfPage": 6,
+          "title": "May"
+        },
+        {
+          "pdfPage": 7,
+          "title": "June"
+        },
+        {
+          "pdfPage": 8,
+          "title": "July"
+        },
+        {
+          "pdfPage": 9,
+          "title": "August"
+        },
+        {
+          "pdfPage": 10,
+          "title": "September"
+        },
+        {
+          "pdfPage": 11,
+          "title": "October"
+        },
+        {
+          "pdfPage": 12,
+          "title": "November"
+        },
+        {
+          "pdfPage": 13,
+          "title": "December"
+        }
+      ]
+    },
+    {
+      "title": "Weeks",
+      "pages": [
+        {
+          "pdfPage": 14,
+          "title": "Week 1"
+        },
+        {
+          "pdfPage": 15,
+          "title": "Week 2"
+        },
+        {
+          "pdfPage": 16,
+          "title": "Week 3"
+        },
+        {
+          "pdfPage": 17,
+          "title": "Week 4"
+        },
+        {
+          "pdfPage": 18,
+          "title": "Week 5"
+        },
+        {
+          "pdfPage": 19,
+          "title": "Week 6"
+        },
+        {
+          "pdfPage": 20,
+          "title": "Week 7"
+        },
+        {
+          "pdfPage": 21,
+          "title": "Week 8"
+        },
+        {
+          "pdfPage": 22,
+          "title": "Week 9"
+        },
+        {
+          "pdfPage": 23,
+          "title": "Week 10"
+        },
+        {
+          "pdfPage": 24,
+          "title": "Week 11"
+        },
+        {
+          "pdfPage": 25,
+          "title": "Week 12"
+        },
+        {
+          "pdfPage": 26,
+          "title": "Week 13"
+        },
+        {
+          "pdfPage": 27,
+          "title": "Week 14"
+        },
+        {
+          "pdfPage": 28,
+          "title": "Week 15"
+        },
+        {
+          "pdfPage": 29,
+          "title": "Week 16"
+        },
+        {
+          "pdfPage": 30,
+          "title": "Week 17"
+        },
+        {
+          "pdfPage": 31,
+          "title": "Week 18"
+        },
+        {
+          "pdfPage": 32,
+          "title": "Week 19"
+        },
+        {
+          "pdfPage": 33,
+          "title": "Week 20"
+        },
+        {
+          "pdfPage": 34,
+          "title": "Week 21"
+        },
+        {
+          "pdfPage": 35,
+          "title": "Week 22"
+        },
+        {
+          "pdfPage": 36,
+          "title": "Week 23"
+        },
+        {
+          "pdfPage": 37,
+          "title": "Week 24"
+        },
+        {
+          "pdfPage": 38,
+          "title": "Week 25"
+        },
+        {
+          "pdfPage": 39,
+          "title": "Week 26"
+        },
+        {
+          "pdfPage": 40,
+          "title": "Week 27"
+        },
+        {
+          "pdfPage": 41,
+          "title": "Week 28"
+        },
+        {
+          "pdfPage": 42,
+          "title": "Week 29"
+        },
+        {
+          "pdfPage": 43,
+          "title": "Week 30"
+        },
+        {
+          "pdfPage": 44,
+          "title": "Week 31"
+        },
+        {
+          "pdfPage": 45,
+          "title": "Week 32"
+        },
+        {
+          "pdfPage": 46,
+          "title": "Week 33"
+        },
+        {
+          "pdfPage": 47,
+          "title": "Week 34"
+        },
+        {
+          "pdfPage": 48,
+          "title": "Week 35"
+        },
+        {
+          "pdfPage": 49,
+          "title": "Week 36"
+        },
+        {
+          "pdfPage": 50,
+          "title": "Week 37"
+        },
+        {
+          "pdfPage": 51,
+          "title": "Week 38"
+        },
+        {
+          "pdfPage": 52,
+          "title": "Week 39"
+        },
+        {
+          "pdfPage": 53,
+          "title": "Week 40"
+        },
+        {
+          "pdfPage": 54,
+          "title": "Week 41"
+        },
+        {
+          "pdfPage": 55,
+          "title": "Week 42"
+        },
+        {
+          "pdfPage": 56,
+          "title": "Week 43"
+        },
+        {
+          "pdfPage": 57,
+          "title": "Week 44"
+        },
+        {
+          "pdfPage": 58,
+          "title": "Week 45"
+        },
+        {
+          "pdfPage": 59,
+          "title": "Week 46"
+        },
+        {
+          "pdfPage": 60,
+          "title": "Week 47"
+        },
+        {
+          "pdfPage": 61,
+          "title": "Week 48"
+        },
+        {
+          "pdfPage": 62,
+          "title": "Week 49"
+        },
+        {
+          "pdfPage": 63,
+          "title": "Week 50"
+        },
+        {
+          "pdfPage": 64,
+          "title": "Week 51"
+        },
+        {
+          "pdfPage": 65,
+          "title": "Week 52"
+        },
+        {
+          "pdfPage": 66,
+          "title": "Week 53"
+        }
+      ]
+    }
+  ]
+}

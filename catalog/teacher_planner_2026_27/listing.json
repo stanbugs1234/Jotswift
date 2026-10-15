@@ -1,0 +1,19 @@
+{
+  "kind": "template",
+  "name": "Teacher Planner 2026-27",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "planner_teacher_planner_2026"
+    ]
+  },
+  "category": "study",
+  "tags": [
+    "teacher",
+    "lesson plans",
+    "school year",
+    "dated",
+    "2026"
+  ]
+}

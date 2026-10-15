@@ -1,0 +1,19 @@
+{
+  "kind": "template",
+  "name": "Classic Daily Diary 2027",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "planner_diary_classic_2027"
+    ]
+  },
+  "category": "diaries",
+  "tags": [
+    "diary",
+    "daily",
+    "dated",
+    "linked",
+    "2027"
+  ]
+}
