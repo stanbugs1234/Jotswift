@@ -131,7 +131,7 @@ void main() {
 
       for (final (tab, title) in [
         ('Planner', 'Today'),
-        ('Calendar', 'Month'),
+        ('Calendar', 'New event'),
         ('To-do', 'Today'),
         ('Notebooks', 'Quick note'),
       ]) {
