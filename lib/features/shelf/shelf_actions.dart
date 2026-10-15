@@ -31,16 +31,7 @@ Future<void> createNotebookAt(
   PaperStyle? paper,
   CatalogItem? template,
 }) async {
-  if (!ref.read(canCreateNotebookProvider)) {
-    final pro = await showPaywall(
-      context,
-      ref,
-      reason:
-          'Free accounts have up to $freeNotebookLimit notebooks. Get '
-          'Notely Pro for as many as you like.',
-    );
-    if (!pro || !context.mounted) return;
-  }
+  if (!await _mayCreate(context, ref) || !context.mounted) return;
   final count = ref.read(notebooksProvider).value?.length ?? 0;
   final result = await NotebookEditor.show(
     context,
@@ -63,6 +54,44 @@ Future<void> createNotebookAt(
             .createNotebook(result.notebook)
       : await ref.read(createFromTemplateProvider)(result.notebook, planner);
   if (context.mounted) await context.push('/notebooks/${notebook.id}');
+}
+
+/// Free accounts at the notebook limit see the Pro paywall. True when a
+/// notebook may be made.
+Future<bool> _mayCreate(BuildContext context, WidgetRef ref) async {
+  if (ref.read(canCreateNotebookProvider)) return true;
+  return showPaywall(
+    context,
+    ref,
+    reason:
+        'Free accounts have up to $freeNotebookLimit notebooks, counting '
+        'any in the Trash. Get Notely Pro for as many as you like.',
+  );
+}
+
+/// Makes a notebook at [location] with the usual cover and paper, without
+/// asking anything, and opens its first page to write on.
+Future<void> createQuickNote(
+  BuildContext context,
+  WidgetRef ref,
+  ShelfLocation location,
+) async {
+  if (!await _mayCreate(context, ref) || !context.mounted) return;
+  final repo = ref.read(notebookRepositoryProvider);
+  final count = ref.read(notebooksProvider).value?.length ?? 0;
+  final notebook = await repo.createNotebook(
+    NewNotebook(
+      title: 'Quick note',
+      cover: NotebookCover.color(notebookColors[count % notebookColors.length]),
+      collectionId: ref.read(activeSkinProvider).id,
+      place: location.place,
+    ),
+  );
+  final sections = await repo.watchSections(notebook.id).first;
+  final page = await repo.createPage(notebook.id, sections.first.id);
+  if (context.mounted) {
+    context.go('/notebooks/${notebook.id}/pages/${page.id}');
+  }
 }
 
 /// Changes a notebook's title, cover, paper and style.
@@ -180,7 +209,7 @@ Future<void> showCategoryMenu(
   }
 }
 
-enum NotebookAction { rename, edit, move, delete }
+enum NotebookAction { rename, edit, move, star, trash }
 
 Future<void> onNotebookAction(
   BuildContext context,
@@ -214,15 +243,85 @@ Future<void> onNotebookAction(
             .read(shelfRepositoryProvider)
             .moveNotebook(notebook.id, place);
       }
-    case NotebookAction.delete:
+    case NotebookAction.star:
+      await ref
+          .read(shelfRepositoryProvider)
+          .setStarred(notebook.id, !notebook.starred);
+    case NotebookAction.trash:
+      await moveToTrash(context, ref, notebook);
+  }
+}
+
+/// Moves [notebook] to the Trash, with a moment to undo it.
+Future<void> moveToTrash(
+  BuildContext context,
+  WidgetRef ref,
+  Notebook notebook,
+) async {
+  final shelf = ref.read(shelfRepositoryProvider);
+  final messenger = ScaffoldMessenger.of(context);
+  await shelf.setTrashed(notebook.id, true);
+  messenger
+    ..hideCurrentSnackBar()
+    ..showSnackBar(
+      SnackBar(
+        content: Text('Moved "${notebook.title}" to the Trash'),
+        // Goes away by itself, though it has an action.
+        persist: false,
+        action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () => shelf.setTrashed(notebook.id, false),
+        ),
+      ),
+    );
+}
+
+enum TrashAction { restore, delete }
+
+/// Restore a notebook from the Trash, or delete it for good.
+Future<void> onTrashedNotebookAction(
+  BuildContext context,
+  WidgetRef ref,
+  Notebook notebook,
+  TrashAction action,
+) async {
+  switch (action) {
+    case TrashAction.restore:
+      await ref.read(shelfRepositoryProvider).setTrashed(notebook.id, false);
+    case TrashAction.delete:
       final ok = await confirmDelete(
         context,
-        title: 'Delete "${notebook.title}"?',
+        title: 'Delete "${notebook.title}" for good?',
         message:
             'This deletes the notebook and every page in it. '
             'It cannot be undone.',
       );
-      if (ok) await repo.deleteNotebook(notebook.id);
+      if (ok) {
+        await ref.read(notebookRepositoryProvider).deleteNotebook(notebook.id);
+      }
+  }
+}
+
+/// Deletes every notebook in the Trash, after asking.
+Future<void> emptyTrash(
+  BuildContext context,
+  WidgetRef ref,
+  List<Notebook> trashed,
+) async {
+  if (trashed.isEmpty) return;
+  final count = trashed.length == 1
+      ? '1 notebook'
+      : '${trashed.length} notebooks';
+  final ok = await confirmDelete(
+    context,
+    title: 'Empty the Trash?',
+    message: 'This deletes $count and every page in them. It cannot be undone.',
+    confirmLabel: 'Empty Trash',
+  );
+  if (!ok) return;
+  final repo = ref.read(notebookRepositoryProvider);
+  for (final n in trashed) {
+    await repo.deleteNotebook(n.id);
   }
 }
 

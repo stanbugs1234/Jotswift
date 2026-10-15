@@ -26,6 +26,8 @@ class Notebook {
     this.groupId,
     this.order,
     this.lastOpenedAt,
+    this.starred = false,
+    this.trashedAt,
   });
 
   factory Notebook.fromMap(String id, Map<String, dynamic> map) => Notebook(
@@ -51,6 +53,8 @@ class Notebook {
     groupId: map['groupId'] as String?,
     order: (map['order'] as num?)?.toDouble(),
     lastOpenedAt: map['lastOpenedAt'] as int?,
+    starred: map['starred'] as bool? ?? false,
+    trashedAt: map['trashedAt'] as int?,
     createdAt: map['createdAt'] as int? ?? 0,
     updatedAt: map['updatedAt'] as int? ?? 0,
   );
@@ -85,6 +89,15 @@ class Notebook {
   final int updatedAt;
   final int? lastOpenedAt;
 
+  /// Shown under Starred on the shelf.
+  final bool starred;
+
+  /// When it was moved to the Trash (milliseconds since epoch), or null
+  /// when it isn't in the Trash.
+  final int? trashedAt;
+
+  bool get inTrash => trashedAt != null;
+
   double get sortOrder => order ?? createdAt.toDouble();
 
   Map<String, dynamic> toMap() => {
@@ -100,6 +113,8 @@ class Notebook {
     'groupId': ?groupId,
     'order': ?order,
     'lastOpenedAt': ?lastOpenedAt,
+    if (starred) 'starred': true,
+    'trashedAt': ?trashedAt,
     'createdAt': createdAt,
     'updatedAt': updatedAt,
   };
@@ -113,6 +128,9 @@ class Notebook {
     double? order,
     int? lastOpenedAt,
     int? updatedAt,
+    bool? starred,
+    int? trashedAt,
+    bool restore = false,
   }) => Notebook(
     id: id,
     title: title ?? this.title,
@@ -127,6 +145,8 @@ class Notebook {
     groupId: place == null ? groupId : place.groupId,
     order: order ?? this.order,
     lastOpenedAt: lastOpenedAt ?? this.lastOpenedAt,
+    starred: starred ?? this.starred,
+    trashedAt: restore ? null : trashedAt ?? this.trashedAt,
     createdAt: createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );

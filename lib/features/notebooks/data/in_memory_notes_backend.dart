@@ -242,6 +242,19 @@ class _InMemoryUserData
     _changed();
   }
 
+  @override
+  Future<void> setStarred(String notebookId, bool starred) async =>
+      _updateNotebook(notebookId, (n) => n.copyWith(starred: starred));
+
+  @override
+  Future<void> setTrashed(String notebookId, bool trashed) async =>
+      _updateNotebook(
+        notebookId,
+        (n) => trashed
+            ? n.copyWith(trashedAt: nowMillis())
+            : n.copyWith(restore: true),
+      );
+
   NotebookGroup _copyGroup(
     NotebookGroup g, {
     String? title,

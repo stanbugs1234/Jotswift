@@ -274,6 +274,18 @@ class _FirestoreUserNotes
   Future<void> setGroupOrder(String groupId, double order) async =>
       _groups.doc(groupId).update({'order': order}).ignore();
 
+  @override
+  Future<void> setStarred(String notebookId, bool starred) async => _notebooks
+      .doc(notebookId)
+      .update({'starred': starred ? true : FieldValue.delete()})
+      .ignore();
+
+  @override
+  Future<void> setTrashed(String notebookId, bool trashed) async => _notebooks
+      .doc(notebookId)
+      .update({'trashedAt': trashed ? nowMillis() : FieldValue.delete()})
+      .ignore();
+
   // Favorite papers
 
   @override

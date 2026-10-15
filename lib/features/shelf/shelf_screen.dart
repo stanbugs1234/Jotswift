@@ -11,55 +11,121 @@ import 'shelf_actions.dart';
 import 'shelf_prefs.dart';
 import 'shelf_view.dart';
 
-/// The shelf: notebooks shown by their covers, with groups as stacks.
-/// Shows all notebooks, the recent ones, one category, or one group.
-class ShelfScreen extends ConsumerWidget {
+/// The shelf, laid out like Noteshelf's home: a big title, quick actions,
+/// then notebooks shown by their covers with groups as stacks. Shows Home
+/// (everything), recent, starred, unfiled, the Trash, one category or one
+/// group.
+class ShelfScreen extends ConsumerStatefulWidget {
   const ShelfScreen({this.location = const AllNotebooks(), super.key});
 
   final ShelfLocation location;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ShelfScreen> createState() => _ShelfScreenState();
+}
+
+class _ShelfScreenState extends ConsumerState<ShelfScreen> {
+  /// The search text, or null when not searching.
+  String? _query;
+  final _search = TextEditingController();
+
+  @override
+  void dispose() {
+    _search.dispose();
+    super.dispose();
+  }
+
+  void _toggleSearch() => setState(() {
+    _search.clear();
+    _query = _query == null ? '' : null;
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final location = widget.location;
     final notebooks = ref.watch(notebooksProvider);
     final groups = ref.watch(groupsProvider);
     final categories = ref.watch(categoriesProvider).value ?? const [];
     final prefs = ref.watch(shelfPrefsProvider);
     final shelf = Shelf(notebooks.value ?? const [], groups.value ?? const []);
-    final hasSidebar = MediaQuery.sizeOf(context).width >= Breakpoints.expanded;
+    final hasSidebar = sidebarShown(context, ref);
+    final wide = MediaQuery.sizeOf(context).width >= Breakpoints.medium;
+    final query = _query;
+    final searching = query != null && query.trim().isNotEmpty;
 
     final title = switch (location) {
-      AllNotebooks() => 'Notebooks',
+      AllNotebooks() => 'Home',
       RecentNotebooks() => 'Recent',
+      StarredNotebooks() => 'Starred',
+      UnfiledNotebooks() => 'Unfiled',
+      TrashedNotebooks() => 'Trash',
       InCategory(:final id) =>
         categories.where((c) => c.id == id).firstOrNull?.title ?? 'Category',
       InGroup(:final id) => shelf.group(id)?.title ?? 'Group',
     };
 
-    final Widget body;
+    String placeOf(Notebook n) {
+      final id = shelf.categoryOfNotebook(n);
+      if (id == null) return 'Unfiled';
+      return categories.where((c) => c.id == id).firstOrNull?.title ??
+          'Unfiled';
+    }
+
+    final List<Widget> content;
     if (notebooks case AsyncError(:final error)) {
-      body = Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Text('Could not load notebooks.\n$error'),
+      content = [
+        SliverFillRemaining(
+          hasScrollBody: false,
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Text('Could not load notebooks.\n$error'),
+            ),
+          ),
         ),
-      );
+      ];
     } else if (!notebooks.hasValue || !groups.hasValue) {
-      body = const Center(child: CircularProgressIndicator());
+      content = const [
+        SliverFillRemaining(
+          hasScrollBody: false,
+          child: Center(child: CircularProgressIndicator()),
+        ),
+      ];
     } else {
-      final contents = shelf.contents(location, prefs.sort);
-      body = contents.isEmpty
-          ? _EmptyShelf(
-              location: location,
-              isFirstNotebook: notebooks.value!.isEmpty,
-            )
-          : _ShelfItems(
-              shelf: shelf,
-              contents: contents,
-              prefs: prefs,
-              subtitle: location is RecentNotebooks
-                  ? ShelfSort.lastOpened
-                  : prefs.sort,
-            );
+      final contents = searching
+          ? ShelfContents(const [], shelf.search(query))
+          : shelf.contents(location, prefs.sort);
+      content = contents.isEmpty
+          ? [
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: searching
+                    ? Center(child: Text('No notebooks match "$query".'))
+                    : _EmptyShelf(
+                        location: location,
+                        isFirstNotebook: shelf.notebookCount == 0,
+                      ),
+              ),
+            ]
+          : [
+              _ShelfItems(
+                shelf: shelf,
+                contents: contents,
+                prefs: prefs,
+                trash: location is TrashedNotebooks && !searching,
+                subtitle: location is RecentNotebooks
+                    ? ShelfSort.lastOpened
+                    : prefs.sort,
+                // Where each notebook is, when the list mixes places.
+                placeOf: switch (location) {
+                  _ when searching => placeOf,
+                  AllNotebooks() ||
+                  RecentNotebooks() ||
+                  StarredNotebooks() => placeOf,
+                  _ => null,
+                },
+              ),
+            ];
     }
 
     return Scaffold(
@@ -69,41 +135,277 @@ class ShelfScreen extends ConsumerWidget {
                 onPressed: () => context.go(shelf.parentOf(location).path),
               )
             : null,
-        title: Text(title),
+        title: query == null
+            ? null
+            : TextField(
+                controller: _search,
+                autofocus: true,
+                decoration: const InputDecoration(
+                  hintText: 'Search notebooks',
+                  border: InputBorder.none,
+                ),
+                onChanged: (text) => setState(() => _query = text),
+              ),
         actions: [
-          if (location is! RecentNotebooks)
-            IconButton(
-              tooltip: 'New group',
-              icon: const Icon(Icons.create_new_folder_outlined),
-              onPressed: () => createGroupAt(context, ref, location),
+          if (location is TrashedNotebooks && shelf.trashCount > 0)
+            TextButton(
+              onPressed: () => emptyTrash(
+                context,
+                ref,
+                shelf.contents(location, prefs.sort).notebooks,
+              ),
+              child: const Text('Empty Trash'),
             ),
+          if (location.canCreate) _AddMenu(location: location),
+          IconButton(
+            tooltip: query == null ? 'Search' : 'Close search',
+            icon: Icon(query == null ? Icons.search : Icons.close),
+            onPressed: _toggleSearch,
+          ),
           const _ViewMenu(),
-          IconButton(
-            tooltip: 'Templates',
-            icon: const Icon(Icons.storefront_outlined),
-            onPressed: () => context.push(storePath),
-          ),
-          IconButton(
-            tooltip: 'Settings',
-            icon: const Icon(Icons.settings_outlined),
-            onPressed: () => context.push('/settings'),
-          ),
+          if (!hasSidebar)
+            IconButton(
+              tooltip: 'Settings',
+              icon: const Icon(Icons.settings_outlined),
+              onPressed: () => context.push('/settings'),
+            ),
         ],
         bottom: hasSidebar || location is InGroup
             ? null
             : _CategoryChips(location: location, categories: categories),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => createNotebookAt(context, ref, location),
-        icon: const Icon(Icons.add),
-        label: const Text('New notebook'),
+      bottomNavigationBar: location is AllNotebooks && wide && !searching
+          ? const _DiscoverBanner()
+          : null,
+      body: CustomScrollView(
+        slivers: [
+          if (!searching)
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      key: const Key('shelf-title'),
+                      style: titleSerif(
+                        ref,
+                        Theme.of(context).textTheme.headlineLarge,
+                      ),
+                    ),
+                    if (location is TrashedNotebooks) ...[
+                      const SizedBox(height: 4),
+                      Text(
+                        'Restore a notebook, or delete it for good.',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+          if (location.canCreate && !searching)
+            SliverToBoxAdapter(child: _QuickActions(location: location)),
+          ...content,
+        ],
       ),
-      body: body,
     );
   }
 }
 
-/// Categories as chips, for screens too narrow for the sidebar.
+/// Quick note, New notebook and Templates, as a row of cards.
+class _QuickActions extends ConsumerWidget {
+  const _QuickActions({required this.location});
+
+  final ShelfLocation location;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final actions = [
+      (
+        label: 'Quick note',
+        icon: Icons.add,
+        color: const Color(0xFF2E9C8F),
+        onTap: () => createQuickNote(context, ref, location),
+      ),
+      (
+        label: 'New notebook',
+        icon: Icons.menu_book_outlined,
+        color: const Color(0xFFC0812E),
+        onTap: () => createNotebookAt(context, ref, location),
+      ),
+      (
+        label: 'Templates',
+        icon: Icons.storefront_outlined,
+        color: const Color(0xFF4C8BC9),
+        onTap: () => context.push(storePath),
+      ),
+    ];
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final stacked = constraints.maxWidth < 480;
+          return Row(
+            children: [
+              for (final (i, a) in actions.indexed) ...[
+                if (i > 0) const SizedBox(width: 12),
+                Expanded(
+                  child: _QuickActionCard(
+                    label: a.label,
+                    icon: a.icon,
+                    color: a.color,
+                    stacked: stacked,
+                    onTap: a.onTap,
+                  ),
+                ),
+              ],
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _QuickActionCard extends StatelessWidget {
+  const _QuickActionCard({
+    required this.label,
+    required this.icon,
+    required this.color,
+    required this.stacked,
+    required this.onTap,
+  });
+
+  final String label;
+  final IconData icon;
+  final Color color;
+
+  /// Icon above the label, for narrow screens.
+  final bool stacked;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final badge = Container(
+      width: 30,
+      height: 30,
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.16),
+        shape: BoxShape.circle,
+      ),
+      child: Icon(icon, size: 18, color: color),
+    );
+    final text = Text(
+      label,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      style: theme.textTheme.labelLarge,
+    );
+    return Material(
+      color: theme.colorScheme.surfaceContainer,
+      borderRadius: BorderRadius.circular(12),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          child: stacked
+              ? Column(children: [badge, const SizedBox(height: 6), text])
+              : Row(
+                  children: [
+                    badge,
+                    const SizedBox(width: 10),
+                    Flexible(child: text),
+                  ],
+                ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The + menu: everything that can be made here.
+class _AddMenu extends ConsumerWidget {
+  const _AddMenu({required this.location});
+
+  final ShelfLocation location;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return PopupMenuButton<VoidCallback>(
+      tooltip: 'New',
+      icon: const Icon(Icons.add),
+      onSelected: (create) => create(),
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          value: () => createQuickNote(context, ref, location),
+          child: const ListTile(
+            leading: Icon(Icons.edit_note),
+            title: Text('Quick note'),
+          ),
+        ),
+        PopupMenuItem(
+          value: () => createNotebookAt(context, ref, location),
+          child: const ListTile(
+            leading: Icon(Icons.menu_book_outlined),
+            title: Text('Notebook'),
+          ),
+        ),
+        PopupMenuItem(
+          value: () => createGroupAt(context, ref, location),
+          child: const ListTile(
+            leading: Icon(Icons.create_new_folder_outlined),
+            title: Text('Group'),
+          ),
+        ),
+        if (location is! InGroup)
+          PopupMenuItem(
+            value: () => createCategory(context, ref),
+            child: const ListTile(
+              leading: Icon(Icons.label_outline),
+              title: Text('Category'),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+/// The strip along the bottom of Home that leads to the store.
+class _DiscoverBanner extends StatelessWidget {
+  const _DiscoverBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
+        child: Material(
+          color: theme.colorScheme.surfaceContainer,
+          borderRadius: BorderRadius.circular(12),
+          clipBehavior: Clip.antiAlias,
+          child: ListTile(
+            dense: true,
+            leading: const Icon(Icons.auto_awesome_outlined),
+            title: Text(
+              'Discover templates and collections',
+              style: theme.textTheme.labelLarge,
+            ),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push(storePath),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Places and categories as chips, for when the sidebar is hidden.
 class _CategoryChips extends ConsumerWidget implements PreferredSizeWidget {
   const _CategoryChips({required this.location, required this.categories});
 
@@ -130,30 +432,36 @@ class _CategoryChips extends ConsumerWidget implements PreferredSizeWidget {
 
     return SizedBox(
       height: preferredSize.height,
-      child: ListView(
+      // Not lazy: there are only a few, and all of them stay reachable.
+      child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
-        children: [
-          chip('All', const AllNotebooks()),
-          chip('Recent', const RecentNotebooks()),
-          for (final c in categories)
-            chip(
-              c.title,
-              InCategory(c.id),
-              onLongPress: () => showCategoryMenu(
-                context,
-                ref,
-                c,
-                isOpen: location == InCategory(c.id),
+        child: Row(
+          children: [
+            chip('Home', const AllNotebooks()),
+            chip('Starred', const StarredNotebooks()),
+            chip('Recent', const RecentNotebooks()),
+            chip('Unfiled', const UnfiledNotebooks()),
+            for (final c in categories)
+              chip(
+                c.title,
+                InCategory(c.id),
+                onLongPress: () => showCategoryMenu(
+                  context,
+                  ref,
+                  c,
+                  isOpen: location == InCategory(c.id),
+                ),
               ),
+            chip('Trash', const TrashedNotebooks()),
+            ActionChip(
+              avatar: const Icon(Icons.add, size: 18),
+              label: const Text('Category'),
+              tooltip: 'New category',
+              onPressed: () => createCategory(context, ref),
             ),
-          ActionChip(
-            avatar: const Icon(Icons.add, size: 18),
-            label: const Text('Category'),
-            tooltip: 'New category',
-            onPressed: () => createCategory(context, ref),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -180,7 +488,7 @@ class _ViewMenu extends ConsumerWidget {
 
     return PopupMenuButton<VoidCallback>(
       tooltip: 'View options',
-      icon: const Icon(Icons.tune),
+      icon: const Icon(Icons.more_horiz),
       onSelected: (apply) => apply(),
       itemBuilder: (context) => [
         const PopupMenuItem(enabled: false, child: Text('Sort by')),
@@ -226,6 +534,8 @@ class _ShelfItems extends ConsumerWidget {
     required this.contents,
     required this.prefs,
     required this.subtitle,
+    this.trash = false,
+    this.placeOf,
   });
 
   final Shelf shelf;
@@ -234,6 +544,13 @@ class _ShelfItems extends ConsumerWidget {
 
   /// Which date notebooks show under their title.
   final ShelfSort subtitle;
+
+  /// These are in the Trash: they can be restored, not opened or moved.
+  final bool trash;
+
+  /// Names where a notebook is (its category, or "Unfiled"), when the
+  /// list mixes places.
+  final String Function(Notebook)? placeOf;
 
   /// Drops [dragged] into a group, or (in the custom order) just before
   /// another notebook.
@@ -298,37 +615,47 @@ class _ShelfItems extends ConsumerWidget {
             ),
           ),
         ),
-      for (final n in contents.notebooks)
-        _DropTarget(
-          accepts: (d) => _accepts(d, onNotebook: n),
-          onDrop: (d) => _drop(ref, d, onNotebook: n),
-          builder: (highlight) => _Draggable(
-            data: (notebook: n, group: null),
-            cover: CoverView(cover: n.cover),
-            child: _NotebookTile(
-              notebook: n,
-              subtitle: subtitle,
-              list: list,
-              highlight: highlight,
+      if (trash)
+        for (final n in contents.notebooks)
+          _TrashedTile(notebook: n, list: list)
+      else
+        for (final n in contents.notebooks)
+          _DropTarget(
+            accepts: (d) => _accepts(d, onNotebook: n),
+            onDrop: (d) => _drop(ref, d, onNotebook: n),
+            builder: (highlight) => _Draggable(
+              data: (notebook: n, group: null),
+              cover: CoverView(cover: n.cover),
+              child: _NotebookTile(
+                notebook: n,
+                subtitle: subtitle,
+                place: placeOf?.call(n),
+                list: list,
+                highlight: highlight,
+              ),
             ),
           ),
-        ),
     ];
 
-    const padding = EdgeInsets.fromLTRB(16, 16, 16, 96);
+    const padding = EdgeInsets.fromLTRB(16, 4, 16, 32);
     if (list) {
-      return ListView(padding: padding, children: items);
+      return SliverPadding(
+        padding: padding,
+        sliver: SliverList.list(children: items),
+      );
     }
     final large = prefs.size == ShelfSize.large;
-    return GridView(
+    return SliverPadding(
       padding: padding,
-      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: large ? 200 : 136,
-        mainAxisSpacing: 20,
-        crossAxisSpacing: 20,
-        childAspectRatio: large ? 0.56 : 0.5,
+      sliver: SliverGrid(
+        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: large ? 200 : 136,
+          mainAxisSpacing: 20,
+          crossAxisSpacing: 20,
+          childAspectRatio: large ? 0.52 : 0.46,
+        ),
+        delegate: SliverChildListDelegate(items),
       ),
-      children: items,
     );
   }
 }
@@ -385,10 +712,14 @@ class _NotebookTile extends ConsumerWidget {
     required this.subtitle,
     required this.list,
     required this.highlight,
+    this.place,
   });
 
   final Notebook notebook;
   final ShelfSort subtitle;
+
+  /// Where the notebook is, shown under the date.
+  final String? place;
   final bool list;
   final bool highlight;
 
@@ -397,25 +728,40 @@ class _NotebookTile extends ConsumerWidget {
     final date = subtitle == ShelfSort.lastOpened
         ? (notebook.lastOpenedAt == null
               ? 'Not opened yet'
-              : 'Opened ${shortDate(notebook.lastOpenedAt!)}')
-        : 'Edited ${shortDate(notebook.updatedAt)}';
+              : shortDateTime(notebook.lastOpenedAt!))
+        : shortDateTime(notebook.updatedAt);
     final menu = PopupMenuButton<NotebookAction>(
       tooltip: 'Notebook options',
       onSelected: (a) => onNotebookAction(context, ref, notebook, a),
-      itemBuilder: (context) => const [
-        PopupMenuItem(value: NotebookAction.rename, child: Text('Rename')),
-        PopupMenuItem(
+      itemBuilder: (context) => [
+        const PopupMenuItem(
+          value: NotebookAction.rename,
+          child: Text('Rename'),
+        ),
+        const PopupMenuItem(
           value: NotebookAction.edit,
           child: Text('Cover, paper & style'),
         ),
-        PopupMenuItem(value: NotebookAction.move, child: Text('Move to…')),
-        PopupMenuItem(value: NotebookAction.delete, child: Text('Delete')),
+        const PopupMenuItem(
+          value: NotebookAction.move,
+          child: Text('Move to…'),
+        ),
+        PopupMenuItem(
+          value: NotebookAction.star,
+          child: Text(notebook.starred ? 'Unstar' : 'Star'),
+        ),
+        const PopupMenuItem(
+          value: NotebookAction.trash,
+          child: Text('Move to Trash'),
+        ),
       ],
     );
     return _Tile(
       label: '${notebook.title} notebook',
       title: notebook.title,
       subtitle: date,
+      place: place,
+      starred: notebook.starred,
       cover: CoverView(cover: notebook.cover),
       menu: menu,
       list: list,
@@ -475,11 +821,17 @@ class _Tile extends StatelessWidget {
     required this.list,
     required this.highlight,
     required this.onTap,
+    this.place,
+    this.starred = false,
   });
 
   final String label;
   final String title;
   final String subtitle;
+
+  /// A third line: where it is on the shelf.
+  final String? place;
+  final bool starred;
   final Widget cover;
   final Widget menu;
   final bool list;
@@ -498,6 +850,16 @@ class _Tile extends StatelessWidget {
           : null,
     );
 
+    const star = Padding(
+      padding: EdgeInsets.only(left: 4),
+      child: Icon(
+        Icons.star,
+        size: 14,
+        color: Color(0xFFC79A2E),
+        semanticLabel: 'Starred',
+      ),
+    );
+
     if (list) {
       return Semantics(
         button: true,
@@ -506,8 +868,19 @@ class _Tile extends StatelessWidget {
           decoration: decoration,
           child: ListTile(
             leading: SizedBox(width: 40, child: cover),
-            title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
-            subtitle: Text(subtitle),
+            title: Row(
+              children: [
+                Flexible(
+                  child: Text(
+                    title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                if (starred) star,
+              ],
+            ),
+            subtitle: Text(place == null ? subtitle : '$subtitle · $place'),
             trailing: menu,
             onTap: onTap,
           ),
@@ -537,11 +910,19 @@ class _Tile extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            title,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: theme.textTheme.titleSmall,
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  title,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: theme.textTheme.titleSmall,
+                                ),
+                              ),
+                              if (starred) star,
+                            ],
                           ),
                           Text(
                             subtitle,
@@ -549,6 +930,15 @@ class _Tile extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                             style: theme.textTheme.bodySmall,
                           ),
+                          if (place case final place?)
+                            Text(
+                              place,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
+                              ),
+                            ),
                         ],
                       ),
                     ),
@@ -561,6 +951,65 @@ class _Tile extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+/// A notebook in the Trash: tapping offers to restore or delete it.
+class _TrashedTile extends ConsumerWidget {
+  const _TrashedTile({required this.notebook, required this.list});
+
+  final Notebook notebook;
+  final bool list;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final menu = PopupMenuButton<TrashAction>(
+      tooltip: 'Notebook options',
+      onSelected: (a) => onTrashedNotebookAction(context, ref, notebook, a),
+      itemBuilder: (context) => const [
+        PopupMenuItem(value: TrashAction.restore, child: Text('Restore')),
+        PopupMenuItem(
+          value: TrashAction.delete,
+          child: Text('Delete for good'),
+        ),
+      ],
+    );
+    return _Tile(
+      label: '${notebook.title} notebook, in the Trash',
+      title: notebook.title,
+      subtitle: 'Deleted ${shortDate(notebook.trashedAt!)}',
+      cover: Opacity(opacity: 0.6, child: CoverView(cover: notebook.cover)),
+      menu: menu,
+      list: list,
+      highlight: false,
+      onTap: () => _ask(context, ref),
+    );
+  }
+
+  Future<void> _ask(BuildContext context, WidgetRef ref) async {
+    final action = await showDialog<TrashAction>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('"${notebook.title}" is in the Trash'),
+        content: const Text('Restore it to open it again.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, TrashAction.delete),
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.error,
+            ),
+            child: const Text('Delete for good'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, TrashAction.restore),
+            child: const Text('Restore'),
+          ),
+        ],
+      ),
+    );
+    if (action != null && context.mounted) {
+      await onTrashedNotebookAction(context, ref, notebook, action);
+    }
   }
 }
 
@@ -579,6 +1028,14 @@ class _EmptyShelf extends ConsumerWidget {
       RecentNotebooks() => (
         'Nothing opened yet',
         'Notebooks you open show up here.',
+      ),
+      StarredNotebooks() => (
+        'No starred notebooks',
+        'Star a notebook from its ⋯ menu to find it here.',
+      ),
+      TrashedNotebooks() => (
+        'The Trash is empty',
+        'Notebooks you delete wait here, so you can restore them.',
       ),
       _ when isFirstNotebook => (
         'No notebooks yet',
@@ -601,7 +1058,7 @@ class _EmptyShelf extends ConsumerWidget {
             Text(title, style: theme.textTheme.titleLarge),
             const SizedBox(height: 8),
             Text(message, textAlign: TextAlign.center),
-            if (location is! RecentNotebooks) ...[
+            if (location.canCreate) ...[
               const SizedBox(height: 16),
               FilledButton.icon(
                 onPressed: () => createNotebookAt(context, ref, location),
@@ -644,4 +1101,16 @@ String shortDate(int millis, {DateTime? now}) {
   if (days == 1) return 'yesterday';
   final day = '${_months[date.month - 1]} ${date.day}';
   return date.year == today.year ? day : '$day, ${date.year}';
+}
+
+/// "Today, 5:39 AM", "Oct 3, 5:39 AM", or "Oct 3, 2025" for other years.
+String shortDateTime(int millis, {DateTime? now}) {
+  final date = DateTime.fromMillisecondsSinceEpoch(millis);
+  final today = now ?? DateTime.now();
+  final day = shortDate(millis, now: today);
+  if (date.year != today.year) return day;
+  final hour = date.hour % 12 == 0 ? 12 : date.hour % 12;
+  final minute = date.minute.toString().padLeft(2, '0');
+  final time = '$hour:$minute ${date.hour < 12 ? 'AM' : 'PM'}';
+  return '${day[0].toUpperCase()}${day.substring(1)}, $time';
 }
