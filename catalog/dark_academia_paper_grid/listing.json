@@ -1,0 +1,20 @@
+{
+  "kind": "paper",
+  "name": "Dark Academia Grid",
+  "version": 1,
+  "unlock": {},
+  "collectionId": "dark_academia",
+  "category": "papers",
+  "paper": {
+    "color": "#F4EAD7",
+    "lineColor": "#DCCDB3",
+    "marginColor": null,
+    "pattern": "grid",
+    "spacing": 24
+  },
+  "tags": [
+    "study",
+    "vintage",
+    "serif"
+  ]
+}

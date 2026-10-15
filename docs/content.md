@@ -177,6 +177,13 @@ lowercase letters, digits and `_`. An id can never be reused.
 - **Size:** up to 25 MB.
 
 ### Collections
+- **Making a whole collection in code:** add its style to `tool/collections.json` (colors, page color, border, header style, motif, font, cover colors, papers), then:
+  ```sh
+  python3 tool/make_collection.py botanical   # or: all
+  ```
+  This writes the collection and its items: a dated planner (`<id>_planner_2027`), a page pack with every layout in `tool/page_layouts.py` (`<id>_pages`, 23 pages: planning, to-do, trackers, study), three covers, papers and a sticker pack. Each item gets `"collectionId"`, so buying the collection unlocks it all. A new layout added to `page_layouts.py` appears in every collection the next time it's made.
+  - Re-running keeps each item's `version`; raise it by hand when the files change, before publishing again.
+  - Look at the PDFs and previews before publishing.
 - **Files:** `preview.webp`. A collection is a listing plus its preview:
   ```jsonc
   { "kind": "collection", "name": "Botanical", "version": 1,

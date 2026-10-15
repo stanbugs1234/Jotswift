@@ -139,12 +139,12 @@ void main() {
     expect(await page.visibleStrokes(), hasLength(1));
   });
 
-  testWidgets('in hand mode a finger scrolls but a stylus still draws', (
-    tester,
-  ) async {
+  testWidgets('with the finger toggle off, a finger scrolls but a stylus '
+      'still draws', (tester) async {
     final page = await pumpPage(tester);
-    await tester.tap(find.byTooltip('Hand (scroll with one finger)'));
+    await tester.tap(find.byTooltip('Fingers draw · tap so fingers scroll'));
     await tester.pump();
+    expect(find.text('Finger scrolls'), findsOneWidget);
 
     await drag(tester, PointerDeviceKind.touch);
     expect(await page.visibleStrokes(), isEmpty);
@@ -240,6 +240,9 @@ void main() {
     final page = await pumpPage(tester);
     final inkColors = skinById(skins, 'classic').inkColors;
 
+    // An upright-iPad-wide toolbar keeps colors under Pen options.
+    await tester.tap(find.byTooltip('Pen options'));
+    await tester.pumpAndSettle();
     await tester.tap(find.bySemanticsLabel('Ink color 3'));
     await tester.pump();
     await drag(tester, PointerDeviceKind.stylus);

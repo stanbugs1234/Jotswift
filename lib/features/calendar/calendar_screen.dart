@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/motion/directional_switcher.dart';
 import '../planner/planner_screen.dart' show openPlannerDay;
 import '../tasks/task_providers.dart' show todayProvider;
 import 'calendar_providers.dart';
@@ -40,6 +41,14 @@ class CalendarScreen extends ConsumerWidget {
         ],
       ),
       CalendarMode.day => TimeGrid(key: ValueKey(day), days: [day]),
+    };
+
+    // Months, weeks and days slide in from the side they come from. Picking
+    // another day in the same month or week doesn't move anything.
+    final period = switch (state.mode) {
+      CalendarMode.month => Day(day.year, day.month, 1),
+      CalendarMode.week => startOfWeek(day, firstWeekday),
+      CalendarMode.day => day,
     };
 
     return Scaffold(
@@ -110,7 +119,12 @@ class CalendarScreen extends ConsumerWidget {
           final v = details.primaryVelocity ?? 0;
           if (v.abs() > 300) controller.move(v < 0 ? 1 : -1);
         },
-        child: body,
+        child: DirectionalSwitcher<Day>(
+          // Switching between Month, Week and Day replaces the view.
+          key: ValueKey(state.mode),
+          position: period,
+          child: body,
+        ),
       ),
     );
   }

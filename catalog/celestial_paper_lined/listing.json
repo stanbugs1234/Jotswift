@@ -1,0 +1,20 @@
+{
+  "kind": "paper",
+  "name": "Celestial Lined",
+  "version": 1,
+  "unlock": {},
+  "collectionId": "celestial",
+  "category": "papers",
+  "paper": {
+    "color": "#1E2646",
+    "lineColor": "#3D4870",
+    "marginColor": null,
+    "pattern": "lined",
+    "spacing": 32
+  },
+  "tags": [
+    "dark",
+    "stars",
+    "journal"
+  ]
+}

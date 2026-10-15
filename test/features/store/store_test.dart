@@ -299,7 +299,7 @@ void main() {
           ),
         ],
       );
-      await tester.tap(find.byTooltip('Templates'));
+      await tester.tap(find.text('Templates').first);
       await tester.pumpAndSettle();
       return purchases;
     }

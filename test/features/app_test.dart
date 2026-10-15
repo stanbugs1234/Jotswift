@@ -44,7 +44,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(SignInScreen), findsNothing);
-      expect(find.widgetWithText(AppBar, 'Notebooks'), findsOneWidget);
+      expect(find.text('Home'), findsWidgets);
     });
 
     testWidgets('a link opened while signed out comes back after sign-in', (
@@ -85,6 +85,13 @@ void main() {
 
       await tester.tap(find.byTooltip('Settings'));
       await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(
+        find.text('Sign out'),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.ensureVisible(find.text('Sign out'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Sign out'));
       await tester.pumpAndSettle();
 
@@ -113,8 +120,9 @@ void main() {
       await pumpApp(tester, skins, size: const Size(1366, 1024));
 
       expect(find.byType(NavigationRail), findsNothing);
-      expect(find.text('All notebooks'), findsOneWidget);
-      expect(find.text('CATEGORIES'), findsOneWidget);
+      for (final place in ['Starred', 'Unfiled', 'Trash', 'Categories']) {
+        expect(find.text(place), findsOneWidget);
+      }
       expect(find.text('Planner'), findsOneWidget);
     });
 
@@ -125,11 +133,11 @@ void main() {
         ('Planner', 'Today'),
         ('Calendar', 'Month'),
         ('To-do', 'Today'),
-        ('Notebooks', 'Notebooks'),
+        ('Notebooks', 'Quick note'),
       ]) {
         await tester.tap(find.widgetWithText(NavigationDestination, tab));
         await tester.pumpAndSettle();
-        expect(find.widgetWithText(AppBar, title), findsWidgets);
+        expect(find.text(title), findsWidgets);
       }
     });
   });
@@ -189,7 +197,10 @@ void main() {
       await tester.tap(find.text('Botanical'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Botanical is included in Jotswift Pro.'), findsOneWidget);
+      expect(
+        find.text('Botanical is included in Jotswift Pro.'),
+        findsOneWidget,
+      );
       await tester.tapAt(const Offset(10, 10));
       await tester.pumpAndSettle();
       expect(find.text('In use'), findsOneWidget, reason: 'Classic still');

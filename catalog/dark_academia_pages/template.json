@@ -1,0 +1,97 @@
+{
+  "mode": "pages",
+  "pages": [
+    {
+      "pdfPage": 1,
+      "title": "Daily planner"
+    },
+    {
+      "pdfPage": 2,
+      "title": "Time blocks"
+    },
+    {
+      "pdfPage": 3,
+      "title": "Weekly (vertical)"
+    },
+    {
+      "pdfPage": 4,
+      "title": "Monthly (undated)"
+    },
+    {
+      "pdfPage": 5,
+      "title": "Goals"
+    },
+    {
+      "pdfPage": 6,
+      "title": "Weekly review"
+    },
+    {
+      "pdfPage": 7,
+      "title": "To-do list"
+    },
+    {
+      "pdfPage": 8,
+      "title": "Priority matrix"
+    },
+    {
+      "pdfPage": 9,
+      "title": "Kanban board"
+    },
+    {
+      "pdfPage": 10,
+      "title": "Brain dump"
+    },
+    {
+      "pdfPage": 11,
+      "title": "Habit tracker"
+    },
+    {
+      "pdfPage": 12,
+      "title": "Mood tracker"
+    },
+    {
+      "pdfPage": 13,
+      "title": "Water & sleep"
+    },
+    {
+      "pdfPage": 14,
+      "title": "Reading log"
+    },
+    {
+      "pdfPage": 15,
+      "title": "Budget"
+    },
+    {
+      "pdfPage": 16,
+      "title": "Meal plan"
+    },
+    {
+      "pdfPage": 17,
+      "title": "Workout log"
+    },
+    {
+      "pdfPage": 18,
+      "title": "Gratitude journal"
+    },
+    {
+      "pdfPage": 19,
+      "title": "Cornell notes"
+    },
+    {
+      "pdfPage": 20,
+      "title": "Class schedule"
+    },
+    {
+      "pdfPage": 21,
+      "title": "Assignment tracker"
+    },
+    {
+      "pdfPage": 22,
+      "title": "Meeting notes"
+    },
+    {
+      "pdfPage": 23,
+      "title": "Journal"
+    }
+  ]
+}

@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../core/motion/book_open.dart';
 import '../features/auth/auth_repository.dart';
 import '../features/auth/sign_in_screen.dart';
 import '../features/calendar/calendar_screen.dart';
 import '../features/notebooks/notebook_screen.dart';
+import '../features/notebooks/notes_providers.dart';
 import '../features/notebooks/page_screen.dart';
 import '../features/planner/planner_screen.dart';
 import '../features/settings/settings_screen.dart';
+import '../features/shelf/cover_view.dart';
 import '../features/shelf/shelf_screen.dart';
 import '../features/shelf/shelf_view.dart';
 import '../features/skins/notebook_style_screen.dart';
@@ -77,16 +80,32 @@ final routerProvider = Provider<GoRouter>((ref) {
                 routes: [
                   GoRoute(
                     path: ':notebookId',
-                    builder: (context, state) => NotebookScreen(
-                      notebookId: state.pathParameters['notebookId']!,
-                    ),
+                    // Opens like a book: its cover swings open.
+                    pageBuilder: (context, state) {
+                      final id = state.pathParameters['notebookId']!;
+                      return bookOpenPage(
+                        context: context,
+                        key: state.pageKey,
+                        cover: _NotebookCoverFor(id),
+                        child: NotebookScreen(notebookId: id),
+                      );
+                    },
                     routes: [
                       // Full screen (above the tab bar) to give ink room.
                       GoRoute(
                         path: 'pages/:pageId',
                         parentNavigatorKey: _rootNavigatorKey,
-                        builder: (context, state) =>
-                            PageScreen(pageId: state.pathParameters['pageId']!),
+                        // One key per notebook, not per page: moving to
+                        // another page updates this screen in place, so it
+                        // can turn the page instead of replacing the screen.
+                        pageBuilder: (context, state) => MaterialPage(
+                          key: ValueKey(
+                            'pages-of-${state.pathParameters['notebookId']}',
+                          ),
+                          child: PageScreen(
+                            pageId: state.pathParameters['pageId']!,
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -146,3 +165,22 @@ final routerProvider = Provider<GoRouter>((ref) {
   ref.onDispose(router.dispose);
   return router;
 });
+
+/// The cover of notebook [id], or a blank cover while it loads.
+class _NotebookCoverFor extends ConsumerWidget {
+  const _NotebookCoverFor(this.id);
+
+  final String id;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final cover = ref.watch(notebookProvider(id)).value?.cover;
+    return SizedBox(
+      width: 360,
+      height: 360 / CoverView.aspectRatio,
+      child: cover == null
+          ? ColoredBox(color: Theme.of(context).colorScheme.primary)
+          : CoverView(cover: cover, elevation: 0),
+    );
+  }
+}

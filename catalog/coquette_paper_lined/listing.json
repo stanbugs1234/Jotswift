@@ -1,0 +1,20 @@
+{
+  "kind": "paper",
+  "name": "Coquette Lined",
+  "version": 1,
+  "unlock": {},
+  "collectionId": "coquette",
+  "category": "papers",
+  "paper": {
+    "color": "#FFF8FA",
+    "lineColor": "#EECBD8",
+    "marginColor": null,
+    "pattern": "lined",
+    "spacing": 30
+  },
+  "tags": [
+    "pink",
+    "cute",
+    "bows"
+  ]
+}

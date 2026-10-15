@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:notely/app/app.dart';
 import 'package:notely/core/skins/skin_manifest.dart';
 import 'package:notely/features/canvas/ink_toolbar.dart';
+import 'package:notely/features/notebooks/notes_providers.dart';
+import 'package:notely/features/notebooks/page_screen.dart';
 import 'package:notely/features/shelf/cover_view.dart';
 
 import '../../helpers.dart';
@@ -112,20 +116,94 @@ void main() {
     expect(find.text('No pages in Notes yet.'), findsOneWidget);
   });
 
-  testWidgets('notebooks can be deleted from the shelf', (tester) async {
+  testWidgets('notebooks go to the Trash, to be restored or deleted', (
+    tester,
+  ) async {
     await pumpApp(tester, skins);
     await createNotebook(tester, 'Temp');
     await tester.pageBack();
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byTooltip('Notebook options'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Delete'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(TextButton, 'Delete'));
-    await tester.pumpAndSettle();
+    Future<void> moveToTrash() async {
+      await tester.tap(find.byTooltip('Notebook options'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Move to Trash'));
+      await tester.pumpAndSettle();
+    }
 
+    Future<void> openPlace(String label) async {
+      final chip = find.widgetWithText(ChoiceChip, label);
+      await tester.ensureVisible(chip);
+      await tester.pumpAndSettle();
+      await tester.tap(chip);
+      await tester.pumpAndSettle();
+    }
+
+    await moveToTrash();
     expect(find.byType(CoverView), findsNothing);
     expect(find.text('No notebooks yet'), findsOneWidget);
+    expect(find.text('Moved "Temp" to the Trash'), findsOneWidget);
+    await tester.pump(const Duration(seconds: 5));
+    await tester.pumpAndSettle();
+    expect(find.text('Moved "Temp" to the Trash'), findsNothing);
+
+    await openPlace('Trash');
+    await tester.tap(find.text('Temp'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Restore'));
+    await tester.pumpAndSettle();
+    expect(find.text('The Trash is empty'), findsOneWidget);
+
+    await openPlace('Home');
+    expect(find.byType(CoverView), findsOneWidget);
+
+    await moveToTrash();
+    await openPlace('Trash');
+    await tester.tap(find.text('Empty Trash'));
+    await tester.pumpAndSettle();
+    await tester.tap(
+      find.descendant(
+        of: find.byType(AlertDialog),
+        matching: find.text('Empty Trash'),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('The Trash is empty'), findsOneWidget);
+
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(NotelyApp)),
+    );
+    expect(container.read(notebooksProvider).value, isEmpty);
+  });
+
+  testWidgets('a starred notebook shows under Starred', (tester) async {
+    await pumpApp(tester, skins);
+    await createNotebook(tester, 'Fav');
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byTooltip('Notebook options'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Star'));
+    await tester.pumpAndSettle();
+    expect(find.bySemanticsLabel('Starred'), findsOneWidget);
+
+    await tester.tap(find.widgetWithText(ChoiceChip, 'Starred'));
+    await tester.pumpAndSettle();
+    expect(find.text('Fav'), findsOneWidget);
+  });
+
+  testWidgets('Quick note opens a new page right away', (tester) async {
+    await pumpApp(tester, skins);
+    await tester.tap(find.text('Quick note'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(PageScreen), findsOneWidget);
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    expect(find.text('Quick note'), findsWidgets);
+    expect(find.byType(CoverView), findsOneWidget);
   });
 }

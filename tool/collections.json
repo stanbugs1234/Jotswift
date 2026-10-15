@@ -1,0 +1,71 @@
+{
+  "_comment": "Collection styles for tool/make_collection.py. Colors are #RRGGBB. See docs/content.md.",
+  "collections": {
+    "botanical": {
+      "name": "Botanical",
+      "tags": ["green", "plants", "calm"],
+      "ink": "#2B2B2B", "soft": "#7D8577", "rule": "#CFD8C8", "accent": "#4F7B5A",
+      "tab": "#EEF1E8", "onAccent": "#FFFFFF", "paper": "#FBF8F1",
+      "second": "#D98E73",
+      "border": "hand", "header": "swash", "motif": "leaves", "serif": false,
+      "covers": ["#4F7B5A", "#D98E73", "#E9E2D0"],
+      "papers": { "lined": { "color": "#FBF8F1", "lineColor": "#CFD8C8", "spacing": 32 },
+                  "dot":   { "color": "#FBF8F1", "lineColor": "#B9C6AF", "spacing": 26 } }
+    },
+    "dark_academia": {
+      "name": "Dark Academia",
+      "tags": ["study", "vintage", "serif"],
+      "ink": "#2B1D14", "soft": "#7A6656", "rule": "#D9CBB4", "accent": "#6E2233",
+      "tab": "#EDE2CC", "onAccent": "#F7EFE0", "paper": "#F4EAD7",
+      "second": "#3F4A3A",
+      "border": "double", "header": "underline", "motif": "dots", "serif": true,
+      "covers": ["#6E2233", "#3F4A3A", "#2B1D14"],
+      "papers": { "lined": { "color": "#F4EAD7", "lineColor": "#D3C2A6", "spacing": 30 },
+                  "grid":  { "color": "#F4EAD7", "lineColor": "#DCCDB3", "spacing": 24 } }
+    },
+    "coquette": {
+      "name": "Coquette",
+      "tags": ["pink", "cute", "bows"],
+      "ink": "#3D2C36", "soft": "#9B7F8C", "rule": "#F0D5DF", "accent": "#B04A6E",
+      "tab": "#FCE8EF", "onAccent": "#FFFFFF", "paper": "#FFF8FA",
+      "second": "#E7A3B9",
+      "border": "stitched", "header": "banner", "motif": "hearts", "serif": false,
+      "covers": ["#E7A3B9", "#B04A6E", "#F6E3E8"],
+      "papers": { "lined": { "color": "#FFF8FA", "lineColor": "#EECBD8", "spacing": 30 },
+                  "dot":   { "color": "#FFF8FA", "lineColor": "#E6B6C7", "spacing": 24 } }
+    },
+    "boho_sunset": {
+      "name": "Boho Sunset",
+      "tags": ["warm", "terracotta", "trackers"],
+      "ink": "#3A2A22", "soft": "#93776A", "rule": "#EBD7C6", "accent": "#A84E2A",
+      "tab": "#F6E6D7", "onAccent": "#FFFFFF", "paper": "#FCF4EA",
+      "second": "#D9A441",
+      "border": "hand", "header": "swash", "motif": "sun", "serif": false,
+      "covers": ["#A84E2A", "#D9A441", "#E9CFB5"],
+      "papers": { "lined": { "color": "#FCF4EA", "lineColor": "#E6CDB7", "spacing": 32 },
+                  "dot":   { "color": "#FCF4EA", "lineColor": "#D9B89C", "spacing": 26 } }
+    },
+    "scandi": {
+      "name": "Scandi Minimal",
+      "tags": ["minimal", "grey", "productivity"],
+      "ink": "#24282A", "soft": "#7F8789", "rule": "#DDE0DE", "accent": "#4E5A5C",
+      "tab": "#F0F1EF", "onAccent": "#FFFFFF", "paper": "#FAFAF7",
+      "second": "#B9A48A",
+      "border": "none", "header": "underline", "motif": "none", "serif": false,
+      "covers": ["#4E5A5C", "#B9A48A", "#E4E3DE"],
+      "papers": { "dot":  { "color": "#FAFAF7", "lineColor": "#C9CDCB", "spacing": 24 },
+                  "grid": { "color": "#FAFAF7", "lineColor": "#E0E2E0", "spacing": 22 } }
+    },
+    "celestial": {
+      "name": "Celestial",
+      "tags": ["dark", "stars", "journal"],
+      "ink": "#EEE7D4", "soft": "#9AA3C2", "rule": "#3A4468", "accent": "#D9B44A",
+      "tab": "#252E52", "onAccent": "#1B2340", "paper": "#1B2340",
+      "second": "#8FA5E0",
+      "border": "double", "header": "plain", "motif": "stars", "serif": true,
+      "covers": ["#1B2340", "#2E2357", "#0F1428"],
+      "papers": { "dot":   { "color": "#1E2646", "lineColor": "#46527D", "spacing": 26 },
+                  "lined": { "color": "#1E2646", "lineColor": "#3D4870", "spacing": 32 } }
+    }
+  }
+}

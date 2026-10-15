@@ -1,8 +1,10 @@
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:notely/app/app.dart';
+import 'package:notely/core/input/finger_drawing.dart';
 import 'package:notely/core/skins/skin_manifest.dart';
 import 'package:notely/features/calendar/calendar_providers.dart';
 import 'package:notely/features/calendar/domain/event.dart';
@@ -74,11 +76,13 @@ void main() {
     Future<ProviderContainer> openPlanner(
       WidgetTester tester, {
       Size size = const Size(400, 800),
+      Map<String, Object> prefs = const {},
     }) async {
       await pumpApp(
         tester,
         skins,
         size: size,
+        prefs: prefs,
         overrides: [todayProvider.overrideWithValue(today)],
       );
       final container = ProviderScope.containerOf(
@@ -159,6 +163,55 @@ void main() {
           .first;
       expect(page, isNotNull);
     });
+
+    testWidgets("with the iPad set to Pencil-only, a finger on a day's page "
+        "scrolls instead of drawing", (tester) async {
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(
+            DevicePencilController.channel,
+            (call) async => true,
+          );
+      addTearDown(
+        () => TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+            .setMockMethodCallHandler(DevicePencilController.channel, null),
+      );
+      final container = await openPlanner(tester);
+      await tester.tap(find.text('Notes'));
+      await tester.pumpAndSettle();
+
+      final start = tester.getCenter(find.byType(PageCanvas));
+      final g = await tester.startGesture(start);
+      for (var i = 1; i <= 6; i++) {
+        await g.moveTo(start + Offset(0, -20.0 * i));
+        await tester.pump(const Duration(milliseconds: 16));
+      }
+      await g.up();
+      await tester.pumpAndSettle();
+      // Let the one-time hint finish showing.
+      await tester.pump(const Duration(seconds: 6));
+      await tester.pumpAndSettle();
+
+      final strokes = await container
+          .read(strokeRepositoryProvider)
+          .watchStrokes('planner-2026-10-14')
+          .first;
+      expect(strokes, isEmpty);
+      // The Pencil still writes there.
+      final pen = await tester.startGesture(
+        start,
+        kind: PointerDeviceKind.stylus,
+      );
+      await pen.moveBy(const Offset(60, 10));
+      await pen.up();
+      await tester.pumpAndSettle();
+      expect(
+        await container
+            .read(strokeRepositoryProvider)
+            .watchStrokes('planner-2026-10-14')
+            .first,
+        hasLength(1),
+      );
+    }, variant: TargetPlatformVariant.only(TargetPlatform.iOS));
 
     testWidgets('wide screens show the plan and the page side by side', (
       tester,

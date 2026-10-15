@@ -97,6 +97,12 @@ abstract interface class ShelfRepository {
   /// Sets positions in the custom shelf order.
   Future<void> setNotebookOrder(String notebookId, double order);
   Future<void> setGroupOrder(String groupId, double order);
+
+  Future<void> setStarred(String notebookId, bool starred);
+
+  /// Moves a notebook to the Trash, or ([trashed] false) back out of it.
+  /// Deleting it for good is [NotebookRepository.deleteNotebook].
+  Future<void> setTrashed(String notebookId, bool trashed);
 }
 
 /// Papers the user starred, shown first when choosing paper.

@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/motion/motion.dart';
+import '../../core/motion/strike_through.dart';
+
 import '../../shared/dialogs.dart';
 import '../notebooks/domain/notebook_models.dart' show notebookColors;
 import 'domain/task.dart';
@@ -516,7 +519,10 @@ class _QuickAddState extends ConsumerState<_QuickAdd> {
 }
 
 /// One task: tick it off, tap to edit, swipe to delete.
-class TaskTile extends ConsumerWidget {
+///
+/// Ticking a task off draws a line through it before it's saved, since
+/// saving moves it to Completed.
+class TaskTile extends ConsumerStatefulWidget {
   const TaskTile({
     required this.task,
     this.showList = false,
@@ -530,19 +536,54 @@ class TaskTile extends ConsumerWidget {
   final bool showList;
   final bool showDue;
 
-  void _toggle(WidgetRef ref, bool done) => ref
-      .read(taskRepositoryProvider)
-      .saveTask(
-        task.copyWith(
-          done: done,
-          completedAt: done ? DateTime.now().millisecondsSinceEpoch : null,
-          clearCompletedAt: !done,
-        ),
-      );
+  @override
+  ConsumerState<TaskTile> createState() => _TaskTileState();
+}
+
+class _TaskTileState extends ConsumerState<TaskTile>
+    with SingleTickerProviderStateMixin {
+  late final _strike = AnimationController(vsync: this);
+
+  /// True while the tick animation plays, before the task is saved.
+  bool _completing = false;
+
+  Task get task => widget.task;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void dispose() {
+    _strike.dispose();
+    super.dispose();
+  }
+
+  Future<void> _toggle(bool done) async {
+    final motion = Motion.of(context);
+    if (done && !motion.off) {
+      setState(() => _completing = true);
+      _strike.duration = motion.duration(MotionTokens.standard);
+      await _strike.forward(from: 0).orCancel.catchError((_) {});
+      if (!mounted) return;
+    }
+    await ref
+        .read(taskRepositoryProvider)
+        .saveTask(
+          task.copyWith(
+            done: done,
+            completedAt: done ? DateTime.now().millisecondsSinceEpoch : null,
+            clearCompletedAt: !done,
+          ),
+        );
+    if (mounted && _completing) {
+      setState(() => _completing = false);
+      _strike.value = 0;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final showList = widget.showList;
+    final showDue = widget.showDue;
+    final done = task.done || _completing;
     final today = ref.watch(todayProvider);
     final list = showList && task.listId != null
         ? ref
@@ -609,21 +650,35 @@ class TaskTile extends ConsumerWidget {
       },
       child: ListTile(
         leading: Checkbox(
-          value: task.done,
-          semanticLabel: task.done
+          value: done,
+          semanticLabel: done
               ? 'Mark ${task.title} not done'
               : 'Complete ${task.title}',
-          onChanged: (v) => _toggle(ref, v ?? false),
+          onChanged: _completing ? null : (v) => _toggle(v ?? false),
         ),
-        title: Text(
-          task.title,
-          style: task.done
-              ? TextStyle(
+        title: task.done
+            ? Text(
+                task.title,
+                style: TextStyle(
                   decoration: TextDecoration.lineThrough,
                   color: theme.colorScheme.outline,
-                )
-              : null,
-        ),
+                ),
+              )
+            : AnimatedBuilder(
+                animation: _strike,
+                builder: (context, _) => StrikeThroughText(
+                  text: task.title,
+                  progress: MotionTokens.move.transform(_strike.value),
+                  color: theme.colorScheme.outline,
+                  style: TextStyle(
+                    color: Color.lerp(
+                      theme.colorScheme.onSurface,
+                      theme.colorScheme.outline,
+                      _strike.value,
+                    ),
+                  ),
+                ),
+              ),
         subtitle: details.isEmpty
             ? null
             : Wrap(

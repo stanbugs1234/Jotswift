@@ -1,0 +1,16 @@
+{
+  "kind": "collection",
+  "name": "Coquette",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "pack_coquette"
+    ]
+  },
+  "tags": [
+    "pink",
+    "cute",
+    "bows"
+  ]
+}

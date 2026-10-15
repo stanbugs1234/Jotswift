@@ -35,7 +35,9 @@ void main() {
   }
 
   Future<void> newGroup(WidgetTester tester, String title) async {
-    await tester.tap(find.byTooltip('New group'));
+    await tester.tap(find.byTooltip('New'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Group'));
     await tester.pumpAndSettle();
     await confirmText(tester, title, 'Create');
   }
@@ -49,15 +51,17 @@ void main() {
   }
 
   String appBarTitle(WidgetTester tester) =>
-      (tester.widget<AppBar>(find.byType(AppBar).last).title! as Text).data!;
+      tester.widget<Text>(find.byKey(const Key('shelf-title')).last).data!;
 
   group('phone', () {
-    testWidgets('a category keeps its own notebooks; All shows everything', (
+    testWidgets('a category keeps its own notebooks; Home shows everything', (
       tester,
     ) async {
       await pumpApp(tester, skins);
       await newNotebook(tester, 'Ideas');
 
+      await tester.ensureVisible(find.byTooltip('New category'));
+      await tester.pumpAndSettle();
       await tester.tap(find.byTooltip('New category'));
       await tester.pumpAndSettle();
       await confirmText(tester, 'School', 'Create');
@@ -68,7 +72,9 @@ void main() {
       expect(find.text('Biology'), findsOneWidget);
       expect(find.text('Ideas'), findsNothing);
 
-      await tester.tap(find.widgetWithText(ChoiceChip, 'All'));
+      await tester.ensureVisible(find.widgetWithText(ChoiceChip, 'Home'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.widgetWithText(ChoiceChip, 'Home'));
       await tester.pumpAndSettle();
       expect(find.text('Biology'), findsOneWidget);
       expect(find.text('Ideas'), findsOneWidget);
@@ -96,7 +102,7 @@ void main() {
 
       await tester.tap(find.byType(BackButton));
       await tester.pumpAndSettle();
-      expect(appBarTitle(tester), 'Notebooks');
+      expect(appBarTitle(tester), 'Home');
     });
 
     testWidgets('deleting a group keeps its notebooks', (tester) async {
@@ -125,7 +131,7 @@ void main() {
       await tester.tap(find.widgetWithText(ChoiceChip, 'Recent'));
       await tester.pumpAndSettle();
       expect(find.text('Opened'), findsOneWidget);
-      expect(find.text('Opened today'), findsOneWidget);
+      expect(find.textContaining('Today, '), findsOneWidget);
     });
 
     testWidgets('the shelf can be shown as a list', (tester) async {
@@ -181,9 +187,7 @@ void main() {
       expect(find.byType(ChoiceChip), findsNothing);
     });
 
-    testWidgets('deleting the open category goes back to All notebooks', (
-      tester,
-    ) async {
+    testWidgets('deleting the open category goes back to Home', (tester) async {
       await pumpApp(tester, skins, size: tablet);
       await tester.tap(find.text('New category'));
       await tester.pumpAndSettle();
@@ -196,7 +200,7 @@ void main() {
       await tester.tap(find.widgetWithText(TextButton, 'Delete'));
       await tester.pumpAndSettle();
 
-      expect(appBarTitle(tester), 'Notebooks');
+      expect(appBarTitle(tester), 'Home');
       expect(find.widgetWithText(ListTile, 'Temp'), findsNothing);
     });
   });

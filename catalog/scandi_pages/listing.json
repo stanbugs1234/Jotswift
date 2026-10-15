@@ -1,0 +1,16 @@
+{
+  "kind": "template",
+  "name": "Scandi Minimal Pages",
+  "version": 1,
+  "unlock": {},
+  "collectionId": "scandi",
+  "category": "pages",
+  "tags": [
+    "minimal",
+    "grey",
+    "productivity",
+    "trackers",
+    "planning",
+    "study"
+  ]
+}

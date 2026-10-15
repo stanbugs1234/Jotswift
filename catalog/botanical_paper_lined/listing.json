@@ -1,0 +1,20 @@
+{
+  "kind": "paper",
+  "name": "Botanical Lined",
+  "version": 1,
+  "unlock": {},
+  "collectionId": "botanical",
+  "category": "papers",
+  "paper": {
+    "color": "#FBF8F1",
+    "lineColor": "#CFD8C8",
+    "marginColor": null,
+    "pattern": "lined",
+    "spacing": 32
+  },
+  "tags": [
+    "green",
+    "plants",
+    "calm"
+  ]
+}

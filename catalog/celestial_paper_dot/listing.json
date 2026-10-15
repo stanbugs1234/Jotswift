@@ -1,0 +1,20 @@
+{
+  "kind": "paper",
+  "name": "Celestial Dot",
+  "version": 1,
+  "unlock": {},
+  "collectionId": "celestial",
+  "category": "papers",
+  "paper": {
+    "color": "#1E2646",
+    "lineColor": "#46527D",
+    "marginColor": null,
+    "pattern": "dot",
+    "spacing": 26
+  },
+  "tags": [
+    "dark",
+    "stars",
+    "journal"
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "stickers": [
+    {
+      "file": "stickers/leaves_1.webp",
+      "name": "Leaves 1"
+    },
+    {
+      "file": "stickers/leaves_2.webp",
+      "name": "Leaves 2"
+    },
+    {
+      "file": "stickers/stars_1.webp",
+      "name": "Stars 1"
+    },
+    {
+      "file": "stickers/stars_2.webp",
+      "name": "Stars 2"
+    },
+    {
+      "file": "stickers/hearts_1.webp",
+      "name": "Hearts 1"
+    },
+    {
+      "file": "stickers/hearts_2.webp",
+      "name": "Hearts 2"
+    },
+    {
+      "file": "stickers/sun_1.webp",
+      "name": "Sun 1"
+    },
+    {
+      "file": "stickers/sun_2.webp",
+      "name": "Sun 2"
+    },
+    {
+      "file": "stickers/label_today.webp",
+      "name": "Today"
+    },
+    {
+      "file": "stickers/label_done.webp",
+      "name": "Done!"
+    },
+    {
+      "file": "stickers/label_important.webp",
+      "name": "Important"
+    },
+    {
+      "file": "stickers/label_yay.webp",
+      "name": "Yay"
+    },
+    {
+      "file": "stickers/label_due.webp",
+      "name": "Due"
+    },
+    {
+      "file": "stickers/label_remember.webp",
+      "name": "Remember"
+    }
+  ]
+}

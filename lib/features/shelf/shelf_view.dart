@@ -13,13 +13,21 @@ sealed class ShelfLocation {
   factory ShelfLocation.fromQuery(Map<String, String> query) {
     if (query['group'] case final id?) return InGroup(id);
     if (query['category'] case final id?) return InCategory(id);
-    if (query['view'] == 'recent') return const RecentNotebooks();
-    return const AllNotebooks();
+    return switch (query['view']) {
+      'recent' => const RecentNotebooks(),
+      'starred' => const StarredNotebooks(),
+      'unfiled' => const UnfiledNotebooks(),
+      'trash' => const TrashedNotebooks(),
+      _ => const AllNotebooks(),
+    };
   }
 
   String get path => switch (this) {
     AllNotebooks() => '/notebooks',
     RecentNotebooks() => '/notebooks?view=recent',
+    StarredNotebooks() => '/notebooks?view=starred',
+    UnfiledNotebooks() => '/notebooks?view=unfiled',
+    TrashedNotebooks() => '/notebooks?view=trash',
     InCategory(:final id) => '/notebooks?category=$id',
     InGroup(:final id) => '/notebooks?group=$id',
   };
@@ -28,7 +36,18 @@ sealed class ShelfLocation {
   ShelfPlace get place => switch (this) {
     InCategory(:final id) => (categoryId: id, groupId: null),
     InGroup(:final id) => (categoryId: null, groupId: id),
-    AllNotebooks() || RecentNotebooks() => unfiled,
+    AllNotebooks() ||
+    RecentNotebooks() ||
+    StarredNotebooks() ||
+    UnfiledNotebooks() ||
+    TrashedNotebooks() => unfiled,
+  };
+
+  /// Whether notebooks and groups can be made here. The lists that are
+  /// picked out of the rest (recent, starred, trash) can't.
+  bool get canCreate => switch (this) {
+    RecentNotebooks() || StarredNotebooks() || TrashedNotebooks() => false,
+    _ => true,
   };
 }
 
@@ -51,6 +70,39 @@ final class RecentNotebooks extends ShelfLocation {
 
   @override
   int get hashCode => 2;
+}
+
+/// Every starred notebook, wherever it is.
+final class StarredNotebooks extends ShelfLocation {
+  const StarredNotebooks();
+
+  @override
+  bool operator ==(Object other) => other is StarredNotebooks;
+
+  @override
+  int get hashCode => 5;
+}
+
+/// What isn't in any category.
+final class UnfiledNotebooks extends ShelfLocation {
+  const UnfiledNotebooks();
+
+  @override
+  bool operator ==(Object other) => other is UnfiledNotebooks;
+
+  @override
+  int get hashCode => 6;
+}
+
+/// Notebooks moved to the Trash, newest first.
+final class TrashedNotebooks extends ShelfLocation {
+  const TrashedNotebooks();
+
+  @override
+  bool operator ==(Object other) => other is TrashedNotebooks;
+
+  @override
+  int get hashCode => 7;
 }
 
 final class InCategory extends ShelfLocation {
@@ -103,18 +155,38 @@ class ShelfContents {
   bool get isEmpty => groups.isEmpty && notebooks.isEmpty;
 }
 
-/// Everything the shelf knows, with lookups used to lay it out.
+/// Everything the shelf knows, with lookups used to lay it out. Notebooks
+/// in the Trash show only under [TrashedNotebooks].
 class Shelf {
   Shelf(List<Notebook> notebooks, List<NotebookGroup> groups)
-    : _notebooks = notebooks,
+    : _notebooks = [
+        for (final n in notebooks)
+          if (!n.inTrash) n,
+      ],
+      _trashed = [
+        for (final n in notebooks)
+          if (n.inTrash) n,
+      ]..sort((a, b) => b.trashedAt!.compareTo(a.trashedAt!)),
       _groups = {for (final g in groups) g.id: g};
 
   final List<Notebook> _notebooks;
+  final List<Notebook> _trashed;
   final Map<String, NotebookGroup> _groups;
 
   static const recentLimit = 20;
 
+  /// Notebooks not in the Trash.
+  int get notebookCount => _notebooks.length;
+
+  int get trashCount => _trashed.length;
+
+  int get starredCount => _notebooks.where((n) => n.starred).length;
+
   NotebookGroup? group(String id) => _groups[id];
+
+  /// The category a notebook is in, directly or through its group.
+  String? categoryOfNotebook(Notebook n) =>
+      _notebookIsTopLevel(n) ? n.categoryId : categoryOfGroup(n.groupId!);
 
   /// A group's parent, or null at the top level. A parent that no longer
   /// exists counts as the top level, so nothing is ever lost.
@@ -132,6 +204,18 @@ class Shelf {
         final opened = _notebooks.where((n) => n.lastOpenedAt != null).toList()
           ..sort((a, b) => b.lastOpenedAt!.compareTo(a.lastOpenedAt!));
         return ShelfContents(const [], opened.take(recentLimit).toList());
+      case StarredNotebooks():
+        return _sorted(const [], _notebooks.where((n) => n.starred), sort);
+      case TrashedNotebooks():
+        return ShelfContents(const [], _trashed);
+      case UnfiledNotebooks():
+        return _sorted(
+          _groups.values.where((g) => _isTopLevel(g) && g.categoryId == null),
+          _notebooks.where(
+            (n) => _notebookIsTopLevel(n) && n.categoryId == null,
+          ),
+          sort,
+        );
       case AllNotebooks():
         return _sorted(
           _groups.values.where(_isTopLevel),
@@ -151,6 +235,17 @@ class Shelf {
           sort,
         );
     }
+  }
+
+  /// Notebooks (not in the Trash) whose title contains [query].
+  List<Notebook> search(String query) {
+    final q = query.trim().toLowerCase();
+    return _notebooks.where((n) => n.title.toLowerCase().contains(q)).toList()
+      ..sort(
+        (a, b) => (b.lastOpenedAt ?? b.updatedAt).compareTo(
+          a.lastOpenedAt ?? a.updatedAt,
+        ),
+      );
   }
 
   ShelfContents _sorted(
