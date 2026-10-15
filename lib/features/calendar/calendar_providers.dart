@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui' show Rect;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -141,6 +142,31 @@ class CalendarController extends Notifier<CalendarState> {
 
   void today() => select(ref.read(todayProvider));
 
+  /// Zooms into [mode] on [day], growing out of [from] (the tapped month
+  /// or day on screen, if known).
+  void zoomIn(CalendarMode mode, Day day, {Rect? from}) {
+    ref
+        .read(zoomOriginProvider.notifier)
+        .set(
+          from == null
+              ? null
+              : (inner: mode, period: periodOf(mode, day), rect: from),
+        );
+    select(day);
+    setMode(mode);
+  }
+
+  /// Zooms out a level: days to their month, a month to its year.
+  void zoomOut() {
+    final mode = state.mode;
+    final origin = ref.read(zoomOriginProvider);
+    if (origin != null &&
+        (origin.inner != mode || origin.period != periodOf(mode, state.day))) {
+      ref.read(zoomOriginProvider.notifier).set(null);
+    }
+    setMode(zoomLevel(mode) == 2 ? CalendarMode.month : CalendarMode.year);
+  }
+
   /// Moves a month, week or day forward ([step] 1) or back (-1).
   void move(int step) {
     final d = state.day;
@@ -165,6 +191,37 @@ class CalendarController extends Notifier<CalendarState> {
 
 final calendarProvider = NotifierProvider<CalendarController, CalendarState>(
   CalendarController.new,
+);
+
+/// How far in a view is: the year 0, a month 1, days 2.
+int zoomLevel(CalendarMode mode) => switch (mode) {
+  CalendarMode.year => 0,
+  CalendarMode.month => 1,
+  _ => 2,
+};
+
+/// The period a view shows around [day], for telling whether the user has
+/// moved since zooming in.
+Day periodOf(CalendarMode mode, Day day) => switch (mode) {
+  CalendarMode.year => Day(day.year, 1, 1),
+  CalendarMode.month => day.firstOfMonth,
+  _ => day,
+};
+
+/// Where the last zoom in started on screen (global coordinates): the
+/// tapped month or day. Zooming back out returns the view to it, unless
+/// the user has since moved to another period.
+typedef ZoomOrigin = ({CalendarMode inner, Day period, Rect rect});
+
+class ZoomOriginController extends Notifier<ZoomOrigin?> {
+  @override
+  ZoomOrigin? build() => null;
+
+  void set(ZoomOrigin? origin) => state = origin;
+}
+
+final zoomOriginProvider = NotifierProvider<ZoomOriginController, ZoomOrigin?>(
+  ZoomOriginController.new,
 );
 
 /// The first day of the week containing [day], with weeks starting on

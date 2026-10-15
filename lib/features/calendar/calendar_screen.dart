@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/motion/directional_switcher.dart';
+import '../../core/motion/zoom_switcher.dart';
 import '../planner/planner_screen.dart' show openPlannerDay;
 import '../tasks/task_providers.dart' show todayProvider;
 import 'calendar_providers.dart';
@@ -42,12 +43,14 @@ class CalendarScreen extends ConsumerWidget {
       CalendarMode.year => YearView(
         key: ValueKey(day.year),
         year: day.year,
-        onMonth: (month, _) => ref
+        onMonth: (month, rect) => ref
             .read(calendarProvider.notifier)
-            .openMonth(
+            .zoomIn(
+              CalendarMode.month,
               month.year == today.year && month.month == today.month
                   ? today
                   : month,
+              from: rect,
             ),
       ),
       CalendarMode.month => MonthView(focus: day),
@@ -97,6 +100,14 @@ class CalendarScreen extends ConsumerWidget {
     final day = state.day;
     return Scaffold(
       appBar: AppBar(
+        // Back out to the month, then the year.
+        leading: zoomLevel(state.mode) > 0
+            ? IconButton(
+                tooltip: 'Zoom out',
+                icon: const Icon(Icons.zoom_out),
+                onPressed: controller.zoomOut,
+              )
+            : null,
         title: Text(title),
         actions: [
           if (state.mode == CalendarMode.day && !narrow)
@@ -208,16 +219,29 @@ class CalendarScreen extends ConsumerWidget {
       // Swipe sideways to move a month, week or day.
       body: _WithCalendarsPanel(
         show: showPanel,
-        child: GestureDetector(
-          onHorizontalDragEnd: (details) {
-            final v = details.primaryVelocity ?? 0;
-            if (v.abs() > 300) controller.move(v < 0 ? 1 : -1);
+        child: _PinchToZoom(
+          onZoomIn: () => switch (state.mode) {
+            CalendarMode.year => controller.zoomIn(CalendarMode.month, day),
+            CalendarMode.month => controller.zoomIn(CalendarMode.day, day),
+            _ => null,
           },
-          child: DirectionalSwitcher<Day>(
-            // Switching between Month, Week and Day replaces the view.
-            key: ValueKey(state.mode),
-            position: period,
-            child: body,
+          onZoomOut: zoomLevel(state.mode) > 0 ? controller.zoomOut : null,
+          child: GestureDetector(
+            onHorizontalDragEnd: (details) {
+              final v = details.primaryVelocity ?? 0;
+              if (v.abs() > 300) controller.move(v < 0 ? 1 : -1);
+            },
+            // Changing view zooms in or out; moving within a view slides.
+            child: ZoomSwitcher(
+              view: state.mode,
+              level: zoomLevel(state.mode),
+              origin: ref.watch(zoomOriginProvider)?.rect,
+              child: DirectionalSwitcher<Day>(
+                key: ValueKey(state.mode),
+                position: period,
+                child: body,
+              ),
+            ),
           ),
         ),
       ),
@@ -245,4 +269,69 @@ class _WithCalendarsPanel extends StatelessWidget {
             Expanded(child: child),
           ],
         );
+}
+
+/// Two-finger pinch: spreading zooms in a level, pinching zooms out. Uses
+/// raw pointers so one-finger swipes and scrolling still work as before.
+class _PinchToZoom extends StatefulWidget {
+  const _PinchToZoom({
+    required this.child,
+    required this.onZoomIn,
+    required this.onZoomOut,
+  });
+
+  final Widget child;
+  final VoidCallback onZoomIn;
+  final VoidCallback? onZoomOut;
+
+  @override
+  State<_PinchToZoom> createState() => _PinchToZoomState();
+}
+
+class _PinchToZoomState extends State<_PinchToZoom> {
+  final _points = <int, Offset>{};
+  double? _startSpan;
+  var _done = false;
+
+  double get _span {
+    final p = _points.values.take(2).toList();
+    return (p[0] - p[1]).distance;
+  }
+
+  void _down(PointerDownEvent e) {
+    _points[e.pointer] = e.position;
+    if (_points.length == 2) {
+      _startSpan = _span;
+      _done = false;
+    }
+  }
+
+  void _move(PointerMoveEvent e) {
+    if (!_points.containsKey(e.pointer)) return;
+    _points[e.pointer] = e.position;
+    final start = _startSpan;
+    if (_points.length != 2 || start == null || start < 1 || _done) return;
+    final ratio = _span / start;
+    if (ratio > 1.35) {
+      _done = true;
+      widget.onZoomIn();
+    } else if (ratio < 0.7 && widget.onZoomOut != null) {
+      _done = true;
+      widget.onZoomOut!();
+    }
+  }
+
+  void _up(PointerEvent e) {
+    _points.remove(e.pointer);
+    if (_points.length < 2) _startSpan = null;
+  }
+
+  @override
+  Widget build(BuildContext context) => Listener(
+    onPointerDown: _down,
+    onPointerMove: _move,
+    onPointerUp: _up,
+    onPointerCancel: _up,
+    child: widget.child,
+  );
 }

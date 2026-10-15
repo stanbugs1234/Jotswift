@@ -96,7 +96,19 @@ class _MonthGrid extends ConsumerWidget {
             '${events.length} ${events.length == 1 ? 'event' : 'events'}',
         excludeSemantics: true,
         child: InkWell(
-          onTap: () => ref.read(calendarProvider.notifier).select(day),
+          // A second tap on the chosen day zooms into it.
+          onTap: () {
+            final calendar = ref.read(calendarProvider.notifier);
+            if (!selected) return calendar.select(day);
+            final box = context.findRenderObject();
+            calendar.zoomIn(
+              CalendarMode.day,
+              day,
+              from: box is RenderBox
+                  ? box.localToGlobal(Offset.zero) & box.size
+                  : null,
+            );
+          },
           child: Container(
             decoration: BoxDecoration(
               color: selected

@@ -188,5 +188,47 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Past'), findsOneWidget);
     });
+
+    testWidgets('tapping the chosen day zooms in; zoom out goes back up', (
+      tester,
+    ) async {
+      await open(tester);
+      // Today is chosen; a second tap opens it.
+      await tester.tap(
+        find.bySemanticsLabel('Wednesday, October 14, 2026, 0 events'),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Wednesday, October 14, 2026'), findsOneWidget);
+
+      await tester.tap(find.byTooltip('Zoom out'));
+      await tester.pumpAndSettle();
+      expect(find.text('October 2026'), findsOneWidget);
+      await tester.tap(find.byTooltip('Zoom out'));
+      await tester.pumpAndSettle();
+      expect(find.text('2026'), findsWidgets);
+      expect(find.byTooltip('Zoom out'), findsNothing);
+    });
+
+    testWidgets('spreading two fingers zooms from the year into a month', (
+      tester,
+    ) async {
+      await open(tester);
+      await tester.tap(find.text('Year'));
+      await tester.pumpAndSettle();
+      final center = tester.getCenter(find.byType(GridView));
+      final a = await tester.startGesture(center - const Offset(20, 0));
+      final b = await tester.startGesture(
+        center + const Offset(20, 0),
+        pointer: 2,
+      );
+      for (var i = 1; i <= 5; i++) {
+        await a.moveTo(center - Offset(20.0 + i * 20, 0));
+        await b.moveTo(center + Offset(20.0 + i * 20, 0));
+      }
+      await a.up();
+      await b.up();
+      await tester.pumpAndSettle();
+      expect(find.text('October 2026'), findsOneWidget);
+    });
   });
 }
