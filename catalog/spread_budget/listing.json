@@ -1,0 +1,20 @@
+{
+  "kind": "template",
+  "name": "Budget Planner (undated)",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "planner_spread_budget"
+    ]
+  },
+  "category": "spreads",
+  "tags": [
+    "budget",
+    "money",
+    "savings",
+    "debt",
+    "undated",
+    "spreads"
+  ]
+}

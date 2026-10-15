@@ -36,6 +36,36 @@
         { "tab": "Simple", "title": "Simple days", "pages": [{ "layout": "plan.day_simple", "repeat": 10, "title": "Simple day {n}" }] },
         { "tab": "Notes", "pages": ["notes.lined", "notes.dotted"] }
       ]
+    },
+    "spread_budget": {
+      "name": "Budget Planner (undated)",
+      "short": "Budget Planner",
+      "price": "2.99",
+      "tags": ["budget", "money", "savings", "debt", "undated", "spreads"],
+      "unlock": { "pro": true, "products": ["planner_spread_budget"] },
+      "sections": [
+        { "tab": "Budget", "title": "Monthly budget", "pages": [{ "layout": "money.budget", "repeat": 12, "title": "Budget {n}" }] },
+        { "tab": "Spending", "pages": [{ "layout": "money.expenses", "repeat": 12, "title": "Expenses {n}" }] },
+        { "tab": "Bills", "pages": ["money.bills", "money.subscriptions"] },
+        { "tab": "Saving", "pages": ["money.savings", "money.funds"] },
+        { "tab": "Debt", "pages": ["money.debt"] },
+        { "tab": "Year", "pages": ["money.year_money"] },
+        { "tab": "Notes", "pages": ["notes.lined"] }
+      ]
+    },
+    "spread_habits": {
+      "name": "Habit Tracker Planner (undated)",
+      "short": "Habit Tracker",
+      "price": "1.99",
+      "tags": ["habits", "mood", "sleep", "water", "undated", "spreads"],
+      "unlock": { "pro": true, "products": ["planner_spread_habits"] },
+      "sections": [
+        { "tab": "Circle", "title": "Circle tracker", "pages": [{ "layout": "habits.circle_tracker", "repeat": 12, "title": "Circle {n}" }] },
+        { "tab": "Grid", "title": "Habit grid", "pages": [{ "layout": "habits.habit_month", "repeat": 12, "title": "Habits {n}" }] },
+        { "tab": "Mood", "pages": ["habits.mood_year"] },
+        { "tab": "Sleep", "title": "Sleep & water", "pages": [{ "layout": "habits.sleep_water", "repeat": 12, "title": "Sleep & water {n}" }] },
+        { "tab": "Notes", "pages": ["notes.lined"] }
+      ]
     }
   }
 }

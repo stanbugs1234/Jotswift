@@ -1,0 +1,208 @@
+{
+  "mode": "notebook",
+  "sections": [
+    {
+      "title": "Index",
+      "pages": [
+        {
+          "pdfPage": 1,
+          "title": "Index"
+        }
+      ]
+    },
+    {
+      "title": "Circle tracker",
+      "pages": [
+        {
+          "pdfPage": 2,
+          "title": "Circle 1"
+        },
+        {
+          "pdfPage": 3,
+          "title": "Circle 2"
+        },
+        {
+          "pdfPage": 4,
+          "title": "Circle 3"
+        },
+        {
+          "pdfPage": 5,
+          "title": "Circle 4"
+        },
+        {
+          "pdfPage": 6,
+          "title": "Circle 5"
+        },
+        {
+          "pdfPage": 7,
+          "title": "Circle 6"
+        },
+        {
+          "pdfPage": 8,
+          "title": "Circle 7"
+        },
+        {
+          "pdfPage": 9,
+          "title": "Circle 8"
+        },
+        {
+          "pdfPage": 10,
+          "title": "Circle 9"
+        },
+        {
+          "pdfPage": 11,
+          "title": "Circle 10"
+        },
+        {
+          "pdfPage": 12,
+          "title": "Circle 11"
+        },
+        {
+          "pdfPage": 13,
+          "title": "Circle 12"
+        }
+      ]
+    },
+    {
+      "title": "Habit grid",
+      "pages": [
+        {
+          "pdfPage": 14,
+          "title": "Habits 1"
+        },
+        {
+          "pdfPage": 15,
+          "title": "Habits 2"
+        },
+        {
+          "pdfPage": 16,
+          "title": "Habits 3"
+        },
+        {
+          "pdfPage": 17,
+          "title": "Habits 4"
+        },
+        {
+          "pdfPage": 18,
+          "title": "Habits 5"
+        },
+        {
+          "pdfPage": 19,
+          "title": "Habits 6"
+        },
+        {
+          "pdfPage": 20,
+          "title": "Habits 7"
+        },
+        {
+          "pdfPage": 21,
+          "title": "Habits 8"
+        },
+        {
+          "pdfPage": 22,
+          "title": "Habits 9"
+        },
+        {
+          "pdfPage": 23,
+          "title": "Habits 10"
+        },
+        {
+          "pdfPage": 24,
+          "title": "Habits 11"
+        },
+        {
+          "pdfPage": 25,
+          "title": "Habits 12"
+        }
+      ]
+    },
+    {
+      "title": "Mood",
+      "pages": [
+        {
+          "pdfPage": 26,
+          "title": "Year in moods"
+        }
+      ]
+    },
+    {
+      "title": "Sleep & water",
+      "pages": [
+        {
+          "pdfPage": 27,
+          "title": "Sleep & water 1"
+        },
+        {
+          "pdfPage": 28,
+          "title": "Sleep & water 2"
+        },
+        {
+          "pdfPage": 29,
+          "title": "Sleep & water 3"
+        },
+        {
+          "pdfPage": 30,
+          "title": "Sleep & water 4"
+        },
+        {
+          "pdfPage": 31,
+          "title": "Sleep & water 5"
+        },
+        {
+          "pdfPage": 32,
+          "title": "Sleep & water 6"
+        },
+        {
+          "pdfPage": 33,
+          "title": "Sleep & water 7"
+        },
+        {
+          "pdfPage": 34,
+          "title": "Sleep & water 8"
+        },
+        {
+          "pdfPage": 35,
+          "title": "Sleep & water 9"
+        },
+        {
+          "pdfPage": 36,
+          "title": "Sleep & water 10"
+        },
+        {
+          "pdfPage": 37,
+          "title": "Sleep & water 11"
+        },
+        {
+          "pdfPage": 38,
+          "title": "Sleep & water 12"
+        }
+      ]
+    },
+    {
+      "title": "Notes",
+      "pages": [
+        {
+          "pdfPage": 39,
+          "title": "Lined notes"
+        }
+      ]
+    }
+  ],
+  "variants": [
+    {
+      "name": "Classic",
+      "file": "template.pdf",
+      "color": "#2C3E66"
+    },
+    {
+      "name": "Pastel",
+      "file": "template_pastel.pdf",
+      "color": "#7E6AAE"
+    },
+    {
+      "name": "Neutral",
+      "file": "template_neutral.pdf",
+      "color": "#7A6552"
+    }
+  ]
+}

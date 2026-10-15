@@ -1,0 +1,190 @@
+{
+  "mode": "notebook",
+  "sections": [
+    {
+      "title": "Index",
+      "pages": [
+        {
+          "pdfPage": 1,
+          "title": "Index"
+        }
+      ]
+    },
+    {
+      "title": "Monthly budget",
+      "pages": [
+        {
+          "pdfPage": 2,
+          "title": "Budget 1"
+        },
+        {
+          "pdfPage": 3,
+          "title": "Budget 2"
+        },
+        {
+          "pdfPage": 4,
+          "title": "Budget 3"
+        },
+        {
+          "pdfPage": 5,
+          "title": "Budget 4"
+        },
+        {
+          "pdfPage": 6,
+          "title": "Budget 5"
+        },
+        {
+          "pdfPage": 7,
+          "title": "Budget 6"
+        },
+        {
+          "pdfPage": 8,
+          "title": "Budget 7"
+        },
+        {
+          "pdfPage": 9,
+          "title": "Budget 8"
+        },
+        {
+          "pdfPage": 10,
+          "title": "Budget 9"
+        },
+        {
+          "pdfPage": 11,
+          "title": "Budget 10"
+        },
+        {
+          "pdfPage": 12,
+          "title": "Budget 11"
+        },
+        {
+          "pdfPage": 13,
+          "title": "Budget 12"
+        }
+      ]
+    },
+    {
+      "title": "Spending",
+      "pages": [
+        {
+          "pdfPage": 14,
+          "title": "Expenses 1"
+        },
+        {
+          "pdfPage": 15,
+          "title": "Expenses 2"
+        },
+        {
+          "pdfPage": 16,
+          "title": "Expenses 3"
+        },
+        {
+          "pdfPage": 17,
+          "title": "Expenses 4"
+        },
+        {
+          "pdfPage": 18,
+          "title": "Expenses 5"
+        },
+        {
+          "pdfPage": 19,
+          "title": "Expenses 6"
+        },
+        {
+          "pdfPage": 20,
+          "title": "Expenses 7"
+        },
+        {
+          "pdfPage": 21,
+          "title": "Expenses 8"
+        },
+        {
+          "pdfPage": 22,
+          "title": "Expenses 9"
+        },
+        {
+          "pdfPage": 23,
+          "title": "Expenses 10"
+        },
+        {
+          "pdfPage": 24,
+          "title": "Expenses 11"
+        },
+        {
+          "pdfPage": 25,
+          "title": "Expenses 12"
+        }
+      ]
+    },
+    {
+      "title": "Bills",
+      "pages": [
+        {
+          "pdfPage": 26,
+          "title": "Bills"
+        },
+        {
+          "pdfPage": 27,
+          "title": "Subscriptions"
+        }
+      ]
+    },
+    {
+      "title": "Saving",
+      "pages": [
+        {
+          "pdfPage": 28,
+          "title": "Savings"
+        },
+        {
+          "pdfPage": 29,
+          "title": "Sinking funds"
+        }
+      ]
+    },
+    {
+      "title": "Debt",
+      "pages": [
+        {
+          "pdfPage": 30,
+          "title": "Debt payoff"
+        }
+      ]
+    },
+    {
+      "title": "Year",
+      "pages": [
+        {
+          "pdfPage": 31,
+          "title": "Year in money"
+        }
+      ]
+    },
+    {
+      "title": "Notes",
+      "pages": [
+        {
+          "pdfPage": 32,
+          "title": "Lined notes"
+        }
+      ]
+    }
+  ],
+  "variants": [
+    {
+      "name": "Classic",
+      "file": "template.pdf",
+      "color": "#2C3E66"
+    },
+    {
+      "name": "Pastel",
+      "file": "template_pastel.pdf",
+      "color": "#7E6AAE"
+    },
+    {
+      "name": "Neutral",
+      "file": "template_neutral.pdf",
+      "color": "#7A6552"
+    }
+  ]
+}
