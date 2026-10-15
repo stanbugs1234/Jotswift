@@ -106,6 +106,7 @@ class CatalogItem {
     this.paper,
     this.templateMode,
     this.pageCount,
+    this._previewPath,
   });
 
   /// Reads a listing. Returns null if it's missing what every item needs.
@@ -139,6 +140,11 @@ class CatalogItem {
         _ => null,
       },
       pageCount: map['pageCount'] as int?,
+      // Collections have a preview but no pack.
+      previewPath: switch (map['files']) {
+        {'preview': final String path} => path,
+        _ => null,
+      },
     );
   }
 
@@ -171,6 +177,11 @@ class CatalogItem {
 
   /// Templates: how many PDF pages it has.
   final int? pageCount;
+
+  final String? _previewPath;
+
+  /// Storage path of the item's small preview image, if it has one.
+  String? get previewPath => _previewPath ?? files?.preview;
 
   /// Whether this app version can use the item at all.
   bool get isReadable =>

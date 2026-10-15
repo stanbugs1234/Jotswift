@@ -138,8 +138,8 @@ def check(item_id):
     for p in products:
         need(isinstance(p, str) and PRODUCT.match(p), f"product id '{p}' must look like pack_<name>, bundle_<name> or planner_<name>")
     need(
-        unlock.get("free") or unlock.get("pro") or products,
-        "unlock must say how to get it: free, pro or products",
+        unlock.get("free") or unlock.get("pro") or products or listing.get("collectionId"),
+        "unlock must say how to get it: free, pro, products or a collectionId",
     )
 
     kind = listing.get("kind")
@@ -216,10 +216,19 @@ def check(item_id):
             if not problems:
                 # Faint is good, invisible is not.
                 need(contrast(paper["color"], paper["lineColor"]) >= 1.15, "paper.lineColor is too close to paper.color to see")
-    elif kind in KINDS:
-        problems.append(f"{kind} items can't be published yet")
+    elif kind == "collection":
+        need((folder / "preview.webp").exists(), "preview.webp is missing")
+        need(not listing.get("collectionId"), "a collection can't be inside another collection")
 
-    if kind in ("cover", "stickers", "template") and (folder / "preview.webp").exists():
+    collection_id = listing.get("collectionId")
+    if collection_id:
+        try:
+            _, collection = load(collection_id)
+            need(collection.get("kind") == "collection", f"collectionId '{collection_id}' is not a collection")
+        except CheckError:
+            problems.append(f"collectionId '{collection_id}' has no catalog/{collection_id}/listing.json")
+
+    if kind in ("cover", "stickers", "template", "collection") and (folder / "preview.webp").exists():
         with Image.open(folder / "preview.webp") as im:
             need(im.format == "WEBP", "preview.webp must be a WebP image")
             need(im.size[0] <= MAX_PREVIEW_WIDTH, f"preview.webp must be at most {MAX_PREVIEW_WIDTH} px wide")
@@ -308,6 +317,27 @@ def upload(path, data, content_type):
     request("POST", url, data, content_type)
 
 
+def unlock_of(listing):
+    """How an item unlocks. An item in a collection also unlocks with the
+    collection's products (and with Pro if the collection is in Pro), so
+    the app and the Storage rules only ever look at the item itself.
+    Republish a collection's items after changing its products."""
+    own = listing.get("unlock", {})
+    unlock = {
+        "free": bool(own.get("free")),
+        "pro": bool(own.get("pro")),
+        "products": list(own.get("products", [])),
+    }
+    if listing.get("collectionId"):
+        _, collection = load(listing["collectionId"])
+        theirs = collection.get("unlock", {})
+        unlock["pro"] = unlock["pro"] or bool(theirs.get("pro"))
+        for p in theirs.get("products", []):
+            if p not in unlock["products"]:
+                unlock["products"].append(p)
+    return unlock
+
+
 def publish(item_id, visibility, dry_run):
     listing = check(item_id)
     folder = CATALOG / item_id
@@ -319,11 +349,7 @@ def publish(item_id, visibility, dry_run):
         "name": listing["name"],
         "version": version,
         "format": listing.get("format", 1),
-        "unlock": {
-            "free": bool(listing.get("unlock", {}).get("free")),
-            "pro": bool(listing.get("unlock", {}).get("pro")),
-            "products": listing.get("unlock", {}).get("products", []),
-        },
+        "unlock": unlock_of(listing),
         "visibility": visibility,
         "category": listing.get("category"),
         "tags": listing.get("tags", []),
@@ -347,6 +373,10 @@ def publish(item_id, visibility, dry_run):
         }
 
     uploads = []
+    if kind == "collection":
+        preview = f"catalog/{item_id}/{version}/preview.webp"
+        doc["files"] = {"preview": preview}
+        uploads = [(preview, (folder / "preview.webp").read_bytes(), "image/webp")]
     if kind in PACKED_KINDS:
         pack = build_pack(folder, kind)
         base = f"catalog/{item_id}/{version}"

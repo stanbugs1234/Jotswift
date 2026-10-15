@@ -1,0 +1,15 @@
+{
+  "api_version": "1.0",
+  "event": {
+    "type": "EXPIRATION",
+    "id": "A1B2C3D4-E5F6-4789-90AB-CDEF01234504",
+    "app_user_id": "uid_sam",
+    "original_app_user_id": "uid_sam",
+    "product_id": "pro_yearly",
+    "entitlement_ids": ["pro"],
+    "expiration_reason": "UNSUBSCRIBE",
+    "expiration_at_ms": 1792540800000,
+    "environment": "SANDBOX",
+    "store": "APP_STORE"
+  }
+}

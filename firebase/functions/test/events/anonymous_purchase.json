@@ -1,0 +1,11 @@
+{
+  "api_version": "1.0",
+  "event": {
+    "type": "NON_RENEWING_PURCHASE",
+    "id": "C3D4E5F6-A7B8-4901-B2C3-D4E5F6A70806",
+    "app_user_id": "$RCAnonymousID:8e1f2a",
+    "product_id": "pack_botanical",
+    "environment": "SANDBOX",
+    "store": "APP_STORE"
+  }
+}

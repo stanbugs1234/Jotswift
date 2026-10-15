@@ -13,6 +13,8 @@ import '../features/shelf/shelf_view.dart';
 import '../features/skins/sample_pages.dart';
 import '../features/skins/skin_detail_screen.dart';
 import '../features/skins/skin_picker_screen.dart';
+import '../features/store/store_item_screen.dart';
+import '../features/store/store_screen.dart';
 import 'shell.dart';
 
 const signInPath = '/sign-in';
@@ -77,6 +79,17 @@ final routerProvider = Provider<GoRouter>((ref) {
           _tab('/planner', 'Planner', SamplePageKind.planner, 'Phase 3'),
           _tab('/calendar', 'Calendar', SamplePageKind.calendar, 'Phase 3'),
           _tab('/todo', 'To-do', SamplePageKind.todo, 'Phase 3'),
+        ],
+      ),
+      GoRoute(
+        path: storePath,
+        builder: (context, state) => const StoreScreen(),
+        routes: [
+          GoRoute(
+            path: ':id',
+            builder: (context, state) =>
+                StoreItemScreen(itemId: state.pathParameters['id']!),
+          ),
         ],
       ),
       GoRoute(

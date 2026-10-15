@@ -120,7 +120,9 @@ void main() {
       final background = Theme.of(tester.element(find.byType(Scaffold).last))
           .scaffoldBackgroundColor;
 
-      await tester.tap(find.byTooltip('Notebook styles'));
+      await tester.tap(find.byTooltip('Settings'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Notebook style'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Pastel'));
       await tester.pumpAndSettle();
@@ -129,10 +131,10 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('In use'), findsOneWidget);
-      await tester.pageBack();
-      await tester.pumpAndSettle();
-      await tester.pageBack();
-      await tester.pumpAndSettle();
+      for (var i = 0; i < 3; i++) {
+        await tester.pageBack();
+        await tester.pumpAndSettle();
+      }
       expect(await sampleStyle(tester), 'pastel');
       expect(
         Theme.of(tester.element(find.byType(Scaffold).last))
@@ -152,7 +154,9 @@ void main() {
     ) async {
       await pumpApp(tester, skins);
 
-      await tester.tap(find.byTooltip('Notebook styles'));
+      await tester.tap(find.byTooltip('Settings'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Notebook style'));
       await tester.pumpAndSettle();
       await tester.ensureVisible(find.text('Botanical'));
       await tester.pumpAndSettle();
@@ -177,7 +181,9 @@ void main() {
     testWidgets('the preview switches between page types', (tester) async {
       await pumpApp(tester, skins);
 
-      await tester.tap(find.byTooltip('Notebook styles'));
+      await tester.tap(find.byTooltip('Settings'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Notebook style'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Kraft Paper'));
       await tester.pumpAndSettle();

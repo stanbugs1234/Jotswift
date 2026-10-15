@@ -99,7 +99,7 @@ class PackCache {
 
   /// The preview image of [item], or null if it has none.
   Future<Uint8List?> preview(CatalogItem item) async {
-    final path = item.files?.preview;
+    final path = item.previewPath;
     if (path == null) return null;
     return _previews[path] ??= _download
         .download(path, maxBytes: maxPreviewBytes)

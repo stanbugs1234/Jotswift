@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../app/shell.dart';
 import '../notebooks/domain/notebook_models.dart';
 import '../notebooks/notes_providers.dart';
+import '../store/store_screen.dart';
 import 'cover_view.dart';
 import 'shelf_actions.dart';
 import 'shelf_prefs.dart';
@@ -78,9 +79,9 @@ class ShelfScreen extends ConsumerWidget {
             ),
           const _ViewMenu(),
           IconButton(
-            tooltip: 'Notebook styles',
-            icon: const Icon(Icons.palette_outlined),
-            onPressed: () => context.push('/settings/skins'),
+            tooltip: 'Templates',
+            icon: const Icon(Icons.storefront_outlined),
+            onPressed: () => context.push(storePath),
           ),
           IconButton(
             tooltip: 'Settings',

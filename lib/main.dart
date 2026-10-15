@@ -13,6 +13,8 @@ import 'core/catalog/catalog_providers.dart';
 import 'core/catalog/catalog_repository.dart';
 import 'core/catalog/pack_cache.dart';
 import 'core/catalog/pack_disk.dart';
+import 'core/purchases/purchases_providers.dart';
+import 'core/purchases/revenuecat_purchases.dart';
 import 'core/settings/user_settings_repository.dart';
 import 'core/skins/skin_providers.dart';
 import 'core/skins/skin_repository.dart';
@@ -75,6 +77,7 @@ Future<List<Override>> _backendOverrides() async {
     catalogRepositoryProvider.overrideWithValue(
       FirestoreCatalogRepository(firestore),
     ),
+    purchasesClientProvider.overrideWithValue(createPurchasesClient()),
     packCacheProvider.overrideWithValue(
       PackCache(
         FirebasePackDownloader(FirebaseStorage.instance),

@@ -1,0 +1,11 @@
+{
+  "api_version": "1.0",
+  "event": {
+    "type": "TRANSFER",
+    "id": "B2C3D4E5-F6A7-4890-A1B2-C3D4E5F60705",
+    "transferred_from": ["uid_old", "$RCAnonymousID:8e1f2a"],
+    "transferred_to": ["uid_new"],
+    "environment": "SANDBOX",
+    "store": "APP_STORE"
+  }
+}

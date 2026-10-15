@@ -1,0 +1,15 @@
+{
+  "api_version": "1.0",
+  "event": {
+    "type": "CANCELLATION",
+    "id": "7F1E2D3C-4B5A-4968-8776-5A4B3C2D1E03",
+    "app_user_id": "uid_sam",
+    "original_app_user_id": "uid_sam",
+    "product_id": "pack_botanical",
+    "cancel_reason": "CUSTOMER_SUPPORT",
+    "environment": "SANDBOX",
+    "store": "APP_STORE",
+    "price": -2.99,
+    "currency": "USD"
+  }
+}

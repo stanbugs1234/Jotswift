@@ -23,6 +23,10 @@ abstract interface class UserSettingsRepository {
 
   /// Whether the account is marked as a tester. Only the server sets this.
   Stream<bool> watchTester(String uid);
+
+  /// The account's `entitlements` map (what it has bought), or null. Only
+  /// the server sets this. Timestamps arrive as [DateTime]s.
+  Stream<Map<String, Object?>?> watchEntitlements(String uid);
 }
 
 class FirestoreUserSettingsRepository implements UserSettingsRepository {
@@ -40,6 +44,17 @@ class FirestoreUserSettingsRepository implements UserSettingsRepository {
   @override
   Stream<bool> watchTester(String uid) =>
       _doc(uid).snapshots().map((snap) => snap.data()?['tester'] == true);
+
+  @override
+  Stream<Map<String, Object?>?> watchEntitlements(String uid) =>
+      _doc(uid).snapshots().map((snap) {
+        final map = snap.data()?['entitlements'];
+        if (map is! Map) return null;
+        return {
+          for (final MapEntry(:key, :value) in map.entries)
+            '$key': value is Timestamp ? value.toDate() : value,
+        };
+      });
 
   @override
   Future<void> set(String uid, String key, String value) => _doc(uid).set({
@@ -71,6 +86,24 @@ class InMemoryUserSettingsRepository implements UserSettingsRepository {
   void setTester(String uid, {required bool tester}) {
     tester ? _testers.add(uid) : _testers.remove(uid);
     _changes.add((uid, 'tester'));
+  }
+
+  final _entitlements = <String, Map<String, Object?>>{};
+
+  /// Sets what [uid] has bought, as the server would.
+  void setEntitlements(String uid, Map<String, Object?>? entitlements) {
+    entitlements == null
+        ? _entitlements.remove(uid)
+        : _entitlements[uid] = entitlements;
+    _changes.add((uid, 'entitlements'));
+  }
+
+  @override
+  Stream<Map<String, Object?>?> watchEntitlements(String uid) async* {
+    yield _entitlements[uid];
+    yield* _changes.stream
+        .where((k) => k == (uid, 'entitlements'))
+        .map((_) => _entitlements[uid]);
   }
 
   @override

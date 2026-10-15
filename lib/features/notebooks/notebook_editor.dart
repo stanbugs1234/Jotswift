@@ -20,9 +20,17 @@ import 'paper_picker.dart';
 /// Size and orientation can only be chosen for a new notebook: ink is saved
 /// in page units, so changing them later would move it.
 class NotebookEditor extends ConsumerStatefulWidget {
-  const NotebookEditor({required this.initial, this.editing, super.key});
+  const NotebookEditor({
+    required this.initial,
+    this.editing,
+    this.template,
+    super.key,
+  });
 
   final NewNotebook initial;
+
+  /// The planner a new notebook starts with, if one was already chosen.
+  final CatalogItem? template;
 
   /// The notebook being changed, or null for a new one.
   final Notebook? editing;
@@ -31,10 +39,15 @@ class NotebookEditor extends ConsumerStatefulWidget {
     BuildContext context, {
     required NewNotebook initial,
     Notebook? editing,
+    CatalogItem? template,
   }) => Navigator.of(context, rootNavigator: true).push<NotebookEditorResult>(
     MaterialPageRoute(
       fullscreenDialog: true,
-      builder: (context) => NotebookEditor(initial: initial, editing: editing),
+      builder: (context) => NotebookEditor(
+        initial: initial,
+        editing: editing,
+        template: template,
+      ),
     ),
   );
 
@@ -51,7 +64,7 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
   late String? _styleId = widget.initial.collectionId;
 
   /// The planner the new notebook starts from, or null for blank pages.
-  CatalogItem? _template;
+  late CatalogItem? _template = widget.template;
   bool _saving = false;
 
   @override

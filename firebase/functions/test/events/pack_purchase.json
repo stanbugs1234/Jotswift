@@ -1,0 +1,17 @@
+{
+  "api_version": "1.0",
+  "event": {
+    "type": "NON_RENEWING_PURCHASE",
+    "id": "0B8A8E9B-1F0B-4C38-9E5B-6E2F4A1D2C02",
+    "app_user_id": "uid_sam",
+    "original_app_user_id": "uid_sam",
+    "product_id": "pack_botanical",
+    "entitlement_ids": null,
+    "purchased_at_ms": 1791936000000,
+    "expiration_at_ms": null,
+    "environment": "SANDBOX",
+    "store": "APP_STORE",
+    "price": 2.99,
+    "currency": "USD"
+  }
+}

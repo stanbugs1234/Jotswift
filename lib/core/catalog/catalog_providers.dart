@@ -57,6 +57,15 @@ final offeredCatalogProvider = Provider.family<List<CatalogItem>, CatalogKind>((
   ];
 });
 
+/// Every item offered to this user, used or not, for the store.
+final storeCatalogProvider = Provider<List<CatalogItem>>((ref) {
+  final tester = ref.watch(isTesterProvider).value ?? false;
+  return [
+    for (final item in ref.watch(catalogProvider).value ?? const [])
+      if (item.isOffered(isTester: tester)) item,
+  ];
+});
+
 /// The listing with [id], or null if it isn't in the catalog.
 final catalogItemProvider = Provider.family<CatalogItem?, String>(
   (ref, id) =>

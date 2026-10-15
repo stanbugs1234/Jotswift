@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/catalog/catalog_item.dart';
+import '../../core/entitlements/feature_gate.dart';
+import '../../core/paper/paper_style.dart';
 import '../../core/skins/skin_providers.dart';
 import '../../shared/dialogs.dart';
 import '../notebooks/domain/notebook_models.dart';
 import '../canvas/templates.dart';
 import '../notebooks/notebook_editor.dart';
 import '../notebooks/notes_providers.dart';
+import '../store/paywall.dart';
 import 'shelf_view.dart';
 
 /// The shelf as it is now (empty while loading).
@@ -16,28 +20,48 @@ Shelf currentShelf(WidgetRef ref) => Shelf(
   ref.read(groupsProvider).value ?? const [],
 );
 
+/// Makes a notebook at [location], starting the editor with [cover],
+/// [paper] or [template] when given (from the store). Free accounts at the
+/// notebook limit see the Pro paywall first.
 Future<void> createNotebookAt(
   BuildContext context,
   WidgetRef ref,
-  ShelfLocation location,
-) async {
+  ShelfLocation location, {
+  NotebookCover? cover,
+  PaperStyle? paper,
+  CatalogItem? template,
+}) async {
+  if (!ref.read(canCreateNotebookProvider)) {
+    final pro = await showPaywall(
+      context,
+      ref,
+      reason:
+          'Free accounts have up to $freeNotebookLimit notebooks. Get '
+          'Notely Pro for as many as you like.',
+    );
+    if (!pro || !context.mounted) return;
+  }
   final count = ref.read(notebooksProvider).value?.length ?? 0;
   final result = await NotebookEditor.show(
     context,
     initial: NewNotebook(
       title: '',
-      cover: NotebookCover.color(notebookColors[count % notebookColors.length]),
+      cover:
+          cover ??
+          NotebookCover.color(notebookColors[count % notebookColors.length]),
+      paper: paper,
       collectionId: ref.read(activeSkinProvider).id,
       place: location.place,
     ),
+    template: template,
   );
   if (result == null || !context.mounted) return;
-  final template = result.template;
-  final notebook = template == null
+  final planner = result.template;
+  final notebook = planner == null
       ? await ref
             .read(notebookRepositoryProvider)
             .createNotebook(result.notebook)
-      : await ref.read(createFromTemplateProvider)(result.notebook, template);
+      : await ref.read(createFromTemplateProvider)(result.notebook, planner);
   if (context.mounted) await context.push('/notebooks/${notebook.id}');
 }
 

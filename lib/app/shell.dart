@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../features/notebooks/notes_providers.dart';
 import '../features/shelf/shelf_actions.dart';
 import '../features/shelf/shelf_view.dart';
+import '../features/store/store_screen.dart';
 
 /// Width breakpoints for the three layouts.
 abstract final class Breakpoints {
@@ -223,6 +224,12 @@ class _Sidebar extends ConsumerWidget {
                   selected: branch == i,
                   onTap: () => onBranch(i),
                 ),
+              item(
+                'Templates',
+                Icons.storefront_outlined,
+                selected: false,
+                onTap: () => context.push(storePath),
+              ),
               item(
                 'Settings',
                 Icons.settings_outlined,

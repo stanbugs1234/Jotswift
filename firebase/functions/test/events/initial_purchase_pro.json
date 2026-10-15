@@ -1,0 +1,19 @@
+{
+  "api_version": "1.0",
+  "event": {
+    "type": "INITIAL_PURCHASE",
+    "id": "CD489E0E-5D52-4E47-A1C5-1A5B0E3A5B01",
+    "app_user_id": "uid_sam",
+    "original_app_user_id": "uid_sam",
+    "aliases": ["uid_sam"],
+    "product_id": "pro_yearly",
+    "entitlement_ids": ["pro"],
+    "period_type": "TRIAL",
+    "purchased_at_ms": 1791936000000,
+    "expiration_at_ms": 1792540800000,
+    "environment": "SANDBOX",
+    "store": "APP_STORE",
+    "price": 0,
+    "currency": "USD"
+  }
+}

@@ -17,7 +17,7 @@ individually as well as through Pro, and templates are PDFs.
 | 5 | Catalog and downloads (free items only) ✅ | L | — |
 | 6 | Stickers ✅ | M | Sticker art (placeholder pack published) |
 | 7 | PDF templates and dated planners ✅ | L | Planner designs (a generated 2027 planner is published) |
-| 8 | Store and purchases | L | App Store Connect, Play Console, RevenueCat and Stripe accounts and products |
+| 8 | Store and purchases ✅ (switched on once accounts exist) | L | App Store Connect, Play Console, RevenueCat and Stripe accounts and products: see [store-setup.md](store-setup.md) |
 | 9 | Clean-up and docs | S | — |
 
 ---
@@ -157,34 +157,57 @@ The editor saves a concrete paper and style, so later changes to the default sty
 - **Sharpness when zoomed:** template pages don't re-render sharper on zoom. They're drawn once at 1600 px, which gets soft beyond about 2x.
 - **PDF import** (the user's own PDFs) reuses all of this, but still needs a file picker and upload. It stays in Phase 5.
 
-## Milestone 8: Store and purchases
+## Milestone 8: Store and purchases ✅
 
-**You need to set up first** (I'll write the step-by-step):
-1. App Store Connect: Paid Apps agreement, banking and tax; Family Sharing decision; products.
-2. Google Play Console: merchant account and products.
-3. A RevenueCat project with the App Store, Play Store and Web Billing (Stripe); a `pro` entitlement; webhook to the Cloud Function.
-4. Firebase on the Blaze plan (needed for Cloud Functions; also for Storage in milestone 4).
+Built and tested. It switches on when a build has a RevenueCat key. Until then the store shows "Coming soon", nothing can be bought, and there's no notebook limit. [store-setup.md](store-setup.md) is the step-by-step guide for your accounts.
 
 **App**
-- New dependency: `purchases_flutter`. RevenueCat is configured at sign-in with the Firebase uid.
-- `lib/core/entitlements/` ([entitlements.dart](../lib/core/entitlements/entitlements.dart)):
-  - reads `users/{uid}.entitlements` and merges RevenueCat's latest receipt
-  - `canUse(CatalogItem)` implements the rules in skins-plan.md §7
-  - `FeatureGate` for Pro features (notebook limit of 3 on free)
-- **Templates screen** (`lib/features/store/`), in the sidebar:
-  - sections for Planners, Journals, Study, Papers, Covers, Stickers, Collections, Pro and Owned
-  - an item page with previews, **Try it** (sample page with the item, without saving), and Buy or Use
-- **Paywall** for Pro, with yearly first and the 7-day trial.
-- **Restore Purchases** on the Templates screen and in Settings.
-- Locked items: anything already used stays visible, and only new use is blocked.
+- **New dependency:** `purchases_flutter`.
+- **`lib/core/purchases/`:**
+  - `PurchasesClient` covers prices, buying, restoring and the device receipt.
+  - `RevenueCatPurchases` implements it with the RevenueCat SDK, and `UnavailablePurchases` is used when there's no key.
+  - Keys come from `--dart-define=REVENUECAT_APPLE_KEY` (plus `_GOOGLE_` and `_WEB_`).
+  - The RevenueCat user is the Firebase uid.
+- **`lib/core/entitlements/`:**
+  - `Entitlements` reads `users/{uid}.entitlements` (`pro`, `proUntil`, `products`, `grants`) and merges the device receipt, so a purchase unlocks at once.
+  - `feature_gate.dart` limits free accounts to 3 notebooks.
+- **Collections:** `tool/catalog.py` copies a collection's products and Pro into each of its items when publishing. That way the app and the Storage rules only check the item itself.
+- **The Templates screen** (`lib/features/store/`):
+  - Sections: Planners, Journals, Study, Collections, Page templates, Covers, Papers and Stickers.
+  - Filters: All, Free, Pro and Yours.
+  - A Pro banner, and Restore purchases.
+  - Reached from the sidebar, the shelf's app bar and Settings.
+- **Item page:**
+  - Shows a preview, what the item is, and which collection it belongs to.
+  - A locked item has Buy (with the price from the store) and *Included in Notely Pro*.
+  - An unlocked item has Use: a new notebook with the planner, cover or paper, or a hint for page templates and stickers.
+  - "Try it" is a preview image for now. A page to write on without saving would need a scratch notebook, and can come later.
+- **The paywall:**
+  - Yearly first with the 7-day trial, then monthly, plus Restore.
+  - It closes itself when Pro arrives.
+  - It opens when a free account at the notebook limit taps New notebook.
+- **Settings:** Notely Pro, Templates and Restore purchases.
+- **Locked items:** pages and notebooks keep whatever they already use, and only new use is blocked.
 
 **Firebase**
-- New `firebase/functions/` (TypeScript): a `revenuecatWebhook` function that checks RevenueCat's secret header and updates `users/{uid}.entitlements` for purchases, refunds and subscription changes. It's tested with recorded RevenueCat events in the emulator.
+- **`firebase/functions/`** (TypeScript) holds `revenuecatWebhook`.
+  - It checks the Authorization header with a constant-time comparison.
+  - On any event it reads the customer from RevenueCat's API and rewrites `pro`, `proUntil` and `products`, leaving `grants` alone. Repeated, late or out-of-order events, refunds, expiry and transfers are all handled by that one path.
+  - Anonymous RevenueCat ids are ignored.
 - The Firestore rules already block the app from writing `entitlements`.
 
-**On the iPad:** a sandbox purchase of a pack and of Pro, a restore, a refund and an expired subscription.
+**Tests**
+- 14 function tests:
+  - the unlock maths
+  - recorded RevenueCat events (Pro trial, pack purchase and refund, expiry, transfer, anonymous purchase) run against the Firestore emulator
+- 17 app tests:
+  - every unlock rule
+  - account plus receipt
+  - store sign-in and sign-out
+  - the notebook limit
+  - the store, buy, cancel, Pro, restore, and the store before it opens, all with a fake store
 
-**Tests:** every unlock rule in skins-plan.md §7, the feature gate, the webhook function, and the store flow with a fake purchases client.
+**Still to do on the iPad, once the accounts exist:** a sandbox purchase of a pack and of Pro, a restore, a refund and an expired subscription.
 
 ---
 

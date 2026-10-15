@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/entitlements/entitlements.dart';
+import '../../core/purchases/purchases_providers.dart';
 import '../../core/settings/appearance.dart';
 import '../../core/skins/skin_providers.dart';
 import '../auth/auth_repository.dart';
+import '../store/paywall.dart';
+import '../store/store_actions.dart';
+import '../store/store_screen.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -75,6 +80,31 @@ class SettingsScreen extends ConsumerWidget {
             trailing: const Icon(Icons.chevron_right),
             onTap: () => context.push('/settings/skins'),
           ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.auto_awesome_outlined),
+            title: const Text('Notely Pro'),
+            subtitle: Text(
+              ref.watch(entitlementsProvider).pro
+                  ? 'You have Pro'
+                  : 'Unlimited notebooks and everything marked Pro',
+            ),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => showPaywall(context, ref),
+          ),
+          ListTile(
+            leading: const Icon(Icons.storefront_outlined),
+            title: const Text('Templates'),
+            subtitle: const Text('Planners, covers, papers and stickers'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push(storePath),
+          ),
+          if (ref.watch(purchasesClientProvider).isAvailable)
+            ListTile(
+              leading: const Icon(Icons.restore),
+              title: const Text('Restore purchases'),
+              onTap: () => restorePurchases(context, ref),
+            ),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.logout),
