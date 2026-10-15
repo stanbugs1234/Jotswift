@@ -1,0 +1,20 @@
+{
+  "kind": "paper",
+  "name": "Dark Academia Lined",
+  "version": 1,
+  "unlock": {},
+  "collectionId": "dark_academia",
+  "category": "papers",
+  "paper": {
+    "color": "#F4EAD7",
+    "lineColor": "#D3C2A6",
+    "marginColor": null,
+    "pattern": "lined",
+    "spacing": 30
+  },
+  "tags": [
+    "study",
+    "vintage",
+    "serif"
+  ]
+}

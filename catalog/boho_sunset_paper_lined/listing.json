@@ -1,0 +1,20 @@
+{
+  "kind": "paper",
+  "name": "Boho Sunset Lined",
+  "version": 1,
+  "unlock": {},
+  "collectionId": "boho_sunset",
+  "category": "papers",
+  "paper": {
+    "color": "#FCF4EA",
+    "lineColor": "#E6CDB7",
+    "marginColor": null,
+    "pattern": "lined",
+    "spacing": 32
+  },
+  "tags": [
+    "warm",
+    "terracotta",
+    "trackers"
+  ]
+}

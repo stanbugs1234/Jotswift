@@ -1,0 +1,20 @@
+{
+  "kind": "paper",
+  "name": "Botanical Dot",
+  "version": 1,
+  "unlock": {},
+  "collectionId": "botanical",
+  "category": "papers",
+  "paper": {
+    "color": "#FBF8F1",
+    "lineColor": "#B9C6AF",
+    "marginColor": null,
+    "pattern": "dot",
+    "spacing": 26
+  },
+  "tags": [
+    "green",
+    "plants",
+    "calm"
+  ]
+}

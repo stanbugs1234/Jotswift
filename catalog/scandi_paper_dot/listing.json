@@ -1,0 +1,20 @@
+{
+  "kind": "paper",
+  "name": "Scandi Minimal Dot",
+  "version": 1,
+  "unlock": {},
+  "collectionId": "scandi",
+  "category": "papers",
+  "paper": {
+    "color": "#FAFAF7",
+    "lineColor": "#C9CDCB",
+    "marginColor": null,
+    "pattern": "dot",
+    "spacing": 24
+  },
+  "tags": [
+    "minimal",
+    "grey",
+    "productivity"
+  ]
+}

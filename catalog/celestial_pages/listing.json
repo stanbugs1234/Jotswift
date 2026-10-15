@@ -1,0 +1,16 @@
+{
+  "kind": "template",
+  "name": "Celestial Pages",
+  "version": 1,
+  "unlock": {},
+  "collectionId": "celestial",
+  "category": "pages",
+  "tags": [
+    "dark",
+    "stars",
+    "journal",
+    "trackers",
+    "planning",
+    "study"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "kind": "paper",
+  "name": "Boho Sunset Dot",
+  "version": 1,
+  "unlock": {},
+  "collectionId": "boho_sunset",
+  "category": "papers",
+  "paper": {
+    "color": "#FCF4EA",
+    "lineColor": "#D9B89C",
+    "marginColor": null,
+    "pattern": "dot",
+    "spacing": 26
+  },
+  "tags": [
+    "warm",
+    "terracotta",
+    "trackers"
+  ]
+}

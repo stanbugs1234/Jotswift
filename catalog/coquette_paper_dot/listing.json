@@ -1,0 +1,20 @@
+{
+  "kind": "paper",
+  "name": "Coquette Dot",
+  "version": 1,
+  "unlock": {},
+  "collectionId": "coquette",
+  "category": "papers",
+  "paper": {
+    "color": "#FFF8FA",
+    "lineColor": "#E6B6C7",
+    "marginColor": null,
+    "pattern": "dot",
+    "spacing": 24
+  },
+  "tags": [
+    "pink",
+    "cute",
+    "bows"
+  ]
+}

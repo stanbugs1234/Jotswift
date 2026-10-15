@@ -1,0 +1,16 @@
+{
+  "kind": "collection",
+  "name": "Celestial",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "pack_celestial"
+    ]
+  },
+  "tags": [
+    "dark",
+    "stars",
+    "journal"
+  ]
+}

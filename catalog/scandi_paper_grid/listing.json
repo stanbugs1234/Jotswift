@@ -1,0 +1,20 @@
+{
+  "kind": "paper",
+  "name": "Scandi Minimal Grid",
+  "version": 1,
+  "unlock": {},
+  "collectionId": "scandi",
+  "category": "papers",
+  "paper": {
+    "color": "#FAFAF7",
+    "lineColor": "#E0E2E0",
+    "marginColor": null,
+    "pattern": "grid",
+    "spacing": 22
+  },
+  "tags": [
+    "minimal",
+    "grey",
+    "productivity"
+  ]
+}
