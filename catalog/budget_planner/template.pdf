@@ -364,7 +364,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 792 612] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 8 0 R /Annots [65 0 R 66 0 R 67 0 R 68 0 R 69 0 R 70 0 R 71 0 R 72 0 R 73 0 R 74 0 R 75 0 R 76 0 R 77 0 R 78 0 R 79 0 R 80 0 R] >>
 endobj
 8 0 obj
-<< /Length 14515 >>
+<< /Length 14509 >>
 stream
 1.000 0.995 0.980 rg
 0.0 0.0 792.0 612.0 re f
@@ -687,207 +687,207 @@ BT /F2 9 Tf 28.0 157.0 Td (Notes) Tj ET
 0.330 0.240 0.170 rg
 BT /F2 9 Tf 404.0 537.0 Td (Income) Tj ET
 0.950 0.920 0.860 rg
-404.0 519.4 360.0 12.6 re f
+404.0 518.5 360.0 13.5 re f
 0.470 0.410 0.350 rg
-BT /F1 6.5 Tf 408.0 523.4 Td (Source) Tj ET
+BT /F1 6.5 Tf 408.0 522.5 Td (Source) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 551.2 523.4 Td (Budget) Tj ET
+BT /F2 7 Tf 551.2 522.5 Td (Budget) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 632.9 523.4 Td (Actual) Tj ET
+BT /F2 7 Tf 632.9 522.5 Td (Actual) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 707.7 523.4 Td (Difference) Tj ET
+BT /F2 7 Tf 707.7 522.5 Td (Difference) Tj ET
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 510.8 Td (Wages / Tips) Tj ET
+BT /F1 7.5 Tf 408.0 509.0 Td (Wages / Tips) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 506.8 m 764.0 506.8 l S
+0.5 w 404.0 505.0 m 764.0 505.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 498.2 Td (Wages / Tips) Tj ET
+BT /F1 7.5 Tf 408.0 495.5 Td (Wages / Tips) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 494.2 m 764.0 494.2 l S
+0.5 w 404.0 491.5 m 764.0 491.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 485.6 Td (Side income) Tj ET
+BT /F1 7.5 Tf 408.0 482.0 Td (Side income) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 481.6 m 764.0 481.6 l S
+0.5 w 404.0 478.0 m 764.0 478.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 473.0 Td (Interest) Tj ET
+BT /F1 7.5 Tf 408.0 468.5 Td (Interest) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 469.0 m 764.0 469.0 l S
+0.5 w 404.0 464.5 m 764.0 464.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 460.4 Td (Dividends) Tj ET
+BT /F1 7.5 Tf 408.0 455.0 Td (Dividends) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 456.4 m 764.0 456.4 l S
+0.5 w 404.0 451.0 m 764.0 451.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 447.8 Td (Gifts) Tj ET
+BT /F1 7.5 Tf 408.0 441.5 Td (Gifts) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 443.8 m 764.0 443.8 l S
+0.5 w 404.0 437.5 m 764.0 437.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 435.2 Td (Reimbursements) Tj ET
+BT /F1 7.5 Tf 408.0 428.0 Td (Reimbursements) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 431.2 m 764.0 431.2 l S
+0.5 w 404.0 424.0 m 764.0 424.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 422.6 Td (Transfers) Tj ET
+BT /F1 7.5 Tf 408.0 414.5 Td (Transfers) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 418.6 m 764.0 418.6 l S
+0.5 w 404.0 410.5 m 764.0 410.5 l S
 0.950 0.920 0.860 rg
-404.0 406.0 360.0 12.6 re f
+404.0 397.0 360.0 13.5 re f
 0.170 0.140 0.110 rg
-BT /F2 7.5 Tf 408.0 410.0 Td (Total) Tj ET
+BT /F2 7.5 Tf 408.0 401.0 Td (Total) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 406.0 m 764.0 406.0 l S
+0.5 w 404.0 397.0 m 764.0 397.0 l S
 0.760 0.710 0.630 RG
 0.8 w
-404.0 406.0 360.0 126.0 re S
+404.0 397.0 360.0 135.0 re S
 0.760 0.710 0.630 RG
-0.6 w 522.0 532.0 m 522.0 406.0 l S
+0.6 w 522.0 532.0 m 522.0 397.0 l S
 0.760 0.710 0.630 RG
-0.5 w 602.7 532.0 m 602.7 406.0 l S
+0.5 w 602.7 532.0 m 602.7 397.0 l S
 0.760 0.710 0.630 RG
-0.5 w 683.3 532.0 m 683.3 406.0 l S
+0.5 w 683.3 532.0 m 683.3 397.0 l S
 0.330 0.240 0.170 rg
-BT /F2 9 Tf 404.0 393.0 Td (Expenses) Tj ET
+BT /F2 9 Tf 404.0 384.0 Td (Expenses) Tj ET
 0.470 0.410 0.350 rg
-BT /F1 7 Tf 453.0 393.0 Td (home) Tj ET
+BT /F1 7 Tf 453.0 384.0 Td (home) Tj ET
 0.950 0.920 0.860 rg
-404.0 375.4 360.0 12.6 re f
+404.0 365.5 360.0 13.5 re f
 0.470 0.410 0.350 rg
-BT /F1 6.5 Tf 408.0 379.4 Td (Bill) Tj ET
+BT /F1 6.5 Tf 408.0 369.5 Td (Bill) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 551.2 379.4 Td (Budget) Tj ET
+BT /F2 7 Tf 551.2 369.5 Td (Budget) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 632.9 379.4 Td (Actual) Tj ET
+BT /F2 7 Tf 632.9 369.5 Td (Actual) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 707.7 379.4 Td (Difference) Tj ET
+BT /F2 7 Tf 707.7 369.5 Td (Difference) Tj ET
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 366.8 Td (Mortgage / Rent) Tj ET
+BT /F1 7.5 Tf 408.0 356.0 Td (Mortgage / Rent) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 362.8 m 764.0 362.8 l S
+0.5 w 404.0 352.0 m 764.0 352.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 354.2 Td (Auto) Tj ET
+BT /F1 7.5 Tf 408.0 342.5 Td (Auto) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 350.2 m 764.0 350.2 l S
+0.5 w 404.0 338.5 m 764.0 338.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 341.6 Td (Electricity) Tj ET
-0.760 0.710 0.630 RG
-0.5 w 404.0 337.6 m 764.0 337.6 l S
-0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 329.0 Td (Heating / Cooling) Tj ET
+BT /F1 7.5 Tf 408.0 329.0 Td (Electricity) Tj ET
 0.760 0.710 0.630 RG
 0.5 w 404.0 325.0 m 764.0 325.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 316.4 Td (Water / Sewer / Trash) Tj ET
+BT /F1 7.5 Tf 408.0 315.5 Td (Heating / Cooling) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 312.4 m 764.0 312.4 l S
+0.5 w 404.0 311.5 m 764.0 311.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 303.8 Td (Phone / Internet / TV) Tj ET
+BT /F1 7.5 Tf 408.0 302.0 Td (Water / Sewer / Trash) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 299.8 m 764.0 299.8 l S
+0.5 w 404.0 298.0 m 764.0 298.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 291.2 Td (Maintenance / Repairs) Tj ET
+BT /F1 7.5 Tf 408.0 288.5 Td (Phone / Internet / TV) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 287.2 m 764.0 287.2 l S
+0.5 w 404.0 284.5 m 764.0 284.5 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 408.0 275.0 Td (Maintenance / Repairs) Tj ET
+0.760 0.710 0.630 RG
+0.5 w 404.0 271.0 m 764.0 271.0 l S
 0.950 0.920 0.860 rg
-404.0 274.6 360.0 12.6 re f
+404.0 257.5 360.0 13.5 re f
 0.170 0.140 0.110 rg
-BT /F2 7.5 Tf 408.0 278.6 Td (Total) Tj ET
+BT /F2 7.5 Tf 408.0 261.5 Td (Total) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 274.6 m 764.0 274.6 l S
+0.5 w 404.0 257.5 m 764.0 257.5 l S
 0.760 0.710 0.630 RG
 0.8 w
-404.0 274.6 360.0 113.4 re S
+404.0 257.5 360.0 121.5 re S
 0.760 0.710 0.630 RG
-0.6 w 522.0 388.0 m 522.0 274.6 l S
+0.6 w 522.0 379.0 m 522.0 257.5 l S
 0.760 0.710 0.630 RG
-0.5 w 602.7 388.0 m 602.7 274.6 l S
+0.5 w 602.7 379.0 m 602.7 257.5 l S
 0.760 0.710 0.630 RG
-0.5 w 683.3 388.0 m 683.3 274.6 l S
+0.5 w 683.3 379.0 m 683.3 257.5 l S
 0.330 0.240 0.170 rg
-BT /F2 9 Tf 404.0 261.6 Td (Expenses) Tj ET
+BT /F2 9 Tf 404.0 244.5 Td (Expenses) Tj ET
 0.470 0.410 0.350 rg
-BT /F1 7 Tf 453.0 261.6 Td (daily) Tj ET
+BT /F1 7 Tf 453.0 244.5 Td (daily) Tj ET
 0.950 0.920 0.860 rg
-404.0 244.0 360.0 12.6 re f
+404.0 226.0 360.0 13.5 re f
 0.470 0.410 0.350 rg
-BT /F1 6.5 Tf 408.0 248.0 Td (Item) Tj ET
+BT /F1 6.5 Tf 408.0 230.0 Td (Item) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 551.2 248.0 Td (Budget) Tj ET
+BT /F2 7 Tf 551.2 230.0 Td (Budget) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 632.9 248.0 Td (Actual) Tj ET
+BT /F2 7 Tf 632.9 230.0 Td (Actual) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 707.7 248.0 Td (Difference) Tj ET
+BT /F2 7 Tf 707.7 230.0 Td (Difference) Tj ET
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 235.4 Td (Groceries) Tj ET
+BT /F1 7.5 Tf 408.0 216.5 Td (Groceries) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 231.4 m 764.0 231.4 l S
+0.5 w 404.0 212.5 m 764.0 212.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 222.8 Td (Personal care) Tj ET
+BT /F1 7.5 Tf 408.0 203.0 Td (Personal care) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 218.8 m 764.0 218.8 l S
+0.5 w 404.0 199.0 m 764.0 199.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 210.2 Td (Clothing) Tj ET
+BT /F1 7.5 Tf 408.0 189.5 Td (Clothing) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 206.2 m 764.0 206.2 l S
+0.5 w 404.0 185.5 m 764.0 185.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 197.6 Td (Entertainment) Tj ET
+BT /F1 7.5 Tf 408.0 176.0 Td (Entertainment) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 193.6 m 764.0 193.6 l S
+0.5 w 404.0 172.0 m 764.0 172.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 185.0 Td (Dining out) Tj ET
+BT /F1 7.5 Tf 408.0 162.5 Td (Dining out) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 181.0 m 764.0 181.0 l S
+0.5 w 404.0 158.5 m 764.0 158.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 172.4 Td (Medical) Tj ET
+BT /F1 7.5 Tf 408.0 149.0 Td (Medical) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 168.4 m 764.0 168.4 l S
+0.5 w 404.0 145.0 m 764.0 145.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 159.8 Td (Fitness / Health) Tj ET
+BT /F1 7.5 Tf 408.0 135.5 Td (Fitness / Health) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 155.8 m 764.0 155.8 l S
+0.5 w 404.0 131.5 m 764.0 131.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 147.2 Td (Auto / Life / Home insurance) Tj ET
-0.760 0.710 0.630 RG
-0.5 w 404.0 143.2 m 764.0 143.2 l S
-0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 134.6 Td (Education) Tj ET
-0.760 0.710 0.630 RG
-0.5 w 404.0 130.6 m 764.0 130.6 l S
-0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 122.0 Td (Charity / Donations / Gifts) Tj ET
+BT /F1 7.5 Tf 408.0 122.0 Td (Auto / Life / Home insurance) Tj ET
 0.760 0.710 0.630 RG
 0.5 w 404.0 118.0 m 764.0 118.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 109.4 Td (Pets) Tj ET
+BT /F1 7.5 Tf 408.0 108.5 Td (Education) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 105.4 m 764.0 105.4 l S
+0.5 w 404.0 104.5 m 764.0 104.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 96.8 Td (Vacation / Travel) Tj ET
+BT /F1 7.5 Tf 408.0 95.0 Td (Charity / Donations / Gifts) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 92.8 m 764.0 92.8 l S
+0.5 w 404.0 91.0 m 764.0 91.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 84.2 Td (Debt payments) Tj ET
+BT /F1 7.5 Tf 408.0 81.5 Td (Pets) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 80.2 m 764.0 80.2 l S
+0.5 w 404.0 77.5 m 764.0 77.5 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 408.0 68.0 Td (Vacation / Travel) Tj ET
+0.760 0.710 0.630 RG
+0.5 w 404.0 64.0 m 764.0 64.0 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 408.0 54.5 Td (Debt payments) Tj ET
+0.760 0.710 0.630 RG
+0.5 w 404.0 50.5 m 764.0 50.5 l S
 0.950 0.920 0.860 rg
-404.0 67.6 360.0 12.6 re f
+404.0 37.0 360.0 13.5 re f
 0.170 0.140 0.110 rg
-BT /F2 7.5 Tf 408.0 71.6 Td (Total) Tj ET
+BT /F2 7.5 Tf 408.0 41.0 Td (Total) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 67.6 m 764.0 67.6 l S
+0.5 w 404.0 37.0 m 764.0 37.0 l S
 0.760 0.710 0.630 RG
 0.8 w
-404.0 67.6 360.0 189.0 re S
+404.0 37.0 360.0 202.5 re S
 0.760 0.710 0.630 RG
-0.6 w 522.0 256.6 m 522.0 67.6 l S
+0.6 w 522.0 239.5 m 522.0 37.0 l S
 0.760 0.710 0.630 RG
-0.5 w 602.7 256.6 m 602.7 67.6 l S
+0.5 w 602.7 239.5 m 602.7 37.0 l S
 0.760 0.710 0.630 RG
-0.5 w 683.3 256.6 m 683.3 67.6 l S
+0.5 w 683.3 239.5 m 683.3 37.0 l S
 endstream
 endobj
 9 0 obj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 792 612] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 10 0 R /Annots [81 0 R 82 0 R 83 0 R 84 0 R 85 0 R 86 0 R 87 0 R 88 0 R 89 0 R 90 0 R 91 0 R 92 0 R 93 0 R 94 0 R 95 0 R 96 0 R] >>
 endobj
 10 0 obj
-<< /Length 14516 >>
+<< /Length 14510 >>
 stream
 1.000 0.995 0.980 rg
 0.0 0.0 792.0 612.0 re f
@@ -1210,207 +1210,207 @@ BT /F2 9 Tf 28.0 157.0 Td (Notes) Tj ET
 0.330 0.240 0.170 rg
 BT /F2 9 Tf 404.0 537.0 Td (Income) Tj ET
 0.950 0.920 0.860 rg
-404.0 519.4 360.0 12.6 re f
+404.0 518.5 360.0 13.5 re f
 0.470 0.410 0.350 rg
-BT /F1 6.5 Tf 408.0 523.4 Td (Source) Tj ET
+BT /F1 6.5 Tf 408.0 522.5 Td (Source) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 551.2 523.4 Td (Budget) Tj ET
+BT /F2 7 Tf 551.2 522.5 Td (Budget) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 632.9 523.4 Td (Actual) Tj ET
+BT /F2 7 Tf 632.9 522.5 Td (Actual) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 707.7 523.4 Td (Difference) Tj ET
+BT /F2 7 Tf 707.7 522.5 Td (Difference) Tj ET
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 510.8 Td (Wages / Tips) Tj ET
+BT /F1 7.5 Tf 408.0 509.0 Td (Wages / Tips) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 506.8 m 764.0 506.8 l S
+0.5 w 404.0 505.0 m 764.0 505.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 498.2 Td (Wages / Tips) Tj ET
+BT /F1 7.5 Tf 408.0 495.5 Td (Wages / Tips) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 494.2 m 764.0 494.2 l S
+0.5 w 404.0 491.5 m 764.0 491.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 485.6 Td (Side income) Tj ET
+BT /F1 7.5 Tf 408.0 482.0 Td (Side income) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 481.6 m 764.0 481.6 l S
+0.5 w 404.0 478.0 m 764.0 478.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 473.0 Td (Interest) Tj ET
+BT /F1 7.5 Tf 408.0 468.5 Td (Interest) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 469.0 m 764.0 469.0 l S
+0.5 w 404.0 464.5 m 764.0 464.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 460.4 Td (Dividends) Tj ET
+BT /F1 7.5 Tf 408.0 455.0 Td (Dividends) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 456.4 m 764.0 456.4 l S
+0.5 w 404.0 451.0 m 764.0 451.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 447.8 Td (Gifts) Tj ET
+BT /F1 7.5 Tf 408.0 441.5 Td (Gifts) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 443.8 m 764.0 443.8 l S
+0.5 w 404.0 437.5 m 764.0 437.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 435.2 Td (Reimbursements) Tj ET
+BT /F1 7.5 Tf 408.0 428.0 Td (Reimbursements) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 431.2 m 764.0 431.2 l S
+0.5 w 404.0 424.0 m 764.0 424.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 422.6 Td (Transfers) Tj ET
+BT /F1 7.5 Tf 408.0 414.5 Td (Transfers) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 418.6 m 764.0 418.6 l S
+0.5 w 404.0 410.5 m 764.0 410.5 l S
 0.950 0.920 0.860 rg
-404.0 406.0 360.0 12.6 re f
+404.0 397.0 360.0 13.5 re f
 0.170 0.140 0.110 rg
-BT /F2 7.5 Tf 408.0 410.0 Td (Total) Tj ET
+BT /F2 7.5 Tf 408.0 401.0 Td (Total) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 406.0 m 764.0 406.0 l S
+0.5 w 404.0 397.0 m 764.0 397.0 l S
 0.760 0.710 0.630 RG
 0.8 w
-404.0 406.0 360.0 126.0 re S
+404.0 397.0 360.0 135.0 re S
 0.760 0.710 0.630 RG
-0.6 w 522.0 532.0 m 522.0 406.0 l S
+0.6 w 522.0 532.0 m 522.0 397.0 l S
 0.760 0.710 0.630 RG
-0.5 w 602.7 532.0 m 602.7 406.0 l S
+0.5 w 602.7 532.0 m 602.7 397.0 l S
 0.760 0.710 0.630 RG
-0.5 w 683.3 532.0 m 683.3 406.0 l S
+0.5 w 683.3 532.0 m 683.3 397.0 l S
 0.330 0.240 0.170 rg
-BT /F2 9 Tf 404.0 393.0 Td (Expenses) Tj ET
+BT /F2 9 Tf 404.0 384.0 Td (Expenses) Tj ET
 0.470 0.410 0.350 rg
-BT /F1 7 Tf 453.0 393.0 Td (home) Tj ET
+BT /F1 7 Tf 453.0 384.0 Td (home) Tj ET
 0.950 0.920 0.860 rg
-404.0 375.4 360.0 12.6 re f
+404.0 365.5 360.0 13.5 re f
 0.470 0.410 0.350 rg
-BT /F1 6.5 Tf 408.0 379.4 Td (Bill) Tj ET
+BT /F1 6.5 Tf 408.0 369.5 Td (Bill) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 551.2 379.4 Td (Budget) Tj ET
+BT /F2 7 Tf 551.2 369.5 Td (Budget) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 632.9 379.4 Td (Actual) Tj ET
+BT /F2 7 Tf 632.9 369.5 Td (Actual) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 707.7 379.4 Td (Difference) Tj ET
+BT /F2 7 Tf 707.7 369.5 Td (Difference) Tj ET
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 366.8 Td (Mortgage / Rent) Tj ET
+BT /F1 7.5 Tf 408.0 356.0 Td (Mortgage / Rent) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 362.8 m 764.0 362.8 l S
+0.5 w 404.0 352.0 m 764.0 352.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 354.2 Td (Auto) Tj ET
+BT /F1 7.5 Tf 408.0 342.5 Td (Auto) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 350.2 m 764.0 350.2 l S
+0.5 w 404.0 338.5 m 764.0 338.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 341.6 Td (Electricity) Tj ET
-0.760 0.710 0.630 RG
-0.5 w 404.0 337.6 m 764.0 337.6 l S
-0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 329.0 Td (Heating / Cooling) Tj ET
+BT /F1 7.5 Tf 408.0 329.0 Td (Electricity) Tj ET
 0.760 0.710 0.630 RG
 0.5 w 404.0 325.0 m 764.0 325.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 316.4 Td (Water / Sewer / Trash) Tj ET
+BT /F1 7.5 Tf 408.0 315.5 Td (Heating / Cooling) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 312.4 m 764.0 312.4 l S
+0.5 w 404.0 311.5 m 764.0 311.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 303.8 Td (Phone / Internet / TV) Tj ET
+BT /F1 7.5 Tf 408.0 302.0 Td (Water / Sewer / Trash) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 299.8 m 764.0 299.8 l S
+0.5 w 404.0 298.0 m 764.0 298.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 291.2 Td (Maintenance / Repairs) Tj ET
+BT /F1 7.5 Tf 408.0 288.5 Td (Phone / Internet / TV) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 287.2 m 764.0 287.2 l S
+0.5 w 404.0 284.5 m 764.0 284.5 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 408.0 275.0 Td (Maintenance / Repairs) Tj ET
+0.760 0.710 0.630 RG
+0.5 w 404.0 271.0 m 764.0 271.0 l S
 0.950 0.920 0.860 rg
-404.0 274.6 360.0 12.6 re f
+404.0 257.5 360.0 13.5 re f
 0.170 0.140 0.110 rg
-BT /F2 7.5 Tf 408.0 278.6 Td (Total) Tj ET
+BT /F2 7.5 Tf 408.0 261.5 Td (Total) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 274.6 m 764.0 274.6 l S
+0.5 w 404.0 257.5 m 764.0 257.5 l S
 0.760 0.710 0.630 RG
 0.8 w
-404.0 274.6 360.0 113.4 re S
+404.0 257.5 360.0 121.5 re S
 0.760 0.710 0.630 RG
-0.6 w 522.0 388.0 m 522.0 274.6 l S
+0.6 w 522.0 379.0 m 522.0 257.5 l S
 0.760 0.710 0.630 RG
-0.5 w 602.7 388.0 m 602.7 274.6 l S
+0.5 w 602.7 379.0 m 602.7 257.5 l S
 0.760 0.710 0.630 RG
-0.5 w 683.3 388.0 m 683.3 274.6 l S
+0.5 w 683.3 379.0 m 683.3 257.5 l S
 0.330 0.240 0.170 rg
-BT /F2 9 Tf 404.0 261.6 Td (Expenses) Tj ET
+BT /F2 9 Tf 404.0 244.5 Td (Expenses) Tj ET
 0.470 0.410 0.350 rg
-BT /F1 7 Tf 453.0 261.6 Td (daily) Tj ET
+BT /F1 7 Tf 453.0 244.5 Td (daily) Tj ET
 0.950 0.920 0.860 rg
-404.0 244.0 360.0 12.6 re f
+404.0 226.0 360.0 13.5 re f
 0.470 0.410 0.350 rg
-BT /F1 6.5 Tf 408.0 248.0 Td (Item) Tj ET
+BT /F1 6.5 Tf 408.0 230.0 Td (Item) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 551.2 248.0 Td (Budget) Tj ET
+BT /F2 7 Tf 551.2 230.0 Td (Budget) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 632.9 248.0 Td (Actual) Tj ET
+BT /F2 7 Tf 632.9 230.0 Td (Actual) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 707.7 248.0 Td (Difference) Tj ET
+BT /F2 7 Tf 707.7 230.0 Td (Difference) Tj ET
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 235.4 Td (Groceries) Tj ET
+BT /F1 7.5 Tf 408.0 216.5 Td (Groceries) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 231.4 m 764.0 231.4 l S
+0.5 w 404.0 212.5 m 764.0 212.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 222.8 Td (Personal care) Tj ET
+BT /F1 7.5 Tf 408.0 203.0 Td (Personal care) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 218.8 m 764.0 218.8 l S
+0.5 w 404.0 199.0 m 764.0 199.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 210.2 Td (Clothing) Tj ET
+BT /F1 7.5 Tf 408.0 189.5 Td (Clothing) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 206.2 m 764.0 206.2 l S
+0.5 w 404.0 185.5 m 764.0 185.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 197.6 Td (Entertainment) Tj ET
+BT /F1 7.5 Tf 408.0 176.0 Td (Entertainment) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 193.6 m 764.0 193.6 l S
+0.5 w 404.0 172.0 m 764.0 172.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 185.0 Td (Dining out) Tj ET
+BT /F1 7.5 Tf 408.0 162.5 Td (Dining out) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 181.0 m 764.0 181.0 l S
+0.5 w 404.0 158.5 m 764.0 158.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 172.4 Td (Medical) Tj ET
+BT /F1 7.5 Tf 408.0 149.0 Td (Medical) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 168.4 m 764.0 168.4 l S
+0.5 w 404.0 145.0 m 764.0 145.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 159.8 Td (Fitness / Health) Tj ET
+BT /F1 7.5 Tf 408.0 135.5 Td (Fitness / Health) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 155.8 m 764.0 155.8 l S
+0.5 w 404.0 131.5 m 764.0 131.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 147.2 Td (Auto / Life / Home insurance) Tj ET
-0.760 0.710 0.630 RG
-0.5 w 404.0 143.2 m 764.0 143.2 l S
-0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 134.6 Td (Education) Tj ET
-0.760 0.710 0.630 RG
-0.5 w 404.0 130.6 m 764.0 130.6 l S
-0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 122.0 Td (Charity / Donations / Gifts) Tj ET
+BT /F1 7.5 Tf 408.0 122.0 Td (Auto / Life / Home insurance) Tj ET
 0.760 0.710 0.630 RG
 0.5 w 404.0 118.0 m 764.0 118.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 109.4 Td (Pets) Tj ET
+BT /F1 7.5 Tf 408.0 108.5 Td (Education) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 105.4 m 764.0 105.4 l S
+0.5 w 404.0 104.5 m 764.0 104.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 96.8 Td (Vacation / Travel) Tj ET
+BT /F1 7.5 Tf 408.0 95.0 Td (Charity / Donations / Gifts) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 92.8 m 764.0 92.8 l S
+0.5 w 404.0 91.0 m 764.0 91.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 84.2 Td (Debt payments) Tj ET
+BT /F1 7.5 Tf 408.0 81.5 Td (Pets) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 80.2 m 764.0 80.2 l S
+0.5 w 404.0 77.5 m 764.0 77.5 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 408.0 68.0 Td (Vacation / Travel) Tj ET
+0.760 0.710 0.630 RG
+0.5 w 404.0 64.0 m 764.0 64.0 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 408.0 54.5 Td (Debt payments) Tj ET
+0.760 0.710 0.630 RG
+0.5 w 404.0 50.5 m 764.0 50.5 l S
 0.950 0.920 0.860 rg
-404.0 67.6 360.0 12.6 re f
+404.0 37.0 360.0 13.5 re f
 0.170 0.140 0.110 rg
-BT /F2 7.5 Tf 408.0 71.6 Td (Total) Tj ET
+BT /F2 7.5 Tf 408.0 41.0 Td (Total) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 67.6 m 764.0 67.6 l S
+0.5 w 404.0 37.0 m 764.0 37.0 l S
 0.760 0.710 0.630 RG
 0.8 w
-404.0 67.6 360.0 189.0 re S
+404.0 37.0 360.0 202.5 re S
 0.760 0.710 0.630 RG
-0.6 w 522.0 256.6 m 522.0 67.6 l S
+0.6 w 522.0 239.5 m 522.0 37.0 l S
 0.760 0.710 0.630 RG
-0.5 w 602.7 256.6 m 602.7 67.6 l S
+0.5 w 602.7 239.5 m 602.7 37.0 l S
 0.760 0.710 0.630 RG
-0.5 w 683.3 256.6 m 683.3 67.6 l S
+0.5 w 683.3 239.5 m 683.3 37.0 l S
 endstream
 endobj
 11 0 obj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 792 612] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 12 0 R /Annots [97 0 R 98 0 R 99 0 R 100 0 R 101 0 R 102 0 R 103 0 R 104 0 R 105 0 R 106 0 R 107 0 R 108 0 R 109 0 R 110 0 R 111 0 R 112 0 R] >>
 endobj
 12 0 obj
-<< /Length 14513 >>
+<< /Length 14507 >>
 stream
 1.000 0.995 0.980 rg
 0.0 0.0 792.0 612.0 re f
@@ -1733,207 +1733,207 @@ BT /F2 9 Tf 28.0 157.0 Td (Notes) Tj ET
 0.330 0.240 0.170 rg
 BT /F2 9 Tf 404.0 537.0 Td (Income) Tj ET
 0.950 0.920 0.860 rg
-404.0 519.4 360.0 12.6 re f
+404.0 518.5 360.0 13.5 re f
 0.470 0.410 0.350 rg
-BT /F1 6.5 Tf 408.0 523.4 Td (Source) Tj ET
+BT /F1 6.5 Tf 408.0 522.5 Td (Source) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 551.2 523.4 Td (Budget) Tj ET
+BT /F2 7 Tf 551.2 522.5 Td (Budget) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 632.9 523.4 Td (Actual) Tj ET
+BT /F2 7 Tf 632.9 522.5 Td (Actual) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 707.7 523.4 Td (Difference) Tj ET
+BT /F2 7 Tf 707.7 522.5 Td (Difference) Tj ET
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 510.8 Td (Wages / Tips) Tj ET
+BT /F1 7.5 Tf 408.0 509.0 Td (Wages / Tips) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 506.8 m 764.0 506.8 l S
+0.5 w 404.0 505.0 m 764.0 505.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 498.2 Td (Wages / Tips) Tj ET
+BT /F1 7.5 Tf 408.0 495.5 Td (Wages / Tips) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 494.2 m 764.0 494.2 l S
+0.5 w 404.0 491.5 m 764.0 491.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 485.6 Td (Side income) Tj ET
+BT /F1 7.5 Tf 408.0 482.0 Td (Side income) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 481.6 m 764.0 481.6 l S
+0.5 w 404.0 478.0 m 764.0 478.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 473.0 Td (Interest) Tj ET
+BT /F1 7.5 Tf 408.0 468.5 Td (Interest) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 469.0 m 764.0 469.0 l S
+0.5 w 404.0 464.5 m 764.0 464.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 460.4 Td (Dividends) Tj ET
+BT /F1 7.5 Tf 408.0 455.0 Td (Dividends) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 456.4 m 764.0 456.4 l S
+0.5 w 404.0 451.0 m 764.0 451.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 447.8 Td (Gifts) Tj ET
+BT /F1 7.5 Tf 408.0 441.5 Td (Gifts) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 443.8 m 764.0 443.8 l S
+0.5 w 404.0 437.5 m 764.0 437.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 435.2 Td (Reimbursements) Tj ET
+BT /F1 7.5 Tf 408.0 428.0 Td (Reimbursements) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 431.2 m 764.0 431.2 l S
+0.5 w 404.0 424.0 m 764.0 424.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 422.6 Td (Transfers) Tj ET
+BT /F1 7.5 Tf 408.0 414.5 Td (Transfers) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 418.6 m 764.0 418.6 l S
+0.5 w 404.0 410.5 m 764.0 410.5 l S
 0.950 0.920 0.860 rg
-404.0 406.0 360.0 12.6 re f
+404.0 397.0 360.0 13.5 re f
 0.170 0.140 0.110 rg
-BT /F2 7.5 Tf 408.0 410.0 Td (Total) Tj ET
+BT /F2 7.5 Tf 408.0 401.0 Td (Total) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 406.0 m 764.0 406.0 l S
+0.5 w 404.0 397.0 m 764.0 397.0 l S
 0.760 0.710 0.630 RG
 0.8 w
-404.0 406.0 360.0 126.0 re S
+404.0 397.0 360.0 135.0 re S
 0.760 0.710 0.630 RG
-0.6 w 522.0 532.0 m 522.0 406.0 l S
+0.6 w 522.0 532.0 m 522.0 397.0 l S
 0.760 0.710 0.630 RG
-0.5 w 602.7 532.0 m 602.7 406.0 l S
+0.5 w 602.7 532.0 m 602.7 397.0 l S
 0.760 0.710 0.630 RG
-0.5 w 683.3 532.0 m 683.3 406.0 l S
+0.5 w 683.3 532.0 m 683.3 397.0 l S
 0.330 0.240 0.170 rg
-BT /F2 9 Tf 404.0 393.0 Td (Expenses) Tj ET
+BT /F2 9 Tf 404.0 384.0 Td (Expenses) Tj ET
 0.470 0.410 0.350 rg
-BT /F1 7 Tf 453.0 393.0 Td (home) Tj ET
+BT /F1 7 Tf 453.0 384.0 Td (home) Tj ET
 0.950 0.920 0.860 rg
-404.0 375.4 360.0 12.6 re f
+404.0 365.5 360.0 13.5 re f
 0.470 0.410 0.350 rg
-BT /F1 6.5 Tf 408.0 379.4 Td (Bill) Tj ET
+BT /F1 6.5 Tf 408.0 369.5 Td (Bill) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 551.2 379.4 Td (Budget) Tj ET
+BT /F2 7 Tf 551.2 369.5 Td (Budget) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 632.9 379.4 Td (Actual) Tj ET
+BT /F2 7 Tf 632.9 369.5 Td (Actual) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 707.7 379.4 Td (Difference) Tj ET
+BT /F2 7 Tf 707.7 369.5 Td (Difference) Tj ET
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 366.8 Td (Mortgage / Rent) Tj ET
+BT /F1 7.5 Tf 408.0 356.0 Td (Mortgage / Rent) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 362.8 m 764.0 362.8 l S
+0.5 w 404.0 352.0 m 764.0 352.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 354.2 Td (Auto) Tj ET
+BT /F1 7.5 Tf 408.0 342.5 Td (Auto) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 350.2 m 764.0 350.2 l S
+0.5 w 404.0 338.5 m 764.0 338.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 341.6 Td (Electricity) Tj ET
-0.760 0.710 0.630 RG
-0.5 w 404.0 337.6 m 764.0 337.6 l S
-0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 329.0 Td (Heating / Cooling) Tj ET
+BT /F1 7.5 Tf 408.0 329.0 Td (Electricity) Tj ET
 0.760 0.710 0.630 RG
 0.5 w 404.0 325.0 m 764.0 325.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 316.4 Td (Water / Sewer / Trash) Tj ET
+BT /F1 7.5 Tf 408.0 315.5 Td (Heating / Cooling) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 312.4 m 764.0 312.4 l S
+0.5 w 404.0 311.5 m 764.0 311.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 303.8 Td (Phone / Internet / TV) Tj ET
+BT /F1 7.5 Tf 408.0 302.0 Td (Water / Sewer / Trash) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 299.8 m 764.0 299.8 l S
+0.5 w 404.0 298.0 m 764.0 298.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 291.2 Td (Maintenance / Repairs) Tj ET
+BT /F1 7.5 Tf 408.0 288.5 Td (Phone / Internet / TV) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 287.2 m 764.0 287.2 l S
+0.5 w 404.0 284.5 m 764.0 284.5 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 408.0 275.0 Td (Maintenance / Repairs) Tj ET
+0.760 0.710 0.630 RG
+0.5 w 404.0 271.0 m 764.0 271.0 l S
 0.950 0.920 0.860 rg
-404.0 274.6 360.0 12.6 re f
+404.0 257.5 360.0 13.5 re f
 0.170 0.140 0.110 rg
-BT /F2 7.5 Tf 408.0 278.6 Td (Total) Tj ET
+BT /F2 7.5 Tf 408.0 261.5 Td (Total) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 274.6 m 764.0 274.6 l S
+0.5 w 404.0 257.5 m 764.0 257.5 l S
 0.760 0.710 0.630 RG
 0.8 w
-404.0 274.6 360.0 113.4 re S
+404.0 257.5 360.0 121.5 re S
 0.760 0.710 0.630 RG
-0.6 w 522.0 388.0 m 522.0 274.6 l S
+0.6 w 522.0 379.0 m 522.0 257.5 l S
 0.760 0.710 0.630 RG
-0.5 w 602.7 388.0 m 602.7 274.6 l S
+0.5 w 602.7 379.0 m 602.7 257.5 l S
 0.760 0.710 0.630 RG
-0.5 w 683.3 388.0 m 683.3 274.6 l S
+0.5 w 683.3 379.0 m 683.3 257.5 l S
 0.330 0.240 0.170 rg
-BT /F2 9 Tf 404.0 261.6 Td (Expenses) Tj ET
+BT /F2 9 Tf 404.0 244.5 Td (Expenses) Tj ET
 0.470 0.410 0.350 rg
-BT /F1 7 Tf 453.0 261.6 Td (daily) Tj ET
+BT /F1 7 Tf 453.0 244.5 Td (daily) Tj ET
 0.950 0.920 0.860 rg
-404.0 244.0 360.0 12.6 re f
+404.0 226.0 360.0 13.5 re f
 0.470 0.410 0.350 rg
-BT /F1 6.5 Tf 408.0 248.0 Td (Item) Tj ET
+BT /F1 6.5 Tf 408.0 230.0 Td (Item) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 551.2 248.0 Td (Budget) Tj ET
+BT /F2 7 Tf 551.2 230.0 Td (Budget) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 632.9 248.0 Td (Actual) Tj ET
+BT /F2 7 Tf 632.9 230.0 Td (Actual) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 707.7 248.0 Td (Difference) Tj ET
+BT /F2 7 Tf 707.7 230.0 Td (Difference) Tj ET
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 235.4 Td (Groceries) Tj ET
+BT /F1 7.5 Tf 408.0 216.5 Td (Groceries) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 231.4 m 764.0 231.4 l S
+0.5 w 404.0 212.5 m 764.0 212.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 222.8 Td (Personal care) Tj ET
+BT /F1 7.5 Tf 408.0 203.0 Td (Personal care) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 218.8 m 764.0 218.8 l S
+0.5 w 404.0 199.0 m 764.0 199.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 210.2 Td (Clothing) Tj ET
+BT /F1 7.5 Tf 408.0 189.5 Td (Clothing) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 206.2 m 764.0 206.2 l S
+0.5 w 404.0 185.5 m 764.0 185.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 197.6 Td (Entertainment) Tj ET
+BT /F1 7.5 Tf 408.0 176.0 Td (Entertainment) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 193.6 m 764.0 193.6 l S
+0.5 w 404.0 172.0 m 764.0 172.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 185.0 Td (Dining out) Tj ET
+BT /F1 7.5 Tf 408.0 162.5 Td (Dining out) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 181.0 m 764.0 181.0 l S
+0.5 w 404.0 158.5 m 764.0 158.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 172.4 Td (Medical) Tj ET
+BT /F1 7.5 Tf 408.0 149.0 Td (Medical) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 168.4 m 764.0 168.4 l S
+0.5 w 404.0 145.0 m 764.0 145.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 159.8 Td (Fitness / Health) Tj ET
+BT /F1 7.5 Tf 408.0 135.5 Td (Fitness / Health) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 155.8 m 764.0 155.8 l S
+0.5 w 404.0 131.5 m 764.0 131.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 147.2 Td (Auto / Life / Home insurance) Tj ET
-0.760 0.710 0.630 RG
-0.5 w 404.0 143.2 m 764.0 143.2 l S
-0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 134.6 Td (Education) Tj ET
-0.760 0.710 0.630 RG
-0.5 w 404.0 130.6 m 764.0 130.6 l S
-0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 122.0 Td (Charity / Donations / Gifts) Tj ET
+BT /F1 7.5 Tf 408.0 122.0 Td (Auto / Life / Home insurance) Tj ET
 0.760 0.710 0.630 RG
 0.5 w 404.0 118.0 m 764.0 118.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 109.4 Td (Pets) Tj ET
+BT /F1 7.5 Tf 408.0 108.5 Td (Education) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 105.4 m 764.0 105.4 l S
+0.5 w 404.0 104.5 m 764.0 104.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 96.8 Td (Vacation / Travel) Tj ET
+BT /F1 7.5 Tf 408.0 95.0 Td (Charity / Donations / Gifts) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 92.8 m 764.0 92.8 l S
+0.5 w 404.0 91.0 m 764.0 91.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 84.2 Td (Debt payments) Tj ET
+BT /F1 7.5 Tf 408.0 81.5 Td (Pets) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 80.2 m 764.0 80.2 l S
+0.5 w 404.0 77.5 m 764.0 77.5 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 408.0 68.0 Td (Vacation / Travel) Tj ET
+0.760 0.710 0.630 RG
+0.5 w 404.0 64.0 m 764.0 64.0 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 408.0 54.5 Td (Debt payments) Tj ET
+0.760 0.710 0.630 RG
+0.5 w 404.0 50.5 m 764.0 50.5 l S
 0.950 0.920 0.860 rg
-404.0 67.6 360.0 12.6 re f
+404.0 37.0 360.0 13.5 re f
 0.170 0.140 0.110 rg
-BT /F2 7.5 Tf 408.0 71.6 Td (Total) Tj ET
+BT /F2 7.5 Tf 408.0 41.0 Td (Total) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 67.6 m 764.0 67.6 l S
+0.5 w 404.0 37.0 m 764.0 37.0 l S
 0.760 0.710 0.630 RG
 0.8 w
-404.0 67.6 360.0 189.0 re S
+404.0 37.0 360.0 202.5 re S
 0.760 0.710 0.630 RG
-0.6 w 522.0 256.6 m 522.0 67.6 l S
+0.6 w 522.0 239.5 m 522.0 37.0 l S
 0.760 0.710 0.630 RG
-0.5 w 602.7 256.6 m 602.7 67.6 l S
+0.5 w 602.7 239.5 m 602.7 37.0 l S
 0.760 0.710 0.630 RG
-0.5 w 683.3 256.6 m 683.3 67.6 l S
+0.5 w 683.3 239.5 m 683.3 37.0 l S
 endstream
 endobj
 13 0 obj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 792 612] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 14 0 R /Annots [113 0 R 114 0 R 115 0 R 116 0 R 117 0 R 118 0 R 119 0 R 120 0 R 121 0 R 122 0 R 123 0 R 124 0 R 125 0 R 126 0 R 127 0 R 128 0 R] >>
 endobj
 14 0 obj
-<< /Length 14513 >>
+<< /Length 14507 >>
 stream
 1.000 0.995 0.980 rg
 0.0 0.0 792.0 612.0 re f
@@ -2256,207 +2256,207 @@ BT /F2 9 Tf 28.0 157.0 Td (Notes) Tj ET
 0.330 0.240 0.170 rg
 BT /F2 9 Tf 404.0 537.0 Td (Income) Tj ET
 0.950 0.920 0.860 rg
-404.0 519.4 360.0 12.6 re f
+404.0 518.5 360.0 13.5 re f
 0.470 0.410 0.350 rg
-BT /F1 6.5 Tf 408.0 523.4 Td (Source) Tj ET
+BT /F1 6.5 Tf 408.0 522.5 Td (Source) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 551.2 523.4 Td (Budget) Tj ET
+BT /F2 7 Tf 551.2 522.5 Td (Budget) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 632.9 523.4 Td (Actual) Tj ET
+BT /F2 7 Tf 632.9 522.5 Td (Actual) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 707.7 523.4 Td (Difference) Tj ET
+BT /F2 7 Tf 707.7 522.5 Td (Difference) Tj ET
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 510.8 Td (Wages / Tips) Tj ET
+BT /F1 7.5 Tf 408.0 509.0 Td (Wages / Tips) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 506.8 m 764.0 506.8 l S
+0.5 w 404.0 505.0 m 764.0 505.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 498.2 Td (Wages / Tips) Tj ET
+BT /F1 7.5 Tf 408.0 495.5 Td (Wages / Tips) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 494.2 m 764.0 494.2 l S
+0.5 w 404.0 491.5 m 764.0 491.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 485.6 Td (Side income) Tj ET
+BT /F1 7.5 Tf 408.0 482.0 Td (Side income) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 481.6 m 764.0 481.6 l S
+0.5 w 404.0 478.0 m 764.0 478.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 473.0 Td (Interest) Tj ET
+BT /F1 7.5 Tf 408.0 468.5 Td (Interest) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 469.0 m 764.0 469.0 l S
+0.5 w 404.0 464.5 m 764.0 464.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 460.4 Td (Dividends) Tj ET
+BT /F1 7.5 Tf 408.0 455.0 Td (Dividends) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 456.4 m 764.0 456.4 l S
+0.5 w 404.0 451.0 m 764.0 451.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 447.8 Td (Gifts) Tj ET
+BT /F1 7.5 Tf 408.0 441.5 Td (Gifts) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 443.8 m 764.0 443.8 l S
+0.5 w 404.0 437.5 m 764.0 437.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 435.2 Td (Reimbursements) Tj ET
+BT /F1 7.5 Tf 408.0 428.0 Td (Reimbursements) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 431.2 m 764.0 431.2 l S
+0.5 w 404.0 424.0 m 764.0 424.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 422.6 Td (Transfers) Tj ET
+BT /F1 7.5 Tf 408.0 414.5 Td (Transfers) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 418.6 m 764.0 418.6 l S
+0.5 w 404.0 410.5 m 764.0 410.5 l S
 0.950 0.920 0.860 rg
-404.0 406.0 360.0 12.6 re f
+404.0 397.0 360.0 13.5 re f
 0.170 0.140 0.110 rg
-BT /F2 7.5 Tf 408.0 410.0 Td (Total) Tj ET
+BT /F2 7.5 Tf 408.0 401.0 Td (Total) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 406.0 m 764.0 406.0 l S
+0.5 w 404.0 397.0 m 764.0 397.0 l S
 0.760 0.710 0.630 RG
 0.8 w
-404.0 406.0 360.0 126.0 re S
+404.0 397.0 360.0 135.0 re S
 0.760 0.710 0.630 RG
-0.6 w 522.0 532.0 m 522.0 406.0 l S
+0.6 w 522.0 532.0 m 522.0 397.0 l S
 0.760 0.710 0.630 RG
-0.5 w 602.7 532.0 m 602.7 406.0 l S
+0.5 w 602.7 532.0 m 602.7 397.0 l S
 0.760 0.710 0.630 RG
-0.5 w 683.3 532.0 m 683.3 406.0 l S
+0.5 w 683.3 532.0 m 683.3 397.0 l S
 0.330 0.240 0.170 rg
-BT /F2 9 Tf 404.0 393.0 Td (Expenses) Tj ET
+BT /F2 9 Tf 404.0 384.0 Td (Expenses) Tj ET
 0.470 0.410 0.350 rg
-BT /F1 7 Tf 453.0 393.0 Td (home) Tj ET
+BT /F1 7 Tf 453.0 384.0 Td (home) Tj ET
 0.950 0.920 0.860 rg
-404.0 375.4 360.0 12.6 re f
+404.0 365.5 360.0 13.5 re f
 0.470 0.410 0.350 rg
-BT /F1 6.5 Tf 408.0 379.4 Td (Bill) Tj ET
+BT /F1 6.5 Tf 408.0 369.5 Td (Bill) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 551.2 379.4 Td (Budget) Tj ET
+BT /F2 7 Tf 551.2 369.5 Td (Budget) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 632.9 379.4 Td (Actual) Tj ET
+BT /F2 7 Tf 632.9 369.5 Td (Actual) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 707.7 379.4 Td (Difference) Tj ET
+BT /F2 7 Tf 707.7 369.5 Td (Difference) Tj ET
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 366.8 Td (Mortgage / Rent) Tj ET
+BT /F1 7.5 Tf 408.0 356.0 Td (Mortgage / Rent) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 362.8 m 764.0 362.8 l S
+0.5 w 404.0 352.0 m 764.0 352.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 354.2 Td (Auto) Tj ET
+BT /F1 7.5 Tf 408.0 342.5 Td (Auto) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 350.2 m 764.0 350.2 l S
+0.5 w 404.0 338.5 m 764.0 338.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 341.6 Td (Electricity) Tj ET
-0.760 0.710 0.630 RG
-0.5 w 404.0 337.6 m 764.0 337.6 l S
-0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 329.0 Td (Heating / Cooling) Tj ET
+BT /F1 7.5 Tf 408.0 329.0 Td (Electricity) Tj ET
 0.760 0.710 0.630 RG
 0.5 w 404.0 325.0 m 764.0 325.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 316.4 Td (Water / Sewer / Trash) Tj ET
+BT /F1 7.5 Tf 408.0 315.5 Td (Heating / Cooling) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 312.4 m 764.0 312.4 l S
+0.5 w 404.0 311.5 m 764.0 311.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 303.8 Td (Phone / Internet / TV) Tj ET
+BT /F1 7.5 Tf 408.0 302.0 Td (Water / Sewer / Trash) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 299.8 m 764.0 299.8 l S
+0.5 w 404.0 298.0 m 764.0 298.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 291.2 Td (Maintenance / Repairs) Tj ET
+BT /F1 7.5 Tf 408.0 288.5 Td (Phone / Internet / TV) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 287.2 m 764.0 287.2 l S
+0.5 w 404.0 284.5 m 764.0 284.5 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 408.0 275.0 Td (Maintenance / Repairs) Tj ET
+0.760 0.710 0.630 RG
+0.5 w 404.0 271.0 m 764.0 271.0 l S
 0.950 0.920 0.860 rg
-404.0 274.6 360.0 12.6 re f
+404.0 257.5 360.0 13.5 re f
 0.170 0.140 0.110 rg
-BT /F2 7.5 Tf 408.0 278.6 Td (Total) Tj ET
+BT /F2 7.5 Tf 408.0 261.5 Td (Total) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 274.6 m 764.0 274.6 l S
+0.5 w 404.0 257.5 m 764.0 257.5 l S
 0.760 0.710 0.630 RG
 0.8 w
-404.0 274.6 360.0 113.4 re S
+404.0 257.5 360.0 121.5 re S
 0.760 0.710 0.630 RG
-0.6 w 522.0 388.0 m 522.0 274.6 l S
+0.6 w 522.0 379.0 m 522.0 257.5 l S
 0.760 0.710 0.630 RG
-0.5 w 602.7 388.0 m 602.7 274.6 l S
+0.5 w 602.7 379.0 m 602.7 257.5 l S
 0.760 0.710 0.630 RG
-0.5 w 683.3 388.0 m 683.3 274.6 l S
+0.5 w 683.3 379.0 m 683.3 257.5 l S
 0.330 0.240 0.170 rg
-BT /F2 9 Tf 404.0 261.6 Td (Expenses) Tj ET
+BT /F2 9 Tf 404.0 244.5 Td (Expenses) Tj ET
 0.470 0.410 0.350 rg
-BT /F1 7 Tf 453.0 261.6 Td (daily) Tj ET
+BT /F1 7 Tf 453.0 244.5 Td (daily) Tj ET
 0.950 0.920 0.860 rg
-404.0 244.0 360.0 12.6 re f
+404.0 226.0 360.0 13.5 re f
 0.470 0.410 0.350 rg
-BT /F1 6.5 Tf 408.0 248.0 Td (Item) Tj ET
+BT /F1 6.5 Tf 408.0 230.0 Td (Item) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 551.2 248.0 Td (Budget) Tj ET
+BT /F2 7 Tf 551.2 230.0 Td (Budget) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 632.9 248.0 Td (Actual) Tj ET
+BT /F2 7 Tf 632.9 230.0 Td (Actual) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 707.7 248.0 Td (Difference) Tj ET
+BT /F2 7 Tf 707.7 230.0 Td (Difference) Tj ET
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 235.4 Td (Groceries) Tj ET
+BT /F1 7.5 Tf 408.0 216.5 Td (Groceries) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 231.4 m 764.0 231.4 l S
+0.5 w 404.0 212.5 m 764.0 212.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 222.8 Td (Personal care) Tj ET
+BT /F1 7.5 Tf 408.0 203.0 Td (Personal care) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 218.8 m 764.0 218.8 l S
+0.5 w 404.0 199.0 m 764.0 199.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 210.2 Td (Clothing) Tj ET
+BT /F1 7.5 Tf 408.0 189.5 Td (Clothing) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 206.2 m 764.0 206.2 l S
+0.5 w 404.0 185.5 m 764.0 185.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 197.6 Td (Entertainment) Tj ET
+BT /F1 7.5 Tf 408.0 176.0 Td (Entertainment) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 193.6 m 764.0 193.6 l S
+0.5 w 404.0 172.0 m 764.0 172.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 185.0 Td (Dining out) Tj ET
+BT /F1 7.5 Tf 408.0 162.5 Td (Dining out) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 181.0 m 764.0 181.0 l S
+0.5 w 404.0 158.5 m 764.0 158.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 172.4 Td (Medical) Tj ET
+BT /F1 7.5 Tf 408.0 149.0 Td (Medical) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 168.4 m 764.0 168.4 l S
+0.5 w 404.0 145.0 m 764.0 145.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 159.8 Td (Fitness / Health) Tj ET
+BT /F1 7.5 Tf 408.0 135.5 Td (Fitness / Health) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 155.8 m 764.0 155.8 l S
+0.5 w 404.0 131.5 m 764.0 131.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 147.2 Td (Auto / Life / Home insurance) Tj ET
-0.760 0.710 0.630 RG
-0.5 w 404.0 143.2 m 764.0 143.2 l S
-0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 134.6 Td (Education) Tj ET
-0.760 0.710 0.630 RG
-0.5 w 404.0 130.6 m 764.0 130.6 l S
-0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 122.0 Td (Charity / Donations / Gifts) Tj ET
+BT /F1 7.5 Tf 408.0 122.0 Td (Auto / Life / Home insurance) Tj ET
 0.760 0.710 0.630 RG
 0.5 w 404.0 118.0 m 764.0 118.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 109.4 Td (Pets) Tj ET
+BT /F1 7.5 Tf 408.0 108.5 Td (Education) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 105.4 m 764.0 105.4 l S
+0.5 w 404.0 104.5 m 764.0 104.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 96.8 Td (Vacation / Travel) Tj ET
+BT /F1 7.5 Tf 408.0 95.0 Td (Charity / Donations / Gifts) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 92.8 m 764.0 92.8 l S
+0.5 w 404.0 91.0 m 764.0 91.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 84.2 Td (Debt payments) Tj ET
+BT /F1 7.5 Tf 408.0 81.5 Td (Pets) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 80.2 m 764.0 80.2 l S
+0.5 w 404.0 77.5 m 764.0 77.5 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 408.0 68.0 Td (Vacation / Travel) Tj ET
+0.760 0.710 0.630 RG
+0.5 w 404.0 64.0 m 764.0 64.0 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 408.0 54.5 Td (Debt payments) Tj ET
+0.760 0.710 0.630 RG
+0.5 w 404.0 50.5 m 764.0 50.5 l S
 0.950 0.920 0.860 rg
-404.0 67.6 360.0 12.6 re f
+404.0 37.0 360.0 13.5 re f
 0.170 0.140 0.110 rg
-BT /F2 7.5 Tf 408.0 71.6 Td (Total) Tj ET
+BT /F2 7.5 Tf 408.0 41.0 Td (Total) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 67.6 m 764.0 67.6 l S
+0.5 w 404.0 37.0 m 764.0 37.0 l S
 0.760 0.710 0.630 RG
 0.8 w
-404.0 67.6 360.0 189.0 re S
+404.0 37.0 360.0 202.5 re S
 0.760 0.710 0.630 RG
-0.6 w 522.0 256.6 m 522.0 67.6 l S
+0.6 w 522.0 239.5 m 522.0 37.0 l S
 0.760 0.710 0.630 RG
-0.5 w 602.7 256.6 m 602.7 67.6 l S
+0.5 w 602.7 239.5 m 602.7 37.0 l S
 0.760 0.710 0.630 RG
-0.5 w 683.3 256.6 m 683.3 67.6 l S
+0.5 w 683.3 239.5 m 683.3 37.0 l S
 endstream
 endobj
 15 0 obj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 792 612] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 16 0 R /Annots [129 0 R 130 0 R 131 0 R 132 0 R 133 0 R 134 0 R 135 0 R 136 0 R 137 0 R 138 0 R 139 0 R 140 0 R 141 0 R 142 0 R 143 0 R 144 0 R] >>
 endobj
 16 0 obj
-<< /Length 14511 >>
+<< /Length 14505 >>
 stream
 1.000 0.995 0.980 rg
 0.0 0.0 792.0 612.0 re f
@@ -2779,207 +2779,207 @@ BT /F2 9 Tf 28.0 157.0 Td (Notes) Tj ET
 0.330 0.240 0.170 rg
 BT /F2 9 Tf 404.0 537.0 Td (Income) Tj ET
 0.950 0.920 0.860 rg
-404.0 519.4 360.0 12.6 re f
+404.0 518.5 360.0 13.5 re f
 0.470 0.410 0.350 rg
-BT /F1 6.5 Tf 408.0 523.4 Td (Source) Tj ET
+BT /F1 6.5 Tf 408.0 522.5 Td (Source) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 551.2 523.4 Td (Budget) Tj ET
+BT /F2 7 Tf 551.2 522.5 Td (Budget) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 632.9 523.4 Td (Actual) Tj ET
+BT /F2 7 Tf 632.9 522.5 Td (Actual) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 707.7 523.4 Td (Difference) Tj ET
+BT /F2 7 Tf 707.7 522.5 Td (Difference) Tj ET
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 510.8 Td (Wages / Tips) Tj ET
+BT /F1 7.5 Tf 408.0 509.0 Td (Wages / Tips) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 506.8 m 764.0 506.8 l S
+0.5 w 404.0 505.0 m 764.0 505.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 498.2 Td (Wages / Tips) Tj ET
+BT /F1 7.5 Tf 408.0 495.5 Td (Wages / Tips) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 494.2 m 764.0 494.2 l S
+0.5 w 404.0 491.5 m 764.0 491.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 485.6 Td (Side income) Tj ET
+BT /F1 7.5 Tf 408.0 482.0 Td (Side income) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 481.6 m 764.0 481.6 l S
+0.5 w 404.0 478.0 m 764.0 478.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 473.0 Td (Interest) Tj ET
+BT /F1 7.5 Tf 408.0 468.5 Td (Interest) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 469.0 m 764.0 469.0 l S
+0.5 w 404.0 464.5 m 764.0 464.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 460.4 Td (Dividends) Tj ET
+BT /F1 7.5 Tf 408.0 455.0 Td (Dividends) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 456.4 m 764.0 456.4 l S
+0.5 w 404.0 451.0 m 764.0 451.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 447.8 Td (Gifts) Tj ET
+BT /F1 7.5 Tf 408.0 441.5 Td (Gifts) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 443.8 m 764.0 443.8 l S
+0.5 w 404.0 437.5 m 764.0 437.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 435.2 Td (Reimbursements) Tj ET
+BT /F1 7.5 Tf 408.0 428.0 Td (Reimbursements) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 431.2 m 764.0 431.2 l S
+0.5 w 404.0 424.0 m 764.0 424.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 422.6 Td (Transfers) Tj ET
+BT /F1 7.5 Tf 408.0 414.5 Td (Transfers) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 418.6 m 764.0 418.6 l S
+0.5 w 404.0 410.5 m 764.0 410.5 l S
 0.950 0.920 0.860 rg
-404.0 406.0 360.0 12.6 re f
+404.0 397.0 360.0 13.5 re f
 0.170 0.140 0.110 rg
-BT /F2 7.5 Tf 408.0 410.0 Td (Total) Tj ET
+BT /F2 7.5 Tf 408.0 401.0 Td (Total) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 406.0 m 764.0 406.0 l S
+0.5 w 404.0 397.0 m 764.0 397.0 l S
 0.760 0.710 0.630 RG
 0.8 w
-404.0 406.0 360.0 126.0 re S
+404.0 397.0 360.0 135.0 re S
 0.760 0.710 0.630 RG
-0.6 w 522.0 532.0 m 522.0 406.0 l S
+0.6 w 522.0 532.0 m 522.0 397.0 l S
 0.760 0.710 0.630 RG
-0.5 w 602.7 532.0 m 602.7 406.0 l S
+0.5 w 602.7 532.0 m 602.7 397.0 l S
 0.760 0.710 0.630 RG
-0.5 w 683.3 532.0 m 683.3 406.0 l S
+0.5 w 683.3 532.0 m 683.3 397.0 l S
 0.330 0.240 0.170 rg
-BT /F2 9 Tf 404.0 393.0 Td (Expenses) Tj ET
+BT /F2 9 Tf 404.0 384.0 Td (Expenses) Tj ET
 0.470 0.410 0.350 rg
-BT /F1 7 Tf 453.0 393.0 Td (home) Tj ET
+BT /F1 7 Tf 453.0 384.0 Td (home) Tj ET
 0.950 0.920 0.860 rg
-404.0 375.4 360.0 12.6 re f
+404.0 365.5 360.0 13.5 re f
 0.470 0.410 0.350 rg
-BT /F1 6.5 Tf 408.0 379.4 Td (Bill) Tj ET
+BT /F1 6.5 Tf 408.0 369.5 Td (Bill) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 551.2 379.4 Td (Budget) Tj ET
+BT /F2 7 Tf 551.2 369.5 Td (Budget) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 632.9 379.4 Td (Actual) Tj ET
+BT /F2 7 Tf 632.9 369.5 Td (Actual) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 707.7 379.4 Td (Difference) Tj ET
+BT /F2 7 Tf 707.7 369.5 Td (Difference) Tj ET
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 366.8 Td (Mortgage / Rent) Tj ET
+BT /F1 7.5 Tf 408.0 356.0 Td (Mortgage / Rent) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 362.8 m 764.0 362.8 l S
+0.5 w 404.0 352.0 m 764.0 352.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 354.2 Td (Auto) Tj ET
+BT /F1 7.5 Tf 408.0 342.5 Td (Auto) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 350.2 m 764.0 350.2 l S
+0.5 w 404.0 338.5 m 764.0 338.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 341.6 Td (Electricity) Tj ET
-0.760 0.710 0.630 RG
-0.5 w 404.0 337.6 m 764.0 337.6 l S
-0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 329.0 Td (Heating / Cooling) Tj ET
+BT /F1 7.5 Tf 408.0 329.0 Td (Electricity) Tj ET
 0.760 0.710 0.630 RG
 0.5 w 404.0 325.0 m 764.0 325.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 316.4 Td (Water / Sewer / Trash) Tj ET
+BT /F1 7.5 Tf 408.0 315.5 Td (Heating / Cooling) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 312.4 m 764.0 312.4 l S
+0.5 w 404.0 311.5 m 764.0 311.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 303.8 Td (Phone / Internet / TV) Tj ET
+BT /F1 7.5 Tf 408.0 302.0 Td (Water / Sewer / Trash) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 299.8 m 764.0 299.8 l S
+0.5 w 404.0 298.0 m 764.0 298.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 291.2 Td (Maintenance / Repairs) Tj ET
+BT /F1 7.5 Tf 408.0 288.5 Td (Phone / Internet / TV) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 287.2 m 764.0 287.2 l S
+0.5 w 404.0 284.5 m 764.0 284.5 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 408.0 275.0 Td (Maintenance / Repairs) Tj ET
+0.760 0.710 0.630 RG
+0.5 w 404.0 271.0 m 764.0 271.0 l S
 0.950 0.920 0.860 rg
-404.0 274.6 360.0 12.6 re f
+404.0 257.5 360.0 13.5 re f
 0.170 0.140 0.110 rg
-BT /F2 7.5 Tf 408.0 278.6 Td (Total) Tj ET
+BT /F2 7.5 Tf 408.0 261.5 Td (Total) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 274.6 m 764.0 274.6 l S
+0.5 w 404.0 257.5 m 764.0 257.5 l S
 0.760 0.710 0.630 RG
 0.8 w
-404.0 274.6 360.0 113.4 re S
+404.0 257.5 360.0 121.5 re S
 0.760 0.710 0.630 RG
-0.6 w 522.0 388.0 m 522.0 274.6 l S
+0.6 w 522.0 379.0 m 522.0 257.5 l S
 0.760 0.710 0.630 RG
-0.5 w 602.7 388.0 m 602.7 274.6 l S
+0.5 w 602.7 379.0 m 602.7 257.5 l S
 0.760 0.710 0.630 RG
-0.5 w 683.3 388.0 m 683.3 274.6 l S
+0.5 w 683.3 379.0 m 683.3 257.5 l S
 0.330 0.240 0.170 rg
-BT /F2 9 Tf 404.0 261.6 Td (Expenses) Tj ET
+BT /F2 9 Tf 404.0 244.5 Td (Expenses) Tj ET
 0.470 0.410 0.350 rg
-BT /F1 7 Tf 453.0 261.6 Td (daily) Tj ET
+BT /F1 7 Tf 453.0 244.5 Td (daily) Tj ET
 0.950 0.920 0.860 rg
-404.0 244.0 360.0 12.6 re f
+404.0 226.0 360.0 13.5 re f
 0.470 0.410 0.350 rg
-BT /F1 6.5 Tf 408.0 248.0 Td (Item) Tj ET
+BT /F1 6.5 Tf 408.0 230.0 Td (Item) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 551.2 248.0 Td (Budget) Tj ET
+BT /F2 7 Tf 551.2 230.0 Td (Budget) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 632.9 248.0 Td (Actual) Tj ET
+BT /F2 7 Tf 632.9 230.0 Td (Actual) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 707.7 248.0 Td (Difference) Tj ET
+BT /F2 7 Tf 707.7 230.0 Td (Difference) Tj ET
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 235.4 Td (Groceries) Tj ET
+BT /F1 7.5 Tf 408.0 216.5 Td (Groceries) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 231.4 m 764.0 231.4 l S
+0.5 w 404.0 212.5 m 764.0 212.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 222.8 Td (Personal care) Tj ET
+BT /F1 7.5 Tf 408.0 203.0 Td (Personal care) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 218.8 m 764.0 218.8 l S
+0.5 w 404.0 199.0 m 764.0 199.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 210.2 Td (Clothing) Tj ET
+BT /F1 7.5 Tf 408.0 189.5 Td (Clothing) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 206.2 m 764.0 206.2 l S
+0.5 w 404.0 185.5 m 764.0 185.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 197.6 Td (Entertainment) Tj ET
+BT /F1 7.5 Tf 408.0 176.0 Td (Entertainment) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 193.6 m 764.0 193.6 l S
+0.5 w 404.0 172.0 m 764.0 172.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 185.0 Td (Dining out) Tj ET
+BT /F1 7.5 Tf 408.0 162.5 Td (Dining out) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 181.0 m 764.0 181.0 l S
+0.5 w 404.0 158.5 m 764.0 158.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 172.4 Td (Medical) Tj ET
+BT /F1 7.5 Tf 408.0 149.0 Td (Medical) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 168.4 m 764.0 168.4 l S
+0.5 w 404.0 145.0 m 764.0 145.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 159.8 Td (Fitness / Health) Tj ET
+BT /F1 7.5 Tf 408.0 135.5 Td (Fitness / Health) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 155.8 m 764.0 155.8 l S
+0.5 w 404.0 131.5 m 764.0 131.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 147.2 Td (Auto / Life / Home insurance) Tj ET
-0.760 0.710 0.630 RG
-0.5 w 404.0 143.2 m 764.0 143.2 l S
-0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 134.6 Td (Education) Tj ET
-0.760 0.710 0.630 RG
-0.5 w 404.0 130.6 m 764.0 130.6 l S
-0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 122.0 Td (Charity / Donations / Gifts) Tj ET
+BT /F1 7.5 Tf 408.0 122.0 Td (Auto / Life / Home insurance) Tj ET
 0.760 0.710 0.630 RG
 0.5 w 404.0 118.0 m 764.0 118.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 109.4 Td (Pets) Tj ET
+BT /F1 7.5 Tf 408.0 108.5 Td (Education) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 105.4 m 764.0 105.4 l S
+0.5 w 404.0 104.5 m 764.0 104.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 96.8 Td (Vacation / Travel) Tj ET
+BT /F1 7.5 Tf 408.0 95.0 Td (Charity / Donations / Gifts) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 92.8 m 764.0 92.8 l S
+0.5 w 404.0 91.0 m 764.0 91.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 84.2 Td (Debt payments) Tj ET
+BT /F1 7.5 Tf 408.0 81.5 Td (Pets) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 80.2 m 764.0 80.2 l S
+0.5 w 404.0 77.5 m 764.0 77.5 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 408.0 68.0 Td (Vacation / Travel) Tj ET
+0.760 0.710 0.630 RG
+0.5 w 404.0 64.0 m 764.0 64.0 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 408.0 54.5 Td (Debt payments) Tj ET
+0.760 0.710 0.630 RG
+0.5 w 404.0 50.5 m 764.0 50.5 l S
 0.950 0.920 0.860 rg
-404.0 67.6 360.0 12.6 re f
+404.0 37.0 360.0 13.5 re f
 0.170 0.140 0.110 rg
-BT /F2 7.5 Tf 408.0 71.6 Td (Total) Tj ET
+BT /F2 7.5 Tf 408.0 41.0 Td (Total) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 67.6 m 764.0 67.6 l S
+0.5 w 404.0 37.0 m 764.0 37.0 l S
 0.760 0.710 0.630 RG
 0.8 w
-404.0 67.6 360.0 189.0 re S
+404.0 37.0 360.0 202.5 re S
 0.760 0.710 0.630 RG
-0.6 w 522.0 256.6 m 522.0 67.6 l S
+0.6 w 522.0 239.5 m 522.0 37.0 l S
 0.760 0.710 0.630 RG
-0.5 w 602.7 256.6 m 602.7 67.6 l S
+0.5 w 602.7 239.5 m 602.7 37.0 l S
 0.760 0.710 0.630 RG
-0.5 w 683.3 256.6 m 683.3 67.6 l S
+0.5 w 683.3 239.5 m 683.3 37.0 l S
 endstream
 endobj
 17 0 obj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 792 612] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 18 0 R /Annots [145 0 R 146 0 R 147 0 R 148 0 R 149 0 R 150 0 R 151 0 R 152 0 R 153 0 R 154 0 R 155 0 R 156 0 R 157 0 R 158 0 R 159 0 R 160 0 R] >>
 endobj
 18 0 obj
-<< /Length 14512 >>
+<< /Length 14506 >>
 stream
 1.000 0.995 0.980 rg
 0.0 0.0 792.0 612.0 re f
@@ -3302,207 +3302,207 @@ BT /F2 9 Tf 28.0 157.0 Td (Notes) Tj ET
 0.330 0.240 0.170 rg
 BT /F2 9 Tf 404.0 537.0 Td (Income) Tj ET
 0.950 0.920 0.860 rg
-404.0 519.4 360.0 12.6 re f
+404.0 518.5 360.0 13.5 re f
 0.470 0.410 0.350 rg
-BT /F1 6.5 Tf 408.0 523.4 Td (Source) Tj ET
+BT /F1 6.5 Tf 408.0 522.5 Td (Source) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 551.2 523.4 Td (Budget) Tj ET
+BT /F2 7 Tf 551.2 522.5 Td (Budget) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 632.9 523.4 Td (Actual) Tj ET
+BT /F2 7 Tf 632.9 522.5 Td (Actual) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 707.7 523.4 Td (Difference) Tj ET
+BT /F2 7 Tf 707.7 522.5 Td (Difference) Tj ET
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 510.8 Td (Wages / Tips) Tj ET
+BT /F1 7.5 Tf 408.0 509.0 Td (Wages / Tips) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 506.8 m 764.0 506.8 l S
+0.5 w 404.0 505.0 m 764.0 505.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 498.2 Td (Wages / Tips) Tj ET
+BT /F1 7.5 Tf 408.0 495.5 Td (Wages / Tips) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 494.2 m 764.0 494.2 l S
+0.5 w 404.0 491.5 m 764.0 491.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 485.6 Td (Side income) Tj ET
+BT /F1 7.5 Tf 408.0 482.0 Td (Side income) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 481.6 m 764.0 481.6 l S
+0.5 w 404.0 478.0 m 764.0 478.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 473.0 Td (Interest) Tj ET
+BT /F1 7.5 Tf 408.0 468.5 Td (Interest) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 469.0 m 764.0 469.0 l S
+0.5 w 404.0 464.5 m 764.0 464.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 460.4 Td (Dividends) Tj ET
+BT /F1 7.5 Tf 408.0 455.0 Td (Dividends) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 456.4 m 764.0 456.4 l S
+0.5 w 404.0 451.0 m 764.0 451.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 447.8 Td (Gifts) Tj ET
+BT /F1 7.5 Tf 408.0 441.5 Td (Gifts) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 443.8 m 764.0 443.8 l S
+0.5 w 404.0 437.5 m 764.0 437.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 435.2 Td (Reimbursements) Tj ET
+BT /F1 7.5 Tf 408.0 428.0 Td (Reimbursements) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 431.2 m 764.0 431.2 l S
+0.5 w 404.0 424.0 m 764.0 424.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 422.6 Td (Transfers) Tj ET
+BT /F1 7.5 Tf 408.0 414.5 Td (Transfers) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 418.6 m 764.0 418.6 l S
+0.5 w 404.0 410.5 m 764.0 410.5 l S
 0.950 0.920 0.860 rg
-404.0 406.0 360.0 12.6 re f
+404.0 397.0 360.0 13.5 re f
 0.170 0.140 0.110 rg
-BT /F2 7.5 Tf 408.0 410.0 Td (Total) Tj ET
+BT /F2 7.5 Tf 408.0 401.0 Td (Total) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 406.0 m 764.0 406.0 l S
+0.5 w 404.0 397.0 m 764.0 397.0 l S
 0.760 0.710 0.630 RG
 0.8 w
-404.0 406.0 360.0 126.0 re S
+404.0 397.0 360.0 135.0 re S
 0.760 0.710 0.630 RG
-0.6 w 522.0 532.0 m 522.0 406.0 l S
+0.6 w 522.0 532.0 m 522.0 397.0 l S
 0.760 0.710 0.630 RG
-0.5 w 602.7 532.0 m 602.7 406.0 l S
+0.5 w 602.7 532.0 m 602.7 397.0 l S
 0.760 0.710 0.630 RG
-0.5 w 683.3 532.0 m 683.3 406.0 l S
+0.5 w 683.3 532.0 m 683.3 397.0 l S
 0.330 0.240 0.170 rg
-BT /F2 9 Tf 404.0 393.0 Td (Expenses) Tj ET
+BT /F2 9 Tf 404.0 384.0 Td (Expenses) Tj ET
 0.470 0.410 0.350 rg
-BT /F1 7 Tf 453.0 393.0 Td (home) Tj ET
+BT /F1 7 Tf 453.0 384.0 Td (home) Tj ET
 0.950 0.920 0.860 rg
-404.0 375.4 360.0 12.6 re f
+404.0 365.5 360.0 13.5 re f
 0.470 0.410 0.350 rg
-BT /F1 6.5 Tf 408.0 379.4 Td (Bill) Tj ET
+BT /F1 6.5 Tf 408.0 369.5 Td (Bill) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 551.2 379.4 Td (Budget) Tj ET
+BT /F2 7 Tf 551.2 369.5 Td (Budget) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 632.9 379.4 Td (Actual) Tj ET
+BT /F2 7 Tf 632.9 369.5 Td (Actual) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 707.7 379.4 Td (Difference) Tj ET
+BT /F2 7 Tf 707.7 369.5 Td (Difference) Tj ET
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 366.8 Td (Mortgage / Rent) Tj ET
+BT /F1 7.5 Tf 408.0 356.0 Td (Mortgage / Rent) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 362.8 m 764.0 362.8 l S
+0.5 w 404.0 352.0 m 764.0 352.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 354.2 Td (Auto) Tj ET
+BT /F1 7.5 Tf 408.0 342.5 Td (Auto) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 350.2 m 764.0 350.2 l S
+0.5 w 404.0 338.5 m 764.0 338.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 341.6 Td (Electricity) Tj ET
-0.760 0.710 0.630 RG
-0.5 w 404.0 337.6 m 764.0 337.6 l S
-0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 329.0 Td (Heating / Cooling) Tj ET
+BT /F1 7.5 Tf 408.0 329.0 Td (Electricity) Tj ET
 0.760 0.710 0.630 RG
 0.5 w 404.0 325.0 m 764.0 325.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 316.4 Td (Water / Sewer / Trash) Tj ET
+BT /F1 7.5 Tf 408.0 315.5 Td (Heating / Cooling) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 312.4 m 764.0 312.4 l S
+0.5 w 404.0 311.5 m 764.0 311.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 303.8 Td (Phone / Internet / TV) Tj ET
+BT /F1 7.5 Tf 408.0 302.0 Td (Water / Sewer / Trash) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 299.8 m 764.0 299.8 l S
+0.5 w 404.0 298.0 m 764.0 298.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 291.2 Td (Maintenance / Repairs) Tj ET
+BT /F1 7.5 Tf 408.0 288.5 Td (Phone / Internet / TV) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 287.2 m 764.0 287.2 l S
+0.5 w 404.0 284.5 m 764.0 284.5 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 408.0 275.0 Td (Maintenance / Repairs) Tj ET
+0.760 0.710 0.630 RG
+0.5 w 404.0 271.0 m 764.0 271.0 l S
 0.950 0.920 0.860 rg
-404.0 274.6 360.0 12.6 re f
+404.0 257.5 360.0 13.5 re f
 0.170 0.140 0.110 rg
-BT /F2 7.5 Tf 408.0 278.6 Td (Total) Tj ET
+BT /F2 7.5 Tf 408.0 261.5 Td (Total) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 274.6 m 764.0 274.6 l S
+0.5 w 404.0 257.5 m 764.0 257.5 l S
 0.760 0.710 0.630 RG
 0.8 w
-404.0 274.6 360.0 113.4 re S
+404.0 257.5 360.0 121.5 re S
 0.760 0.710 0.630 RG
-0.6 w 522.0 388.0 m 522.0 274.6 l S
+0.6 w 522.0 379.0 m 522.0 257.5 l S
 0.760 0.710 0.630 RG
-0.5 w 602.7 388.0 m 602.7 274.6 l S
+0.5 w 602.7 379.0 m 602.7 257.5 l S
 0.760 0.710 0.630 RG
-0.5 w 683.3 388.0 m 683.3 274.6 l S
+0.5 w 683.3 379.0 m 683.3 257.5 l S
 0.330 0.240 0.170 rg
-BT /F2 9 Tf 404.0 261.6 Td (Expenses) Tj ET
+BT /F2 9 Tf 404.0 244.5 Td (Expenses) Tj ET
 0.470 0.410 0.350 rg
-BT /F1 7 Tf 453.0 261.6 Td (daily) Tj ET
+BT /F1 7 Tf 453.0 244.5 Td (daily) Tj ET
 0.950 0.920 0.860 rg
-404.0 244.0 360.0 12.6 re f
+404.0 226.0 360.0 13.5 re f
 0.470 0.410 0.350 rg
-BT /F1 6.5 Tf 408.0 248.0 Td (Item) Tj ET
+BT /F1 6.5 Tf 408.0 230.0 Td (Item) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 551.2 248.0 Td (Budget) Tj ET
+BT /F2 7 Tf 551.2 230.0 Td (Budget) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 632.9 248.0 Td (Actual) Tj ET
+BT /F2 7 Tf 632.9 230.0 Td (Actual) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 707.7 248.0 Td (Difference) Tj ET
+BT /F2 7 Tf 707.7 230.0 Td (Difference) Tj ET
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 235.4 Td (Groceries) Tj ET
+BT /F1 7.5 Tf 408.0 216.5 Td (Groceries) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 231.4 m 764.0 231.4 l S
+0.5 w 404.0 212.5 m 764.0 212.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 222.8 Td (Personal care) Tj ET
+BT /F1 7.5 Tf 408.0 203.0 Td (Personal care) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 218.8 m 764.0 218.8 l S
+0.5 w 404.0 199.0 m 764.0 199.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 210.2 Td (Clothing) Tj ET
+BT /F1 7.5 Tf 408.0 189.5 Td (Clothing) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 206.2 m 764.0 206.2 l S
+0.5 w 404.0 185.5 m 764.0 185.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 197.6 Td (Entertainment) Tj ET
+BT /F1 7.5 Tf 408.0 176.0 Td (Entertainment) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 193.6 m 764.0 193.6 l S
+0.5 w 404.0 172.0 m 764.0 172.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 185.0 Td (Dining out) Tj ET
+BT /F1 7.5 Tf 408.0 162.5 Td (Dining out) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 181.0 m 764.0 181.0 l S
+0.5 w 404.0 158.5 m 764.0 158.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 172.4 Td (Medical) Tj ET
+BT /F1 7.5 Tf 408.0 149.0 Td (Medical) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 168.4 m 764.0 168.4 l S
+0.5 w 404.0 145.0 m 764.0 145.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 159.8 Td (Fitness / Health) Tj ET
+BT /F1 7.5 Tf 408.0 135.5 Td (Fitness / Health) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 155.8 m 764.0 155.8 l S
+0.5 w 404.0 131.5 m 764.0 131.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 147.2 Td (Auto / Life / Home insurance) Tj ET
-0.760 0.710 0.630 RG
-0.5 w 404.0 143.2 m 764.0 143.2 l S
-0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 134.6 Td (Education) Tj ET
-0.760 0.710 0.630 RG
-0.5 w 404.0 130.6 m 764.0 130.6 l S
-0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 122.0 Td (Charity / Donations / Gifts) Tj ET
+BT /F1 7.5 Tf 408.0 122.0 Td (Auto / Life / Home insurance) Tj ET
 0.760 0.710 0.630 RG
 0.5 w 404.0 118.0 m 764.0 118.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 109.4 Td (Pets) Tj ET
+BT /F1 7.5 Tf 408.0 108.5 Td (Education) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 105.4 m 764.0 105.4 l S
+0.5 w 404.0 104.5 m 764.0 104.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 96.8 Td (Vacation / Travel) Tj ET
+BT /F1 7.5 Tf 408.0 95.0 Td (Charity / Donations / Gifts) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 92.8 m 764.0 92.8 l S
+0.5 w 404.0 91.0 m 764.0 91.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 84.2 Td (Debt payments) Tj ET
+BT /F1 7.5 Tf 408.0 81.5 Td (Pets) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 80.2 m 764.0 80.2 l S
+0.5 w 404.0 77.5 m 764.0 77.5 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 408.0 68.0 Td (Vacation / Travel) Tj ET
+0.760 0.710 0.630 RG
+0.5 w 404.0 64.0 m 764.0 64.0 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 408.0 54.5 Td (Debt payments) Tj ET
+0.760 0.710 0.630 RG
+0.5 w 404.0 50.5 m 764.0 50.5 l S
 0.950 0.920 0.860 rg
-404.0 67.6 360.0 12.6 re f
+404.0 37.0 360.0 13.5 re f
 0.170 0.140 0.110 rg
-BT /F2 7.5 Tf 408.0 71.6 Td (Total) Tj ET
+BT /F2 7.5 Tf 408.0 41.0 Td (Total) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 67.6 m 764.0 67.6 l S
+0.5 w 404.0 37.0 m 764.0 37.0 l S
 0.760 0.710 0.630 RG
 0.8 w
-404.0 67.6 360.0 189.0 re S
+404.0 37.0 360.0 202.5 re S
 0.760 0.710 0.630 RG
-0.6 w 522.0 256.6 m 522.0 67.6 l S
+0.6 w 522.0 239.5 m 522.0 37.0 l S
 0.760 0.710 0.630 RG
-0.5 w 602.7 256.6 m 602.7 67.6 l S
+0.5 w 602.7 239.5 m 602.7 37.0 l S
 0.760 0.710 0.630 RG
-0.5 w 683.3 256.6 m 683.3 67.6 l S
+0.5 w 683.3 239.5 m 683.3 37.0 l S
 endstream
 endobj
 19 0 obj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 792 612] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 20 0 R /Annots [161 0 R 162 0 R 163 0 R 164 0 R 165 0 R 166 0 R 167 0 R 168 0 R 169 0 R 170 0 R 171 0 R 172 0 R 173 0 R 174 0 R 175 0 R 176 0 R] >>
 endobj
 20 0 obj
-<< /Length 14512 >>
+<< /Length 14506 >>
 stream
 1.000 0.995 0.980 rg
 0.0 0.0 792.0 612.0 re f
@@ -3825,207 +3825,207 @@ BT /F2 9 Tf 28.0 157.0 Td (Notes) Tj ET
 0.330 0.240 0.170 rg
 BT /F2 9 Tf 404.0 537.0 Td (Income) Tj ET
 0.950 0.920 0.860 rg
-404.0 519.4 360.0 12.6 re f
+404.0 518.5 360.0 13.5 re f
 0.470 0.410 0.350 rg
-BT /F1 6.5 Tf 408.0 523.4 Td (Source) Tj ET
+BT /F1 6.5 Tf 408.0 522.5 Td (Source) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 551.2 523.4 Td (Budget) Tj ET
+BT /F2 7 Tf 551.2 522.5 Td (Budget) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 632.9 523.4 Td (Actual) Tj ET
+BT /F2 7 Tf 632.9 522.5 Td (Actual) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 707.7 523.4 Td (Difference) Tj ET
+BT /F2 7 Tf 707.7 522.5 Td (Difference) Tj ET
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 510.8 Td (Wages / Tips) Tj ET
+BT /F1 7.5 Tf 408.0 509.0 Td (Wages / Tips) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 506.8 m 764.0 506.8 l S
+0.5 w 404.0 505.0 m 764.0 505.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 498.2 Td (Wages / Tips) Tj ET
+BT /F1 7.5 Tf 408.0 495.5 Td (Wages / Tips) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 494.2 m 764.0 494.2 l S
+0.5 w 404.0 491.5 m 764.0 491.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 485.6 Td (Side income) Tj ET
+BT /F1 7.5 Tf 408.0 482.0 Td (Side income) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 481.6 m 764.0 481.6 l S
+0.5 w 404.0 478.0 m 764.0 478.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 473.0 Td (Interest) Tj ET
+BT /F1 7.5 Tf 408.0 468.5 Td (Interest) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 469.0 m 764.0 469.0 l S
+0.5 w 404.0 464.5 m 764.0 464.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 460.4 Td (Dividends) Tj ET
+BT /F1 7.5 Tf 408.0 455.0 Td (Dividends) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 456.4 m 764.0 456.4 l S
+0.5 w 404.0 451.0 m 764.0 451.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 447.8 Td (Gifts) Tj ET
+BT /F1 7.5 Tf 408.0 441.5 Td (Gifts) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 443.8 m 764.0 443.8 l S
+0.5 w 404.0 437.5 m 764.0 437.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 435.2 Td (Reimbursements) Tj ET
+BT /F1 7.5 Tf 408.0 428.0 Td (Reimbursements) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 431.2 m 764.0 431.2 l S
+0.5 w 404.0 424.0 m 764.0 424.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 422.6 Td (Transfers) Tj ET
+BT /F1 7.5 Tf 408.0 414.5 Td (Transfers) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 418.6 m 764.0 418.6 l S
+0.5 w 404.0 410.5 m 764.0 410.5 l S
 0.950 0.920 0.860 rg
-404.0 406.0 360.0 12.6 re f
+404.0 397.0 360.0 13.5 re f
 0.170 0.140 0.110 rg
-BT /F2 7.5 Tf 408.0 410.0 Td (Total) Tj ET
+BT /F2 7.5 Tf 408.0 401.0 Td (Total) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 406.0 m 764.0 406.0 l S
+0.5 w 404.0 397.0 m 764.0 397.0 l S
 0.760 0.710 0.630 RG
 0.8 w
-404.0 406.0 360.0 126.0 re S
+404.0 397.0 360.0 135.0 re S
 0.760 0.710 0.630 RG
-0.6 w 522.0 532.0 m 522.0 406.0 l S
+0.6 w 522.0 532.0 m 522.0 397.0 l S
 0.760 0.710 0.630 RG
-0.5 w 602.7 532.0 m 602.7 406.0 l S
+0.5 w 602.7 532.0 m 602.7 397.0 l S
 0.760 0.710 0.630 RG
-0.5 w 683.3 532.0 m 683.3 406.0 l S
+0.5 w 683.3 532.0 m 683.3 397.0 l S
 0.330 0.240 0.170 rg
-BT /F2 9 Tf 404.0 393.0 Td (Expenses) Tj ET
+BT /F2 9 Tf 404.0 384.0 Td (Expenses) Tj ET
 0.470 0.410 0.350 rg
-BT /F1 7 Tf 453.0 393.0 Td (home) Tj ET
+BT /F1 7 Tf 453.0 384.0 Td (home) Tj ET
 0.950 0.920 0.860 rg
-404.0 375.4 360.0 12.6 re f
+404.0 365.5 360.0 13.5 re f
 0.470 0.410 0.350 rg
-BT /F1 6.5 Tf 408.0 379.4 Td (Bill) Tj ET
+BT /F1 6.5 Tf 408.0 369.5 Td (Bill) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 551.2 379.4 Td (Budget) Tj ET
+BT /F2 7 Tf 551.2 369.5 Td (Budget) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 632.9 379.4 Td (Actual) Tj ET
+BT /F2 7 Tf 632.9 369.5 Td (Actual) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 707.7 379.4 Td (Difference) Tj ET
+BT /F2 7 Tf 707.7 369.5 Td (Difference) Tj ET
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 366.8 Td (Mortgage / Rent) Tj ET
+BT /F1 7.5 Tf 408.0 356.0 Td (Mortgage / Rent) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 362.8 m 764.0 362.8 l S
+0.5 w 404.0 352.0 m 764.0 352.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 354.2 Td (Auto) Tj ET
+BT /F1 7.5 Tf 408.0 342.5 Td (Auto) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 350.2 m 764.0 350.2 l S
+0.5 w 404.0 338.5 m 764.0 338.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 341.6 Td (Electricity) Tj ET
-0.760 0.710 0.630 RG
-0.5 w 404.0 337.6 m 764.0 337.6 l S
-0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 329.0 Td (Heating / Cooling) Tj ET
+BT /F1 7.5 Tf 408.0 329.0 Td (Electricity) Tj ET
 0.760 0.710 0.630 RG
 0.5 w 404.0 325.0 m 764.0 325.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 316.4 Td (Water / Sewer / Trash) Tj ET
+BT /F1 7.5 Tf 408.0 315.5 Td (Heating / Cooling) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 312.4 m 764.0 312.4 l S
+0.5 w 404.0 311.5 m 764.0 311.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 303.8 Td (Phone / Internet / TV) Tj ET
+BT /F1 7.5 Tf 408.0 302.0 Td (Water / Sewer / Trash) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 299.8 m 764.0 299.8 l S
+0.5 w 404.0 298.0 m 764.0 298.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 291.2 Td (Maintenance / Repairs) Tj ET
+BT /F1 7.5 Tf 408.0 288.5 Td (Phone / Internet / TV) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 287.2 m 764.0 287.2 l S
+0.5 w 404.0 284.5 m 764.0 284.5 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 408.0 275.0 Td (Maintenance / Repairs) Tj ET
+0.760 0.710 0.630 RG
+0.5 w 404.0 271.0 m 764.0 271.0 l S
 0.950 0.920 0.860 rg
-404.0 274.6 360.0 12.6 re f
+404.0 257.5 360.0 13.5 re f
 0.170 0.140 0.110 rg
-BT /F2 7.5 Tf 408.0 278.6 Td (Total) Tj ET
+BT /F2 7.5 Tf 408.0 261.5 Td (Total) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 274.6 m 764.0 274.6 l S
+0.5 w 404.0 257.5 m 764.0 257.5 l S
 0.760 0.710 0.630 RG
 0.8 w
-404.0 274.6 360.0 113.4 re S
+404.0 257.5 360.0 121.5 re S
 0.760 0.710 0.630 RG
-0.6 w 522.0 388.0 m 522.0 274.6 l S
+0.6 w 522.0 379.0 m 522.0 257.5 l S
 0.760 0.710 0.630 RG
-0.5 w 602.7 388.0 m 602.7 274.6 l S
+0.5 w 602.7 379.0 m 602.7 257.5 l S
 0.760 0.710 0.630 RG
-0.5 w 683.3 388.0 m 683.3 274.6 l S
+0.5 w 683.3 379.0 m 683.3 257.5 l S
 0.330 0.240 0.170 rg
-BT /F2 9 Tf 404.0 261.6 Td (Expenses) Tj ET
+BT /F2 9 Tf 404.0 244.5 Td (Expenses) Tj ET
 0.470 0.410 0.350 rg
-BT /F1 7 Tf 453.0 261.6 Td (daily) Tj ET
+BT /F1 7 Tf 453.0 244.5 Td (daily) Tj ET
 0.950 0.920 0.860 rg
-404.0 244.0 360.0 12.6 re f
+404.0 226.0 360.0 13.5 re f
 0.470 0.410 0.350 rg
-BT /F1 6.5 Tf 408.0 248.0 Td (Item) Tj ET
+BT /F1 6.5 Tf 408.0 230.0 Td (Item) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 551.2 248.0 Td (Budget) Tj ET
+BT /F2 7 Tf 551.2 230.0 Td (Budget) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 632.9 248.0 Td (Actual) Tj ET
+BT /F2 7 Tf 632.9 230.0 Td (Actual) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 707.7 248.0 Td (Difference) Tj ET
+BT /F2 7 Tf 707.7 230.0 Td (Difference) Tj ET
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 235.4 Td (Groceries) Tj ET
+BT /F1 7.5 Tf 408.0 216.5 Td (Groceries) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 231.4 m 764.0 231.4 l S
+0.5 w 404.0 212.5 m 764.0 212.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 222.8 Td (Personal care) Tj ET
+BT /F1 7.5 Tf 408.0 203.0 Td (Personal care) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 218.8 m 764.0 218.8 l S
+0.5 w 404.0 199.0 m 764.0 199.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 210.2 Td (Clothing) Tj ET
+BT /F1 7.5 Tf 408.0 189.5 Td (Clothing) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 206.2 m 764.0 206.2 l S
+0.5 w 404.0 185.5 m 764.0 185.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 197.6 Td (Entertainment) Tj ET
+BT /F1 7.5 Tf 408.0 176.0 Td (Entertainment) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 193.6 m 764.0 193.6 l S
+0.5 w 404.0 172.0 m 764.0 172.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 185.0 Td (Dining out) Tj ET
+BT /F1 7.5 Tf 408.0 162.5 Td (Dining out) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 181.0 m 764.0 181.0 l S
+0.5 w 404.0 158.5 m 764.0 158.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 172.4 Td (Medical) Tj ET
+BT /F1 7.5 Tf 408.0 149.0 Td (Medical) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 168.4 m 764.0 168.4 l S
+0.5 w 404.0 145.0 m 764.0 145.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 159.8 Td (Fitness / Health) Tj ET
+BT /F1 7.5 Tf 408.0 135.5 Td (Fitness / Health) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 155.8 m 764.0 155.8 l S
+0.5 w 404.0 131.5 m 764.0 131.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 147.2 Td (Auto / Life / Home insurance) Tj ET
-0.760 0.710 0.630 RG
-0.5 w 404.0 143.2 m 764.0 143.2 l S
-0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 134.6 Td (Education) Tj ET
-0.760 0.710 0.630 RG
-0.5 w 404.0 130.6 m 764.0 130.6 l S
-0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 122.0 Td (Charity / Donations / Gifts) Tj ET
+BT /F1 7.5 Tf 408.0 122.0 Td (Auto / Life / Home insurance) Tj ET
 0.760 0.710 0.630 RG
 0.5 w 404.0 118.0 m 764.0 118.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 109.4 Td (Pets) Tj ET
+BT /F1 7.5 Tf 408.0 108.5 Td (Education) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 105.4 m 764.0 105.4 l S
+0.5 w 404.0 104.5 m 764.0 104.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 96.8 Td (Vacation / Travel) Tj ET
+BT /F1 7.5 Tf 408.0 95.0 Td (Charity / Donations / Gifts) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 92.8 m 764.0 92.8 l S
+0.5 w 404.0 91.0 m 764.0 91.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 84.2 Td (Debt payments) Tj ET
+BT /F1 7.5 Tf 408.0 81.5 Td (Pets) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 80.2 m 764.0 80.2 l S
+0.5 w 404.0 77.5 m 764.0 77.5 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 408.0 68.0 Td (Vacation / Travel) Tj ET
+0.760 0.710 0.630 RG
+0.5 w 404.0 64.0 m 764.0 64.0 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 408.0 54.5 Td (Debt payments) Tj ET
+0.760 0.710 0.630 RG
+0.5 w 404.0 50.5 m 764.0 50.5 l S
 0.950 0.920 0.860 rg
-404.0 67.6 360.0 12.6 re f
+404.0 37.0 360.0 13.5 re f
 0.170 0.140 0.110 rg
-BT /F2 7.5 Tf 408.0 71.6 Td (Total) Tj ET
+BT /F2 7.5 Tf 408.0 41.0 Td (Total) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 67.6 m 764.0 67.6 l S
+0.5 w 404.0 37.0 m 764.0 37.0 l S
 0.760 0.710 0.630 RG
 0.8 w
-404.0 67.6 360.0 189.0 re S
+404.0 37.0 360.0 202.5 re S
 0.760 0.710 0.630 RG
-0.6 w 522.0 256.6 m 522.0 67.6 l S
+0.6 w 522.0 239.5 m 522.0 37.0 l S
 0.760 0.710 0.630 RG
-0.5 w 602.7 256.6 m 602.7 67.6 l S
+0.5 w 602.7 239.5 m 602.7 37.0 l S
 0.760 0.710 0.630 RG
-0.5 w 683.3 256.6 m 683.3 67.6 l S
+0.5 w 683.3 239.5 m 683.3 37.0 l S
 endstream
 endobj
 21 0 obj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 792 612] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 22 0 R /Annots [177 0 R 178 0 R 179 0 R 180 0 R 181 0 R 182 0 R 183 0 R 184 0 R 185 0 R 186 0 R 187 0 R 188 0 R 189 0 R 190 0 R 191 0 R 192 0 R] >>
 endobj
 22 0 obj
-<< /Length 14514 >>
+<< /Length 14508 >>
 stream
 1.000 0.995 0.980 rg
 0.0 0.0 792.0 612.0 re f
@@ -4348,207 +4348,207 @@ BT /F2 9 Tf 28.0 157.0 Td (Notes) Tj ET
 0.330 0.240 0.170 rg
 BT /F2 9 Tf 404.0 537.0 Td (Income) Tj ET
 0.950 0.920 0.860 rg
-404.0 519.4 360.0 12.6 re f
+404.0 518.5 360.0 13.5 re f
 0.470 0.410 0.350 rg
-BT /F1 6.5 Tf 408.0 523.4 Td (Source) Tj ET
+BT /F1 6.5 Tf 408.0 522.5 Td (Source) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 551.2 523.4 Td (Budget) Tj ET
+BT /F2 7 Tf 551.2 522.5 Td (Budget) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 632.9 523.4 Td (Actual) Tj ET
+BT /F2 7 Tf 632.9 522.5 Td (Actual) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 707.7 523.4 Td (Difference) Tj ET
+BT /F2 7 Tf 707.7 522.5 Td (Difference) Tj ET
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 510.8 Td (Wages / Tips) Tj ET
+BT /F1 7.5 Tf 408.0 509.0 Td (Wages / Tips) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 506.8 m 764.0 506.8 l S
+0.5 w 404.0 505.0 m 764.0 505.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 498.2 Td (Wages / Tips) Tj ET
+BT /F1 7.5 Tf 408.0 495.5 Td (Wages / Tips) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 494.2 m 764.0 494.2 l S
+0.5 w 404.0 491.5 m 764.0 491.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 485.6 Td (Side income) Tj ET
+BT /F1 7.5 Tf 408.0 482.0 Td (Side income) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 481.6 m 764.0 481.6 l S
+0.5 w 404.0 478.0 m 764.0 478.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 473.0 Td (Interest) Tj ET
+BT /F1 7.5 Tf 408.0 468.5 Td (Interest) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 469.0 m 764.0 469.0 l S
+0.5 w 404.0 464.5 m 764.0 464.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 460.4 Td (Dividends) Tj ET
+BT /F1 7.5 Tf 408.0 455.0 Td (Dividends) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 456.4 m 764.0 456.4 l S
+0.5 w 404.0 451.0 m 764.0 451.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 447.8 Td (Gifts) Tj ET
+BT /F1 7.5 Tf 408.0 441.5 Td (Gifts) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 443.8 m 764.0 443.8 l S
+0.5 w 404.0 437.5 m 764.0 437.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 435.2 Td (Reimbursements) Tj ET
+BT /F1 7.5 Tf 408.0 428.0 Td (Reimbursements) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 431.2 m 764.0 431.2 l S
+0.5 w 404.0 424.0 m 764.0 424.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 422.6 Td (Transfers) Tj ET
+BT /F1 7.5 Tf 408.0 414.5 Td (Transfers) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 418.6 m 764.0 418.6 l S
+0.5 w 404.0 410.5 m 764.0 410.5 l S
 0.950 0.920 0.860 rg
-404.0 406.0 360.0 12.6 re f
+404.0 397.0 360.0 13.5 re f
 0.170 0.140 0.110 rg
-BT /F2 7.5 Tf 408.0 410.0 Td (Total) Tj ET
+BT /F2 7.5 Tf 408.0 401.0 Td (Total) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 406.0 m 764.0 406.0 l S
+0.5 w 404.0 397.0 m 764.0 397.0 l S
 0.760 0.710 0.630 RG
 0.8 w
-404.0 406.0 360.0 126.0 re S
+404.0 397.0 360.0 135.0 re S
 0.760 0.710 0.630 RG
-0.6 w 522.0 532.0 m 522.0 406.0 l S
+0.6 w 522.0 532.0 m 522.0 397.0 l S
 0.760 0.710 0.630 RG
-0.5 w 602.7 532.0 m 602.7 406.0 l S
+0.5 w 602.7 532.0 m 602.7 397.0 l S
 0.760 0.710 0.630 RG
-0.5 w 683.3 532.0 m 683.3 406.0 l S
+0.5 w 683.3 532.0 m 683.3 397.0 l S
 0.330 0.240 0.170 rg
-BT /F2 9 Tf 404.0 393.0 Td (Expenses) Tj ET
+BT /F2 9 Tf 404.0 384.0 Td (Expenses) Tj ET
 0.470 0.410 0.350 rg
-BT /F1 7 Tf 453.0 393.0 Td (home) Tj ET
+BT /F1 7 Tf 453.0 384.0 Td (home) Tj ET
 0.950 0.920 0.860 rg
-404.0 375.4 360.0 12.6 re f
+404.0 365.5 360.0 13.5 re f
 0.470 0.410 0.350 rg
-BT /F1 6.5 Tf 408.0 379.4 Td (Bill) Tj ET
+BT /F1 6.5 Tf 408.0 369.5 Td (Bill) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 551.2 379.4 Td (Budget) Tj ET
+BT /F2 7 Tf 551.2 369.5 Td (Budget) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 632.9 379.4 Td (Actual) Tj ET
+BT /F2 7 Tf 632.9 369.5 Td (Actual) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 707.7 379.4 Td (Difference) Tj ET
+BT /F2 7 Tf 707.7 369.5 Td (Difference) Tj ET
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 366.8 Td (Mortgage / Rent) Tj ET
+BT /F1 7.5 Tf 408.0 356.0 Td (Mortgage / Rent) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 362.8 m 764.0 362.8 l S
+0.5 w 404.0 352.0 m 764.0 352.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 354.2 Td (Auto) Tj ET
+BT /F1 7.5 Tf 408.0 342.5 Td (Auto) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 350.2 m 764.0 350.2 l S
+0.5 w 404.0 338.5 m 764.0 338.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 341.6 Td (Electricity) Tj ET
-0.760 0.710 0.630 RG
-0.5 w 404.0 337.6 m 764.0 337.6 l S
-0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 329.0 Td (Heating / Cooling) Tj ET
+BT /F1 7.5 Tf 408.0 329.0 Td (Electricity) Tj ET
 0.760 0.710 0.630 RG
 0.5 w 404.0 325.0 m 764.0 325.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 316.4 Td (Water / Sewer / Trash) Tj ET
+BT /F1 7.5 Tf 408.0 315.5 Td (Heating / Cooling) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 312.4 m 764.0 312.4 l S
+0.5 w 404.0 311.5 m 764.0 311.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 303.8 Td (Phone / Internet / TV) Tj ET
+BT /F1 7.5 Tf 408.0 302.0 Td (Water / Sewer / Trash) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 299.8 m 764.0 299.8 l S
+0.5 w 404.0 298.0 m 764.0 298.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 291.2 Td (Maintenance / Repairs) Tj ET
+BT /F1 7.5 Tf 408.0 288.5 Td (Phone / Internet / TV) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 287.2 m 764.0 287.2 l S
+0.5 w 404.0 284.5 m 764.0 284.5 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 408.0 275.0 Td (Maintenance / Repairs) Tj ET
+0.760 0.710 0.630 RG
+0.5 w 404.0 271.0 m 764.0 271.0 l S
 0.950 0.920 0.860 rg
-404.0 274.6 360.0 12.6 re f
+404.0 257.5 360.0 13.5 re f
 0.170 0.140 0.110 rg
-BT /F2 7.5 Tf 408.0 278.6 Td (Total) Tj ET
+BT /F2 7.5 Tf 408.0 261.5 Td (Total) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 274.6 m 764.0 274.6 l S
+0.5 w 404.0 257.5 m 764.0 257.5 l S
 0.760 0.710 0.630 RG
 0.8 w
-404.0 274.6 360.0 113.4 re S
+404.0 257.5 360.0 121.5 re S
 0.760 0.710 0.630 RG
-0.6 w 522.0 388.0 m 522.0 274.6 l S
+0.6 w 522.0 379.0 m 522.0 257.5 l S
 0.760 0.710 0.630 RG
-0.5 w 602.7 388.0 m 602.7 274.6 l S
+0.5 w 602.7 379.0 m 602.7 257.5 l S
 0.760 0.710 0.630 RG
-0.5 w 683.3 388.0 m 683.3 274.6 l S
+0.5 w 683.3 379.0 m 683.3 257.5 l S
 0.330 0.240 0.170 rg
-BT /F2 9 Tf 404.0 261.6 Td (Expenses) Tj ET
+BT /F2 9 Tf 404.0 244.5 Td (Expenses) Tj ET
 0.470 0.410 0.350 rg
-BT /F1 7 Tf 453.0 261.6 Td (daily) Tj ET
+BT /F1 7 Tf 453.0 244.5 Td (daily) Tj ET
 0.950 0.920 0.860 rg
-404.0 244.0 360.0 12.6 re f
+404.0 226.0 360.0 13.5 re f
 0.470 0.410 0.350 rg
-BT /F1 6.5 Tf 408.0 248.0 Td (Item) Tj ET
+BT /F1 6.5 Tf 408.0 230.0 Td (Item) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 551.2 248.0 Td (Budget) Tj ET
+BT /F2 7 Tf 551.2 230.0 Td (Budget) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 632.9 248.0 Td (Actual) Tj ET
+BT /F2 7 Tf 632.9 230.0 Td (Actual) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 707.7 248.0 Td (Difference) Tj ET
+BT /F2 7 Tf 707.7 230.0 Td (Difference) Tj ET
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 235.4 Td (Groceries) Tj ET
+BT /F1 7.5 Tf 408.0 216.5 Td (Groceries) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 231.4 m 764.0 231.4 l S
+0.5 w 404.0 212.5 m 764.0 212.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 222.8 Td (Personal care) Tj ET
+BT /F1 7.5 Tf 408.0 203.0 Td (Personal care) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 218.8 m 764.0 218.8 l S
+0.5 w 404.0 199.0 m 764.0 199.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 210.2 Td (Clothing) Tj ET
+BT /F1 7.5 Tf 408.0 189.5 Td (Clothing) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 206.2 m 764.0 206.2 l S
+0.5 w 404.0 185.5 m 764.0 185.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 197.6 Td (Entertainment) Tj ET
+BT /F1 7.5 Tf 408.0 176.0 Td (Entertainment) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 193.6 m 764.0 193.6 l S
+0.5 w 404.0 172.0 m 764.0 172.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 185.0 Td (Dining out) Tj ET
+BT /F1 7.5 Tf 408.0 162.5 Td (Dining out) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 181.0 m 764.0 181.0 l S
+0.5 w 404.0 158.5 m 764.0 158.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 172.4 Td (Medical) Tj ET
+BT /F1 7.5 Tf 408.0 149.0 Td (Medical) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 168.4 m 764.0 168.4 l S
+0.5 w 404.0 145.0 m 764.0 145.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 159.8 Td (Fitness / Health) Tj ET
+BT /F1 7.5 Tf 408.0 135.5 Td (Fitness / Health) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 155.8 m 764.0 155.8 l S
+0.5 w 404.0 131.5 m 764.0 131.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 147.2 Td (Auto / Life / Home insurance) Tj ET
-0.760 0.710 0.630 RG
-0.5 w 404.0 143.2 m 764.0 143.2 l S
-0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 134.6 Td (Education) Tj ET
-0.760 0.710 0.630 RG
-0.5 w 404.0 130.6 m 764.0 130.6 l S
-0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 122.0 Td (Charity / Donations / Gifts) Tj ET
+BT /F1 7.5 Tf 408.0 122.0 Td (Auto / Life / Home insurance) Tj ET
 0.760 0.710 0.630 RG
 0.5 w 404.0 118.0 m 764.0 118.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 109.4 Td (Pets) Tj ET
+BT /F1 7.5 Tf 408.0 108.5 Td (Education) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 105.4 m 764.0 105.4 l S
+0.5 w 404.0 104.5 m 764.0 104.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 96.8 Td (Vacation / Travel) Tj ET
+BT /F1 7.5 Tf 408.0 95.0 Td (Charity / Donations / Gifts) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 92.8 m 764.0 92.8 l S
+0.5 w 404.0 91.0 m 764.0 91.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 84.2 Td (Debt payments) Tj ET
+BT /F1 7.5 Tf 408.0 81.5 Td (Pets) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 80.2 m 764.0 80.2 l S
+0.5 w 404.0 77.5 m 764.0 77.5 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 408.0 68.0 Td (Vacation / Travel) Tj ET
+0.760 0.710 0.630 RG
+0.5 w 404.0 64.0 m 764.0 64.0 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 408.0 54.5 Td (Debt payments) Tj ET
+0.760 0.710 0.630 RG
+0.5 w 404.0 50.5 m 764.0 50.5 l S
 0.950 0.920 0.860 rg
-404.0 67.6 360.0 12.6 re f
+404.0 37.0 360.0 13.5 re f
 0.170 0.140 0.110 rg
-BT /F2 7.5 Tf 408.0 71.6 Td (Total) Tj ET
+BT /F2 7.5 Tf 408.0 41.0 Td (Total) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 67.6 m 764.0 67.6 l S
+0.5 w 404.0 37.0 m 764.0 37.0 l S
 0.760 0.710 0.630 RG
 0.8 w
-404.0 67.6 360.0 189.0 re S
+404.0 37.0 360.0 202.5 re S
 0.760 0.710 0.630 RG
-0.6 w 522.0 256.6 m 522.0 67.6 l S
+0.6 w 522.0 239.5 m 522.0 37.0 l S
 0.760 0.710 0.630 RG
-0.5 w 602.7 256.6 m 602.7 67.6 l S
+0.5 w 602.7 239.5 m 602.7 37.0 l S
 0.760 0.710 0.630 RG
-0.5 w 683.3 256.6 m 683.3 67.6 l S
+0.5 w 683.3 239.5 m 683.3 37.0 l S
 endstream
 endobj
 23 0 obj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 792 612] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 24 0 R /Annots [193 0 R 194 0 R 195 0 R 196 0 R 197 0 R 198 0 R 199 0 R 200 0 R 201 0 R 202 0 R 203 0 R 204 0 R 205 0 R 206 0 R 207 0 R 208 0 R] >>
 endobj
 24 0 obj
-<< /Length 14517 >>
+<< /Length 14511 >>
 stream
 1.000 0.995 0.980 rg
 0.0 0.0 792.0 612.0 re f
@@ -4871,207 +4871,207 @@ BT /F2 9 Tf 28.0 157.0 Td (Notes) Tj ET
 0.330 0.240 0.170 rg
 BT /F2 9 Tf 404.0 537.0 Td (Income) Tj ET
 0.950 0.920 0.860 rg
-404.0 519.4 360.0 12.6 re f
+404.0 518.5 360.0 13.5 re f
 0.470 0.410 0.350 rg
-BT /F1 6.5 Tf 408.0 523.4 Td (Source) Tj ET
+BT /F1 6.5 Tf 408.0 522.5 Td (Source) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 551.2 523.4 Td (Budget) Tj ET
+BT /F2 7 Tf 551.2 522.5 Td (Budget) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 632.9 523.4 Td (Actual) Tj ET
+BT /F2 7 Tf 632.9 522.5 Td (Actual) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 707.7 523.4 Td (Difference) Tj ET
+BT /F2 7 Tf 707.7 522.5 Td (Difference) Tj ET
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 510.8 Td (Wages / Tips) Tj ET
+BT /F1 7.5 Tf 408.0 509.0 Td (Wages / Tips) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 506.8 m 764.0 506.8 l S
+0.5 w 404.0 505.0 m 764.0 505.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 498.2 Td (Wages / Tips) Tj ET
+BT /F1 7.5 Tf 408.0 495.5 Td (Wages / Tips) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 494.2 m 764.0 494.2 l S
+0.5 w 404.0 491.5 m 764.0 491.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 485.6 Td (Side income) Tj ET
+BT /F1 7.5 Tf 408.0 482.0 Td (Side income) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 481.6 m 764.0 481.6 l S
+0.5 w 404.0 478.0 m 764.0 478.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 473.0 Td (Interest) Tj ET
+BT /F1 7.5 Tf 408.0 468.5 Td (Interest) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 469.0 m 764.0 469.0 l S
+0.5 w 404.0 464.5 m 764.0 464.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 460.4 Td (Dividends) Tj ET
+BT /F1 7.5 Tf 408.0 455.0 Td (Dividends) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 456.4 m 764.0 456.4 l S
+0.5 w 404.0 451.0 m 764.0 451.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 447.8 Td (Gifts) Tj ET
+BT /F1 7.5 Tf 408.0 441.5 Td (Gifts) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 443.8 m 764.0 443.8 l S
+0.5 w 404.0 437.5 m 764.0 437.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 435.2 Td (Reimbursements) Tj ET
+BT /F1 7.5 Tf 408.0 428.0 Td (Reimbursements) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 431.2 m 764.0 431.2 l S
+0.5 w 404.0 424.0 m 764.0 424.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 422.6 Td (Transfers) Tj ET
+BT /F1 7.5 Tf 408.0 414.5 Td (Transfers) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 418.6 m 764.0 418.6 l S
+0.5 w 404.0 410.5 m 764.0 410.5 l S
 0.950 0.920 0.860 rg
-404.0 406.0 360.0 12.6 re f
+404.0 397.0 360.0 13.5 re f
 0.170 0.140 0.110 rg
-BT /F2 7.5 Tf 408.0 410.0 Td (Total) Tj ET
+BT /F2 7.5 Tf 408.0 401.0 Td (Total) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 406.0 m 764.0 406.0 l S
+0.5 w 404.0 397.0 m 764.0 397.0 l S
 0.760 0.710 0.630 RG
 0.8 w
-404.0 406.0 360.0 126.0 re S
+404.0 397.0 360.0 135.0 re S
 0.760 0.710 0.630 RG
-0.6 w 522.0 532.0 m 522.0 406.0 l S
+0.6 w 522.0 532.0 m 522.0 397.0 l S
 0.760 0.710 0.630 RG
-0.5 w 602.7 532.0 m 602.7 406.0 l S
+0.5 w 602.7 532.0 m 602.7 397.0 l S
 0.760 0.710 0.630 RG
-0.5 w 683.3 532.0 m 683.3 406.0 l S
+0.5 w 683.3 532.0 m 683.3 397.0 l S
 0.330 0.240 0.170 rg
-BT /F2 9 Tf 404.0 393.0 Td (Expenses) Tj ET
+BT /F2 9 Tf 404.0 384.0 Td (Expenses) Tj ET
 0.470 0.410 0.350 rg
-BT /F1 7 Tf 453.0 393.0 Td (home) Tj ET
+BT /F1 7 Tf 453.0 384.0 Td (home) Tj ET
 0.950 0.920 0.860 rg
-404.0 375.4 360.0 12.6 re f
+404.0 365.5 360.0 13.5 re f
 0.470 0.410 0.350 rg
-BT /F1 6.5 Tf 408.0 379.4 Td (Bill) Tj ET
+BT /F1 6.5 Tf 408.0 369.5 Td (Bill) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 551.2 379.4 Td (Budget) Tj ET
+BT /F2 7 Tf 551.2 369.5 Td (Budget) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 632.9 379.4 Td (Actual) Tj ET
+BT /F2 7 Tf 632.9 369.5 Td (Actual) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 707.7 379.4 Td (Difference) Tj ET
+BT /F2 7 Tf 707.7 369.5 Td (Difference) Tj ET
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 366.8 Td (Mortgage / Rent) Tj ET
+BT /F1 7.5 Tf 408.0 356.0 Td (Mortgage / Rent) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 362.8 m 764.0 362.8 l S
+0.5 w 404.0 352.0 m 764.0 352.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 354.2 Td (Auto) Tj ET
+BT /F1 7.5 Tf 408.0 342.5 Td (Auto) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 350.2 m 764.0 350.2 l S
+0.5 w 404.0 338.5 m 764.0 338.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 341.6 Td (Electricity) Tj ET
-0.760 0.710 0.630 RG
-0.5 w 404.0 337.6 m 764.0 337.6 l S
-0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 329.0 Td (Heating / Cooling) Tj ET
+BT /F1 7.5 Tf 408.0 329.0 Td (Electricity) Tj ET
 0.760 0.710 0.630 RG
 0.5 w 404.0 325.0 m 764.0 325.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 316.4 Td (Water / Sewer / Trash) Tj ET
+BT /F1 7.5 Tf 408.0 315.5 Td (Heating / Cooling) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 312.4 m 764.0 312.4 l S
+0.5 w 404.0 311.5 m 764.0 311.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 303.8 Td (Phone / Internet / TV) Tj ET
+BT /F1 7.5 Tf 408.0 302.0 Td (Water / Sewer / Trash) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 299.8 m 764.0 299.8 l S
+0.5 w 404.0 298.0 m 764.0 298.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 291.2 Td (Maintenance / Repairs) Tj ET
+BT /F1 7.5 Tf 408.0 288.5 Td (Phone / Internet / TV) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 287.2 m 764.0 287.2 l S
+0.5 w 404.0 284.5 m 764.0 284.5 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 408.0 275.0 Td (Maintenance / Repairs) Tj ET
+0.760 0.710 0.630 RG
+0.5 w 404.0 271.0 m 764.0 271.0 l S
 0.950 0.920 0.860 rg
-404.0 274.6 360.0 12.6 re f
+404.0 257.5 360.0 13.5 re f
 0.170 0.140 0.110 rg
-BT /F2 7.5 Tf 408.0 278.6 Td (Total) Tj ET
+BT /F2 7.5 Tf 408.0 261.5 Td (Total) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 274.6 m 764.0 274.6 l S
+0.5 w 404.0 257.5 m 764.0 257.5 l S
 0.760 0.710 0.630 RG
 0.8 w
-404.0 274.6 360.0 113.4 re S
+404.0 257.5 360.0 121.5 re S
 0.760 0.710 0.630 RG
-0.6 w 522.0 388.0 m 522.0 274.6 l S
+0.6 w 522.0 379.0 m 522.0 257.5 l S
 0.760 0.710 0.630 RG
-0.5 w 602.7 388.0 m 602.7 274.6 l S
+0.5 w 602.7 379.0 m 602.7 257.5 l S
 0.760 0.710 0.630 RG
-0.5 w 683.3 388.0 m 683.3 274.6 l S
+0.5 w 683.3 379.0 m 683.3 257.5 l S
 0.330 0.240 0.170 rg
-BT /F2 9 Tf 404.0 261.6 Td (Expenses) Tj ET
+BT /F2 9 Tf 404.0 244.5 Td (Expenses) Tj ET
 0.470 0.410 0.350 rg
-BT /F1 7 Tf 453.0 261.6 Td (daily) Tj ET
+BT /F1 7 Tf 453.0 244.5 Td (daily) Tj ET
 0.950 0.920 0.860 rg
-404.0 244.0 360.0 12.6 re f
+404.0 226.0 360.0 13.5 re f
 0.470 0.410 0.350 rg
-BT /F1 6.5 Tf 408.0 248.0 Td (Item) Tj ET
+BT /F1 6.5 Tf 408.0 230.0 Td (Item) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 551.2 248.0 Td (Budget) Tj ET
+BT /F2 7 Tf 551.2 230.0 Td (Budget) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 632.9 248.0 Td (Actual) Tj ET
+BT /F2 7 Tf 632.9 230.0 Td (Actual) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 707.7 248.0 Td (Difference) Tj ET
+BT /F2 7 Tf 707.7 230.0 Td (Difference) Tj ET
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 235.4 Td (Groceries) Tj ET
+BT /F1 7.5 Tf 408.0 216.5 Td (Groceries) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 231.4 m 764.0 231.4 l S
+0.5 w 404.0 212.5 m 764.0 212.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 222.8 Td (Personal care) Tj ET
+BT /F1 7.5 Tf 408.0 203.0 Td (Personal care) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 218.8 m 764.0 218.8 l S
+0.5 w 404.0 199.0 m 764.0 199.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 210.2 Td (Clothing) Tj ET
+BT /F1 7.5 Tf 408.0 189.5 Td (Clothing) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 206.2 m 764.0 206.2 l S
+0.5 w 404.0 185.5 m 764.0 185.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 197.6 Td (Entertainment) Tj ET
+BT /F1 7.5 Tf 408.0 176.0 Td (Entertainment) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 193.6 m 764.0 193.6 l S
+0.5 w 404.0 172.0 m 764.0 172.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 185.0 Td (Dining out) Tj ET
+BT /F1 7.5 Tf 408.0 162.5 Td (Dining out) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 181.0 m 764.0 181.0 l S
+0.5 w 404.0 158.5 m 764.0 158.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 172.4 Td (Medical) Tj ET
+BT /F1 7.5 Tf 408.0 149.0 Td (Medical) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 168.4 m 764.0 168.4 l S
+0.5 w 404.0 145.0 m 764.0 145.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 159.8 Td (Fitness / Health) Tj ET
+BT /F1 7.5 Tf 408.0 135.5 Td (Fitness / Health) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 155.8 m 764.0 155.8 l S
+0.5 w 404.0 131.5 m 764.0 131.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 147.2 Td (Auto / Life / Home insurance) Tj ET
-0.760 0.710 0.630 RG
-0.5 w 404.0 143.2 m 764.0 143.2 l S
-0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 134.6 Td (Education) Tj ET
-0.760 0.710 0.630 RG
-0.5 w 404.0 130.6 m 764.0 130.6 l S
-0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 122.0 Td (Charity / Donations / Gifts) Tj ET
+BT /F1 7.5 Tf 408.0 122.0 Td (Auto / Life / Home insurance) Tj ET
 0.760 0.710 0.630 RG
 0.5 w 404.0 118.0 m 764.0 118.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 109.4 Td (Pets) Tj ET
+BT /F1 7.5 Tf 408.0 108.5 Td (Education) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 105.4 m 764.0 105.4 l S
+0.5 w 404.0 104.5 m 764.0 104.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 96.8 Td (Vacation / Travel) Tj ET
+BT /F1 7.5 Tf 408.0 95.0 Td (Charity / Donations / Gifts) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 92.8 m 764.0 92.8 l S
+0.5 w 404.0 91.0 m 764.0 91.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 84.2 Td (Debt payments) Tj ET
+BT /F1 7.5 Tf 408.0 81.5 Td (Pets) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 80.2 m 764.0 80.2 l S
+0.5 w 404.0 77.5 m 764.0 77.5 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 408.0 68.0 Td (Vacation / Travel) Tj ET
+0.760 0.710 0.630 RG
+0.5 w 404.0 64.0 m 764.0 64.0 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 408.0 54.5 Td (Debt payments) Tj ET
+0.760 0.710 0.630 RG
+0.5 w 404.0 50.5 m 764.0 50.5 l S
 0.950 0.920 0.860 rg
-404.0 67.6 360.0 12.6 re f
+404.0 37.0 360.0 13.5 re f
 0.170 0.140 0.110 rg
-BT /F2 7.5 Tf 408.0 71.6 Td (Total) Tj ET
+BT /F2 7.5 Tf 408.0 41.0 Td (Total) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 67.6 m 764.0 67.6 l S
+0.5 w 404.0 37.0 m 764.0 37.0 l S
 0.760 0.710 0.630 RG
 0.8 w
-404.0 67.6 360.0 189.0 re S
+404.0 37.0 360.0 202.5 re S
 0.760 0.710 0.630 RG
-0.6 w 522.0 256.6 m 522.0 67.6 l S
+0.6 w 522.0 239.5 m 522.0 37.0 l S
 0.760 0.710 0.630 RG
-0.5 w 602.7 256.6 m 602.7 67.6 l S
+0.5 w 602.7 239.5 m 602.7 37.0 l S
 0.760 0.710 0.630 RG
-0.5 w 683.3 256.6 m 683.3 67.6 l S
+0.5 w 683.3 239.5 m 683.3 37.0 l S
 endstream
 endobj
 25 0 obj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 792 612] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 26 0 R /Annots [209 0 R 210 0 R 211 0 R 212 0 R 213 0 R 214 0 R 215 0 R 216 0 R 217 0 R 218 0 R 219 0 R 220 0 R 221 0 R 222 0 R 223 0 R 224 0 R] >>
 endobj
 26 0 obj
-<< /Length 14515 >>
+<< /Length 14509 >>
 stream
 1.000 0.995 0.980 rg
 0.0 0.0 792.0 612.0 re f
@@ -5394,207 +5394,207 @@ BT /F2 9 Tf 28.0 157.0 Td (Notes) Tj ET
 0.330 0.240 0.170 rg
 BT /F2 9 Tf 404.0 537.0 Td (Income) Tj ET
 0.950 0.920 0.860 rg
-404.0 519.4 360.0 12.6 re f
+404.0 518.5 360.0 13.5 re f
 0.470 0.410 0.350 rg
-BT /F1 6.5 Tf 408.0 523.4 Td (Source) Tj ET
+BT /F1 6.5 Tf 408.0 522.5 Td (Source) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 551.2 523.4 Td (Budget) Tj ET
+BT /F2 7 Tf 551.2 522.5 Td (Budget) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 632.9 523.4 Td (Actual) Tj ET
+BT /F2 7 Tf 632.9 522.5 Td (Actual) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 707.7 523.4 Td (Difference) Tj ET
+BT /F2 7 Tf 707.7 522.5 Td (Difference) Tj ET
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 510.8 Td (Wages / Tips) Tj ET
+BT /F1 7.5 Tf 408.0 509.0 Td (Wages / Tips) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 506.8 m 764.0 506.8 l S
+0.5 w 404.0 505.0 m 764.0 505.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 498.2 Td (Wages / Tips) Tj ET
+BT /F1 7.5 Tf 408.0 495.5 Td (Wages / Tips) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 494.2 m 764.0 494.2 l S
+0.5 w 404.0 491.5 m 764.0 491.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 485.6 Td (Side income) Tj ET
+BT /F1 7.5 Tf 408.0 482.0 Td (Side income) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 481.6 m 764.0 481.6 l S
+0.5 w 404.0 478.0 m 764.0 478.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 473.0 Td (Interest) Tj ET
+BT /F1 7.5 Tf 408.0 468.5 Td (Interest) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 469.0 m 764.0 469.0 l S
+0.5 w 404.0 464.5 m 764.0 464.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 460.4 Td (Dividends) Tj ET
+BT /F1 7.5 Tf 408.0 455.0 Td (Dividends) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 456.4 m 764.0 456.4 l S
+0.5 w 404.0 451.0 m 764.0 451.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 447.8 Td (Gifts) Tj ET
+BT /F1 7.5 Tf 408.0 441.5 Td (Gifts) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 443.8 m 764.0 443.8 l S
+0.5 w 404.0 437.5 m 764.0 437.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 435.2 Td (Reimbursements) Tj ET
+BT /F1 7.5 Tf 408.0 428.0 Td (Reimbursements) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 431.2 m 764.0 431.2 l S
+0.5 w 404.0 424.0 m 764.0 424.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 422.6 Td (Transfers) Tj ET
+BT /F1 7.5 Tf 408.0 414.5 Td (Transfers) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 418.6 m 764.0 418.6 l S
+0.5 w 404.0 410.5 m 764.0 410.5 l S
 0.950 0.920 0.860 rg
-404.0 406.0 360.0 12.6 re f
+404.0 397.0 360.0 13.5 re f
 0.170 0.140 0.110 rg
-BT /F2 7.5 Tf 408.0 410.0 Td (Total) Tj ET
+BT /F2 7.5 Tf 408.0 401.0 Td (Total) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 406.0 m 764.0 406.0 l S
+0.5 w 404.0 397.0 m 764.0 397.0 l S
 0.760 0.710 0.630 RG
 0.8 w
-404.0 406.0 360.0 126.0 re S
+404.0 397.0 360.0 135.0 re S
 0.760 0.710 0.630 RG
-0.6 w 522.0 532.0 m 522.0 406.0 l S
+0.6 w 522.0 532.0 m 522.0 397.0 l S
 0.760 0.710 0.630 RG
-0.5 w 602.7 532.0 m 602.7 406.0 l S
+0.5 w 602.7 532.0 m 602.7 397.0 l S
 0.760 0.710 0.630 RG
-0.5 w 683.3 532.0 m 683.3 406.0 l S
+0.5 w 683.3 532.0 m 683.3 397.0 l S
 0.330 0.240 0.170 rg
-BT /F2 9 Tf 404.0 393.0 Td (Expenses) Tj ET
+BT /F2 9 Tf 404.0 384.0 Td (Expenses) Tj ET
 0.470 0.410 0.350 rg
-BT /F1 7 Tf 453.0 393.0 Td (home) Tj ET
+BT /F1 7 Tf 453.0 384.0 Td (home) Tj ET
 0.950 0.920 0.860 rg
-404.0 375.4 360.0 12.6 re f
+404.0 365.5 360.0 13.5 re f
 0.470 0.410 0.350 rg
-BT /F1 6.5 Tf 408.0 379.4 Td (Bill) Tj ET
+BT /F1 6.5 Tf 408.0 369.5 Td (Bill) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 551.2 379.4 Td (Budget) Tj ET
+BT /F2 7 Tf 551.2 369.5 Td (Budget) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 632.9 379.4 Td (Actual) Tj ET
+BT /F2 7 Tf 632.9 369.5 Td (Actual) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 707.7 379.4 Td (Difference) Tj ET
+BT /F2 7 Tf 707.7 369.5 Td (Difference) Tj ET
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 366.8 Td (Mortgage / Rent) Tj ET
+BT /F1 7.5 Tf 408.0 356.0 Td (Mortgage / Rent) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 362.8 m 764.0 362.8 l S
+0.5 w 404.0 352.0 m 764.0 352.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 354.2 Td (Auto) Tj ET
+BT /F1 7.5 Tf 408.0 342.5 Td (Auto) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 350.2 m 764.0 350.2 l S
+0.5 w 404.0 338.5 m 764.0 338.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 341.6 Td (Electricity) Tj ET
-0.760 0.710 0.630 RG
-0.5 w 404.0 337.6 m 764.0 337.6 l S
-0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 329.0 Td (Heating / Cooling) Tj ET
+BT /F1 7.5 Tf 408.0 329.0 Td (Electricity) Tj ET
 0.760 0.710 0.630 RG
 0.5 w 404.0 325.0 m 764.0 325.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 316.4 Td (Water / Sewer / Trash) Tj ET
+BT /F1 7.5 Tf 408.0 315.5 Td (Heating / Cooling) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 312.4 m 764.0 312.4 l S
+0.5 w 404.0 311.5 m 764.0 311.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 303.8 Td (Phone / Internet / TV) Tj ET
+BT /F1 7.5 Tf 408.0 302.0 Td (Water / Sewer / Trash) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 299.8 m 764.0 299.8 l S
+0.5 w 404.0 298.0 m 764.0 298.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 291.2 Td (Maintenance / Repairs) Tj ET
+BT /F1 7.5 Tf 408.0 288.5 Td (Phone / Internet / TV) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 287.2 m 764.0 287.2 l S
+0.5 w 404.0 284.5 m 764.0 284.5 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 408.0 275.0 Td (Maintenance / Repairs) Tj ET
+0.760 0.710 0.630 RG
+0.5 w 404.0 271.0 m 764.0 271.0 l S
 0.950 0.920 0.860 rg
-404.0 274.6 360.0 12.6 re f
+404.0 257.5 360.0 13.5 re f
 0.170 0.140 0.110 rg
-BT /F2 7.5 Tf 408.0 278.6 Td (Total) Tj ET
+BT /F2 7.5 Tf 408.0 261.5 Td (Total) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 274.6 m 764.0 274.6 l S
+0.5 w 404.0 257.5 m 764.0 257.5 l S
 0.760 0.710 0.630 RG
 0.8 w
-404.0 274.6 360.0 113.4 re S
+404.0 257.5 360.0 121.5 re S
 0.760 0.710 0.630 RG
-0.6 w 522.0 388.0 m 522.0 274.6 l S
+0.6 w 522.0 379.0 m 522.0 257.5 l S
 0.760 0.710 0.630 RG
-0.5 w 602.7 388.0 m 602.7 274.6 l S
+0.5 w 602.7 379.0 m 602.7 257.5 l S
 0.760 0.710 0.630 RG
-0.5 w 683.3 388.0 m 683.3 274.6 l S
+0.5 w 683.3 379.0 m 683.3 257.5 l S
 0.330 0.240 0.170 rg
-BT /F2 9 Tf 404.0 261.6 Td (Expenses) Tj ET
+BT /F2 9 Tf 404.0 244.5 Td (Expenses) Tj ET
 0.470 0.410 0.350 rg
-BT /F1 7 Tf 453.0 261.6 Td (daily) Tj ET
+BT /F1 7 Tf 453.0 244.5 Td (daily) Tj ET
 0.950 0.920 0.860 rg
-404.0 244.0 360.0 12.6 re f
+404.0 226.0 360.0 13.5 re f
 0.470 0.410 0.350 rg
-BT /F1 6.5 Tf 408.0 248.0 Td (Item) Tj ET
+BT /F1 6.5 Tf 408.0 230.0 Td (Item) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 551.2 248.0 Td (Budget) Tj ET
+BT /F2 7 Tf 551.2 230.0 Td (Budget) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 632.9 248.0 Td (Actual) Tj ET
+BT /F2 7 Tf 632.9 230.0 Td (Actual) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 707.7 248.0 Td (Difference) Tj ET
+BT /F2 7 Tf 707.7 230.0 Td (Difference) Tj ET
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 235.4 Td (Groceries) Tj ET
+BT /F1 7.5 Tf 408.0 216.5 Td (Groceries) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 231.4 m 764.0 231.4 l S
+0.5 w 404.0 212.5 m 764.0 212.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 222.8 Td (Personal care) Tj ET
+BT /F1 7.5 Tf 408.0 203.0 Td (Personal care) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 218.8 m 764.0 218.8 l S
+0.5 w 404.0 199.0 m 764.0 199.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 210.2 Td (Clothing) Tj ET
+BT /F1 7.5 Tf 408.0 189.5 Td (Clothing) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 206.2 m 764.0 206.2 l S
+0.5 w 404.0 185.5 m 764.0 185.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 197.6 Td (Entertainment) Tj ET
+BT /F1 7.5 Tf 408.0 176.0 Td (Entertainment) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 193.6 m 764.0 193.6 l S
+0.5 w 404.0 172.0 m 764.0 172.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 185.0 Td (Dining out) Tj ET
+BT /F1 7.5 Tf 408.0 162.5 Td (Dining out) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 181.0 m 764.0 181.0 l S
+0.5 w 404.0 158.5 m 764.0 158.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 172.4 Td (Medical) Tj ET
+BT /F1 7.5 Tf 408.0 149.0 Td (Medical) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 168.4 m 764.0 168.4 l S
+0.5 w 404.0 145.0 m 764.0 145.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 159.8 Td (Fitness / Health) Tj ET
+BT /F1 7.5 Tf 408.0 135.5 Td (Fitness / Health) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 155.8 m 764.0 155.8 l S
+0.5 w 404.0 131.5 m 764.0 131.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 147.2 Td (Auto / Life / Home insurance) Tj ET
-0.760 0.710 0.630 RG
-0.5 w 404.0 143.2 m 764.0 143.2 l S
-0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 134.6 Td (Education) Tj ET
-0.760 0.710 0.630 RG
-0.5 w 404.0 130.6 m 764.0 130.6 l S
-0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 122.0 Td (Charity / Donations / Gifts) Tj ET
+BT /F1 7.5 Tf 408.0 122.0 Td (Auto / Life / Home insurance) Tj ET
 0.760 0.710 0.630 RG
 0.5 w 404.0 118.0 m 764.0 118.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 109.4 Td (Pets) Tj ET
+BT /F1 7.5 Tf 408.0 108.5 Td (Education) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 105.4 m 764.0 105.4 l S
+0.5 w 404.0 104.5 m 764.0 104.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 96.8 Td (Vacation / Travel) Tj ET
+BT /F1 7.5 Tf 408.0 95.0 Td (Charity / Donations / Gifts) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 92.8 m 764.0 92.8 l S
+0.5 w 404.0 91.0 m 764.0 91.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 84.2 Td (Debt payments) Tj ET
+BT /F1 7.5 Tf 408.0 81.5 Td (Pets) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 80.2 m 764.0 80.2 l S
+0.5 w 404.0 77.5 m 764.0 77.5 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 408.0 68.0 Td (Vacation / Travel) Tj ET
+0.760 0.710 0.630 RG
+0.5 w 404.0 64.0 m 764.0 64.0 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 408.0 54.5 Td (Debt payments) Tj ET
+0.760 0.710 0.630 RG
+0.5 w 404.0 50.5 m 764.0 50.5 l S
 0.950 0.920 0.860 rg
-404.0 67.6 360.0 12.6 re f
+404.0 37.0 360.0 13.5 re f
 0.170 0.140 0.110 rg
-BT /F2 7.5 Tf 408.0 71.6 Td (Total) Tj ET
+BT /F2 7.5 Tf 408.0 41.0 Td (Total) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 67.6 m 764.0 67.6 l S
+0.5 w 404.0 37.0 m 764.0 37.0 l S
 0.760 0.710 0.630 RG
 0.8 w
-404.0 67.6 360.0 189.0 re S
+404.0 37.0 360.0 202.5 re S
 0.760 0.710 0.630 RG
-0.6 w 522.0 256.6 m 522.0 67.6 l S
+0.6 w 522.0 239.5 m 522.0 37.0 l S
 0.760 0.710 0.630 RG
-0.5 w 602.7 256.6 m 602.7 67.6 l S
+0.5 w 602.7 239.5 m 602.7 37.0 l S
 0.760 0.710 0.630 RG
-0.5 w 683.3 256.6 m 683.3 67.6 l S
+0.5 w 683.3 239.5 m 683.3 37.0 l S
 endstream
 endobj
 27 0 obj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 792 612] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 28 0 R /Annots [225 0 R 226 0 R 227 0 R 228 0 R 229 0 R 230 0 R 231 0 R 232 0 R 233 0 R 234 0 R 235 0 R 236 0 R 237 0 R 238 0 R 239 0 R 240 0 R] >>
 endobj
 28 0 obj
-<< /Length 14516 >>
+<< /Length 14510 >>
 stream
 1.000 0.995 0.980 rg
 0.0 0.0 792.0 612.0 re f
@@ -5917,207 +5917,207 @@ BT /F2 9 Tf 28.0 157.0 Td (Notes) Tj ET
 0.330 0.240 0.170 rg
 BT /F2 9 Tf 404.0 537.0 Td (Income) Tj ET
 0.950 0.920 0.860 rg
-404.0 519.4 360.0 12.6 re f
+404.0 518.5 360.0 13.5 re f
 0.470 0.410 0.350 rg
-BT /F1 6.5 Tf 408.0 523.4 Td (Source) Tj ET
+BT /F1 6.5 Tf 408.0 522.5 Td (Source) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 551.2 523.4 Td (Budget) Tj ET
+BT /F2 7 Tf 551.2 522.5 Td (Budget) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 632.9 523.4 Td (Actual) Tj ET
+BT /F2 7 Tf 632.9 522.5 Td (Actual) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 707.7 523.4 Td (Difference) Tj ET
+BT /F2 7 Tf 707.7 522.5 Td (Difference) Tj ET
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 510.8 Td (Wages / Tips) Tj ET
+BT /F1 7.5 Tf 408.0 509.0 Td (Wages / Tips) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 506.8 m 764.0 506.8 l S
+0.5 w 404.0 505.0 m 764.0 505.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 498.2 Td (Wages / Tips) Tj ET
+BT /F1 7.5 Tf 408.0 495.5 Td (Wages / Tips) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 494.2 m 764.0 494.2 l S
+0.5 w 404.0 491.5 m 764.0 491.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 485.6 Td (Side income) Tj ET
+BT /F1 7.5 Tf 408.0 482.0 Td (Side income) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 481.6 m 764.0 481.6 l S
+0.5 w 404.0 478.0 m 764.0 478.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 473.0 Td (Interest) Tj ET
+BT /F1 7.5 Tf 408.0 468.5 Td (Interest) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 469.0 m 764.0 469.0 l S
+0.5 w 404.0 464.5 m 764.0 464.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 460.4 Td (Dividends) Tj ET
+BT /F1 7.5 Tf 408.0 455.0 Td (Dividends) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 456.4 m 764.0 456.4 l S
+0.5 w 404.0 451.0 m 764.0 451.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 447.8 Td (Gifts) Tj ET
+BT /F1 7.5 Tf 408.0 441.5 Td (Gifts) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 443.8 m 764.0 443.8 l S
+0.5 w 404.0 437.5 m 764.0 437.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 435.2 Td (Reimbursements) Tj ET
+BT /F1 7.5 Tf 408.0 428.0 Td (Reimbursements) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 431.2 m 764.0 431.2 l S
+0.5 w 404.0 424.0 m 764.0 424.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 422.6 Td (Transfers) Tj ET
+BT /F1 7.5 Tf 408.0 414.5 Td (Transfers) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 418.6 m 764.0 418.6 l S
+0.5 w 404.0 410.5 m 764.0 410.5 l S
 0.950 0.920 0.860 rg
-404.0 406.0 360.0 12.6 re f
+404.0 397.0 360.0 13.5 re f
 0.170 0.140 0.110 rg
-BT /F2 7.5 Tf 408.0 410.0 Td (Total) Tj ET
+BT /F2 7.5 Tf 408.0 401.0 Td (Total) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 406.0 m 764.0 406.0 l S
+0.5 w 404.0 397.0 m 764.0 397.0 l S
 0.760 0.710 0.630 RG
 0.8 w
-404.0 406.0 360.0 126.0 re S
+404.0 397.0 360.0 135.0 re S
 0.760 0.710 0.630 RG
-0.6 w 522.0 532.0 m 522.0 406.0 l S
+0.6 w 522.0 532.0 m 522.0 397.0 l S
 0.760 0.710 0.630 RG
-0.5 w 602.7 532.0 m 602.7 406.0 l S
+0.5 w 602.7 532.0 m 602.7 397.0 l S
 0.760 0.710 0.630 RG
-0.5 w 683.3 532.0 m 683.3 406.0 l S
+0.5 w 683.3 532.0 m 683.3 397.0 l S
 0.330 0.240 0.170 rg
-BT /F2 9 Tf 404.0 393.0 Td (Expenses) Tj ET
+BT /F2 9 Tf 404.0 384.0 Td (Expenses) Tj ET
 0.470 0.410 0.350 rg
-BT /F1 7 Tf 453.0 393.0 Td (home) Tj ET
+BT /F1 7 Tf 453.0 384.0 Td (home) Tj ET
 0.950 0.920 0.860 rg
-404.0 375.4 360.0 12.6 re f
+404.0 365.5 360.0 13.5 re f
 0.470 0.410 0.350 rg
-BT /F1 6.5 Tf 408.0 379.4 Td (Bill) Tj ET
+BT /F1 6.5 Tf 408.0 369.5 Td (Bill) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 551.2 379.4 Td (Budget) Tj ET
+BT /F2 7 Tf 551.2 369.5 Td (Budget) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 632.9 379.4 Td (Actual) Tj ET
+BT /F2 7 Tf 632.9 369.5 Td (Actual) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 707.7 379.4 Td (Difference) Tj ET
+BT /F2 7 Tf 707.7 369.5 Td (Difference) Tj ET
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 366.8 Td (Mortgage / Rent) Tj ET
+BT /F1 7.5 Tf 408.0 356.0 Td (Mortgage / Rent) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 362.8 m 764.0 362.8 l S
+0.5 w 404.0 352.0 m 764.0 352.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 354.2 Td (Auto) Tj ET
+BT /F1 7.5 Tf 408.0 342.5 Td (Auto) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 350.2 m 764.0 350.2 l S
+0.5 w 404.0 338.5 m 764.0 338.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 341.6 Td (Electricity) Tj ET
-0.760 0.710 0.630 RG
-0.5 w 404.0 337.6 m 764.0 337.6 l S
-0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 329.0 Td (Heating / Cooling) Tj ET
+BT /F1 7.5 Tf 408.0 329.0 Td (Electricity) Tj ET
 0.760 0.710 0.630 RG
 0.5 w 404.0 325.0 m 764.0 325.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 316.4 Td (Water / Sewer / Trash) Tj ET
+BT /F1 7.5 Tf 408.0 315.5 Td (Heating / Cooling) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 312.4 m 764.0 312.4 l S
+0.5 w 404.0 311.5 m 764.0 311.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 303.8 Td (Phone / Internet / TV) Tj ET
+BT /F1 7.5 Tf 408.0 302.0 Td (Water / Sewer / Trash) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 299.8 m 764.0 299.8 l S
+0.5 w 404.0 298.0 m 764.0 298.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 291.2 Td (Maintenance / Repairs) Tj ET
+BT /F1 7.5 Tf 408.0 288.5 Td (Phone / Internet / TV) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 287.2 m 764.0 287.2 l S
+0.5 w 404.0 284.5 m 764.0 284.5 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 408.0 275.0 Td (Maintenance / Repairs) Tj ET
+0.760 0.710 0.630 RG
+0.5 w 404.0 271.0 m 764.0 271.0 l S
 0.950 0.920 0.860 rg
-404.0 274.6 360.0 12.6 re f
+404.0 257.5 360.0 13.5 re f
 0.170 0.140 0.110 rg
-BT /F2 7.5 Tf 408.0 278.6 Td (Total) Tj ET
+BT /F2 7.5 Tf 408.0 261.5 Td (Total) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 274.6 m 764.0 274.6 l S
+0.5 w 404.0 257.5 m 764.0 257.5 l S
 0.760 0.710 0.630 RG
 0.8 w
-404.0 274.6 360.0 113.4 re S
+404.0 257.5 360.0 121.5 re S
 0.760 0.710 0.630 RG
-0.6 w 522.0 388.0 m 522.0 274.6 l S
+0.6 w 522.0 379.0 m 522.0 257.5 l S
 0.760 0.710 0.630 RG
-0.5 w 602.7 388.0 m 602.7 274.6 l S
+0.5 w 602.7 379.0 m 602.7 257.5 l S
 0.760 0.710 0.630 RG
-0.5 w 683.3 388.0 m 683.3 274.6 l S
+0.5 w 683.3 379.0 m 683.3 257.5 l S
 0.330 0.240 0.170 rg
-BT /F2 9 Tf 404.0 261.6 Td (Expenses) Tj ET
+BT /F2 9 Tf 404.0 244.5 Td (Expenses) Tj ET
 0.470 0.410 0.350 rg
-BT /F1 7 Tf 453.0 261.6 Td (daily) Tj ET
+BT /F1 7 Tf 453.0 244.5 Td (daily) Tj ET
 0.950 0.920 0.860 rg
-404.0 244.0 360.0 12.6 re f
+404.0 226.0 360.0 13.5 re f
 0.470 0.410 0.350 rg
-BT /F1 6.5 Tf 408.0 248.0 Td (Item) Tj ET
+BT /F1 6.5 Tf 408.0 230.0 Td (Item) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 551.2 248.0 Td (Budget) Tj ET
+BT /F2 7 Tf 551.2 230.0 Td (Budget) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 632.9 248.0 Td (Actual) Tj ET
+BT /F2 7 Tf 632.9 230.0 Td (Actual) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 707.7 248.0 Td (Difference) Tj ET
+BT /F2 7 Tf 707.7 230.0 Td (Difference) Tj ET
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 235.4 Td (Groceries) Tj ET
+BT /F1 7.5 Tf 408.0 216.5 Td (Groceries) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 231.4 m 764.0 231.4 l S
+0.5 w 404.0 212.5 m 764.0 212.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 222.8 Td (Personal care) Tj ET
+BT /F1 7.5 Tf 408.0 203.0 Td (Personal care) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 218.8 m 764.0 218.8 l S
+0.5 w 404.0 199.0 m 764.0 199.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 210.2 Td (Clothing) Tj ET
+BT /F1 7.5 Tf 408.0 189.5 Td (Clothing) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 206.2 m 764.0 206.2 l S
+0.5 w 404.0 185.5 m 764.0 185.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 197.6 Td (Entertainment) Tj ET
+BT /F1 7.5 Tf 408.0 176.0 Td (Entertainment) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 193.6 m 764.0 193.6 l S
+0.5 w 404.0 172.0 m 764.0 172.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 185.0 Td (Dining out) Tj ET
+BT /F1 7.5 Tf 408.0 162.5 Td (Dining out) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 181.0 m 764.0 181.0 l S
+0.5 w 404.0 158.5 m 764.0 158.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 172.4 Td (Medical) Tj ET
+BT /F1 7.5 Tf 408.0 149.0 Td (Medical) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 168.4 m 764.0 168.4 l S
+0.5 w 404.0 145.0 m 764.0 145.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 159.8 Td (Fitness / Health) Tj ET
+BT /F1 7.5 Tf 408.0 135.5 Td (Fitness / Health) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 155.8 m 764.0 155.8 l S
+0.5 w 404.0 131.5 m 764.0 131.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 147.2 Td (Auto / Life / Home insurance) Tj ET
-0.760 0.710 0.630 RG
-0.5 w 404.0 143.2 m 764.0 143.2 l S
-0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 134.6 Td (Education) Tj ET
-0.760 0.710 0.630 RG
-0.5 w 404.0 130.6 m 764.0 130.6 l S
-0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 122.0 Td (Charity / Donations / Gifts) Tj ET
+BT /F1 7.5 Tf 408.0 122.0 Td (Auto / Life / Home insurance) Tj ET
 0.760 0.710 0.630 RG
 0.5 w 404.0 118.0 m 764.0 118.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 109.4 Td (Pets) Tj ET
+BT /F1 7.5 Tf 408.0 108.5 Td (Education) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 105.4 m 764.0 105.4 l S
+0.5 w 404.0 104.5 m 764.0 104.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 96.8 Td (Vacation / Travel) Tj ET
+BT /F1 7.5 Tf 408.0 95.0 Td (Charity / Donations / Gifts) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 92.8 m 764.0 92.8 l S
+0.5 w 404.0 91.0 m 764.0 91.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 84.2 Td (Debt payments) Tj ET
+BT /F1 7.5 Tf 408.0 81.5 Td (Pets) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 80.2 m 764.0 80.2 l S
+0.5 w 404.0 77.5 m 764.0 77.5 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 408.0 68.0 Td (Vacation / Travel) Tj ET
+0.760 0.710 0.630 RG
+0.5 w 404.0 64.0 m 764.0 64.0 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 408.0 54.5 Td (Debt payments) Tj ET
+0.760 0.710 0.630 RG
+0.5 w 404.0 50.5 m 764.0 50.5 l S
 0.950 0.920 0.860 rg
-404.0 67.6 360.0 12.6 re f
+404.0 37.0 360.0 13.5 re f
 0.170 0.140 0.110 rg
-BT /F2 7.5 Tf 408.0 71.6 Td (Total) Tj ET
+BT /F2 7.5 Tf 408.0 41.0 Td (Total) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 67.6 m 764.0 67.6 l S
+0.5 w 404.0 37.0 m 764.0 37.0 l S
 0.760 0.710 0.630 RG
 0.8 w
-404.0 67.6 360.0 189.0 re S
+404.0 37.0 360.0 202.5 re S
 0.760 0.710 0.630 RG
-0.6 w 522.0 256.6 m 522.0 67.6 l S
+0.6 w 522.0 239.5 m 522.0 37.0 l S
 0.760 0.710 0.630 RG
-0.5 w 602.7 256.6 m 602.7 67.6 l S
+0.5 w 602.7 239.5 m 602.7 37.0 l S
 0.760 0.710 0.630 RG
-0.5 w 683.3 256.6 m 683.3 67.6 l S
+0.5 w 683.3 239.5 m 683.3 37.0 l S
 endstream
 endobj
 29 0 obj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 792 612] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 30 0 R /Annots [241 0 R 242 0 R 243 0 R 244 0 R 245 0 R 246 0 R 247 0 R 248 0 R 249 0 R 250 0 R 251 0 R 252 0 R 253 0 R 254 0 R 255 0 R 256 0 R] >>
 endobj
 30 0 obj
-<< /Length 14516 >>
+<< /Length 14510 >>
 stream
 1.000 0.995 0.980 rg
 0.0 0.0 792.0 612.0 re f
@@ -6440,207 +6440,207 @@ BT /F2 9 Tf 28.0 157.0 Td (Notes) Tj ET
 0.330 0.240 0.170 rg
 BT /F2 9 Tf 404.0 537.0 Td (Income) Tj ET
 0.950 0.920 0.860 rg
-404.0 519.4 360.0 12.6 re f
+404.0 518.5 360.0 13.5 re f
 0.470 0.410 0.350 rg
-BT /F1 6.5 Tf 408.0 523.4 Td (Source) Tj ET
+BT /F1 6.5 Tf 408.0 522.5 Td (Source) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 551.2 523.4 Td (Budget) Tj ET
+BT /F2 7 Tf 551.2 522.5 Td (Budget) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 632.9 523.4 Td (Actual) Tj ET
+BT /F2 7 Tf 632.9 522.5 Td (Actual) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 707.7 523.4 Td (Difference) Tj ET
+BT /F2 7 Tf 707.7 522.5 Td (Difference) Tj ET
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 510.8 Td (Wages / Tips) Tj ET
+BT /F1 7.5 Tf 408.0 509.0 Td (Wages / Tips) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 506.8 m 764.0 506.8 l S
+0.5 w 404.0 505.0 m 764.0 505.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 498.2 Td (Wages / Tips) Tj ET
+BT /F1 7.5 Tf 408.0 495.5 Td (Wages / Tips) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 494.2 m 764.0 494.2 l S
+0.5 w 404.0 491.5 m 764.0 491.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 485.6 Td (Side income) Tj ET
+BT /F1 7.5 Tf 408.0 482.0 Td (Side income) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 481.6 m 764.0 481.6 l S
+0.5 w 404.0 478.0 m 764.0 478.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 473.0 Td (Interest) Tj ET
+BT /F1 7.5 Tf 408.0 468.5 Td (Interest) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 469.0 m 764.0 469.0 l S
+0.5 w 404.0 464.5 m 764.0 464.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 460.4 Td (Dividends) Tj ET
+BT /F1 7.5 Tf 408.0 455.0 Td (Dividends) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 456.4 m 764.0 456.4 l S
+0.5 w 404.0 451.0 m 764.0 451.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 447.8 Td (Gifts) Tj ET
+BT /F1 7.5 Tf 408.0 441.5 Td (Gifts) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 443.8 m 764.0 443.8 l S
+0.5 w 404.0 437.5 m 764.0 437.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 435.2 Td (Reimbursements) Tj ET
+BT /F1 7.5 Tf 408.0 428.0 Td (Reimbursements) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 431.2 m 764.0 431.2 l S
+0.5 w 404.0 424.0 m 764.0 424.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 422.6 Td (Transfers) Tj ET
+BT /F1 7.5 Tf 408.0 414.5 Td (Transfers) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 418.6 m 764.0 418.6 l S
+0.5 w 404.0 410.5 m 764.0 410.5 l S
 0.950 0.920 0.860 rg
-404.0 406.0 360.0 12.6 re f
+404.0 397.0 360.0 13.5 re f
 0.170 0.140 0.110 rg
-BT /F2 7.5 Tf 408.0 410.0 Td (Total) Tj ET
+BT /F2 7.5 Tf 408.0 401.0 Td (Total) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 406.0 m 764.0 406.0 l S
+0.5 w 404.0 397.0 m 764.0 397.0 l S
 0.760 0.710 0.630 RG
 0.8 w
-404.0 406.0 360.0 126.0 re S
+404.0 397.0 360.0 135.0 re S
 0.760 0.710 0.630 RG
-0.6 w 522.0 532.0 m 522.0 406.0 l S
+0.6 w 522.0 532.0 m 522.0 397.0 l S
 0.760 0.710 0.630 RG
-0.5 w 602.7 532.0 m 602.7 406.0 l S
+0.5 w 602.7 532.0 m 602.7 397.0 l S
 0.760 0.710 0.630 RG
-0.5 w 683.3 532.0 m 683.3 406.0 l S
+0.5 w 683.3 532.0 m 683.3 397.0 l S
 0.330 0.240 0.170 rg
-BT /F2 9 Tf 404.0 393.0 Td (Expenses) Tj ET
+BT /F2 9 Tf 404.0 384.0 Td (Expenses) Tj ET
 0.470 0.410 0.350 rg
-BT /F1 7 Tf 453.0 393.0 Td (home) Tj ET
+BT /F1 7 Tf 453.0 384.0 Td (home) Tj ET
 0.950 0.920 0.860 rg
-404.0 375.4 360.0 12.6 re f
+404.0 365.5 360.0 13.5 re f
 0.470 0.410 0.350 rg
-BT /F1 6.5 Tf 408.0 379.4 Td (Bill) Tj ET
+BT /F1 6.5 Tf 408.0 369.5 Td (Bill) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 551.2 379.4 Td (Budget) Tj ET
+BT /F2 7 Tf 551.2 369.5 Td (Budget) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 632.9 379.4 Td (Actual) Tj ET
+BT /F2 7 Tf 632.9 369.5 Td (Actual) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 707.7 379.4 Td (Difference) Tj ET
+BT /F2 7 Tf 707.7 369.5 Td (Difference) Tj ET
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 366.8 Td (Mortgage / Rent) Tj ET
+BT /F1 7.5 Tf 408.0 356.0 Td (Mortgage / Rent) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 362.8 m 764.0 362.8 l S
+0.5 w 404.0 352.0 m 764.0 352.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 354.2 Td (Auto) Tj ET
+BT /F1 7.5 Tf 408.0 342.5 Td (Auto) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 350.2 m 764.0 350.2 l S
+0.5 w 404.0 338.5 m 764.0 338.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 341.6 Td (Electricity) Tj ET
-0.760 0.710 0.630 RG
-0.5 w 404.0 337.6 m 764.0 337.6 l S
-0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 329.0 Td (Heating / Cooling) Tj ET
+BT /F1 7.5 Tf 408.0 329.0 Td (Electricity) Tj ET
 0.760 0.710 0.630 RG
 0.5 w 404.0 325.0 m 764.0 325.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 316.4 Td (Water / Sewer / Trash) Tj ET
+BT /F1 7.5 Tf 408.0 315.5 Td (Heating / Cooling) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 312.4 m 764.0 312.4 l S
+0.5 w 404.0 311.5 m 764.0 311.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 303.8 Td (Phone / Internet / TV) Tj ET
+BT /F1 7.5 Tf 408.0 302.0 Td (Water / Sewer / Trash) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 299.8 m 764.0 299.8 l S
+0.5 w 404.0 298.0 m 764.0 298.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 291.2 Td (Maintenance / Repairs) Tj ET
+BT /F1 7.5 Tf 408.0 288.5 Td (Phone / Internet / TV) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 287.2 m 764.0 287.2 l S
+0.5 w 404.0 284.5 m 764.0 284.5 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 408.0 275.0 Td (Maintenance / Repairs) Tj ET
+0.760 0.710 0.630 RG
+0.5 w 404.0 271.0 m 764.0 271.0 l S
 0.950 0.920 0.860 rg
-404.0 274.6 360.0 12.6 re f
+404.0 257.5 360.0 13.5 re f
 0.170 0.140 0.110 rg
-BT /F2 7.5 Tf 408.0 278.6 Td (Total) Tj ET
+BT /F2 7.5 Tf 408.0 261.5 Td (Total) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 274.6 m 764.0 274.6 l S
+0.5 w 404.0 257.5 m 764.0 257.5 l S
 0.760 0.710 0.630 RG
 0.8 w
-404.0 274.6 360.0 113.4 re S
+404.0 257.5 360.0 121.5 re S
 0.760 0.710 0.630 RG
-0.6 w 522.0 388.0 m 522.0 274.6 l S
+0.6 w 522.0 379.0 m 522.0 257.5 l S
 0.760 0.710 0.630 RG
-0.5 w 602.7 388.0 m 602.7 274.6 l S
+0.5 w 602.7 379.0 m 602.7 257.5 l S
 0.760 0.710 0.630 RG
-0.5 w 683.3 388.0 m 683.3 274.6 l S
+0.5 w 683.3 379.0 m 683.3 257.5 l S
 0.330 0.240 0.170 rg
-BT /F2 9 Tf 404.0 261.6 Td (Expenses) Tj ET
+BT /F2 9 Tf 404.0 244.5 Td (Expenses) Tj ET
 0.470 0.410 0.350 rg
-BT /F1 7 Tf 453.0 261.6 Td (daily) Tj ET
+BT /F1 7 Tf 453.0 244.5 Td (daily) Tj ET
 0.950 0.920 0.860 rg
-404.0 244.0 360.0 12.6 re f
+404.0 226.0 360.0 13.5 re f
 0.470 0.410 0.350 rg
-BT /F1 6.5 Tf 408.0 248.0 Td (Item) Tj ET
+BT /F1 6.5 Tf 408.0 230.0 Td (Item) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 551.2 248.0 Td (Budget) Tj ET
+BT /F2 7 Tf 551.2 230.0 Td (Budget) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 632.9 248.0 Td (Actual) Tj ET
+BT /F2 7 Tf 632.9 230.0 Td (Actual) Tj ET
 0.330 0.240 0.170 rg
-BT /F2 7 Tf 707.7 248.0 Td (Difference) Tj ET
+BT /F2 7 Tf 707.7 230.0 Td (Difference) Tj ET
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 235.4 Td (Groceries) Tj ET
+BT /F1 7.5 Tf 408.0 216.5 Td (Groceries) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 231.4 m 764.0 231.4 l S
+0.5 w 404.0 212.5 m 764.0 212.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 222.8 Td (Personal care) Tj ET
+BT /F1 7.5 Tf 408.0 203.0 Td (Personal care) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 218.8 m 764.0 218.8 l S
+0.5 w 404.0 199.0 m 764.0 199.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 210.2 Td (Clothing) Tj ET
+BT /F1 7.5 Tf 408.0 189.5 Td (Clothing) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 206.2 m 764.0 206.2 l S
+0.5 w 404.0 185.5 m 764.0 185.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 197.6 Td (Entertainment) Tj ET
+BT /F1 7.5 Tf 408.0 176.0 Td (Entertainment) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 193.6 m 764.0 193.6 l S
+0.5 w 404.0 172.0 m 764.0 172.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 185.0 Td (Dining out) Tj ET
+BT /F1 7.5 Tf 408.0 162.5 Td (Dining out) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 181.0 m 764.0 181.0 l S
+0.5 w 404.0 158.5 m 764.0 158.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 172.4 Td (Medical) Tj ET
+BT /F1 7.5 Tf 408.0 149.0 Td (Medical) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 168.4 m 764.0 168.4 l S
+0.5 w 404.0 145.0 m 764.0 145.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 159.8 Td (Fitness / Health) Tj ET
+BT /F1 7.5 Tf 408.0 135.5 Td (Fitness / Health) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 155.8 m 764.0 155.8 l S
+0.5 w 404.0 131.5 m 764.0 131.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 147.2 Td (Auto / Life / Home insurance) Tj ET
-0.760 0.710 0.630 RG
-0.5 w 404.0 143.2 m 764.0 143.2 l S
-0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 134.6 Td (Education) Tj ET
-0.760 0.710 0.630 RG
-0.5 w 404.0 130.6 m 764.0 130.6 l S
-0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 122.0 Td (Charity / Donations / Gifts) Tj ET
+BT /F1 7.5 Tf 408.0 122.0 Td (Auto / Life / Home insurance) Tj ET
 0.760 0.710 0.630 RG
 0.5 w 404.0 118.0 m 764.0 118.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 109.4 Td (Pets) Tj ET
+BT /F1 7.5 Tf 408.0 108.5 Td (Education) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 105.4 m 764.0 105.4 l S
+0.5 w 404.0 104.5 m 764.0 104.5 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 96.8 Td (Vacation / Travel) Tj ET
+BT /F1 7.5 Tf 408.0 95.0 Td (Charity / Donations / Gifts) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 92.8 m 764.0 92.8 l S
+0.5 w 404.0 91.0 m 764.0 91.0 l S
 0.170 0.140 0.110 rg
-BT /F1 7.5 Tf 408.0 84.2 Td (Debt payments) Tj ET
+BT /F1 7.5 Tf 408.0 81.5 Td (Pets) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 80.2 m 764.0 80.2 l S
+0.5 w 404.0 77.5 m 764.0 77.5 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 408.0 68.0 Td (Vacation / Travel) Tj ET
+0.760 0.710 0.630 RG
+0.5 w 404.0 64.0 m 764.0 64.0 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 408.0 54.5 Td (Debt payments) Tj ET
+0.760 0.710 0.630 RG
+0.5 w 404.0 50.5 m 764.0 50.5 l S
 0.950 0.920 0.860 rg
-404.0 67.6 360.0 12.6 re f
+404.0 37.0 360.0 13.5 re f
 0.170 0.140 0.110 rg
-BT /F2 7.5 Tf 408.0 71.6 Td (Total) Tj ET
+BT /F2 7.5 Tf 408.0 41.0 Td (Total) Tj ET
 0.760 0.710 0.630 RG
-0.5 w 404.0 67.6 m 764.0 67.6 l S
+0.5 w 404.0 37.0 m 764.0 37.0 l S
 0.760 0.710 0.630 RG
 0.8 w
-404.0 67.6 360.0 189.0 re S
+404.0 37.0 360.0 202.5 re S
 0.760 0.710 0.630 RG
-0.6 w 522.0 256.6 m 522.0 67.6 l S
+0.6 w 522.0 239.5 m 522.0 37.0 l S
 0.760 0.710 0.630 RG
-0.5 w 602.7 256.6 m 602.7 67.6 l S
+0.5 w 602.7 239.5 m 602.7 37.0 l S
 0.760 0.710 0.630 RG
-0.5 w 683.3 256.6 m 683.3 67.6 l S
+0.5 w 683.3 239.5 m 683.3 37.0 l S
 endstream
 endobj
 31 0 obj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 792 612] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 32 0 R /Annots [257 0 R 258 0 R 259 0 R 260 0 R 261 0 R 262 0 R 263 0 R 264 0 R 265 0 R 266 0 R 267 0 R 268 0 R 269 0 R 270 0 R 271 0 R 272 0 R] >>
 endobj
 32 0 obj
-<< /Length 22061 >>
+<< /Length 22046 >>
 stream
 1.000 0.995 0.980 rg
 0.0 0.0 792.0 612.0 re f
@@ -6655,7 +6655,7 @@ stream
 1.000 0.980 0.940 rg
 BT /F2 18 Tf 43.0 581.0 Td (BILLS) Tj ET
 0.470 0.410 0.350 rg
-BT /F1 12 Tf 123.0 582.0 Td (Tick each bill when it's paid  ·  Year ______) Tj ET
+BT /F1 12 Tf 123.0 582.0 Td (Tick when paid  ·  Year ______) Tj ET
 1.000 1.000 1.000 rg
 0.760 0.710 0.630 RG
 0.6 w
@@ -8313,7 +8313,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 792 612] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 36 0 R /Annots [289 0 R 290 0 R 291 0 R 292 0 R 293 0 R 294 0 R 295 0 R 296 0 R 297 0 R 298 0 R 299 0 R 300 0 R 301 0 R 302 0 R 303 0 R 304 0 R] >>
 endobj
 36 0 obj
-<< /Length 6680 >>
+<< /Length 7212 >>
 stream
 1.000 0.995 0.980 rg
 0.0 0.0 792.0 612.0 re f
@@ -8328,7 +8328,7 @@ stream
 1.000 0.980 0.940 rg
 BT /F2 18 Tf 43.0 581.0 Td (DEBT) Tj ET
 0.470 0.410 0.350 rg
-BT /F1 12 Tf 118.0 582.0 Td (Smallest balance first, then roll the payment on) Tj ET
+BT /F1 12 Tf 118.0 582.0 Td (Smallest balance first) Tj ET
 1.000 1.000 1.000 rg
 0.760 0.710 0.630 RG
 0.6 w
@@ -8554,19 +8554,39 @@ BT /F1 7.5 Tf 32.0 164.0 Td () Tj ET
 BT /F1 7.5 Tf 32.0 149.0 Td () Tj ET
 0.760 0.710 0.630 RG
 0.5 w 28.0 145.0 m 764.0 145.0 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 32.0 134.0 Td () Tj ET
+0.760 0.710 0.630 RG
+0.5 w 28.0 130.0 m 764.0 130.0 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 32.0 119.0 Td () Tj ET
+0.760 0.710 0.630 RG
+0.5 w 28.0 115.0 m 764.0 115.0 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 32.0 104.0 Td () Tj ET
+0.760 0.710 0.630 RG
+0.5 w 28.0 100.0 m 764.0 100.0 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 32.0 89.0 Td () Tj ET
+0.760 0.710 0.630 RG
+0.5 w 28.0 85.0 m 764.0 85.0 l S
+0.170 0.140 0.110 rg
+BT /F1 7.5 Tf 32.0 74.0 Td () Tj ET
+0.760 0.710 0.630 RG
+0.5 w 28.0 70.0 m 764.0 70.0 l S
 0.760 0.710 0.630 RG
 0.8 w
-28.0 145.0 736.0 195.0 re S
+28.0 70.0 736.0 270.0 re S
 0.760 0.710 0.630 RG
-0.6 w 198.0 340.0 m 198.0 145.0 l S
+0.6 w 198.0 340.0 m 198.0 70.0 l S
 0.760 0.710 0.630 RG
-0.5 w 311.2 340.0 m 311.2 145.0 l S
+0.5 w 311.2 340.0 m 311.2 70.0 l S
 0.760 0.710 0.630 RG
-0.5 w 424.4 340.0 m 424.4 145.0 l S
+0.5 w 424.4 340.0 m 424.4 70.0 l S
 0.760 0.710 0.630 RG
-0.5 w 537.6 340.0 m 537.6 145.0 l S
+0.5 w 537.6 340.0 m 537.6 70.0 l S
 0.760 0.710 0.630 RG
-0.5 w 650.8 340.0 m 650.8 145.0 l S
+0.5 w 650.8 340.0 m 650.8 70.0 l S
 endstream
 endobj
 37 0 obj
@@ -9384,304 +9404,304 @@ xref
 0000000764 00000 n 
 0000009267 00000 n 
 0000009525 00000 n 
-0000024093 00000 n 
-0000024352 00000 n 
-0000038922 00000 n 
-0000039195 00000 n 
-0000053762 00000 n 
-0000054038 00000 n 
-0000068605 00000 n 
-0000068881 00000 n 
-0000083446 00000 n 
-0000083722 00000 n 
-0000098288 00000 n 
-0000098564 00000 n 
-0000113130 00000 n 
-0000113406 00000 n 
-0000127974 00000 n 
-0000128250 00000 n 
-0000142821 00000 n 
-0000143097 00000 n 
-0000157666 00000 n 
-0000157942 00000 n 
-0000172512 00000 n 
-0000172788 00000 n 
-0000187358 00000 n 
-0000187634 00000 n 
-0000209749 00000 n 
-0000210025 00000 n 
-0000221275 00000 n 
-0000221551 00000 n 
-0000228284 00000 n 
-0000228401 00000 n 
-0000228518 00000 n 
-0000228635 00000 n 
-0000228753 00000 n 
-0000228871 00000 n 
-0000228989 00000 n 
-0000229107 00000 n 
-0000229225 00000 n 
-0000229343 00000 n 
-0000229461 00000 n 
-0000229579 00000 n 
-0000229697 00000 n 
-0000229815 00000 n 
-0000229933 00000 n 
-0000230051 00000 n 
-0000230169 00000 n 
-0000230285 00000 n 
-0000230401 00000 n 
-0000230518 00000 n 
-0000230635 00000 n 
-0000230752 00000 n 
-0000230869 00000 n 
-0000230986 00000 n 
-0000231103 00000 n 
-0000231220 00000 n 
-0000231337 00000 n 
-0000231454 00000 n 
-0000231571 00000 n 
-0000231688 00000 n 
-0000231805 00000 n 
-0000231922 00000 n 
-0000232040 00000 n 
-0000232158 00000 n 
-0000232276 00000 n 
-0000232394 00000 n 
-0000232512 00000 n 
-0000232630 00000 n 
-0000232748 00000 n 
-0000232866 00000 n 
-0000232984 00000 n 
-0000233102 00000 n 
-0000233220 00000 n 
-0000233338 00000 n 
-0000233456 00000 n 
-0000233573 00000 n 
-0000233690 00000 n 
-0000233807 00000 n 
-0000233925 00000 n 
-0000234043 00000 n 
-0000234161 00000 n 
-0000234279 00000 n 
-0000234397 00000 n 
-0000234515 00000 n 
-0000234633 00000 n 
-0000234751 00000 n 
-0000234869 00000 n 
-0000234987 00000 n 
-0000235105 00000 n 
-0000235223 00000 n 
-0000235341 00000 n 
-0000235458 00000 n 
-0000235575 00000 n 
-0000235692 00000 n 
-0000235811 00000 n 
-0000235930 00000 n 
-0000236049 00000 n 
-0000236168 00000 n 
-0000236287 00000 n 
-0000236406 00000 n 
-0000236525 00000 n 
-0000236644 00000 n 
-0000236763 00000 n 
-0000236882 00000 n 
-0000237001 00000 n 
-0000237120 00000 n 
-0000237239 00000 n 
-0000237357 00000 n 
-0000237475 00000 n 
-0000237593 00000 n 
-0000237712 00000 n 
-0000237831 00000 n 
-0000237950 00000 n 
-0000238069 00000 n 
-0000238188 00000 n 
-0000238307 00000 n 
-0000238426 00000 n 
-0000238545 00000 n 
-0000238664 00000 n 
-0000238783 00000 n 
-0000238902 00000 n 
-0000239021 00000 n 
-0000239140 00000 n 
-0000239258 00000 n 
-0000239376 00000 n 
-0000239494 00000 n 
-0000239613 00000 n 
-0000239732 00000 n 
-0000239851 00000 n 
-0000239970 00000 n 
-0000240089 00000 n 
-0000240208 00000 n 
-0000240327 00000 n 
-0000240446 00000 n 
-0000240565 00000 n 
-0000240684 00000 n 
-0000240803 00000 n 
-0000240922 00000 n 
-0000241041 00000 n 
-0000241159 00000 n 
-0000241277 00000 n 
-0000241395 00000 n 
-0000241514 00000 n 
-0000241633 00000 n 
-0000241752 00000 n 
-0000241871 00000 n 
-0000241990 00000 n 
-0000242109 00000 n 
-0000242228 00000 n 
-0000242347 00000 n 
-0000242466 00000 n 
-0000242585 00000 n 
-0000242704 00000 n 
-0000242823 00000 n 
-0000242942 00000 n 
-0000243060 00000 n 
-0000243178 00000 n 
-0000243296 00000 n 
-0000243415 00000 n 
-0000243534 00000 n 
-0000243653 00000 n 
-0000243772 00000 n 
-0000243891 00000 n 
-0000244010 00000 n 
-0000244129 00000 n 
-0000244248 00000 n 
-0000244367 00000 n 
-0000244486 00000 n 
-0000244605 00000 n 
-0000244724 00000 n 
-0000244843 00000 n 
-0000244961 00000 n 
-0000245079 00000 n 
-0000245197 00000 n 
-0000245316 00000 n 
-0000245435 00000 n 
-0000245554 00000 n 
-0000245673 00000 n 
-0000245792 00000 n 
-0000245911 00000 n 
-0000246030 00000 n 
-0000246149 00000 n 
-0000246268 00000 n 
-0000246387 00000 n 
-0000246506 00000 n 
-0000246625 00000 n 
-0000246744 00000 n 
-0000246862 00000 n 
-0000246980 00000 n 
-0000247098 00000 n 
-0000247217 00000 n 
-0000247336 00000 n 
-0000247455 00000 n 
-0000247574 00000 n 
-0000247693 00000 n 
-0000247812 00000 n 
-0000247931 00000 n 
-0000248050 00000 n 
-0000248169 00000 n 
-0000248288 00000 n 
-0000248407 00000 n 
-0000248526 00000 n 
-0000248645 00000 n 
-0000248763 00000 n 
-0000248881 00000 n 
-0000248999 00000 n 
-0000249118 00000 n 
-0000249237 00000 n 
-0000249356 00000 n 
-0000249475 00000 n 
-0000249594 00000 n 
-0000249713 00000 n 
-0000249832 00000 n 
-0000249951 00000 n 
-0000250070 00000 n 
-0000250189 00000 n 
-0000250308 00000 n 
-0000250427 00000 n 
-0000250546 00000 n 
-0000250664 00000 n 
-0000250782 00000 n 
-0000250900 00000 n 
-0000251019 00000 n 
-0000251138 00000 n 
-0000251257 00000 n 
-0000251376 00000 n 
-0000251495 00000 n 
-0000251614 00000 n 
-0000251733 00000 n 
-0000251852 00000 n 
-0000251971 00000 n 
-0000252090 00000 n 
-0000252209 00000 n 
-0000252328 00000 n 
-0000252447 00000 n 
-0000252565 00000 n 
-0000252683 00000 n 
-0000252801 00000 n 
-0000252920 00000 n 
-0000253039 00000 n 
-0000253158 00000 n 
-0000253277 00000 n 
-0000253396 00000 n 
-0000253515 00000 n 
-0000253634 00000 n 
-0000253753 00000 n 
-0000253872 00000 n 
-0000253991 00000 n 
-0000254110 00000 n 
-0000254229 00000 n 
-0000254348 00000 n 
-0000254466 00000 n 
-0000254584 00000 n 
-0000254702 00000 n 
-0000254821 00000 n 
-0000254940 00000 n 
-0000255059 00000 n 
-0000255178 00000 n 
-0000255297 00000 n 
-0000255416 00000 n 
-0000255535 00000 n 
-0000255654 00000 n 
-0000255773 00000 n 
-0000255892 00000 n 
-0000256011 00000 n 
-0000256130 00000 n 
-0000256249 00000 n 
-0000256367 00000 n 
-0000256485 00000 n 
-0000256603 00000 n 
-0000256722 00000 n 
-0000256841 00000 n 
-0000256960 00000 n 
-0000257079 00000 n 
-0000257198 00000 n 
-0000257317 00000 n 
-0000257436 00000 n 
-0000257555 00000 n 
-0000257674 00000 n 
-0000257793 00000 n 
-0000257912 00000 n 
-0000258031 00000 n 
-0000258150 00000 n 
-0000258268 00000 n 
-0000258386 00000 n 
-0000258504 00000 n 
-0000258623 00000 n 
-0000258742 00000 n 
-0000258861 00000 n 
-0000258980 00000 n 
-0000259099 00000 n 
-0000259218 00000 n 
-0000259337 00000 n 
-0000259456 00000 n 
-0000259575 00000 n 
-0000259694 00000 n 
-0000259813 00000 n 
-0000259932 00000 n 
+0000024087 00000 n 
+0000024346 00000 n 
+0000038910 00000 n 
+0000039183 00000 n 
+0000053744 00000 n 
+0000054020 00000 n 
+0000068581 00000 n 
+0000068857 00000 n 
+0000083416 00000 n 
+0000083692 00000 n 
+0000098252 00000 n 
+0000098528 00000 n 
+0000113088 00000 n 
+0000113364 00000 n 
+0000127926 00000 n 
+0000128202 00000 n 
+0000142767 00000 n 
+0000143043 00000 n 
+0000157606 00000 n 
+0000157882 00000 n 
+0000172446 00000 n 
+0000172722 00000 n 
+0000187286 00000 n 
+0000187562 00000 n 
+0000209662 00000 n 
+0000209938 00000 n 
+0000221188 00000 n 
+0000221464 00000 n 
+0000228729 00000 n 
+0000228846 00000 n 
+0000228963 00000 n 
+0000229080 00000 n 
+0000229198 00000 n 
+0000229316 00000 n 
+0000229434 00000 n 
+0000229552 00000 n 
+0000229670 00000 n 
+0000229788 00000 n 
+0000229906 00000 n 
+0000230024 00000 n 
+0000230142 00000 n 
+0000230260 00000 n 
+0000230378 00000 n 
+0000230496 00000 n 
+0000230614 00000 n 
+0000230730 00000 n 
+0000230846 00000 n 
+0000230963 00000 n 
+0000231080 00000 n 
+0000231197 00000 n 
+0000231314 00000 n 
+0000231431 00000 n 
+0000231548 00000 n 
+0000231665 00000 n 
+0000231782 00000 n 
+0000231899 00000 n 
+0000232016 00000 n 
+0000232133 00000 n 
+0000232250 00000 n 
+0000232367 00000 n 
+0000232485 00000 n 
+0000232603 00000 n 
+0000232721 00000 n 
+0000232839 00000 n 
+0000232957 00000 n 
+0000233075 00000 n 
+0000233193 00000 n 
+0000233311 00000 n 
+0000233429 00000 n 
+0000233547 00000 n 
+0000233665 00000 n 
+0000233783 00000 n 
+0000233901 00000 n 
+0000234018 00000 n 
+0000234135 00000 n 
+0000234252 00000 n 
+0000234370 00000 n 
+0000234488 00000 n 
+0000234606 00000 n 
+0000234724 00000 n 
+0000234842 00000 n 
+0000234960 00000 n 
+0000235078 00000 n 
+0000235196 00000 n 
+0000235314 00000 n 
+0000235432 00000 n 
+0000235550 00000 n 
+0000235668 00000 n 
+0000235786 00000 n 
+0000235903 00000 n 
+0000236020 00000 n 
+0000236137 00000 n 
+0000236256 00000 n 
+0000236375 00000 n 
+0000236494 00000 n 
+0000236613 00000 n 
+0000236732 00000 n 
+0000236851 00000 n 
+0000236970 00000 n 
+0000237089 00000 n 
+0000237208 00000 n 
+0000237327 00000 n 
+0000237446 00000 n 
+0000237565 00000 n 
+0000237684 00000 n 
+0000237802 00000 n 
+0000237920 00000 n 
+0000238038 00000 n 
+0000238157 00000 n 
+0000238276 00000 n 
+0000238395 00000 n 
+0000238514 00000 n 
+0000238633 00000 n 
+0000238752 00000 n 
+0000238871 00000 n 
+0000238990 00000 n 
+0000239109 00000 n 
+0000239228 00000 n 
+0000239347 00000 n 
+0000239466 00000 n 
+0000239585 00000 n 
+0000239703 00000 n 
+0000239821 00000 n 
+0000239939 00000 n 
+0000240058 00000 n 
+0000240177 00000 n 
+0000240296 00000 n 
+0000240415 00000 n 
+0000240534 00000 n 
+0000240653 00000 n 
+0000240772 00000 n 
+0000240891 00000 n 
+0000241010 00000 n 
+0000241129 00000 n 
+0000241248 00000 n 
+0000241367 00000 n 
+0000241486 00000 n 
+0000241604 00000 n 
+0000241722 00000 n 
+0000241840 00000 n 
+0000241959 00000 n 
+0000242078 00000 n 
+0000242197 00000 n 
+0000242316 00000 n 
+0000242435 00000 n 
+0000242554 00000 n 
+0000242673 00000 n 
+0000242792 00000 n 
+0000242911 00000 n 
+0000243030 00000 n 
+0000243149 00000 n 
+0000243268 00000 n 
+0000243387 00000 n 
+0000243505 00000 n 
+0000243623 00000 n 
+0000243741 00000 n 
+0000243860 00000 n 
+0000243979 00000 n 
+0000244098 00000 n 
+0000244217 00000 n 
+0000244336 00000 n 
+0000244455 00000 n 
+0000244574 00000 n 
+0000244693 00000 n 
+0000244812 00000 n 
+0000244931 00000 n 
+0000245050 00000 n 
+0000245169 00000 n 
+0000245288 00000 n 
+0000245406 00000 n 
+0000245524 00000 n 
+0000245642 00000 n 
+0000245761 00000 n 
+0000245880 00000 n 
+0000245999 00000 n 
+0000246118 00000 n 
+0000246237 00000 n 
+0000246356 00000 n 
+0000246475 00000 n 
+0000246594 00000 n 
+0000246713 00000 n 
+0000246832 00000 n 
+0000246951 00000 n 
+0000247070 00000 n 
+0000247189 00000 n 
+0000247307 00000 n 
+0000247425 00000 n 
+0000247543 00000 n 
+0000247662 00000 n 
+0000247781 00000 n 
+0000247900 00000 n 
+0000248019 00000 n 
+0000248138 00000 n 
+0000248257 00000 n 
+0000248376 00000 n 
+0000248495 00000 n 
+0000248614 00000 n 
+0000248733 00000 n 
+0000248852 00000 n 
+0000248971 00000 n 
+0000249090 00000 n 
+0000249208 00000 n 
+0000249326 00000 n 
+0000249444 00000 n 
+0000249563 00000 n 
+0000249682 00000 n 
+0000249801 00000 n 
+0000249920 00000 n 
+0000250039 00000 n 
+0000250158 00000 n 
+0000250277 00000 n 
+0000250396 00000 n 
+0000250515 00000 n 
+0000250634 00000 n 
+0000250753 00000 n 
+0000250872 00000 n 
+0000250991 00000 n 
+0000251109 00000 n 
+0000251227 00000 n 
+0000251345 00000 n 
+0000251464 00000 n 
+0000251583 00000 n 
+0000251702 00000 n 
+0000251821 00000 n 
+0000251940 00000 n 
+0000252059 00000 n 
+0000252178 00000 n 
+0000252297 00000 n 
+0000252416 00000 n 
+0000252535 00000 n 
+0000252654 00000 n 
+0000252773 00000 n 
+0000252892 00000 n 
+0000253010 00000 n 
+0000253128 00000 n 
+0000253246 00000 n 
+0000253365 00000 n 
+0000253484 00000 n 
+0000253603 00000 n 
+0000253722 00000 n 
+0000253841 00000 n 
+0000253960 00000 n 
+0000254079 00000 n 
+0000254198 00000 n 
+0000254317 00000 n 
+0000254436 00000 n 
+0000254555 00000 n 
+0000254674 00000 n 
+0000254793 00000 n 
+0000254911 00000 n 
+0000255029 00000 n 
+0000255147 00000 n 
+0000255266 00000 n 
+0000255385 00000 n 
+0000255504 00000 n 
+0000255623 00000 n 
+0000255742 00000 n 
+0000255861 00000 n 
+0000255980 00000 n 
+0000256099 00000 n 
+0000256218 00000 n 
+0000256337 00000 n 
+0000256456 00000 n 
+0000256575 00000 n 
+0000256694 00000 n 
+0000256812 00000 n 
+0000256930 00000 n 
+0000257048 00000 n 
+0000257167 00000 n 
+0000257286 00000 n 
+0000257405 00000 n 
+0000257524 00000 n 
+0000257643 00000 n 
+0000257762 00000 n 
+0000257881 00000 n 
+0000258000 00000 n 
+0000258119 00000 n 
+0000258238 00000 n 
+0000258357 00000 n 
+0000258476 00000 n 
+0000258595 00000 n 
+0000258713 00000 n 
+0000258831 00000 n 
+0000258949 00000 n 
+0000259068 00000 n 
+0000259187 00000 n 
+0000259306 00000 n 
+0000259425 00000 n 
+0000259544 00000 n 
+0000259663 00000 n 
+0000259782 00000 n 
+0000259901 00000 n 
+0000260020 00000 n 
+0000260139 00000 n 
+0000260258 00000 n 
+0000260377 00000 n 
 trailer
 << /Size 305 /Root 1 0 R >>
 startxref
-260051
+260496
 %%EOF

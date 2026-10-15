@@ -165,17 +165,17 @@ def month_page(p, m):
     # Income and expenses.
     y = table(p, rx, TOP, rw, "Income", ["Wages / Tips", "Wages / Tips", "Side income", "Interest",
                                          "Dividends", "Gifts", "Reimbursements", "Transfers"],
-              label_w=118, label_header="Source", row_h=12.6)
+              label_w=118, label_header="Source", row_h=13.5)
     y = table(p, rx, y - 4, rw, "Expenses", ["Mortgage / Rent", "Auto", "Electricity", "Heating / Cooling",
                                             "Water / Sewer / Trash", "Phone / Internet / TV",
                                             "Maintenance / Repairs"],
-              label_w=118, note="home", label_header="Bill", row_h=12.6)
+              label_w=118, note="home", label_header="Bill", row_h=13.5)
     table(p, rx, y - 4, rw, "Expenses", ["Groceries", "Personal care", "Clothing", "Entertainment",
                                         "Dining out", "Medical", "Fitness / Health",
                                         "Auto / Life / Home insurance", "Education",
                                         "Charity / Donations / Gifts", "Pets", "Vacation / Travel",
                                         "Debt payments"],
-          label_w=118, note="daily", label_header="Item", row_h=12.6)
+          label_w=118, note="daily", label_header="Item", row_h=13.5)
 
 
 def year_page(p):
@@ -208,7 +208,7 @@ def year_page(p):
 
 
 def bills_page(p):
-    top_bar(p, "BILLS", "Tick each bill when it's paid  ·  Year ______", BILLS)
+    top_bar(p, "BILLS", "Tick when paid  ·  Year ______", BILLS)
     label_w, fixed = 120, ("Due", "Amount")
     cols = fixed + tuple(m[:1] for m in MONTHS)
     w = RIGHT - LEFT
@@ -263,12 +263,12 @@ def savings_page(p):
 
 
 def debt_page(p):
-    top_bar(p, "DEBT", "Smallest balance first, then roll the payment on", DEBT)
+    top_bar(p, "DEBT", "Smallest balance first", DEBT)
     w = RIGHT - LEFT
     y = table(p, LEFT, TOP, w, "What I owe", [""] * 8, label_w=170,
               columns=("Balance", "Interest rate", "Minimum", "Due day", "Paid off on"),
               total=True, label_header="Debt", row_h=17)
-    table(p, LEFT, y - 8, w, "Payments", [""] * 12, label_w=170,
+    table(p, LEFT, y - 8, w, "Payments", [""] * 17, label_w=170,
           columns=("Date", "Paid", "Extra", "New balance", "Left to go"),
           total=False, label_header="Debt", row_h=15)
 
