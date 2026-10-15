@@ -1,0 +1,21 @@
+{
+  "kind": "paper",
+  "name": "Retro 70s Dot",
+  "version": 1,
+  "unlock": {},
+  "collectionId": "retro",
+  "category": "papers",
+  "paper": {
+    "color": "#FDF3E3",
+    "lineColor": "#D9B48E",
+    "marginColor": null,
+    "pattern": "dot",
+    "spacing": 26
+  },
+  "tags": [
+    "retro",
+    "groovy",
+    "orange",
+    "vintage"
+  ]
+}

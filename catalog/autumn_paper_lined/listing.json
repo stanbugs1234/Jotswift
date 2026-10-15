@@ -1,0 +1,21 @@
+{
+  "kind": "paper",
+  "name": "Autumn Lined",
+  "version": 1,
+  "unlock": {},
+  "collectionId": "autumn",
+  "category": "papers",
+  "paper": {
+    "color": "#FBF4EA",
+    "lineColor": "#E0CCB4",
+    "marginColor": null,
+    "pattern": "lined",
+    "spacing": 32
+  },
+  "tags": [
+    "fall",
+    "cozy",
+    "warm",
+    "leaves"
+  ]
+}

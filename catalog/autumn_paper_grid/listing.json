@@ -1,0 +1,21 @@
+{
+  "kind": "paper",
+  "name": "Autumn Grid",
+  "version": 1,
+  "unlock": {},
+  "collectionId": "autumn",
+  "category": "papers",
+  "paper": {
+    "color": "#FBF4EA",
+    "lineColor": "#E6D6C2",
+    "marginColor": null,
+    "pattern": "grid",
+    "spacing": 24
+  },
+  "tags": [
+    "fall",
+    "cozy",
+    "warm",
+    "leaves"
+  ]
+}

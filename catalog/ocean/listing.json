@@ -1,0 +1,17 @@
+{
+  "kind": "collection",
+  "name": "Ocean",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "pack_ocean"
+    ]
+  },
+  "tags": [
+    "blue",
+    "sea",
+    "calm",
+    "summer"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "kind": "paper",
+  "name": "Ocean Lined",
+  "version": 1,
+  "unlock": {},
+  "collectionId": "ocean",
+  "category": "papers",
+  "paper": {
+    "color": "#F7FBFC",
+    "lineColor": "#C3D9E4",
+    "marginColor": null,
+    "pattern": "lined",
+    "spacing": 32
+  },
+  "tags": [
+    "blue",
+    "sea",
+    "calm",
+    "summer"
+  ]
+}

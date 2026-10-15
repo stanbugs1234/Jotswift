@@ -320,11 +320,26 @@ def upload(path, data, content_type):
     request("POST", url, data, content_type)
 
 
-def unlock_of(listing):
+def bundles():
+    """tool/bundles.json: bundle product id -> {name, price, items}."""
+    path = ROOT / "tool" / "bundles.json"
+    return json.loads(path.read_text())["bundles"] if path.exists() else {}
+
+
+def check_bundles():
+    """Every item a bundle names exists."""
+    missing = [f"{b}: {i}" for b, spec in bundles().items() for i in spec["items"] if not (CATALOG / i).is_dir()]
+    if missing:
+        raise CheckError("bundles name missing items:\n  " + "\n  ".join(missing))
+
+
+def unlock_of(listing, item_id=None):
     """How an item unlocks. An item in a collection also unlocks with the
-    collection's products (and with Pro if the collection is in Pro), so
-    the app and the Storage rules only ever look at the item itself.
-    Republish a collection's items after changing its products."""
+    collection's products (and with Pro if the collection is in Pro), and
+    an item named in a bundle (or in a collection a bundle names) with the
+    bundle, so the app and the Storage rules only ever look at the item
+    itself. Republish a collection's or bundle's items after changing its
+    products."""
     own = listing.get("unlock", {})
     unlock = {
         "free": bool(own.get("free")),
@@ -338,6 +353,10 @@ def unlock_of(listing):
         for p in theirs.get("products", []):
             if p not in unlock["products"]:
                 unlock["products"].append(p)
+    for product, spec in bundles().items():
+        if (item_id in spec["items"] or listing.get("collectionId") in spec["items"]) \
+                and product not in unlock["products"]:
+            unlock["products"].append(product)
     return unlock
 
 
@@ -352,7 +371,7 @@ def publish(item_id, visibility, dry_run):
         "name": listing["name"],
         "version": version,
         "format": listing.get("format", 1),
-        "unlock": unlock_of(listing),
+        "unlock": unlock_of(listing, item_id),
         "visibility": visibility,
         "category": listing.get("category"),
         "tags": listing.get("tags", []),
@@ -449,6 +468,13 @@ def main():
             try:
                 check(item_id)
                 print(f"ok    {item_id}")
+            except CheckError as e:
+                failed += 1
+                print(f"FAIL  {e}")
+        if not args.ids:
+            try:
+                check_bundles()
+                print("ok    bundles")
             except CheckError as e:
                 failed += 1
                 print(f"FAIL  {e}")

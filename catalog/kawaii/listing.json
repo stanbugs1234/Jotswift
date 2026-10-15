@@ -1,0 +1,17 @@
+{
+  "kind": "collection",
+  "name": "Kawaii",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "pack_kawaii"
+    ]
+  },
+  "tags": [
+    "cute",
+    "pastel",
+    "fun",
+    "stars"
+  ]
+}

@@ -66,6 +66,50 @@
       "covers": ["#1B2340", "#2E2357", "#0F1428"],
       "papers": { "dot":   { "color": "#1E2646", "lineColor": "#46527D", "spacing": 26 },
                   "lined": { "color": "#1E2646", "lineColor": "#3D4870", "spacing": 32 } }
+    },
+    "ocean": {
+      "name": "Ocean",
+      "tags": ["blue", "sea", "calm", "summer"],
+      "ink": "#1F2D3A", "soft": "#6E8496", "rule": "#CFE0EA", "accent": "#21689A",
+      "tab": "#E4F0F6", "onAccent": "#FFFFFF", "paper": "#F7FBFC",
+      "second": "#4DB6AC",
+      "border": "dashed", "header": "swash", "motif": "waves", "serif": false,
+      "covers": ["#21689A", "#4DB6AC", "#DCEFF3"],
+      "papers": { "lined": { "color": "#F7FBFC", "lineColor": "#C3D9E4", "spacing": 32 },
+                  "dot":   { "color": "#F7FBFC", "lineColor": "#A9C7D6", "spacing": 26 } }
+    },
+    "autumn": {
+      "name": "Autumn",
+      "tags": ["fall", "cozy", "warm", "leaves"],
+      "ink": "#2E2219", "soft": "#8B7461", "rule": "#E5D3BF", "accent": "#9C4221",
+      "tab": "#F4E6D4", "onAccent": "#FFFFFF", "paper": "#FBF4EA",
+      "second": "#C9932E",
+      "border": "hand", "header": "underline", "motif": "leaves", "serif": true,
+      "covers": ["#9C4221", "#C9932E", "#5B6B3A"],
+      "papers": { "lined": { "color": "#FBF4EA", "lineColor": "#E0CCB4", "spacing": 32 },
+                  "grid":  { "color": "#FBF4EA", "lineColor": "#E6D6C2", "spacing": 24 } }
+    },
+    "retro": {
+      "name": "Retro 70s",
+      "tags": ["retro", "groovy", "orange", "vintage"],
+      "ink": "#3A2414", "soft": "#8E6B52", "rule": "#EBD5BC", "accent": "#B4471C",
+      "tab": "#F7E3C8", "onAccent": "#FFFFFF", "paper": "#FDF3E3",
+      "second": "#D99A2B",
+      "border": "none", "header": "banner", "motif": "sun", "serif": false,
+      "covers": ["#B4471C", "#D99A2B", "#6B4226"],
+      "papers": { "lined": { "color": "#FDF3E3", "lineColor": "#E8CDAE", "spacing": 32 },
+                  "dot":   { "color": "#FDF3E3", "lineColor": "#D9B48E", "spacing": 26 } }
+    },
+    "kawaii": {
+      "name": "Kawaii",
+      "tags": ["cute", "pastel", "fun", "stars"],
+      "ink": "#3B3045", "soft": "#9488A3", "rule": "#EADFF2", "accent": "#8E5BB5",
+      "tab": "#F3EAFA", "onAccent": "#FFFFFF", "paper": "#FFFBFE",
+      "second": "#F29BB6",
+      "border": "stitched", "header": "banner", "motif": "stars", "serif": false,
+      "covers": ["#C9B3E6", "#F29BB6", "#A8DCC9"],
+      "papers": { "dot":  { "color": "#FFFBFE", "lineColor": "#DCC8EA", "spacing": 24 },
+                  "grid": { "color": "#FFFBFE", "lineColor": "#ECDFF4", "spacing": 22 } }
     }
   }
 }

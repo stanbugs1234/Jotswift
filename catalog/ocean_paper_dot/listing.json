@@ -1,0 +1,21 @@
+{
+  "kind": "paper",
+  "name": "Ocean Dot",
+  "version": 1,
+  "unlock": {},
+  "collectionId": "ocean",
+  "category": "papers",
+  "paper": {
+    "color": "#F7FBFC",
+    "lineColor": "#A9C7D6",
+    "marginColor": null,
+    "pattern": "dot",
+    "spacing": 26
+  },
+  "tags": [
+    "blue",
+    "sea",
+    "calm",
+    "summer"
+  ]
+}

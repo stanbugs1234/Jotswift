@@ -1,0 +1,17 @@
+{
+  "kind": "collection",
+  "name": "Retro 70s",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "pack_retro"
+    ]
+  },
+  "tags": [
+    "retro",
+    "groovy",
+    "orange",
+    "vintage"
+  ]
+}

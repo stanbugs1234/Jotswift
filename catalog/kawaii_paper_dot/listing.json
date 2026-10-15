@@ -1,0 +1,21 @@
+{
+  "kind": "paper",
+  "name": "Kawaii Dot",
+  "version": 1,
+  "unlock": {},
+  "collectionId": "kawaii",
+  "category": "papers",
+  "paper": {
+    "color": "#FFFBFE",
+    "lineColor": "#DCC8EA",
+    "marginColor": null,
+    "pattern": "dot",
+    "spacing": 24
+  },
+  "tags": [
+    "cute",
+    "pastel",
+    "fun",
+    "stars"
+  ]
+}

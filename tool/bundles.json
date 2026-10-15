@@ -1,0 +1,38 @@
+{
+  "_comment": "Bundles: one product that unlocks several items. tool/catalog.py adds each bundle's product to its items (and to the items of collections listed here) when publishing. Republish the items after changing a bundle. Prices are US dollars for docs/pricing.md.",
+  "bundles": {
+    "bundle_student_2026": {
+      "name": "Student bundle 2026-27",
+      "price": "5.99",
+      "items": ["academic_planner_2026_27", "student_pages", "stickers_study"]
+    },
+    "bundle_planners_2027": {
+      "name": "Planner bundle 2027",
+      "price": "9.99",
+      "items": ["diary_classic_2027", "diary_modern_2027", "diary_landscape_2027", "tabbed_lavender_2027",
+                "tabbed_linen_2027", "tabbed_sorbet_2027", "undated_weekly", "undated_daily"]
+    },
+    "bundle_tabbed_2027": {
+      "name": "Tabbed diaries 2027 (all three)",
+      "price": "5.99",
+      "items": ["tabbed_lavender_2027", "tabbed_linen_2027", "tabbed_sorbet_2027"]
+    },
+    "bundle_collections": {
+      "name": "Every collection",
+      "price": "9.99",
+      "items": ["botanical", "dark_academia", "coquette", "boho_sunset", "scandi", "celestial", "budget",
+                "ocean", "autumn", "retro", "kawaii"]
+    },
+    "bundle_journals": {
+      "name": "Journal bundle",
+      "price": "5.99",
+      "items": ["journal_sunrise_sunset", "journal_gratitude", "journal_five_year", "journal_reflect", "bujo_kit"]
+    },
+    "bundle_stickers": {
+      "name": "Every sticker pack",
+      "price": "5.99",
+      "items": ["stickers_planner_icons", "stickers_washi", "stickers_labels", "stickers_study",
+                "stickers_seasonal", "stickers_emoji", "stickers_weather"]
+    }
+  }
+}

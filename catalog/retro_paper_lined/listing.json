@@ -1,0 +1,21 @@
+{
+  "kind": "paper",
+  "name": "Retro 70s Lined",
+  "version": 1,
+  "unlock": {},
+  "collectionId": "retro",
+  "category": "papers",
+  "paper": {
+    "color": "#FDF3E3",
+    "lineColor": "#E8CDAE",
+    "marginColor": null,
+    "pattern": "lined",
+    "spacing": 32
+  },
+  "tags": [
+    "retro",
+    "groovy",
+    "orange",
+    "vintage"
+  ]
+}

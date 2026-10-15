@@ -1,0 +1,21 @@
+{
+  "kind": "paper",
+  "name": "Kawaii Grid",
+  "version": 1,
+  "unlock": {},
+  "collectionId": "kawaii",
+  "category": "papers",
+  "paper": {
+    "color": "#FFFBFE",
+    "lineColor": "#ECDFF4",
+    "marginColor": null,
+    "pattern": "grid",
+    "spacing": 22
+  },
+  "tags": [
+    "cute",
+    "pastel",
+    "fun",
+    "stars"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "kind": "collection",
+  "name": "Autumn",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "pack_autumn"
+    ]
+  },
+  "tags": [
+    "fall",
+    "cozy",
+    "warm",
+    "leaves"
+  ]
+}
