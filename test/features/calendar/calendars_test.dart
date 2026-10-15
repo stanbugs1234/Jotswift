@@ -27,6 +27,14 @@ CalendarEvent event(String title, {String calendar = personalCalendarId}) =>
 
 const work = CalendarInfo(id: 'work', name: 'Work', color: 0xFF1F8A99);
 
+/// On phones the Calendars sheet is in the More menu.
+Future<void> openCalendarsSheet(WidgetTester tester) async {
+  await tester.tap(find.byTooltip('More'));
+  await tester.pumpAndSettle();
+  await tester.tap(find.text('Calendars'));
+  await tester.pumpAndSettle();
+}
+
 void main() {
   group('saved events', () {
     test('older events keep their own colour unless it was the default', () {
@@ -137,8 +145,7 @@ void main() {
       );
       expect(find.text('Standup'), findsOneWidget);
 
-      await tester.tap(find.byTooltip('Calendars'));
-      await tester.pumpAndSettle();
+      await openCalendarsSheet(tester);
       await tester.tap(find.bySemanticsLabel('Show Work'));
       await tester.pumpAndSettle();
       await tester.tapAt(const Offset(200, 40)); // close the sheet
@@ -150,8 +157,7 @@ void main() {
 
     testWidgets('a calendar is added from a suggestion', (tester) async {
       final container = await openCalendar(tester);
-      await tester.tap(find.byTooltip('Calendars'));
-      await tester.pumpAndSettle();
+      await openCalendarsSheet(tester);
       await tester.tap(find.text('New calendar'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Family'));
@@ -193,8 +199,7 @@ void main() {
         calendars: [work],
         events: [event('Standup', calendar: 'work')],
       );
-      await tester.tap(find.byTooltip('Calendars'));
-      await tester.pumpAndSettle();
+      await openCalendarsSheet(tester);
       await tester.tap(find.byTooltip('Edit Work'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Delete'));
@@ -215,6 +220,7 @@ void main() {
       await openCalendar(tester, size: const Size(1400, 900));
       expect(find.text('Calendars'), findsOneWidget);
       expect(find.byTooltip('Calendars'), findsNothing);
+      expect(find.byTooltip('More'), findsNothing);
     });
   });
 }

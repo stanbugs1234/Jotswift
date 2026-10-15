@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/settings/synced_setting.dart' show sharedPreferencesProvider;
 import '../notebooks/notes_providers.dart' show currentUidProvider;
 import '../tasks/task_providers.dart' show todayProvider;
 import 'data/calendar_repository.dart';
@@ -89,22 +90,54 @@ Future<void> deleteCalendar(
   await ref.read(calendarRepositoryProvider).deleteCalendar(calendar.id);
 }
 
-enum CalendarMode { month, week, day }
+/// The Calendar tab's views, from widest to narrowest, then the list.
+enum CalendarMode {
+  year('Year'),
+  month('Month'),
+  week('Week'),
+  threeDay('3 days'),
+  day('Day'),
+  agenda('Agenda');
+
+  const CalendarMode(this.label);
+
+  final String label;
+}
 
 /// What the Calendar tab shows: a mode and the chosen day.
 typedef CalendarState = ({CalendarMode mode, Day day});
 
 class CalendarController extends Notifier<CalendarState> {
-  @override
-  CalendarState build() =>
-      (mode: CalendarMode.month, day: ref.read(todayProvider));
+  static const _prefsKey = 'calendarMode';
 
-  void setMode(CalendarMode mode) => state = (mode: mode, day: state.day);
+  @override
+  CalendarState build() {
+    final saved = ref.read(sharedPreferencesProvider).getString(_prefsKey);
+    return (
+      mode: CalendarMode.values.asNameMap()[saved] ?? CalendarMode.month,
+      day: ref.read(todayProvider),
+    );
+  }
+
+  /// Switches view, remembering it on this device for next time.
+  void setMode(CalendarMode mode) {
+    state = (mode: mode, day: state.day);
+    ref.read(sharedPreferencesProvider).setString(_prefsKey, mode.name);
+  }
 
   void select(Day day) => state = (mode: state.mode, day: day);
 
   /// Shows [day] in the day view.
-  void openDay(Day day) => state = (mode: CalendarMode.day, day: day);
+  void openDay(Day day) {
+    select(day);
+    setMode(CalendarMode.day);
+  }
+
+  /// Shows the month holding [day].
+  void openMonth(Day day) {
+    select(day);
+    setMode(CalendarMode.month);
+  }
 
   void today() => select(ref.read(todayProvider));
 
@@ -112,9 +145,11 @@ class CalendarController extends Notifier<CalendarState> {
   void move(int step) {
     final d = state.day;
     select(switch (state.mode) {
+      CalendarMode.year => _addMonths(d, 12 * step),
       CalendarMode.month => _addMonths(d, step),
       CalendarMode.week => d.addDays(7 * step),
-      CalendarMode.day => d.addDays(step),
+      CalendarMode.threeDay => d.addDays(3 * step),
+      CalendarMode.day || CalendarMode.agenda => d.addDays(step),
     });
   }
 
