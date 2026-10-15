@@ -213,7 +213,7 @@ class _DayPanel extends ConsumerWidget {
                   width: 4,
                   height: 20,
                   margin: const EdgeInsets.only(right: 8),
-                  color: Color(o.event.color),
+                  color: Color(o.color),
                 ),
                 Expanded(child: Text(o.event.title)),
               ],

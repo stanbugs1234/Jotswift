@@ -8,6 +8,7 @@ import '../../core/motion/directional_switcher.dart';
 import '../planner/planner_screen.dart' show openPlannerDay;
 import '../tasks/task_providers.dart' show todayProvider;
 import 'calendar_providers.dart';
+import 'calendars_panel.dart';
 import 'domain/event.dart';
 import 'event_editor.dart';
 import 'time_grid.dart';
@@ -19,7 +20,6 @@ class CalendarScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(calendarProvider);
-    final controller = ref.read(calendarProvider.notifier);
     final local = MaterialLocalizations.of(context);
     final firstWeekday = local.firstDayOfWeekIndex;
     final day = state.day;
@@ -51,6 +51,25 @@ class CalendarScreen extends ConsumerWidget {
       CalendarMode.day => day,
     };
 
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final showPanel = constraints.maxWidth >= calendarsPanelBreakpoint;
+        return _scaffold(context, ref, title, body, period, showPanel);
+      },
+    );
+  }
+
+  Widget _scaffold(
+    BuildContext context,
+    WidgetRef ref,
+    String title,
+    Widget body,
+    Day period,
+    bool showPanel,
+  ) {
+    final state = ref.watch(calendarProvider);
+    final controller = ref.read(calendarProvider.notifier);
+    final day = state.day;
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
@@ -60,6 +79,12 @@ class CalendarScreen extends ConsumerWidget {
               tooltip: 'Open in Planner',
               icon: const Icon(Icons.edit_note),
               onPressed: () => openPlannerDay(context, ref, day),
+            ),
+          if (!showPanel)
+            IconButton(
+              tooltip: 'Calendars',
+              icon: const Icon(Icons.layers_outlined),
+              onPressed: () => showCalendarsSheet(context),
             ),
           IconButton(
             tooltip: 'Previous',
@@ -114,20 +139,45 @@ class CalendarScreen extends ConsumerWidget {
         label: const Text('New event'),
       ),
       // Swipe sideways to move a month, week or day.
-      body: GestureDetector(
-        onHorizontalDragEnd: (details) {
-          final v = details.primaryVelocity ?? 0;
-          if (v.abs() > 300) controller.move(v < 0 ? 1 : -1);
-        },
-        child: DirectionalSwitcher<Day>(
-          // Switching between Month, Week and Day replaces the view.
-          key: ValueKey(state.mode),
-          position: period,
-          child: body,
+      body: _WithCalendarsPanel(
+        show: showPanel,
+        child: GestureDetector(
+          onHorizontalDragEnd: (details) {
+            final v = details.primaryVelocity ?? 0;
+            if (v.abs() > 300) controller.move(v < 0 ? 1 : -1);
+          },
+          child: DirectionalSwitcher<Day>(
+            // Switching between Month, Week and Day replaces the view.
+            key: ValueKey(state.mode),
+            position: period,
+            child: body,
+          ),
         ),
       ),
     );
   }
+}
+
+/// Body width from which the Calendars panel sits beside the calendar;
+/// narrower screens open it from the app bar.
+const calendarsPanelBreakpoint = 1100.0;
+
+class _WithCalendarsPanel extends StatelessWidget {
+  const _WithCalendarsPanel({required this.show, required this.child});
+
+  final bool show;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => !show
+      ? child
+      : Row(
+          children: [
+            const SizedBox(width: 220, child: CalendarsPanel()),
+            const VerticalDivider(width: 1),
+            Expanded(child: child),
+          ],
+        );
 }
 
 /// A month grid with the chosen day's events beside it (wide) or below.
@@ -258,7 +308,7 @@ class _MonthGrid extends ConsumerWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 3),
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        color: Color(o.event.color).withValues(alpha: 0.85),
+                        color: Color(o.color).withValues(alpha: 0.85),
                         borderRadius: BorderRadius.circular(3),
                       ),
                       child: Text(
@@ -269,7 +319,7 @@ class _MonthGrid extends ConsumerWidget {
                           fontSize: 11,
                           color:
                               ThemeData.estimateBrightnessForColor(
-                                    Color(o.event.color),
+                                    Color(o.color),
                                   ) ==
                                   Brightness.dark
                               ? Colors.white
@@ -284,11 +334,7 @@ class _MonthGrid extends ConsumerWidget {
                       spacing: 3,
                       children: [
                         for (final o in events.take(4))
-                          Icon(
-                            Icons.circle,
-                            size: 6,
-                            color: Color(o.event.color),
-                          ),
+                          Icon(Icons.circle, size: 6, color: Color(o.color)),
                       ],
                     ),
                   ),
@@ -384,7 +430,7 @@ class _Agenda extends ConsumerWidget {
               width: 6,
               height: 36,
               decoration: BoxDecoration(
-                color: Color(o.event.color),
+                color: Color(o.color),
                 borderRadius: BorderRadius.circular(3),
               ),
             ),

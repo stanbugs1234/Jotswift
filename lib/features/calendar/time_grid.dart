@@ -301,7 +301,7 @@ class _EventBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final event = occurrence.event;
-    final color = Color(event.color);
+    final color = Color(occurrence.color);
     final onColor =
         ThemeData.estimateBrightnessForColor(color) == Brightness.dark
         ? Colors.white

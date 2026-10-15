@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../shared/dialogs.dart';
-import '../notebooks/domain/notebook_models.dart' show notebookColors;
 import '../reminders/reminders.dart';
 import 'calendar_providers.dart';
 import 'domain/event.dart';
@@ -30,7 +29,6 @@ Future<void> showEventEditor(
         end: allDay
             ? Day.of(begin).toDateTime()
             : begin.add(const Duration(hours: 1)),
-        color: notebookColors.first,
       );
   return Navigator.of(context, rootNavigator: true).push(
     MaterialPageRoute<void>(
@@ -55,7 +53,10 @@ class _EventEditorState extends ConsumerState<EventEditor> {
   late bool _allDay = widget.initial.allDay;
   late DateTime _start = widget.initial.start;
   late DateTime _end = widget.initial.end;
-  late int _color = widget.initial.color;
+
+  /// The event's own colour; null uses its calendar's.
+  late int? _color = widget.initial.color;
+  late String _calendarId = widget.initial.calendarId;
   late Recurrence? _repeat = widget.initial.recurrence;
 
   /// Minutes before the start; null for no alert. See
@@ -83,6 +84,8 @@ class _EventEditorState extends ConsumerState<EventEditor> {
             start: _allDay ? Day.of(_start).toDateTime() : _start,
             end: _allDay ? Day.of(_end).toDateTime() : _end,
             color: _color,
+            clearColor: _color == null,
+            calendarId: _calendarId,
             recurrence: _repeat,
             clearRecurrence: _repeat == null,
             reminderMinutes: [?_validAlert],
@@ -319,33 +322,33 @@ class _EventEditorState extends ConsumerState<EventEditor> {
             onChanged: (v) => setState(() => _alert = v),
           ),
           const SizedBox(height: 16),
+          _CalendarPicker(
+            selected: _calendarId,
+            onChanged: (id) => setState(() => _calendarId = id),
+          ),
+          const SizedBox(height: 16),
           Text('Color', style: theme.textTheme.titleSmall),
           const SizedBox(height: 8),
           Wrap(
             spacing: 10,
             runSpacing: 10,
             children: [
-              for (final (i, c) in notebookColors.indexed)
-                Semantics(
-                  button: true,
-                  selected: c == _color,
+              _ColorDot(
+                color: calendarOf(
+                  ref.watch(calendarsByIdProvider),
+                  widget.initial.copyWith(calendarId: _calendarId),
+                ).color,
+                label: 'Calendar color',
+                selected: _color == null,
+                onTap: () => setState(() => _color = null),
+                calendar: true,
+              ),
+              for (final (i, c) in calendarColors.indexed)
+                _ColorDot(
+                  color: c,
                   label: 'Color ${i + 1}',
-                  excludeSemantics: true,
-                  child: InkWell(
-                    customBorder: const CircleBorder(),
-                    onTap: () => setState(() => _color = c),
-                    child: CircleAvatar(
-                      radius: 16,
-                      backgroundColor: Color(c),
-                      child: c == _color
-                          ? const Icon(
-                              Icons.check,
-                              color: Colors.white,
-                              size: 18,
-                            )
-                          : null,
-                    ),
-                  ),
+                  selected: c == _color,
+                  onTap: () => setState(() => _color = c),
                 ),
             ],
           ),
@@ -401,6 +404,95 @@ class _EventEditorState extends ConsumerState<EventEditor> {
         if (next.isEmpty) return;
         setState(() => _repeat = rule.copyWith(weekdays: next));
       },
+    );
+  }
+}
+
+/// Which calendar the event is in, shown with its colour.
+class _CalendarPicker extends ConsumerWidget {
+  const _CalendarPicker({required this.selected, required this.onChanged});
+
+  final String selected;
+  final ValueChanged<String> onChanged;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final calendars =
+        ref.watch(calendarsProvider).value ?? const [CalendarInfo.personal];
+    final value = calendars.any((c) => c.id == selected)
+        ? selected
+        : personalCalendarId;
+    return DropdownButtonFormField<String>(
+      initialValue: value,
+      decoration: const InputDecoration(labelText: 'Calendar'),
+      items: [
+        for (final c in calendars)
+          DropdownMenuItem(
+            value: c.id,
+            child: Row(
+              children: [
+                CircleAvatar(radius: 7, backgroundColor: Color(c.color)),
+                const SizedBox(width: 10),
+                Text(c.name),
+              ],
+            ),
+          ),
+      ],
+      onChanged: (id) {
+        if (id != null) onChanged(id);
+      },
+    );
+  }
+}
+
+class _ColorDot extends StatelessWidget {
+  const _ColorDot({
+    required this.color,
+    required this.label,
+    required this.selected,
+    required this.onTap,
+    this.calendar = false,
+  });
+
+  final int color;
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  /// The "use the calendar's colour" choice, drawn as a ring.
+  final bool calendar;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = Color(color);
+    final dot = CircleAvatar(
+      radius: 16,
+      backgroundColor: calendar ? Colors.transparent : c,
+      child: selected
+          ? Icon(Icons.check, color: calendar ? c : Colors.white, size: 18)
+          : null,
+    );
+    return Semantics(
+      button: true,
+      selected: selected,
+      label: label,
+      excludeSemantics: true,
+      child: Tooltip(
+        message: label,
+        child: InkWell(
+          customBorder: const CircleBorder(),
+          onTap: onTap,
+          child: calendar
+              ? DecoratedBox(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: c, width: 3),
+                  ),
+                  child: dot,
+                )
+              : dot,
+        ),
+      ),
     );
   }
 }

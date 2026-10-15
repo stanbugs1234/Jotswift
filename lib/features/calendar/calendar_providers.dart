@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../notebooks/notes_providers.dart' show currentUidProvider;
 import '../tasks/task_providers.dart' show todayProvider;
+import 'data/calendar_repository.dart';
 import 'data/event_repository.dart';
 import 'domain/event.dart';
 
@@ -21,15 +22,72 @@ final eventsProvider = StreamProvider<List<CalendarEvent>>(
   (ref) => ref.watch(eventRepositoryProvider).watchEvents(),
 );
 
-/// The occurrences touching the days `from` to `to` (inclusive).
+/// Overridden in `main()` with Firestore when Firebase is set up.
+final calendarsBackendProvider = Provider<CalendarsBackend>(
+  (ref) => InMemoryCalendarsBackend(),
+);
+
+final calendarRepositoryProvider = Provider<CalendarRepository>(
+  (ref) => ref
+      .watch(calendarsBackendProvider)
+      .calendars(ref.watch(currentUidProvider)),
+);
+
+/// Every calendar, Personal first, in order.
+final calendarsProvider = StreamProvider<List<CalendarInfo>>(
+  (ref) => ref.watch(calendarRepositoryProvider).watchCalendars(),
+);
+
+/// Calendars by id, with Personal always present.
+final calendarsByIdProvider = Provider<Map<String, CalendarInfo>>((ref) {
+  final list = ref.watch(calendarsProvider).value ?? const [];
+  return {
+    personalCalendarId: CalendarInfo.personal,
+    for (final c in list) c.id: c,
+  };
+});
+
+/// The calendar [event] shows in: its own, or Personal if that was
+/// deleted.
+CalendarInfo calendarOf(Map<String, CalendarInfo> byId, CalendarEvent event) =>
+    byId[event.calendarId] ?? byId[personalCalendarId]!;
+
+/// The occurrences touching the days `from` to `to` (inclusive) from
+/// calendars that are shown, each in its calendar's colour unless the
+/// event has its own.
 final occurrencesProvider =
-    Provider.family<List<Occurrence>, ({Day from, Day to})>(
-      (ref, range) => occurrencesBetween(
-        ref.watch(eventsProvider).value ?? const [],
-        range.from,
-        range.to,
-      ),
-    );
+    Provider.family<List<Occurrence>, ({Day from, Day to})>((ref, range) {
+      final byId = ref.watch(calendarsByIdProvider);
+      return [
+        for (final o in occurrencesBetween(
+          ref.watch(eventsProvider).value ?? const [],
+          range.from,
+          range.to,
+        ))
+          if (calendarOf(byId, o.event) case final c when c.visible)
+            o.withColor(c.color),
+      ];
+    });
+
+/// Deletes [calendar], moving its events to Personal or deleting them
+/// ([deleteEvents]). Personal can't be deleted.
+Future<void> deleteCalendar(
+  WidgetRef ref,
+  CalendarInfo calendar, {
+  required bool deleteEvents,
+}) async {
+  if (calendar.id == personalCalendarId) return;
+  final events = ref.read(eventRepositoryProvider);
+  for (final e in ref.read(eventsProvider).value ?? const <CalendarEvent>[]) {
+    if (e.calendarId != calendar.id) continue;
+    if (deleteEvents) {
+      await events.deleteEvent(e.id);
+    } else {
+      await events.saveEvent(e.copyWith(calendarId: personalCalendarId));
+    }
+  }
+  await ref.read(calendarRepositoryProvider).deleteCalendar(calendar.id);
+}
 
 enum CalendarMode { month, week, day }
 

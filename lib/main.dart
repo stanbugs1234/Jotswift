@@ -25,6 +25,7 @@ import 'core/sync/sync_status.dart';
 import 'features/auth/auth_repository.dart';
 import 'features/auth/firebase_auth_repository.dart';
 import 'features/calendar/calendar_providers.dart';
+import 'features/calendar/data/calendar_repository.dart';
 import 'features/calendar/data/event_repository.dart';
 import 'features/notebooks/data/cover_photos.dart';
 import 'features/notebooks/data/firestore_notes_backend.dart';
@@ -97,6 +98,9 @@ Future<List<Override>> _backendOverrides() async {
     syncMonitorProvider.overrideWithValue(FirestoreSyncMonitor(firestore)),
     tasksBackendProvider.overrideWithValue(FirestoreTasksBackend(firestore)),
     eventsBackendProvider.overrideWithValue(FirestoreEventsBackend(firestore)),
+    calendarsBackendProvider.overrideWithValue(
+      FirestoreCalendarsBackend(firestore),
+    ),
     coverPhotoStoreProvider.overrideWithValue(
       FirebaseCoverPhotoStore(FirebaseStorage.instance),
     ),

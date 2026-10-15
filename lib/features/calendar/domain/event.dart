@@ -1,8 +1,10 @@
 import 'package:flutter/foundation.dart';
 
 import '../../../core/day.dart';
+import 'calendar_info.dart';
 
 export '../../../core/day.dart';
+export 'calendar_info.dart';
 
 enum Frequency { daily, weekly, monthly, yearly }
 
@@ -106,7 +108,8 @@ class CalendarEvent {
     required this.title,
     required this.start,
     required this.end,
-    required this.color,
+    this.color,
+    this.calendarId = personalCalendarId,
     this.allDay = false,
     this.notes = '',
     this.recurrence,
@@ -135,7 +138,16 @@ class CalendarEvent {
       allDay: allDay,
       start: start,
       end: end.isBefore(start) ? start : end,
-      color: map['color'] as int? ?? defaultEventColor,
+      color: switch (map['color']) {
+        // Events saved before calendars had a colour each; the old default
+        // now means "the calendar's colour" (Personal starts with it).
+        final int c
+            when !map.containsKey('calendarId') && _oldDefaults.contains(c) =>
+          null,
+        final int c => c,
+        _ => null,
+      },
+      calendarId: map['calendarId'] as String? ?? personalCalendarId,
       recurrence: Recurrence.fromMap(map['recurrence']),
       reminderMinutes: [
         for (final m in map['reminderMinutes'] as List? ?? const [])
@@ -144,7 +156,11 @@ class CalendarEvent {
     );
   }
 
-  static const defaultEventColor = 0xFF3F51B5;
+  /// The colour used when neither the event nor its calendar has one.
+  static const defaultEventColor = 0xFF2C4A7C;
+
+  /// Colours older versions gave every new event.
+  static const _oldDefaults = {0xFF3F51B5, 0xFF2C4A7C};
 
   final String id;
   final String title;
@@ -157,8 +173,11 @@ class CalendarEvent {
   /// When it ends. All-day events: midnight of the last day (inclusive).
   final DateTime end;
 
-  /// ARGB.
-  final int color;
+  /// Its own colour (ARGB), or null to use its calendar's.
+  final int? color;
+
+  /// The [CalendarInfo] it belongs to.
+  final String calendarId;
   final Recurrence? recurrence;
 
   /// Minutes before the start to send reminders. For all-day events the
@@ -180,7 +199,8 @@ class CalendarEvent {
       'start': start.millisecondsSinceEpoch,
       'end': end.millisecondsSinceEpoch,
     },
-    'color': color,
+    'color': ?color,
+    'calendarId': calendarId,
     'recurrence': ?recurrence?.toMap(),
     if (reminderMinutes.isNotEmpty) 'reminderMinutes': reminderMinutes,
   };
@@ -192,6 +212,8 @@ class CalendarEvent {
     DateTime? start,
     DateTime? end,
     int? color,
+    bool clearColor = false,
+    String? calendarId,
     Recurrence? recurrence,
     bool clearRecurrence = false,
     List<int>? reminderMinutes,
@@ -202,7 +224,8 @@ class CalendarEvent {
     allDay: allDay ?? this.allDay,
     start: start ?? this.start,
     end: end ?? this.end,
-    color: color ?? this.color,
+    color: clearColor ? null : color ?? this.color,
+    calendarId: calendarId ?? this.calendarId,
     recurrence: clearRecurrence ? null : recurrence ?? this.recurrence,
     reminderMinutes: reminderMinutes ?? this.reminderMinutes,
   );
@@ -217,6 +240,7 @@ class CalendarEvent {
       other.start == start &&
       other.end == end &&
       other.color == color &&
+      other.calendarId == calendarId &&
       other.recurrence == recurrence &&
       listEquals(other.reminderMinutes, reminderMinutes);
 
@@ -229,6 +253,7 @@ class CalendarEvent {
     start,
     end,
     color,
+    calendarId,
     recurrence,
     Object.hashAll(reminderMinutes),
   );
@@ -237,9 +262,21 @@ class CalendarEvent {
 /// One time an event happens.
 @immutable
 class Occurrence {
-  const Occurrence(this.event, this.start, this.end);
+  const Occurrence(this.event, this.start, this.end, {this.calendarColor});
 
   final CalendarEvent event;
+
+  /// Its calendar's colour, when known (see [withColor]).
+  final int? calendarColor;
+
+  /// The colour to draw it in: the event's own, else its calendar's, else
+  /// the default.
+  int get color =>
+      event.color ?? calendarColor ?? CalendarEvent.defaultEventColor;
+
+  /// This occurrence drawn in [calendarColor] unless the event has its own.
+  Occurrence withColor(int calendarColor) =>
+      Occurrence(event, start, end, calendarColor: calendarColor);
   final DateTime start;
 
   /// For all-day events, midnight of the last day (inclusive).
