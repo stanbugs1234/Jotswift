@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/skins/skin_providers.dart';
+import '../../core/sync/sync_indicator.dart';
 import '../../core/skins/widgets/page_style.dart';
 import '../../shared/dialogs.dart';
 import '../canvas/ink_toolbar.dart';
@@ -66,6 +67,7 @@ class PageScreen extends ConsumerWidget {
             child: Text(page.value?.displayTitle ?? ''),
           ),
           actions: [
+            const SyncIndicator(),
             if (!readOnly && page.value != null)
               IconButton(
                 tooltip: 'Page paper',

@@ -249,7 +249,7 @@ You can handwrite anywhere on the page, and the structured widgets stay interact
 - [x] Canvas: pen, highlighter, stroke eraser, undo/redo, zoom/pan, palm rejection, phone Draw/Scroll toggle
 - [x] Page paper (blank, lined, narrow, grid, dot, music, Cornell) and PDF templates with links
 - [x] Text boxes and image insert
-- [ ] Offline mode and sync status indicator
+- [x] Offline mode and sync status indicator (cloud icon on pages and in the sidebar; a strip while offline; web keeps an offline copy too)
 - [x] Web: read-only ink rendering
 - [x] Web: text boxes, photos and stickers editable (ink stays view-only); links and refreshes keep their page
 - [x] Web: deployed to Firebase Hosting at https://notely-b1aec.web.app (`tool/deploy_web.sh`)

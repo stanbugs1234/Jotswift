@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../core/sync/sync_indicator.dart';
 import '../features/notebooks/notes_providers.dart';
 import '../features/planner/planner_screen.dart';
 import '../features/reminders/reminders.dart';
@@ -64,7 +65,7 @@ class AppShell extends ConsumerWidget {
 
     if (width < Breakpoints.medium) {
       return Scaffold(
-        body: navigationShell,
+        body: OfflineBanner(child: navigationShell),
         bottomNavigationBar: NavigationBar(
           selectedIndex: navigationShell.currentIndex,
           onDestinationSelected: _go,
@@ -95,7 +96,13 @@ class AppShell extends ConsumerWidget {
         onDestinationSelected: _go,
         leading: Padding(
           padding: const EdgeInsets.symmetric(vertical: 12),
-          child: Text('Notely', style: Theme.of(context).textTheme.titleLarge),
+          child: Column(
+            children: [
+              Text('Notely', style: Theme.of(context).textTheme.titleLarge),
+              const SizedBox(height: 4),
+              const SyncIndicator(),
+            ],
+          ),
         ),
         destinations: [
           for (final d in _destinations)
@@ -113,7 +120,7 @@ class AppShell extends ConsumerWidget {
         children: [
           side,
           const VerticalDivider(width: 1),
-          Expanded(child: navigationShell),
+          Expanded(child: OfflineBanner(child: navigationShell)),
         ],
       ),
     );
@@ -185,8 +192,15 @@ class _Sidebar extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(vertical: 12),
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(24, 4, 16, 16),
-                child: Text('Notely', style: theme.textTheme.titleLarge),
+                padding: const EdgeInsets.fromLTRB(24, 4, 8, 16),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text('Notely', style: theme.textTheme.titleLarge),
+                    ),
+                    const SyncIndicator(),
+                  ],
+                ),
               ),
               shelfItem(
                 'All notebooks',

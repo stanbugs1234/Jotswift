@@ -21,6 +21,7 @@ import 'core/purchases/revenuecat_purchases.dart';
 import 'core/settings/user_settings_repository.dart';
 import 'core/skins/skin_providers.dart';
 import 'core/skins/skin_repository.dart';
+import 'core/sync/sync_status.dart';
 import 'features/auth/auth_repository.dart';
 import 'features/auth/firebase_auth_repository.dart';
 import 'features/calendar/calendar_providers.dart';
@@ -76,6 +77,14 @@ Future<List<Override>> _backendOverrides() async {
   await Firebase.initializeApp(options: options);
   final auth = FirebaseAuth.instance;
   final firestore = FirebaseFirestore.instance;
+  if (kIsWeb) {
+    // Keep a copy in the browser (shared by its tabs), so changes made
+    // offline survive a refresh. Phones and tablets do this already.
+    firestore.settings = const Settings(
+      persistenceEnabled: true,
+      webPersistentTabManager: WebPersistentMultipleTabManager(),
+    );
+  }
   // Wait for the saved session so signed-in users skip the sign-in screen.
   await auth.authStateChanges().first;
 
@@ -85,6 +94,7 @@ Future<List<Override>> _backendOverrides() async {
       FirestoreUserSettingsRepository(firestore),
     ),
     notesBackendProvider.overrideWithValue(FirestoreNotesBackend(firestore)),
+    syncMonitorProvider.overrideWithValue(FirestoreSyncMonitor(firestore)),
     tasksBackendProvider.overrideWithValue(FirestoreTasksBackend(firestore)),
     eventsBackendProvider.overrideWithValue(FirestoreEventsBackend(firestore)),
     coverPhotoStoreProvider.overrideWithValue(
