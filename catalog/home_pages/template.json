@@ -1,0 +1,29 @@
+{
+  "mode": "pages",
+  "pages": [
+    {
+      "pdfPage": 1,
+      "title": "Meal plan"
+    },
+    {
+      "pdfPage": 2,
+      "title": "Grocery list"
+    },
+    {
+      "pdfPage": 3,
+      "title": "Recipe card"
+    },
+    {
+      "pdfPage": 4,
+      "title": "Cleaning schedule"
+    },
+    {
+      "pdfPage": 5,
+      "title": "Chore chart"
+    },
+    {
+      "pdfPage": 6,
+      "title": "Garden planner"
+    }
+  ]
+}

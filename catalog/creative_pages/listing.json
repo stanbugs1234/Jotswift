@@ -1,0 +1,19 @@
+{
+  "kind": "template",
+  "name": "Creative pack",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "pack_creative"
+    ]
+  },
+  "category": "creative",
+  "tags": [
+    "storyboard",
+    "comics",
+    "music",
+    "sketch",
+    "lettering"
+  ]
+}

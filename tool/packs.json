@@ -273,6 +273,159 @@
         "bujo.collection",
         "bujo.tracker"
       ]
+    },
+    "travel_pages": {
+      "name": "Travel pack",
+      "category": "lifestyle",
+      "tags": [
+        "travel",
+        "trips",
+        "packing",
+        "holiday"
+      ],
+      "unlock": {
+        "pro": true,
+        "products": [
+          "pack_travel"
+        ]
+      },
+      "price": "1.99",
+      "pages": [
+        "lifestyle.trip_overview",
+        "lifestyle.itinerary",
+        "lifestyle.packing_list",
+        "lifestyle.travel_budget",
+        "lifestyle.travel_journal"
+      ]
+    },
+    "home_pages": {
+      "name": "Home pack",
+      "category": "lifestyle",
+      "tags": [
+        "home",
+        "meals",
+        "cleaning",
+        "family"
+      ],
+      "unlock": {
+        "pro": true,
+        "products": [
+          "pack_home"
+        ]
+      },
+      "price": "1.99",
+      "pages": [
+        "core.meal_plan",
+        "lifestyle.grocery_list",
+        "lifestyle.recipe",
+        "lifestyle.cleaning",
+        "lifestyle.chore_chart",
+        "lifestyle.garden"
+      ]
+    },
+    "hobby_pages": {
+      "name": "Hobbies & reading",
+      "category": "lifestyle",
+      "tags": [
+        "books",
+        "movies",
+        "wish list",
+        "gifts"
+      ],
+      "unlock": {
+        "pro": true,
+        "products": [
+          "pack_hobbies"
+        ]
+      },
+      "price": "1.99",
+      "pages": [
+        "core.reading_log",
+        "lifestyle.book_review",
+        "lifestyle.watch_log",
+        "lifestyle.wish_list",
+        "lifestyle.gift_list"
+      ]
+    },
+    "event_pages": {
+      "name": "Wedding & events",
+      "category": "lifestyle",
+      "tags": [
+        "wedding",
+        "party",
+        "events",
+        "guests"
+      ],
+      "unlock": {
+        "pro": true,
+        "products": [
+          "pack_events"
+        ]
+      },
+      "price": "2.99",
+      "pages": [
+        "lifestyle.wedding_overview",
+        "lifestyle.guest_list",
+        "lifestyle.party_planner",
+        "lifestyle.vendor_contacts",
+        "core.budget"
+      ]
+    },
+    "money_pages": {
+      "name": "Money pack",
+      "category": "lifestyle",
+      "tags": [
+        "money",
+        "budget",
+        "savings",
+        "debt"
+      ],
+      "unlock": {
+        "pro": true,
+        "products": [
+          "pack_money"
+        ]
+      },
+      "price": "1.99",
+      "pages": [
+        "core.budget",
+        "money.expenses",
+        "money.savings_goals",
+        "money.debt_payoff",
+        "money.subscriptions",
+        "money.net_worth"
+      ]
+    },
+    "creative_pages": {
+      "name": "Creative pack",
+      "category": "creative",
+      "tags": [
+        "storyboard",
+        "comics",
+        "music",
+        "sketch",
+        "lettering"
+      ],
+      "unlock": {
+        "pro": true,
+        "products": [
+          "pack_creative"
+        ]
+      },
+      "price": "1.99",
+      "pages": [
+        "starter.storyboard",
+        "creative.storyboard_wide",
+        "creative.storyboard_43",
+        "creative.comic_six",
+        "creative.comic_mixed",
+        "creative.comic_splash",
+        "creative.sketch",
+        "creative.guitar_tab",
+        "creative.chord_charts",
+        "creative.handwriting_practice",
+        "creative.calligraphy_practice"
+      ]
     }
   }
 }

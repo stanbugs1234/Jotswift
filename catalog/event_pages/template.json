@@ -1,0 +1,25 @@
+{
+  "mode": "pages",
+  "pages": [
+    {
+      "pdfPage": 1,
+      "title": "Wedding overview"
+    },
+    {
+      "pdfPage": 2,
+      "title": "Guest list"
+    },
+    {
+      "pdfPage": 3,
+      "title": "Party planner"
+    },
+    {
+      "pdfPage": 4,
+      "title": "Vendor contacts"
+    },
+    {
+      "pdfPage": 5,
+      "title": "Budget"
+    }
+  ]
+}

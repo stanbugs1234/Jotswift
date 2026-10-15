@@ -1,0 +1,25 @@
+{
+  "mode": "pages",
+  "pages": [
+    {
+      "pdfPage": 1,
+      "title": "Trip overview"
+    },
+    {
+      "pdfPage": 2,
+      "title": "Itinerary"
+    },
+    {
+      "pdfPage": 3,
+      "title": "Packing list"
+    },
+    {
+      "pdfPage": 4,
+      "title": "Travel budget"
+    },
+    {
+      "pdfPage": 5,
+      "title": "Travel journal"
+    }
+  ]
+}

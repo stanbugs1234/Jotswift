@@ -1,0 +1,49 @@
+{
+  "mode": "pages",
+  "pages": [
+    {
+      "pdfPage": 1,
+      "title": "Storyboard (6 frames)"
+    },
+    {
+      "pdfPage": 2,
+      "title": "Storyboard (3 wide)"
+    },
+    {
+      "pdfPage": 3,
+      "title": "Storyboard (12 frames, 4:3)"
+    },
+    {
+      "pdfPage": 4,
+      "title": "Comic: six panels"
+    },
+    {
+      "pdfPage": 5,
+      "title": "Comic: mixed"
+    },
+    {
+      "pdfPage": 6,
+      "title": "Comic: splash"
+    },
+    {
+      "pdfPage": 7,
+      "title": "Sketch page"
+    },
+    {
+      "pdfPage": 8,
+      "title": "Guitar tab"
+    },
+    {
+      "pdfPage": 9,
+      "title": "Chord charts"
+    },
+    {
+      "pdfPage": 10,
+      "title": "Handwriting practice"
+    },
+    {
+      "pdfPage": 11,
+      "title": "Lettering practice"
+    }
+  ]
+}

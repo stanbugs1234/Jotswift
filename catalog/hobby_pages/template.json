@@ -1,0 +1,25 @@
+{
+  "mode": "pages",
+  "pages": [
+    {
+      "pdfPage": 1,
+      "title": "Reading log"
+    },
+    {
+      "pdfPage": 2,
+      "title": "Book review"
+    },
+    {
+      "pdfPage": 3,
+      "title": "Movie & TV log"
+    },
+    {
+      "pdfPage": 4,
+      "title": "Wish list"
+    },
+    {
+      "pdfPage": 5,
+      "title": "Gift list"
+    }
+  ]
+}

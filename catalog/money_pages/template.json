@@ -1,0 +1,29 @@
+{
+  "mode": "pages",
+  "pages": [
+    {
+      "pdfPage": 1,
+      "title": "Budget"
+    },
+    {
+      "pdfPage": 2,
+      "title": "Expense tracker"
+    },
+    {
+      "pdfPage": 3,
+      "title": "Savings goals"
+    },
+    {
+      "pdfPage": 4,
+      "title": "Debt payoff"
+    },
+    {
+      "pdfPage": 5,
+      "title": "Subscription tracker"
+    },
+    {
+      "pdfPage": 6,
+      "title": "Net worth"
+    }
+  ]
+}

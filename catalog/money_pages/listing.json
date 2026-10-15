@@ -1,0 +1,18 @@
+{
+  "kind": "template",
+  "name": "Money pack",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "pack_money"
+    ]
+  },
+  "category": "lifestyle",
+  "tags": [
+    "money",
+    "budget",
+    "savings",
+    "debt"
+  ]
+}

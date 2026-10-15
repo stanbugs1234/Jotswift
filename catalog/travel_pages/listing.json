@@ -1,0 +1,18 @@
+{
+  "kind": "template",
+  "name": "Travel pack",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "pack_travel"
+    ]
+  },
+  "category": "lifestyle",
+  "tags": [
+    "travel",
+    "trips",
+    "packing",
+    "holiday"
+  ]
+}
