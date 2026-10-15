@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/paper/paper_style.dart';
 import '../auth/auth_repository.dart';
 import '../canvas/domain/stroke.dart';
 import 'data/in_memory_notes_backend.dart';
@@ -61,3 +62,12 @@ final pageProvider = StreamProvider.family<NotePage?, String>(
 final strokesProvider = StreamProvider.autoDispose.family<List<Stroke>, String>(
   (ref, pageId) => ref.watch(strokeRepositoryProvider).watchStrokes(pageId),
 );
+
+/// The paper a page is drawn on: its own, else its notebook's. Null means
+/// neither chose one, so the active skin's paper is used.
+final pagePaperProvider = Provider.family<PaperStyle?, String>((ref, pageId) {
+  final page = ref.watch(pageProvider(pageId)).value;
+  if (page == null) return null;
+  return page.paper ??
+      ref.watch(notebookProvider(page.notebookId)).value?.paper;
+});

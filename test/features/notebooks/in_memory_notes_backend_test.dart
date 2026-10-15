@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:notely/features/canvas/domain/stroke.dart';
 import 'package:notely/features/notebooks/data/in_memory_notes_backend.dart';
+import 'package:notely/features/notebooks/domain/notebook_models.dart';
 
 Stroke dot(String id) => Stroke(
   id: id,
@@ -18,7 +19,9 @@ void main() {
 
   test('a new notebook starts with one "Notes" section', () async {
     final repo = backend.notebooks('sam');
-    final nb = await repo.createNotebook('School', 0xFF2C4A7C);
+    final nb = await repo.createNotebook(
+      NewNotebook(title: 'School', cover: NotebookCover.color(0xFF2C4A7C)),
+    );
 
     expect((await repo.watchNotebooks().first).single.title, 'School');
     expect((await repo.watchSections(nb.id).first).single.title, 'Notes');
@@ -26,7 +29,9 @@ void main() {
 
   test('pages are listed per section in creation order', () async {
     final repo = backend.notebooks('sam');
-    final nb = await repo.createNotebook('School', 0);
+    final nb = await repo.createNotebook(
+      NewNotebook(title: 'School', cover: NotebookCover.color(0)),
+    );
     final notes = (await repo.watchSections(nb.id).first).single;
     final other = await repo.createSection(nb.id, 'Labs');
 
@@ -40,7 +45,9 @@ void main() {
 
   test('renaming a page updates it', () async {
     final repo = backend.notebooks('sam');
-    final nb = await repo.createNotebook('School', 0);
+    final nb = await repo.createNotebook(
+      NewNotebook(title: 'School', cover: NotebookCover.color(0)),
+    );
     final section = (await repo.watchSections(nb.id).first).single;
     final page = await repo.createPage(nb.id, section.id);
 
@@ -52,7 +59,9 @@ void main() {
   test('deleting a notebook deletes its sections, pages and ink', () async {
     final repo = backend.notebooks('sam');
     final strokes = backend.strokes('sam');
-    final nb = await repo.createNotebook('School', 0);
+    final nb = await repo.createNotebook(
+      NewNotebook(title: 'School', cover: NotebookCover.color(0)),
+    );
     final section = (await repo.watchSections(nb.id).first).single;
     final page = await repo.createPage(nb.id, section.id);
     await strokes.addStroke(page.id, dot('a'));
@@ -80,7 +89,11 @@ void main() {
   });
 
   test("users can't see each other's notebooks", () async {
-    await backend.notebooks('sam').createNotebook('Sam', 0);
+    await backend
+        .notebooks('sam')
+        .createNotebook(
+          NewNotebook(title: 'Sam', cover: NotebookCover.color(0)),
+        );
 
     expect(await backend.notebooks('alex').watchNotebooks().first, isEmpty);
   });

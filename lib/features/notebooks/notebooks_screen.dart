@@ -21,8 +21,12 @@ class NotebooksScreen extends ConsumerWidget {
     final notebook = await ref
         .read(notebookRepositoryProvider)
         .createNotebook(
-          title.isEmpty ? 'Untitled notebook' : title,
-          notebookColors[count % notebookColors.length],
+          NewNotebook(
+            title: title.isEmpty ? 'Untitled notebook' : title,
+            cover: NotebookCover.color(
+              notebookColors[count % notebookColors.length],
+            ),
+          ),
         );
     if (context.mounted) context.go('/notebooks/${notebook.id}');
   }
@@ -66,7 +70,7 @@ class NotebooksScreen extends ConsumerWidget {
             childAspectRatio: 0.72,
           ),
           itemCount: list.length,
-          itemBuilder: (context, i) => NotebookCover(notebook: list[i]),
+          itemBuilder: (context, i) => NotebookTile(notebook: list[i]),
         ),
         AsyncError(:final error) => Center(
           child: Padding(
@@ -122,8 +126,8 @@ class _EmptyShelf extends StatelessWidget {
 enum _NotebookAction { rename, color, delete }
 
 /// A notebook drawn as a book cover.
-class NotebookCover extends ConsumerWidget {
-  const NotebookCover({required this.notebook, super.key});
+class NotebookTile extends ConsumerWidget {
+  const NotebookTile({required this.notebook, super.key});
 
   final Notebook notebook;
 
@@ -145,10 +149,12 @@ class NotebookCover extends ConsumerWidget {
           await repo.updateNotebook(notebook.id, title: title);
         }
       case _NotebookAction.color:
-        final i = notebookColors.indexOf(notebook.color);
+        final i = notebookColors.indexOf(notebook.cover.color);
         await repo.updateNotebook(
           notebook.id,
-          color: notebookColors[(i + 1) % notebookColors.length],
+          cover: NotebookCover.color(
+            notebookColors[(i + 1) % notebookColors.length],
+          ),
         );
       case _NotebookAction.delete:
         final ok = await confirmDelete(
@@ -164,7 +170,7 @@ class NotebookCover extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final color = Color(notebook.color);
+    final color = Color(notebook.cover.color);
     final onColor =
         ThemeData.estimateBrightnessForColor(color) == Brightness.dark
         ? Colors.white

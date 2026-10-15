@@ -1,3 +1,4 @@
+import '../../../core/paper/paper_style.dart';
 import '../../canvas/domain/stroke.dart';
 import '../domain/notebook_models.dart';
 
@@ -7,8 +8,13 @@ abstract interface class NotebookRepository {
   Stream<Notebook?> watchNotebook(String notebookId);
 
   /// Creates a notebook with one empty section.
-  Future<Notebook> createNotebook(String title, int color);
-  Future<void> updateNotebook(String notebookId, {String? title, int? color});
+  Future<Notebook> createNotebook(NewNotebook notebook);
+  Future<void> updateNotebook(
+    String notebookId, {
+    String? title,
+    NotebookCover? cover,
+    PaperStyle? paper,
+  });
 
   /// Deletes the notebook with all its sections, pages and ink.
   Future<void> deleteNotebook(String notebookId);
@@ -24,6 +30,10 @@ abstract interface class NotebookRepository {
   Stream<NotePage?> watchPage(String pageId);
   Future<NotePage> createPage(String notebookId, String sectionId);
   Future<void> renamePage(String pageId, String title);
+
+  /// Gives one page its own paper, or (with null) goes back to the
+  /// notebook's paper.
+  Future<void> setPagePaper(String pageId, PaperStyle? paper);
   Future<void> deletePage(String pageId);
 }
 

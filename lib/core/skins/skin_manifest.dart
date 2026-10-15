@@ -1,5 +1,9 @@
 import 'dart:ui';
 
+import '../paper/paper_style.dart';
+
+export '../paper/paper_style.dart' show PaperPattern;
+
 /// Who can use a skin.
 enum SkinTier {
   /// Bundled with the app and available to everyone.
@@ -11,9 +15,6 @@ enum SkinTier {
   /// Included with a Notely Pro subscription.
   pro,
 }
-
-/// The ruling printed on a page.
-enum PaperPattern { blank, lined, grid, dot }
 
 /// Thrown when a skin manifest is missing a field or has a bad value.
 class SkinManifestException implements Exception {

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import '../../../core/paper/paper_style.dart';
 import '../../canvas/domain/stroke.dart';
 import '../domain/notebook_models.dart';
 import 'notes_repository.dart';
@@ -56,15 +57,8 @@ class _InMemoryUserData implements NotebookRepository, StrokeRepository {
       _watch(() => _notebooks[notebookId]);
 
   @override
-  Future<Notebook> createNotebook(String title, int color) async {
-    final now = nowMillis();
-    final notebook = Notebook(
-      id: _id(),
-      title: title,
-      color: color,
-      createdAt: now,
-      updatedAt: now,
-    );
+  Future<Notebook> createNotebook(NewNotebook spec) async {
+    final notebook = spec.build(_id(), nowMillis());
     _notebooks[notebook.id] = notebook;
     await createSection(notebook.id, 'Notes');
     return notebook;
@@ -74,13 +68,15 @@ class _InMemoryUserData implements NotebookRepository, StrokeRepository {
   Future<void> updateNotebook(
     String notebookId, {
     String? title,
-    int? color,
+    NotebookCover? cover,
+    PaperStyle? paper,
   }) async {
     final notebook = _notebooks[notebookId];
     if (notebook == null) return;
     _notebooks[notebookId] = notebook.copyWith(
       title: title,
-      color: color,
+      cover: cover,
+      paper: paper,
       updatedAt: nowMillis(),
     );
     _changed();
@@ -192,15 +188,15 @@ class _InMemoryUserData implements NotebookRepository, StrokeRepository {
   Future<void> renamePage(String pageId, String title) async {
     final p = _pages[pageId];
     if (p == null) return;
-    _pages[pageId] = NotePage(
-      id: p.id,
-      notebookId: p.notebookId,
-      sectionId: p.sectionId,
-      title: title,
-      order: p.order,
-      createdAt: p.createdAt,
-      updatedAt: nowMillis(),
-    );
+    _pages[pageId] = p.copyWith(title: title, updatedAt: nowMillis());
+    _changed();
+  }
+
+  @override
+  Future<void> setPagePaper(String pageId, PaperStyle? paper) async {
+    final p = _pages[pageId];
+    if (p == null) return;
+    _pages[pageId] = p.copyWith(paper: () => paper, updatedAt: nowMillis());
     _changed();
   }
 

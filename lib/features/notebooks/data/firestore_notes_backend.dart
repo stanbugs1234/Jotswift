@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../../core/paper/paper_style.dart';
 import '../../canvas/domain/stroke.dart';
 import '../domain/notebook_models.dart';
 import 'notes_repository.dart';
@@ -61,16 +62,9 @@ class _FirestoreUserNotes implements NotebookRepository, StrokeRepository {
       });
 
   @override
-  Future<Notebook> createNotebook(String title, int color) async {
-    final now = nowMillis();
+  Future<Notebook> createNotebook(NewNotebook spec) async {
     final ref = _notebooks.doc();
-    final notebook = Notebook(
-      id: ref.id,
-      title: title,
-      color: color,
-      createdAt: now,
-      updatedAt: now,
-    );
+    final notebook = spec.build(ref.id, nowMillis());
     final section = _sections(ref.id).doc();
     final batch = ref.firestore.batch()
       ..set(ref, notebook.toMap())
@@ -91,10 +85,13 @@ class _FirestoreUserNotes implements NotebookRepository, StrokeRepository {
   Future<void> updateNotebook(
     String notebookId, {
     String? title,
-    int? color,
+    NotebookCover? cover,
+    PaperStyle? paper,
   }) async => _notebooks.doc(notebookId).update({
     'title': ?title,
-    'color': ?color,
+    'cover': ?cover?.toMap(),
+    'color': ?cover?.color,
+    'paper': ?paper?.toMap(),
     'updatedAt': nowMillis(),
   }).ignore();
 
@@ -206,6 +203,13 @@ class _FirestoreUserNotes implements NotebookRepository, StrokeRepository {
       .doc(pageId)
       .update({'title': title, 'updatedAt': nowMillis()})
       .ignore();
+
+  @override
+  Future<void> setPagePaper(String pageId, PaperStyle? paper) async =>
+      _pages.doc(pageId).update({
+        'paper': paper?.toMap() ?? FieldValue.delete(),
+        'updatedAt': nowMillis(),
+      }).ignore();
 
   @override
   Future<void> deletePage(String pageId) async {

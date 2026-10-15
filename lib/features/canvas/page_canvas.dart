@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/paper/paper_style.dart';
 import '../../core/skins/notely_skin.dart';
 import '../../core/skins/widgets/paper.dart';
 import '../notebooks/notes_providers.dart';
@@ -320,6 +321,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas> {
   @override
   Widget build(BuildContext context) {
     final skin = NotelySkin.of(context);
+    final paper = ref.watch(pagePaperProvider(widget.pageId)) ?? skin.paper;
     final strokes = ref.watch(strokesProvider(widget.pageId)).value ?? [];
     _reconcile(strokes);
     final liveId = _live.value?.id;
@@ -353,7 +355,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas> {
                     scale: _scale,
                     alignment: Alignment.topLeft,
                     child: _PageSurface(
-                      skin: skin,
+                      paper: paper,
                       strokes: visible,
                       live: _live,
                     ),
@@ -370,12 +372,12 @@ class _PageCanvasState extends ConsumerState<PageCanvas> {
 
 class _PageSurface extends StatelessWidget {
   const _PageSurface({
-    required this.skin,
+    required this.paper,
     required this.strokes,
     required this.live,
   });
 
-  final NotelySkin skin;
+  final PaperStyle paper;
   final List<Stroke> strokes;
   final ValueNotifier<Stroke?> live;
 
@@ -398,14 +400,7 @@ class _PageSurface extends StatelessWidget {
         children: [
           RepaintBoundary(
             child: CustomPaint(
-              painter: PaperPainter(
-                color: skin.paperColor,
-                lineColor: skin.lineColor,
-                marginColor: skin.marginColor,
-                pattern: skin.pattern,
-                spacing: skin.spacing,
-                scale: _paperScale,
-              ),
+              painter: PaperPainter(paper, scale: _paperScale),
             ),
           ),
           RepaintBoundary(child: CustomPaint(painter: StrokesPainter(strokes))),

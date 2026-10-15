@@ -10,7 +10,7 @@ individually as well as through Pro, and templates are PDFs.
 
 | # | Milestone | Size | Needs from you |
 |---|---|---|---|
-| 1 | Paper and cover data model | M | — |
+| 1 | Paper and cover data model ✅ | M | — |
 | 2 | Plain light/dark interface; skins become collections | M | — |
 | 3 | The shelf: covers, categories, groups, sort | L | — |
 | 4 | New-notebook flow and per-page paper | L | Turn on Firebase Storage (needs the Blaze plan) |
@@ -27,12 +27,12 @@ individually as well as through Pro, and templates are PDFs.
 The data changes come first, with no visible change, so later screens build on tested models.
 
 **New code**
-- `lib/core/paper/paper_style.dart`: `PaperStyle {color, lineColor, marginColor?, pattern, spacing, texture?}` with `toMap`/`fromMap`. `PaperPattern` gains `narrowLined`, `music` and `cornell`. Also `PageSize {letter, a4, a5, phone}` and `orientation`.
+- `lib/core/paper/paper_style.dart`: `PaperStyle {color, lineColor, marginColor?, pattern, spacing}` with `toMap`/`fromMap`. `PaperPattern` moves here and gains `narrowLined`, `music` and `cornell`. Also `PaperSize {letter, a4, a5, phone}` and `PaperOrientation`.
 - `lib/core/paper/basic_papers.dart`: the built-in basic papers (7 patterns × white/cream/gray/dark) as constants.
 - `lib/features/notebooks/domain/notebook_cover.dart`: `NotebookCover {kind: color | art | photo, color, coverId?, photoPath?}`.
 
 **Changes**
-- `Notebook` ([notebook_models.dart](../lib/features/notebooks/domain/notebook_models.dart)) gains `cover`, `paper`, `pageSize`, `orientation`, `collectionId?`, `categoryId?`, `groupId?`, `order` and `lastOpenedAt`.
+- `Notebook` ([notebook_models.dart](../lib/features/notebooks/domain/notebook_models.dart)) gains `cover`, `paper`, `paperSize` and `orientation`. (`collectionId` arrives with milestone 2, and the shelf fields `categoryId`, `groupId`, `order` and `lastOpenedAt` with milestone 3, where they're first used. A paper `texture` arrives with the catalog in milestone 5.)
   - **Existing notebooks need no migration.** `fromMap` turns the old `color` field into a color cover. A missing `paper` falls back to the paper of the user's current skin, so existing notebooks look exactly as they do today.
 - `NotePage` gains `paper?` (only when the page differs from its notebook) and `template?` (used from milestone 7).
 - `NotebookRepository` ([notes_repository.dart](../lib/features/notebooks/data/notes_repository.dart)):

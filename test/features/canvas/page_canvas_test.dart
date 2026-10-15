@@ -2,12 +2,16 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:notely/core/paper/basic_papers.dart';
+import 'package:notely/core/paper/paper_style.dart';
 import 'package:notely/core/skins/skin_manifest.dart';
+import 'package:notely/core/skins/widgets/paper.dart';
 import 'package:notely/features/auth/auth_repository.dart';
 import 'package:notely/features/canvas/domain/stroke.dart';
 import 'package:notely/features/canvas/ink_toolbar.dart';
 import 'package:notely/features/canvas/page_canvas.dart';
 import 'package:notely/features/notebooks/data/in_memory_notes_backend.dart';
+import 'package:notely/features/notebooks/domain/notebook_models.dart';
 import 'package:notely/features/notebooks/notes_providers.dart';
 import 'package:notely/features/notebooks/page_screen.dart';
 
@@ -46,7 +50,9 @@ void main() {
     final uid = auth.currentUser!.uid;
     final backend = InMemoryNotesBackend();
     final repo = backend.notebooks(uid);
-    final nb = await repo.createNotebook('School', 0);
+    final nb = await repo.createNotebook(
+      NewNotebook(title: 'School', cover: NotebookCover.color(0)),
+    );
     final section = (await repo.watchSections(nb.id).first).single;
     final page = await repo.createPage(nb.id, section.id);
 
@@ -241,5 +247,51 @@ void main() {
     await drag(tester, PointerDeviceKind.stylus);
     await drag(tester, PointerDeviceKind.mouse);
     expect(await page.strokes(), isEmpty);
+  });
+
+  group('paper', () {
+    PaperStyle drawnPaper(WidgetTester tester) => tester
+        .widgetList<CustomPaint>(
+          find.descendant(
+            of: find.byType(PageCanvas),
+            matching: find.byType(CustomPaint),
+          ),
+        )
+        .map((p) => p.painter)
+        .whereType<PaperPainter>()
+        .single
+        .paper;
+
+    final cream = basicPaper(PaperPattern.dot, BasicPaperColor.cream);
+    final grid = basicPaper(PaperPattern.grid, BasicPaperColor.gray);
+
+    testWidgets('a page uses the skin paper until something else is chosen', (
+      tester,
+    ) async {
+      await pumpPage(tester);
+
+      expect(drawnPaper(tester).pattern, PaperPattern.lined);
+      expect(drawnPaper(tester).color, skinById(skins, 'classic').paper.color);
+    });
+
+    testWidgets("a page uses its notebook's paper, and its own over that", (
+      tester,
+    ) async {
+      final page = await pumpPage(tester);
+      final repo = page.backend.notebooks(page.uid);
+      final notebookId = (await repo.watchPage(page.pageId).first)!.notebookId;
+
+      await repo.updateNotebook(notebookId, paper: cream);
+      await tester.pumpAndSettle();
+      expect(drawnPaper(tester), cream);
+
+      await repo.setPagePaper(page.pageId, grid);
+      await tester.pumpAndSettle();
+      expect(drawnPaper(tester), grid);
+
+      await repo.setPagePaper(page.pageId, null);
+      await tester.pumpAndSettle();
+      expect(drawnPaper(tester), cream);
+    });
   });
 }

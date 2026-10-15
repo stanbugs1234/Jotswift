@@ -63,7 +63,7 @@ void main() {
 
     await tester.pageBack();
     await tester.pumpAndSettle();
-    expect(find.byType(NotebookCover), findsOneWidget);
+    expect(find.byType(NotebookTile), findsOneWidget);
     expect(find.text('Biology'), findsOneWidget);
   });
 
@@ -125,7 +125,7 @@ void main() {
     await tester.tap(find.widgetWithText(TextButton, 'Delete'));
     await tester.pumpAndSettle();
 
-    expect(find.byType(NotebookCover), findsNothing);
+    expect(find.byType(NotebookTile), findsNothing);
     expect(find.text('No notebooks yet'), findsOneWidget);
   });
 }

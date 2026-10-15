@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'skin_manifest.dart';
+import '../paper/paper_style.dart';
 
 /// Skin values that don't fit in [ThemeData]: paper, ink palette and the
 /// accent font. Read it with `NotelySkin.of(context)`.
@@ -31,6 +31,16 @@ class NotelySkin extends ThemeExtension<NotelySkin> {
   /// Decorative style for planner and page headers.
   final TextStyle accentTextStyle;
   final double cornerRadius;
+
+  /// This skin's paper, used by notebooks and pages that don't choose
+  /// their own.
+  PaperStyle get paper => PaperStyle(
+    color: paperColor,
+    lineColor: lineColor,
+    marginColor: marginColor,
+    pattern: pattern,
+    spacing: spacing,
+  );
 
   static NotelySkin of(BuildContext context) {
     final skin = Theme.of(context).extension<NotelySkin>();

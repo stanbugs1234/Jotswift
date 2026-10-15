@@ -1,29 +1,55 @@
 import 'package:flutter/foundation.dart';
 
+import '../../../core/paper/paper_style.dart';
+import 'notebook_cover.dart';
+
+export 'notebook_cover.dart';
+
 /// A notebook holds sections, and each section holds pages.
 @immutable
 class Notebook {
   const Notebook({
     required this.id,
     required this.title,
-    required this.color,
+    required this.cover,
     required this.createdAt,
     required this.updatedAt,
+    this.paper,
+    this.paperSize = PaperSize.letter,
+    this.orientation = PaperOrientation.portrait,
   });
 
   factory Notebook.fromMap(String id, Map<String, dynamic> map) => Notebook(
     id: id,
     title: map['title'] as String? ?? 'Untitled notebook',
-    color: map['color'] as int? ?? notebookColors.first,
+    cover: NotebookCover.fromMap(
+      map['cover'],
+      fallbackColor: map['color'] as int? ?? notebookColors.first,
+    ),
+    paper: PaperStyle.fromMap(map['paper']),
+    paperSize: _enumByName(
+      PaperSize.values,
+      map['paperSize'],
+      PaperSize.letter,
+    ),
+    orientation: _enumByName(
+      PaperOrientation.values,
+      map['orientation'],
+      PaperOrientation.portrait,
+    ),
     createdAt: map['createdAt'] as int? ?? 0,
     updatedAt: map['updatedAt'] as int? ?? 0,
   );
 
   final String id;
   final String title;
+  final NotebookCover cover;
 
-  /// Cover color as ARGB, one of [notebookColors].
-  final int color;
+  /// The paper new pages get. Null means the active skin's paper, which is
+  /// how notebooks made before paper choices existed keep their look.
+  final PaperStyle? paper;
+  final PaperSize paperSize;
+  final PaperOrientation orientation;
 
   /// Milliseconds since epoch.
   final int createdAt;
@@ -31,19 +57,64 @@ class Notebook {
 
   Map<String, dynamic> toMap() => {
     'title': title,
-    'color': color,
+    'cover': cover.toMap(),
+    // Kept for app versions that only read the cover color.
+    'color': cover.color,
+    'paper': ?paper?.toMap(),
+    'paperSize': paperSize.name,
+    'orientation': orientation.name,
     'createdAt': createdAt,
     'updatedAt': updatedAt,
   };
 
-  Notebook copyWith({String? title, int? color, int? updatedAt}) => Notebook(
+  Notebook copyWith({
+    String? title,
+    NotebookCover? cover,
+    PaperStyle? paper,
+    int? updatedAt,
+  }) => Notebook(
     id: id,
     title: title ?? this.title,
-    color: color ?? this.color,
+    cover: cover ?? this.cover,
+    paper: paper ?? this.paper,
+    paperSize: paperSize,
+    orientation: orientation,
     createdAt: createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );
 }
+
+/// What to create a notebook with.
+@immutable
+class NewNotebook {
+  const NewNotebook({
+    required this.title,
+    required this.cover,
+    this.paper,
+    this.paperSize = PaperSize.letter,
+    this.orientation = PaperOrientation.portrait,
+  });
+
+  final String title;
+  final NotebookCover cover;
+  final PaperStyle? paper;
+  final PaperSize paperSize;
+  final PaperOrientation orientation;
+
+  Notebook build(String id, int now) => Notebook(
+    id: id,
+    title: title,
+    cover: cover,
+    paper: paper,
+    paperSize: paperSize,
+    orientation: orientation,
+    createdAt: now,
+    updatedAt: now,
+  );
+}
+
+T _enumByName<T extends Enum>(List<T> values, Object? name, T fallback) =>
+    values.where((v) => v.name == name).firstOrNull ?? fallback;
 
 /// Cover colors to choose from. They don't change with the skin, so a
 /// notebook keeps its color everywhere.
@@ -98,6 +169,7 @@ class NotePage {
     required this.order,
     required this.createdAt,
     required this.updatedAt,
+    this.paper,
   });
 
   factory NotePage.fromMap(String id, Map<String, dynamic> map) => NotePage(
@@ -108,6 +180,7 @@ class NotePage {
     order: (map['order'] as num?)?.toDouble() ?? 0,
     createdAt: map['createdAt'] as int? ?? 0,
     updatedAt: map['updatedAt'] as int? ?? 0,
+    paper: PaperStyle.fromMap(map['paper']),
   );
 
   final String id;
@@ -120,6 +193,9 @@ class NotePage {
   final int createdAt;
   final int updatedAt;
 
+  /// This page's paper when it differs from its notebook's.
+  final PaperStyle? paper;
+
   String get displayTitle => title.trim().isEmpty ? 'Untitled page' : title;
 
   Map<String, dynamic> toMap() => {
@@ -129,5 +205,21 @@ class NotePage {
     'order': order,
     'createdAt': createdAt,
     'updatedAt': updatedAt,
+    'paper': ?paper?.toMap(),
   };
+
+  NotePage copyWith({
+    String? title,
+    PaperStyle? Function()? paper,
+    int? updatedAt,
+  }) => NotePage(
+    id: id,
+    notebookId: notebookId,
+    sectionId: sectionId,
+    title: title ?? this.title,
+    order: order,
+    createdAt: createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    paper: paper == null ? this.paper : paper(),
+  );
 }
