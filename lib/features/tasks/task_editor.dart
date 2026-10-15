@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../reminders/reminders.dart';
 import 'domain/task.dart';
 import 'task_providers.dart';
 
@@ -49,6 +50,9 @@ class _TaskEditorState extends ConsumerState<_TaskEditor> {
   late TaskPriority _priority = widget.task.priority;
   late String? _listId = widget.task.listId;
 
+  /// Minutes after midnight on the due day; null for no reminder.
+  late int? _remindAt = widget.task.remindAt;
+
   @override
   void dispose() {
     _title.dispose();
@@ -67,6 +71,8 @@ class _TaskEditorState extends ConsumerState<_TaskEditor> {
             notes: _notes.text.trim(),
             due: _due,
             clearDue: _due == null,
+            remindAt: _due == null ? null : _remindAt,
+            clearRemindAt: _due == null || _remindAt == null,
             priority: _priority,
             listId: _listId,
             toInbox: _listId == null,
@@ -76,6 +82,9 @@ class _TaskEditorState extends ConsumerState<_TaskEditor> {
                 : DateTime.now().millisecondsSinceEpoch.toDouble(),
           ),
         );
+    if (_due != null && _remindAt != null) {
+      ref.read(reminderServiceProvider).requestPermission();
+    }
     Navigator.pop(context);
   }
 
@@ -157,6 +166,40 @@ class _TaskEditorState extends ConsumerState<_TaskEditor> {
                   ),
                 ],
               ),
+              if (_due != null)
+                Row(
+                  children: [
+                    Expanded(
+                      child: SwitchListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: const Text('Remind me'),
+                        value: _remindAt != null,
+                        onChanged: (on) =>
+                            setState(() => _remindAt = on ? 9 * 60 : null),
+                      ),
+                    ),
+                    if (_remindAt case final m?)
+                      TextButton(
+                        onPressed: () async {
+                          final t = await showTimePicker(
+                            context: context,
+                            initialTime: TimeOfDay(
+                              hour: m ~/ 60,
+                              minute: m % 60,
+                            ),
+                          );
+                          if (t != null) {
+                            setState(() => _remindAt = t.hour * 60 + t.minute);
+                          }
+                        },
+                        child: Text(
+                          MaterialLocalizations.of(context).formatTimeOfDay(
+                            TimeOfDay(hour: m ~/ 60, minute: m % 60),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
               const SizedBox(height: 16),
               Text('Priority', style: theme.textTheme.titleSmall),
               const SizedBox(height: 8),

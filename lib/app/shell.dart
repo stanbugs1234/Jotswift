@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../features/notebooks/notes_providers.dart';
+import '../features/planner/planner_screen.dart';
+import '../features/reminders/reminders.dart';
 import '../features/shelf/shelf_actions.dart';
 import '../features/shelf/shelf_view.dart';
 import '../features/store/store_screen.dart';
@@ -34,7 +36,7 @@ const _destinations = [
 
 /// The main app frame: bottom bar on phones, side rail on small tablets,
 /// and a sidebar with the shelf's categories on large tablets and the web.
-class AppShell extends StatelessWidget {
+class AppShell extends ConsumerWidget {
   const AppShell({required this.navigationShell, required this.uri, super.key});
 
   final StatefulNavigationShell navigationShell;
@@ -48,7 +50,16 @@ class AppShell extends StatelessWidget {
   );
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // While signed in, keep reminders scheduled, and open the day of a
+    // tapped reminder in the Planner.
+    ref.watch(reminderSyncProvider);
+    ref.listen(reminderTapsProvider, (_, next) {
+      if (next case AsyncData(value: final day)) {
+        ref.read(plannerDayProvider.notifier).show(day);
+        context.go(plannerPath);
+      }
+    });
     final width = MediaQuery.sizeOf(context).width;
 
     if (width < Breakpoints.medium) {

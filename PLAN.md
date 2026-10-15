@@ -258,7 +258,7 @@ You can handwrite anywhere on the page, and the structured widgets stay interact
 - [x] Tasks and task lists (editable on web); plan in [docs/phase3-plan.md](docs/phase3-plan.md)
 - [x] Events and calendar month/week/day views (editable on web)
 - [x] Daily planner page with live tasks and events plus a free ink area
-- [ ] Simple reminders (local notifications)
+- [x] Simple reminders (local notifications)
 
 ### Phase 4: Store and monetization (2–3 weeks)
 - [x] Purchases code (RevenueCat) and webhook Cloud Function → entitlements, tested
