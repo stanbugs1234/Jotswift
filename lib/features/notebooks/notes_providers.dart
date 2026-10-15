@@ -1,3 +1,4 @@
+import 'package:flutter/painting.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/paper/paper_style.dart';
@@ -27,6 +28,16 @@ final notebookRepositoryProvider = Provider<NotebookRepository>(
 
 final shelfRepositoryProvider = Provider<ShelfRepository>(
   (ref) => ref.watch(notesBackendProvider).shelf(ref.watch(currentUidProvider)),
+);
+
+final favoritePapersRepositoryProvider = Provider<FavoritePapersRepository>(
+  (ref) => ref
+      .watch(notesBackendProvider)
+      .favoritePapers(ref.watch(currentUidProvider)),
+);
+
+final favoritePapersProvider = StreamProvider<List<PaperStyle>>(
+  (ref) => ref.watch(favoritePapersRepositoryProvider).watchFavoritePapers(),
 );
 
 final categoriesProvider = StreamProvider<List<Category>>(
@@ -82,4 +93,15 @@ final pagePaperProvider = Provider.family<PaperStyle?, String>((ref, pageId) {
   if (page == null) return null;
   return page.paper ??
       ref.watch(notebookProvider(page.notebookId)).value?.paper;
+});
+
+/// The size of a page, from its notebook (Letter portrait while loading).
+final pageDimensionsProvider = Provider.family<Size, String>((ref, pageId) {
+  final page = ref.watch(pageProvider(pageId)).value;
+  final notebook = page == null
+      ? null
+      : ref.watch(notebookProvider(page.notebookId)).value;
+  return (notebook?.paperSize ?? PaperSize.letter).dimensions(
+    notebook?.orientation ?? PaperOrientation.portrait,
+  );
 });

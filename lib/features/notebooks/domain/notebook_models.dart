@@ -185,6 +185,20 @@ const notebookColors = [
   0xFF5B5B5B, // graphite
 ];
 
+/// Every color a cover can have: [notebookColors] (given to new notebooks
+/// in turn), then softer and deeper ones.
+const coverColors = [
+  ...notebookColors,
+  0xFF8FAF9A, // sage
+  0xFFD9C3A0, // sand
+  0xFFE8957F, // coral
+  0xFF8FB0E8, // sky
+  0xFF5C3B5E, // plum
+  0xFF1F3A2E, // forest
+  0xFFF2EBDD, // cream
+  0xFF2B2B2B, // black
+];
+
 @immutable
 class Section {
   const Section({

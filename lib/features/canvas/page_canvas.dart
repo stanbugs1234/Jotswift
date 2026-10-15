@@ -49,6 +49,9 @@ class _PageCanvasState extends ConsumerState<PageCanvas> {
   Offset _offset = Offset.zero;
   Size? _viewport;
 
+  /// This page's size in page units, from its notebook.
+  Size _pageSize = pageSize;
+
   // Drawing.
   int? _drawPointer;
   PointerDeviceKind? _drawKind;
@@ -69,19 +72,19 @@ class _PageCanvasState extends ConsumerState<PageCanvas> {
   Offset _toPage(Offset screen) => (screen - _offset) / _scale;
 
   void _fitWidth(Size viewport) {
-    _scale = ((viewport.width - 2 * _margin) / pageSize.width).clamp(
+    _scale = ((viewport.width - 2 * _margin) / _pageSize.width).clamp(
       _minScale,
       _maxScale,
     );
-    _offset = Offset((viewport.width - pageSize.width * _scale) / 2, _margin);
+    _offset = Offset((viewport.width - _pageSize.width * _scale) / 2, _margin);
   }
 
   /// Keeps at least part of the page on screen.
   void _clampOffset() {
     final viewport = _viewport;
     if (viewport == null) return;
-    final w = pageSize.width * _scale;
-    final h = pageSize.height * _scale;
+    final w = _pageSize.width * _scale;
+    final h = _pageSize.height * _scale;
     double clampAxis(double value, double content, double view) {
       if (content + 2 * _margin <= view) return (view - content) / 2;
       return value.clamp(view - content - _margin, _margin);
@@ -322,6 +325,12 @@ class _PageCanvasState extends ConsumerState<PageCanvas> {
   Widget build(BuildContext context) {
     final skin = NotelySkin.of(context);
     final paper = ref.watch(pagePaperProvider(widget.pageId)) ?? skin.paper;
+    final size = ref.watch(pageDimensionsProvider(widget.pageId));
+    if (size != _pageSize) {
+      _pageSize = size;
+      // Refit once the notebook (and so the page size) has loaded.
+      _viewport = null;
+    }
     final strokes = ref.watch(strokesProvider(widget.pageId)).value ?? [];
     _reconcile(strokes);
     final liveId = _live.value?.id;
@@ -355,6 +364,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas> {
                     scale: _scale,
                     alignment: Alignment.topLeft,
                     child: _PageSurface(
+                      size: _pageSize,
                       paper: paper,
                       strokes: visible,
                       live: _live,
@@ -372,11 +382,13 @@ class _PageCanvasState extends ConsumerState<PageCanvas> {
 
 class _PageSurface extends StatelessWidget {
   const _PageSurface({
+    required this.size,
     required this.paper,
     required this.strokes,
     required this.live,
   });
 
+  final Size size;
   final PaperStyle paper;
   final List<Stroke> strokes;
   final ValueNotifier<Stroke?> live;
@@ -384,8 +396,8 @@ class _PageSurface extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: pageSize.width,
-      height: pageSize.height,
+      width: size.width,
+      height: size.height,
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(

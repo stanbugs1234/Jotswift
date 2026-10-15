@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/paper/paper_style.dart';
 import '../../shared/dialogs.dart';
+import '../shelf/shelf_actions.dart';
 import 'domain/notebook_models.dart';
 import 'notes_providers.dart';
+import 'paper_picker.dart';
 
 /// One notebook: its sections as tabs, and the pages in the chosen section.
 class NotebookScreen extends ConsumerStatefulWidget {
@@ -89,11 +92,21 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
     }
   }
 
-  Future<void> _newPage(String sectionId) async {
+  Future<void> _newPage(String sectionId, {PaperStyle? paper}) async {
     final page = await ref
         .read(notebookRepositoryProvider)
-        .createPage(widget.notebookId, sectionId);
+        .createPage(widget.notebookId, sectionId, paper: paper);
     if (mounted) _openPage(page.id);
+  }
+
+  Future<void> _newPageWithPaper(String sectionId) async {
+    final choice = await showPagePaperSheet(
+      context,
+      current: notebookPaper(ref, widget.notebookId),
+      title: 'New page',
+      confirmLabel: 'Add page',
+    );
+    if (choice != null) await _newPage(sectionId, paper: choice.paper);
   }
 
   void _openPage(String pageId) =>
@@ -119,6 +132,27 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(notebook.value?.title ?? ''),
+        actions: [
+          if (notebook.value case final nb?)
+            PopupMenuButton<String>(
+              tooltip: 'Notebook options',
+              onSelected: (action) => switch (action) {
+                'edit' => editNotebook(context, ref, nb),
+                _ when current != null => _newPageWithPaper(current.id),
+                _ => null,
+              },
+              itemBuilder: (context) => const [
+                PopupMenuItem(
+                  value: 'edit',
+                  child: Text('Cover, paper & style'),
+                ),
+                PopupMenuItem(
+                  value: 'page',
+                  child: Text('New page with different paper'),
+                ),
+              ],
+            ),
+        ],
         bottom: sections == null
             ? null
             : PreferredSize(
@@ -226,6 +260,13 @@ class _PageList extends ConsumerWidget {
         initialValue: page.title,
       );
       if (title != null) await repo.renamePage(page.id, title);
+    } else if (action == 'paper') {
+      final choice = await showPagePaperSheet(
+        context,
+        current: page.paper ?? notebookPaper(ref, notebookId),
+        offerNotebookPaper: true,
+      );
+      if (choice != null) await repo.setPagePaper(page.id, choice.paper);
     } else if (action == 'delete') {
       final ok = await confirmDelete(
         context,
@@ -274,6 +315,7 @@ class _PageList extends ConsumerWidget {
             onSelected: (a) => _pageMenu(context, ref, page, a),
             itemBuilder: (context) => const [
               PopupMenuItem(value: 'rename', child: Text('Rename')),
+              PopupMenuItem(value: 'paper', child: Text('Change paper')),
               PopupMenuItem(value: 'delete', child: Text('Delete')),
             ],
           ),

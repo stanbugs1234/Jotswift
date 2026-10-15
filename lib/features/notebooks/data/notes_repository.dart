@@ -36,7 +36,11 @@ abstract interface class NotebookRepository {
 
   Stream<List<NotePage>> watchPages(String notebookId, String sectionId);
   Stream<NotePage?> watchPage(String pageId);
-  Future<NotePage> createPage(String notebookId, String sectionId);
+  Future<NotePage> createPage(
+    String notebookId,
+    String sectionId, {
+    PaperStyle? paper,
+  });
   Future<void> renamePage(String pageId, String title);
 
   /// Gives one page its own paper, or (with null) goes back to the
@@ -73,6 +77,13 @@ abstract interface class ShelfRepository {
   Future<void> setGroupOrder(String groupId, double order);
 }
 
+/// Papers the user starred, shown first when choosing paper.
+abstract interface class FavoritePapersRepository {
+  /// Newest first.
+  Stream<List<PaperStyle>> watchFavoritePapers();
+  Future<void> setFavoritePaper(PaperStyle paper, {required bool favorite});
+}
+
 /// Ink strokes for one signed-in user's pages.
 abstract interface class StrokeRepository {
   /// A new unique stroke id.
@@ -91,6 +102,7 @@ abstract interface class StrokeRepository {
 abstract interface class NotesBackend {
   NotebookRepository notebooks(String uid);
   ShelfRepository shelf(String uid);
+  FavoritePapersRepository favoritePapers(String uid);
   StrokeRepository strokes(String uid);
 }
 

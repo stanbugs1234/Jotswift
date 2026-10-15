@@ -403,7 +403,10 @@ class _NotebookTile extends ConsumerWidget {
       onSelected: (a) => onNotebookAction(context, ref, notebook, a),
       itemBuilder: (context) => const [
         PopupMenuItem(value: NotebookAction.rename, child: Text('Rename')),
-        PopupMenuItem(value: NotebookAction.color, child: Text('Change color')),
+        PopupMenuItem(
+          value: NotebookAction.edit,
+          child: Text('Cover, paper & style'),
+        ),
         PopupMenuItem(value: NotebookAction.move, child: Text('Move to…')),
         PopupMenuItem(value: NotebookAction.delete, child: Text('Delete')),
       ],

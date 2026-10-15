@@ -4,6 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:notely/core/paper/basic_papers.dart';
 import 'package:notely/core/paper/paper_style.dart';
 import 'package:notely/features/notebooks/domain/notebook_models.dart';
+import 'package:notely/features/notebooks/paper_picker.dart';
+import 'package:notely/features/shelf/cover_designs.dart';
 
 void main() {
   group('PaperStyle', () {
@@ -109,5 +111,60 @@ void main() {
     );
     expect(paper.copyWith(spacing: 40).spacing, 40);
     expect(paper.copyWith(spacing: 40).pattern, PaperPattern.lined);
+  });
+
+  group('PaperSize', () {
+    test('Letter keeps the size pages had before sizes existed', () {
+      expect(
+        PaperSize.letter.dimensions(PaperOrientation.portrait),
+        const Size(1404, 1872),
+      );
+    });
+
+    test('landscape swaps width and height', () {
+      final portrait = PaperSize.a4.dimensions(PaperOrientation.portrait);
+      final landscape = PaperSize.a4.dimensions(PaperOrientation.landscape);
+      expect(landscape, Size(portrait.height, portrait.width));
+    });
+  });
+
+  group('PaperPicker.make', () {
+    test('a basic color gives the same paper as the basic set', () {
+      for (final pattern in PaperPattern.values) {
+        expect(
+          PaperPicker.make(pattern, BasicPaperColor.cream.color),
+          basicPaper(pattern, BasicPaperColor.cream),
+        );
+      }
+    });
+
+    test('custom colors get ruling that can be seen', () {
+      for (final color in const [Color(0xFFFFE0F0), Color(0xFF102040)]) {
+        final paper = PaperPicker.make(PaperPattern.lined, color);
+        expect(paper.lineColor, isNot(color));
+        expect(paper.marginColor, isNotNull);
+        expect(
+          (paper.lineColor.computeLuminance() - color.computeLuminance()).abs(),
+          greaterThan(0.02),
+        );
+      }
+    });
+
+    test('spacing follows the choice', () {
+      final narrow = PaperPicker.make(
+        PaperPattern.grid,
+        BasicPaperColor.white.color,
+        spacing: PaperSpacing.narrow,
+      );
+      expect(narrow.spacing, lessThan(defaultSpacing(PaperPattern.grid)));
+    });
+  });
+
+  test('cover design ids are found again, unknown ones are not', () {
+    for (final d in CoverDesign.values) {
+      expect(CoverDesign.byId(d.id), d);
+    }
+    expect(CoverDesign.byId('design_hologram'), isNull);
+    expect(CoverDesign.byId(null), isNull);
   });
 }

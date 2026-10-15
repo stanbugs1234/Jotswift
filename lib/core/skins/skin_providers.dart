@@ -108,6 +108,15 @@ final defaultStyleProvider = Provider<NotelySkin>(
       .buildNotelySkin(ref.watch(activeSkinProvider)),
 );
 
+/// The notebook styles this user can pick.
+final usableSkinsProvider = Provider<List<SkinManifest>>((ref) {
+  final entitlements = ref.watch(entitlementsProvider);
+  return ref
+      .watch(bundledSkinsProvider)
+      .where(entitlements.canUseSkin)
+      .toList();
+});
+
 SkinManifest _usableSkin(Ref ref, String id, {SkinManifest? fallback}) {
   final skins = ref.watch(bundledSkinsProvider);
   final entitlements = ref.watch(entitlementsProvider);

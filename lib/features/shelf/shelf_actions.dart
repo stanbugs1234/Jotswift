@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/skins/skin_providers.dart';
 import '../../shared/dialogs.dart';
 import '../notebooks/domain/notebook_models.dart';
+import '../notebooks/notebook_editor.dart';
 import '../notebooks/notes_providers.dart';
 import 'shelf_view.dart';
 
@@ -18,26 +20,51 @@ Future<void> createNotebookAt(
   WidgetRef ref,
   ShelfLocation location,
 ) async {
-  final title = await askForText(
-    context,
-    title: 'New notebook',
-    confirmLabel: 'Create',
-    hint: 'e.g. School, Work, Journal',
-  );
-  if (title == null || !context.mounted) return;
   final count = ref.read(notebooksProvider).value?.length ?? 0;
+  final spec = await NotebookEditor.show(
+    context,
+    initial: NewNotebook(
+      title: '',
+      cover: NotebookCover.color(notebookColors[count % notebookColors.length]),
+      collectionId: ref.read(activeSkinProvider).id,
+      place: location.place,
+    ),
+  );
+  if (spec == null || !context.mounted) return;
   final notebook = await ref
       .read(notebookRepositoryProvider)
-      .createNotebook(
-        NewNotebook(
-          title: title.isEmpty ? 'Untitled notebook' : title,
-          cover: NotebookCover.color(
-            notebookColors[count % notebookColors.length],
-          ),
-          place: location.place,
-        ),
-      );
+      .createNotebook(spec);
   if (context.mounted) await context.push('/notebooks/${notebook.id}');
+}
+
+/// Changes a notebook's title, cover, paper and style.
+Future<void> editNotebook(
+  BuildContext context,
+  WidgetRef ref,
+  Notebook notebook,
+) async {
+  final spec = await NotebookEditor.show(
+    context,
+    editing: notebook,
+    initial: NewNotebook(
+      title: notebook.title,
+      cover: notebook.cover,
+      paper: notebook.paper,
+      paperSize: notebook.paperSize,
+      orientation: notebook.orientation,
+      collectionId: notebook.collectionId,
+    ),
+  );
+  if (spec == null) return;
+  await ref
+      .read(notebookRepositoryProvider)
+      .updateNotebook(
+        notebook.id,
+        title: spec.title,
+        cover: spec.cover,
+        paper: spec.paper,
+        collectionId: spec.collectionId,
+      );
 }
 
 Future<void> createGroupAt(
@@ -125,7 +152,7 @@ Future<void> showCategoryMenu(
   }
 }
 
-enum NotebookAction { rename, color, move, delete }
+enum NotebookAction { rename, edit, move, delete }
 
 Future<void> onNotebookAction(
   BuildContext context,
@@ -145,14 +172,8 @@ Future<void> onNotebookAction(
       if (title != null && title.isNotEmpty) {
         await repo.updateNotebook(notebook.id, title: title);
       }
-    case NotebookAction.color:
-      final i = notebookColors.indexOf(notebook.cover.color);
-      await repo.updateNotebook(
-        notebook.id,
-        cover: NotebookCover.color(
-          notebookColors[(i + 1) % notebookColors.length],
-        ),
-      );
+    case NotebookAction.edit:
+      await editNotebook(context, ref, notebook);
     case NotebookAction.move:
       final place = await pickShelfPlace(
         context,

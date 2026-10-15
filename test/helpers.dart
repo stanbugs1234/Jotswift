@@ -58,6 +58,7 @@ Future<DevAuthRepository> pumpApp(
   Size size = const Size(400, 800),
   bool signedIn = true,
   Map<String, Object> prefs = const {},
+  List<Override> overrides = const [],
 }) async {
   tester.view
     ..physicalSize = size
@@ -70,7 +71,7 @@ Future<DevAuthRepository> pumpApp(
   final container = await makeContainer(
     skins,
     prefs: prefs,
-    overrides: [authRepositoryProvider.overrideWithValue(auth)],
+    overrides: [authRepositoryProvider.overrideWithValue(auth), ...overrides],
   );
   await tester.pumpWidget(
     UncontrolledProviderScope(container: container, child: const NotelyApp()),

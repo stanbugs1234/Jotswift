@@ -21,11 +21,19 @@ class InMemoryNotesBackend implements NotesBackend {
   ShelfRepository shelf(String uid) => _user(uid);
 
   @override
+  FavoritePapersRepository favoritePapers(String uid) => _user(uid);
+
+  @override
   StrokeRepository strokes(String uid) => _user(uid);
 }
 
 class _InMemoryUserData
-    implements NotebookRepository, ShelfRepository, StrokeRepository {
+    implements
+        NotebookRepository,
+        ShelfRepository,
+        FavoritePapersRepository,
+        StrokeRepository {
+  final _favoritePapers = <String, PaperStyle>{};
   final _notebooks = <String, Notebook>{};
   final _categories = <String, Category>{};
   final _groups = <String, NotebookGroup>{};
@@ -244,6 +252,22 @@ class _InMemoryUserData
     parentGroupId: place == null ? g.parentGroupId : place.groupId,
   );
 
+  // Favorite papers
+
+  @override
+  Stream<List<PaperStyle>> watchFavoritePapers() =>
+      _watch(() => _favoritePapers.values.toList().reversed.toList());
+
+  @override
+  Future<void> setFavoritePaper(
+    PaperStyle paper, {
+    required bool favorite,
+  }) async {
+    _favoritePapers.remove(paper.key);
+    if (favorite) _favoritePapers[paper.key] = paper;
+    _changed();
+  }
+
   // Sections
 
   @override
@@ -315,7 +339,11 @@ class _InMemoryUserData
   Stream<NotePage?> watchPage(String pageId) => _watch(() => _pages[pageId]);
 
   @override
-  Future<NotePage> createPage(String notebookId, String sectionId) async {
+  Future<NotePage> createPage(
+    String notebookId,
+    String sectionId, {
+    PaperStyle? paper,
+  }) async {
     final last = _pages.values
         .where((p) => p.sectionId == sectionId)
         .fold<double>(0, (m, p) => max(m, p.order));
@@ -328,6 +356,7 @@ class _InMemoryUserData
       order: last + 1,
       createdAt: now,
       updatedAt: now,
+      paper: paper,
     );
     _pages[page.id] = page;
     _changed();

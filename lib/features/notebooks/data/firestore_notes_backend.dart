@@ -14,6 +14,7 @@ import 'notes_repository.dart';
 /// users/{uid}/notebooks/{notebookId}/sections/{sectionId}
 /// users/{uid}/categories/{categoryId}
 /// users/{uid}/groups/{groupId}
+/// users/{uid}/favoritePapers/{paperKey}
 /// users/{uid}/pages/{pageId}
 /// users/{uid}/pages/{pageId}/strokes/{strokeId}
 /// ```
@@ -33,12 +34,20 @@ class FirestoreNotesBackend implements NotesBackend {
       _FirestoreUserNotes(_firestore.doc('users/$uid'));
 
   @override
+  FavoritePapersRepository favoritePapers(String uid) =>
+      _FirestoreUserNotes(_firestore.doc('users/$uid'));
+
+  @override
   StrokeRepository strokes(String uid) =>
       _FirestoreUserNotes(_firestore.doc('users/$uid'));
 }
 
 class _FirestoreUserNotes
-    implements NotebookRepository, ShelfRepository, StrokeRepository {
+    implements
+        NotebookRepository,
+        ShelfRepository,
+        FavoritePapersRepository,
+        StrokeRepository {
   _FirestoreUserNotes(this._user);
 
   final DocumentReference<Map<String, dynamic>> _user;
@@ -51,6 +60,8 @@ class _FirestoreUserNotes
       _user.collection('categories');
   CollectionReference<Map<String, dynamic>> get _groups =>
       _user.collection('groups');
+  CollectionReference<Map<String, dynamic>> get _favoritePapers =>
+      _user.collection('favoritePapers');
   CollectionReference<Map<String, dynamic>> get _pages =>
       _user.collection('pages');
   CollectionReference<Map<String, dynamic>> _strokes(String pageId) =>
@@ -254,6 +265,33 @@ class _FirestoreUserNotes
   Future<void> setGroupOrder(String groupId, double order) async =>
       _groups.doc(groupId).update({'order': order}).ignore();
 
+  // Favorite papers
+
+  @override
+  Stream<List<PaperStyle>> watchFavoritePapers() => _favoritePapers
+      .orderBy('addedAt', descending: true)
+      .snapshots()
+      .map(
+        (snap) => [
+          for (final d in snap.docs) ?PaperStyle.fromMap(d.data()['paper']),
+        ],
+      );
+
+  @override
+  Future<void> setFavoritePaper(
+    PaperStyle paper, {
+    required bool favorite,
+  }) async {
+    final ref = _favoritePapers.doc(paper.key);
+    final batch = _user.firestore.batch();
+    if (favorite) {
+      batch.set(ref, {'paper': paper.toMap(), 'addedAt': nowMillis()});
+    } else {
+      batch.delete(ref);
+    }
+    _commitInBackground(batch);
+  }
+
   // Sections
 
   @override
@@ -324,7 +362,11 @@ class _FirestoreUserNotes
       });
 
   @override
-  Future<NotePage> createPage(String notebookId, String sectionId) async {
+  Future<NotePage> createPage(
+    String notebookId,
+    String sectionId, {
+    PaperStyle? paper,
+  }) async {
     final existing = await _pages
         .where('notebookId', isEqualTo: notebookId)
         .where('sectionId', isEqualTo: sectionId)
@@ -342,6 +384,7 @@ class _FirestoreUserNotes
       order: last + 1,
       createdAt: now,
       updatedAt: now,
+      paper: paper,
     );
     _commitInBackground(ref.firestore.batch()..set(ref, page.toMap()));
     return page;

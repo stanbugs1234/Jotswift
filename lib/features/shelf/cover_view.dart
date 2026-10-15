@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../notebooks/data/cover_photos.dart';
 import '../notebooks/domain/notebook_models.dart';
+import 'cover_designs.dart';
 
 /// The front of a notebook, drawn as a book with a spine.
 ///
-/// Art and photo covers show their color until their images arrive with the
-/// new-notebook screen (milestone 4 in docs/noteshelf-implementation.md).
-class CoverView extends StatelessWidget {
+/// Design covers are drawn in code (see [CoverDesign]); photo covers show
+/// their color until the photo has loaded. Covers this version can't draw
+/// show their color.
+class CoverView extends ConsumerWidget {
   const CoverView({required this.cover, this.elevation = 2, super.key});
 
   final NotebookCover cover;
@@ -16,8 +20,11 @@ class CoverView extends StatelessWidget {
   static const aspectRatio = 0.72;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final color = Color(cover.color);
+    final photo = cover.photoPath == null
+        ? null
+        : ref.watch(coverPhotoProvider(cover.photoPath!)).value;
     final spine = ThemeData.estimateBrightnessForColor(color) == Brightness.dark
         ? Colors.white
         : Colors.black;
@@ -34,6 +41,15 @@ class CoverView extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         child: Stack(
           children: [
+            if (photo != null)
+              Positioned.fill(
+                child: Image(image: photo, fit: BoxFit.cover),
+              ),
+            if (CoverDesign.byId(cover.coverId) case final design?
+                when cover.kind == CoverKind.art)
+              Positioned.fill(
+                child: CustomPaint(painter: CoverDesignPainter(design, color)),
+              ),
             // Shading along the spine, then the binding line.
             Positioned(
               left: 0,

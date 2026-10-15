@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,6 +14,7 @@ import 'core/skins/skin_providers.dart';
 import 'core/skins/skin_repository.dart';
 import 'features/auth/auth_repository.dart';
 import 'features/auth/firebase_auth_repository.dart';
+import 'features/notebooks/data/cover_photos.dart';
 import 'features/notebooks/data/firestore_notes_backend.dart';
 import 'features/notebooks/notes_providers.dart';
 import 'firebase_options.dart';
@@ -63,5 +65,8 @@ Future<List<Override>> _backendOverrides() async {
       FirestoreUserSettingsRepository(firestore),
     ),
     notesBackendProvider.overrideWithValue(FirestoreNotesBackend(firestore)),
+    coverPhotoStoreProvider.overrideWithValue(
+      FirebaseCoverPhotoStore(FirebaseStorage.instance),
+    ),
   ];
 }

@@ -19,8 +19,30 @@ enum PaperPattern {
   cornell,
 }
 
-/// The size of a notebook's pages.
-enum PaperSize { letter, a4, a5, phone }
+/// The size of a notebook's pages, in page units (about 165 per inch), as
+/// [width] x [height] in portrait. Ink is stored in page units, so a
+/// notebook's size is chosen once, when it is made.
+enum PaperSize {
+  /// US Letter. Kept at 1404 x 1872, the size every page had before sizes
+  /// could be chosen, so older pages keep their layout.
+  letter('Letter', 1404, 1872),
+  a4('A4', 1365, 1929),
+  a5('A5', 962, 1365),
+
+  /// Tall and narrow, for writing on a phone.
+  phone('Phone', 1053, 1872);
+
+  const PaperSize(this.label, this.width, this.height);
+
+  final String label;
+  final double width;
+  final double height;
+
+  Size dimensions(PaperOrientation orientation) =>
+      orientation == PaperOrientation.portrait
+      ? Size(width, height)
+      : Size(height, width);
+}
 
 enum PaperOrientation { portrait, landscape }
 
@@ -98,6 +120,12 @@ class PaperStyle {
     pattern: pattern ?? this.pattern,
     spacing: spacing ?? this.spacing,
   );
+
+  /// A stable id for this exact paper (used for favorites).
+  String get key =>
+      '${pattern.name}-${spacing.round()}-${color.toARGB32().toRadixString(16)}'
+      '-${lineColor.toARGB32().toRadixString(16)}'
+      '-${marginColor?.toARGB32().toRadixString(16) ?? 'none'}';
 
   @override
   bool operator ==(Object other) =>

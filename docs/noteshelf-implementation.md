@@ -13,7 +13,7 @@ individually as well as through Pro, and templates are PDFs.
 | 1 | Paper and cover data model ✅ | M | — |
 | 2 | Plain light/dark interface; skins become collections ✅ | M | — |
 | 3 | The shelf: covers, categories, groups, sort ✅ | L | — |
-| 4 | New-notebook flow and per-page paper | L | Turn on Firebase Storage (needs the Blaze plan) |
+| 4 | New-notebook flow and per-page paper ✅ | L | Turn on Firebase Storage (needs the Blaze plan) ✅ |
 | 5 | Catalog and downloads (free items only) | L | — |
 | 6 | Stickers | M | Sticker art (I can make placeholders) |
 | 7 | PDF templates and dated planners | L | Planner designs (I can make a simple first one) |
@@ -81,28 +81,22 @@ The data changes come first, with no visible change, so later screens build on t
 
 **Tests:** shelf logic (what each location shows, nesting, missing groups, sorting, back navigation, URLs), repository operations in both backends, and screen flows on phone and tablet widths, including drag and drop.
 
-## Milestone 4: New-notebook flow and per-page paper
+## Milestone 4: New-notebook flow and per-page paper ✅
 
-**New notebook** (`lib/features/notebooks/new_notebook/`): one sheet with a live preview.
+**New and edit notebook** (`NotebookEditor`, a full-screen dialog): a live preview of the cover and a page, then
 1. Title.
-2. **Cover:** tabs for Colors, Designs (from collections) and Photo.
-3. **Paper:** the basic patterns × colors, any color (a color wheel), and the papers of each collection.
-4. Size and orientation.
+2. **Cover:** Colors (16), Designs and Photo. Designs are six patterns drawn in code (stripes, dots, grid, chevron, waves, label) in any cover color, until catalog art arrives in milestone 5.
+3. **Paper** (`PaperPicker`): seven rulings, white/cream/gray/dark or any color (hue, saturation and lightness sliders), narrow/medium/wide spacing, starred favorites, and each notebook style's paper.
+4. **Style:** the ink colors and fonts. Picking a style switches to its paper unless a paper was chosen.
+5. Page size (Letter, A4, A5, Phone) and orientation. These are for new notebooks only, since ink is saved in page units. Letter keeps the size every page had before, so older pages don't move.
 
-**Photo covers**
-- New dependencies: `image_picker` and `firebase_storage`.
-- The photo is resized on the device to at most 1536×2048, then uploaded to `users/{uid}/covers/{notebookId}.jpg`.
-- New `firebase/storage.rules`: a user can only read and write their own folder, and the file must be an image under 5 MB. Rules tests are added next to the Firestore ones in `firebase/rules-tests`.
+The editor saves a concrete paper and style, so later changes to the default style don't change existing notebooks. Editing is under **Cover, paper & style** in the shelf and notebook menus.
 
-**Per page**
-- Page menu: **Change paper** (for this page only), and **Add page** with a choice of paper.
-- Favorites: a star on any paper adds it to `users/{uid}.favorites`, shown first in pickers. The Firestore rules get a size check for that field.
+**Photo covers:** `image_picker` shrinks the photo on the device (at most 1536 x 2048), then `CoverPhotoStore` uploads it to `users/{uid}/covers/{id}.jpg`. `firebase/storage.rules` lets each person reach only their own folder, and only images under 5 MB (tested in the Storage emulator). A failed upload shows a message and leaves the cover unchanged.
 
-**On the iPad:** check the cover photo upload and paper changes with the Pencil.
+**Per page:** **Page paper** on the page screen, **Change paper** in the page list, and **New page with different paper** in the notebook menu. Each offers "Use the notebook's paper". Favorites are saved in `users/{uid}/favoritePapers`.
 
-**Tests:** create a notebook with each cover kind, page paper override, favorites, storage rules tests.
-
----
+**Not done:** photos of a notebook that is cancelled or later changed stay in Storage. A clean-up function can come with the Cloud Functions in milestone 8.
 
 ## Milestone 5: Catalog and downloads (free items first)
 

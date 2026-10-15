@@ -73,6 +73,14 @@ class SkinPaper {
 
   /// Optional texture image, relative to the skin's folder.
   final String? texture;
+
+  PaperStyle get style => PaperStyle(
+    color: color,
+    lineColor: lineColor,
+    marginColor: marginColor,
+    pattern: pattern,
+    spacing: spacing,
+  );
 }
 
 /// Font family names. Any Google Fonts family name is allowed.

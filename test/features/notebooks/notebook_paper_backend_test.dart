@@ -78,6 +78,34 @@ void main() {
         expect(saved.paper, grid);
       });
 
+      test('a page can be made with its own paper', () async {
+        final nb = await repo.createNotebook(
+          const NewNotebook(title: 'Work', cover: NotebookCover.color(1)),
+        );
+        await pumpEventQueue();
+        final section = (await repo.watchSections(nb.id).first).single;
+
+        final created = await repo.createPage(nb.id, section.id, paper: grid);
+
+        expect((await page(created.id)).paper, grid);
+      });
+
+      test(
+        'favorite papers are listed newest first and can be removed',
+        () async {
+          final favorites = makeBackend().favoritePapers('sam');
+          await favorites.setFavoritePaper(cream, favorite: true);
+          await Future<void>.delayed(const Duration(milliseconds: 2));
+          await favorites.setFavoritePaper(grid, favorite: true);
+          await pumpEventQueue();
+          expect(await favorites.watchFavoritePapers().first, [grid, cream]);
+
+          await favorites.setFavoritePaper(cream, favorite: false);
+          await pumpEventQueue();
+          expect(await favorites.watchFavoritePapers().first, [grid]);
+        },
+      );
+
       test('a page can have its own paper and go back to the notebook '
           'paper', () async {
         final nb = await repo.createNotebook(

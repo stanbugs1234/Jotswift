@@ -8,6 +8,7 @@ import '../../shared/dialogs.dart';
 import '../canvas/ink_toolbar.dart';
 import '../canvas/page_canvas.dart';
 import 'notes_providers.dart';
+import 'paper_picker.dart';
 
 /// A single page: handwriting on phones and tablets, view-only on the web.
 class PageScreen extends ConsumerWidget {
@@ -55,6 +56,24 @@ class PageScreen extends ConsumerWidget {
             child: Text(page.value?.displayTitle ?? ''),
           ),
           actions: [
+            if (!readOnly && page.value != null)
+              IconButton(
+                tooltip: 'Page paper',
+                icon: const Icon(Icons.texture),
+                onPressed: () async {
+                  final p = page.value!;
+                  final choice = await showPagePaperSheet(
+                    context,
+                    current: p.paper ?? notebookPaper(ref, p.notebookId),
+                    offerNotebookPaper: true,
+                  );
+                  if (choice != null) {
+                    await ref
+                        .read(notebookRepositoryProvider)
+                        .setPagePaper(pageId, choice.paper);
+                  }
+                },
+              ),
             IconButton(
               tooltip: 'Rename page',
               icon: const Icon(Icons.edit_note),

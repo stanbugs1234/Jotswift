@@ -3,8 +3,9 @@ import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 
-/// The size of every page, in page units. Ink is stored in page units so it
-/// looks the same on every screen size and zoom level.
+/// The size of a Letter portrait page (the default), in page units. Ink is
+/// stored in page units so it looks the same on every screen size and zoom
+/// level. Other notebooks use their own paper size (see `PaperSize`).
 const pageSize = Size(1404, 1872);
 
 enum InkTool { pen, highlighter }
