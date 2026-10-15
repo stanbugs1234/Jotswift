@@ -68,9 +68,7 @@ Future<List<Override>> _backendOverrides() async {
   await auth.authStateChanges().first;
 
   return [
-    authRepositoryProvider.overrideWithValue(
-      FirebaseAuthRepository(auth, firestore),
-    ),
+    authRepositoryProvider.overrideWithValue(FirebaseAuthRepository(auth)),
     userSettingsRepositoryProvider.overrideWithValue(
       FirestoreUserSettingsRepository(firestore),
     ),

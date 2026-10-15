@@ -226,6 +226,7 @@ You can handwrite anywhere on the page, and the structured widgets stay interact
 - [x] Firestore security rules + emulator tests (`firebase/`)
 - [x] Publish the rules to the live database
 - [ ] Auth: sign in with Apple, Google and email (required, see §1); account deletion (required by Apple)
+  - [x] Deleting an account erases all its data (`deleteUserData` Cloud Function, deployed)
   - [x] Sign-in and settings screens, auth interface, stand-in auth for development
   - [x] Firebase Auth implementation (email, Google, Apple)
   - [ ] Google sign-in on Android: add the app's SHA-1 fingerprint in Firebase

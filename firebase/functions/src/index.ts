@@ -4,10 +4,13 @@ import { timingSafeEqual } from "node:crypto";
 
 import { initializeApp } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
+import { getStorage } from "firebase-admin/storage";
+import * as functionsV1 from "firebase-functions/v1";
 import { defineSecret } from "firebase-functions/params";
 import { onRequest } from "firebase-functions/v2/https";
 import { logger } from "firebase-functions";
 
+import { eraseUser } from "./accounts.js";
 import { applyWebhook, revenueCatFetcher } from "./entitlements.js";
 
 initializeApp();
@@ -52,3 +55,11 @@ export const revenuecatWebhook = onRequest(
     }
   },
 );
+
+/** When an account is deleted (from Settings, or in the Firebase console),
+ * erases its notebooks, pages, ink, tasks, events, settings and files. */
+export const deleteUserData = functionsV1.auth.user().onDelete(async (user) => {
+  await eraseUser(getFirestore(), (prefix) =>
+    getStorage().bucket().deleteFiles({ prefix }), user.uid);
+  logger.info("Account data erased", { uid: user.uid });
+});
