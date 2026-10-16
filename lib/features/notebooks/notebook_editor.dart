@@ -1,3 +1,4 @@
+import '../../shared/ui/tokens.dart';
 import '../../shared/ui/skeleton.dart';
 
 import 'package:flutter/material.dart';
@@ -203,7 +204,7 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
         title: Text(isNew ? 'New notebook' : 'Edit notebook'),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 8),
+            padding: const EdgeInsets.only(right: Insets.lg),
             child: FilledButton(
               onPressed: _saving ? null : _save,
               child: Text(isNew ? 'Create' : 'Save'),
