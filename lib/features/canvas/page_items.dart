@@ -310,3 +310,31 @@ Future<void> addPhoto(
       );
   }
 }
+
+/// A link's area: lightly tinted, with a link mark in its corner.
+class LinkView extends StatelessWidget {
+  const LinkView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    const blue = Color(0xFF2F6FDB);
+    return Semantics(
+      link: true,
+      label: 'Link',
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: blue.withValues(alpha: 0.08),
+          border: Border.all(color: blue.withValues(alpha: 0.45), width: 3),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: const Align(
+          alignment: Alignment.topRight,
+          child: Padding(
+            padding: EdgeInsets.all(6),
+            child: Icon(Icons.link, color: blue, size: 36),
+          ),
+        ),
+      ),
+    );
+  }
+}

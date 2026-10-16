@@ -289,6 +289,7 @@ class NotePage {
     this.template,
     this.period,
     this.bookmarked = false,
+    this.outline,
   });
 
   factory NotePage.fromMap(String id, Map<String, dynamic> map) => NotePage(
@@ -303,6 +304,7 @@ class NotePage {
     template: PageTemplate.fromMap(map['template']),
     period: PagePeriod.fromMap(map['period']),
     bookmarked: map['bookmarked'] as bool? ?? false,
+    outline: map['outline'] as String?,
   );
 
   final String id;
@@ -327,6 +329,10 @@ class NotePage {
   /// Listed under Bookmarks in the page jumper.
   final bool bookmarked;
 
+  /// Its entry in the notebook's outline (a heading the user gave it), or
+  /// null when it has none.
+  final String? outline;
+
   String get displayTitle => title.trim().isEmpty ? 'Untitled page' : title;
 
   Map<String, dynamic> toMap() => {
@@ -340,6 +346,7 @@ class NotePage {
     'template': ?template?.toMap(),
     'period': ?period?.toMap(),
     if (bookmarked) 'bookmarked': true,
+    'outline': ?outline,
   };
 
   NotePage copyWith({
@@ -352,6 +359,7 @@ class NotePage {
     PaperStyle? Function()? paper,
     int? updatedAt,
     bool? bookmarked,
+    String? Function()? outline,
   }) => NotePage(
     id: id ?? this.id,
     notebookId: notebookId ?? this.notebookId,
@@ -364,5 +372,6 @@ class NotePage {
     template: template,
     period: period,
     bookmarked: bookmarked ?? this.bookmarked,
+    outline: outline == null ? this.outline : outline(),
   );
 }

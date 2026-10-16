@@ -150,6 +150,12 @@ class _FirestoreUserNotes
   }
 
   @override
+  Future<void> setPageOutline(String pageId, String? outline) async => _pages
+      .doc(pageId)
+      .update({'outline': outline ?? FieldValue.delete()})
+      .ignore();
+
+  @override
   Future<void> setPageBookmarked(String pageId, bool bookmarked) async => _pages
       .doc(pageId)
       .update({'bookmarked': bookmarked ? true : FieldValue.delete()})

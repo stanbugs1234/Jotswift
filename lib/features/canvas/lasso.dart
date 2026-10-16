@@ -334,9 +334,10 @@ class LassoSelectionPainter extends CustomPainter {
 }
 
 /// What can be done with a lasso selection.
-enum LassoAction { color, cut, copy, duplicate, delete }
+enum LassoAction { color, cut, copy, duplicate, link, delete }
 
-/// The bar over a lasso selection: color, cut, copy, duplicate, delete.
+/// The bar over a lasso selection: color, cut, copy, duplicate, link,
+/// delete.
 class LassoActionBar extends StatelessWidget {
   const LassoActionBar({
     required this.colors,
@@ -417,6 +418,7 @@ class LassoActionBar extends StatelessWidget {
               Icons.library_add_outlined,
               'Duplicate',
             ),
+            button(LassoAction.link, Icons.link, 'Link to a page'),
             button(LassoAction.delete, Icons.delete_outline, 'Delete'),
           ],
         ),

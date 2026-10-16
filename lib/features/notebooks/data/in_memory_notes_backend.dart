@@ -130,6 +130,14 @@ class _InMemoryUserData
   }
 
   @override
+  Future<void> setPageOutline(String pageId, String? outline) async {
+    final p = _pages[pageId];
+    if (p == null) return;
+    _pages[pageId] = p.copyWith(outline: () => outline);
+    _changed();
+  }
+
+  @override
   Future<void> setPageBookmarked(String pageId, bool bookmarked) async {
     final p = _pages[pageId];
     if (p == null) return;

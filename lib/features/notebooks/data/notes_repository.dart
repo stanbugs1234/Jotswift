@@ -71,6 +71,10 @@ abstract interface class NotebookRepository {
   /// Adds or removes a page from the notebook's bookmarks.
   Future<void> setPageBookmarked(String pageId, bool bookmarked);
 
+  /// Gives a page an entry in the notebook's outline, or (with null)
+  /// removes it.
+  Future<void> setPageOutline(String pageId, String? outline);
+
   /// Every page of a notebook, in every section (to follow links).
   Stream<List<NotePage>> watchNotebookPages(String notebookId);
 

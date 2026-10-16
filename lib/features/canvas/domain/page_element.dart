@@ -79,6 +79,10 @@ sealed class ElementContent {
         final path = map['path'];
         if (path is! String) return null;
         return ImageContent(path);
+      case 'link':
+        final pageId = map['pageId'];
+        if (pageId is! String) return null;
+        return LinkContent(pageId);
       case 'text':
         final text = map['text'];
         if (text is! String) return null;
@@ -133,6 +137,25 @@ class ImageContent extends ElementContent {
 
   @override
   int get hashCode => path.hashCode;
+}
+
+/// A link to another page of the notebook: an area that opens [pageId]
+/// when tapped. Not printed.
+@immutable
+class LinkContent extends ElementContent {
+  const LinkContent(this.pageId);
+
+  final String pageId;
+
+  @override
+  Map<String, Object?> toMap() => {'kind': 'link', 'pageId': pageId};
+
+  @override
+  bool operator ==(Object other) =>
+      other is LinkContent && other.pageId == pageId;
+
+  @override
+  int get hashCode => pageId.hashCode;
 }
 
 /// Typed text. It wraps at [layoutWidth] page units with [fontSize], and the

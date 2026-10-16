@@ -27,6 +27,7 @@ import 'shapes.dart';
 import 'stickers.dart';
 import 'stroke_painter.dart';
 import 'templates.dart';
+import '../notebooks/page_jumper.dart';
 
 /// Ruling on full-size pages is drawn larger than on the small previews.
 const _paperScale = 1.6;
@@ -574,13 +575,21 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
   /// Opens the page a template link at [screen] points to, if any.
   /// Returns whether [screen] was on a link.
   bool _followLinkAt(Offset screen) {
+    // A link the user made, on top of anything else.
+    final point = _toPage(screen);
+    for (final e in _shownElements().reversed) {
+      if (e.content case LinkContent(:final pageId)
+          when e.frame.contains(point)) {
+        widget.onOpenPage?.call(pageId);
+        return true;
+      }
+    }
     final page = ref.read(pageProvider(widget.pageId)).value;
     final template = page?.template;
     final image = template == null ? null : _templateImage(template);
     if (page == null || template == null || image == null) return false;
     final links = ref.read(templateLinksProvider(template)).value ?? [];
     final drawn = _templateRect(image);
-    final point = _toPage(screen);
     final at = Offset(
       (point.dx - drawn.left) / drawn.width,
       (point.dy - drawn.top) / drawn.height,
@@ -1194,9 +1203,43 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
           InkClip(strokes: strokes, elements: elements),
           by: const Offset(40, 40),
         );
+      case LassoAction.link:
+        _linkSelection(selectionBounds(strokes, elements));
       case LassoAction.color:
         break;
     }
+  }
+
+  /// Asks for a page of this notebook and makes [box] a link to it.
+  Future<void> _linkSelection(Rect box) async {
+    final page = ref.read(pageProvider(widget.pageId)).value;
+    if (page == null) return;
+    final to = await showPageJumper(
+      context,
+      notebookId: page.notebookId,
+      currentPageId: widget.pageId,
+      title: 'Link to page',
+      choosing: true,
+    );
+    if (to is! JumpToPage || !mounted) return;
+    final area = box.inflate(12);
+    final top = (ref.read(elementsProvider(widget.pageId)).value ?? [])
+        .fold<double>(0.0, (z, e) => math.max(z, e.z));
+    final link = PageElement(
+      id: ref.read(elementRepositoryProvider).newElementId(),
+      content: LinkContent(to.pageId),
+      frame: ElementFrame(
+        center: area.center,
+        width: area.width,
+        height: area.height,
+      ),
+      z: top + 1,
+      createdAt: DateTime.now().millisecondsSinceEpoch,
+    );
+    setState(() => _lasso = null);
+    await ref
+        .read(inkHistoryProvider(widget.pageId).notifier)
+        .lassoEdit(addElements: [link]);
   }
 
   /// Recolors the held handwriting. Highlighter keeps its see-through ink.
@@ -2139,7 +2182,7 @@ class PagePrint extends ConsumerWidget {
     final elements = [
       for (final e
           in ref.watch(elementsProvider(pageId)).value ?? <PageElement>[])
-        if (!e.deleted) e,
+        if (!e.deleted && e.content is! LinkContent) e,
     ];
     return SizedBox.fromSize(
       size: size,
@@ -2193,6 +2236,7 @@ class _ElementView extends StatelessWidget {
       file: file,
     ),
     ImageContent(:final path) => PageImageView(path: path),
+    LinkContent() => const LinkView(),
     final TextContent text => TextBoxView(content: text),
   };
 }
