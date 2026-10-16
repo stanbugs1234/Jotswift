@@ -17,6 +17,7 @@ import '../notebooks/open_page.dart';
 import '../notebooks/page_order.dart';
 import '../store/paywall.dart';
 import 'shelf_view.dart';
+import '../notebooks/my_templates.dart' show copyNotebookProvider;
 
 /// The shelf as it is now (empty while loading).
 Shelf currentShelf(WidgetRef ref) => Shelf(
@@ -52,7 +53,10 @@ Future<void> createNotebookAt(
   );
   if (result == null || !context.mounted) return;
   final planner = result.template;
-  final notebook = planner == null
+  final mine = result.mine;
+  final notebook = mine != null
+      ? await ref.read(copyNotebookProvider)(mine.id, result.notebook)
+      : planner == null
       ? await ref
             .read(notebookRepositoryProvider)
             .createNotebook(result.notebook)

@@ -21,6 +21,7 @@ import '../features/store/store_item_screen.dart';
 import '../features/tasks/todo_screen.dart';
 import '../features/store/store_screen.dart';
 import 'shell.dart';
+import '../features/notebooks/my_templates.dart';
 
 const signInPath = '/sign-in';
 const homePath = '/notebooks';
@@ -174,6 +175,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: 'style',
             builder: (context, state) => const NotebookStyleScreen(),
+          ),
+          GoRoute(
+            path: 'templates',
+            builder: (context, state) => const MyTemplatesScreen(),
           ),
         ],
       ),

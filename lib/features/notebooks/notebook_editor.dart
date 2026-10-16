@@ -14,6 +14,7 @@ import 'cover_picker.dart';
 import 'domain/notebook_models.dart';
 import 'paper_picker.dart';
 import 'template_gallery.dart';
+import 'notes_providers.dart' show myTemplatesProvider;
 
 /// Makes a new notebook, or (with [editing]) changes one: title, cover,
 /// paper and style. Returns the choices, or null if cancelled.
@@ -69,6 +70,9 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
 
   /// The planner's colourway: which PDF of its pack.
   String _variant = PageTemplate.defaultFile;
+
+  /// One of the user's own templates to copy, instead of a planner.
+  Notebook? _mine;
   bool _saving = false;
 
   @override
@@ -91,6 +95,8 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
     final style = _style;
     final template = _template;
     var (size, orientation) = (_size, _orientation);
+    final mine = _mine;
+    if (mine != null) (size, orientation) = (mine.paperSize, mine.orientation);
     if (template != null) {
       // A planner's pages are sized to fit its PDF.
       setState(() => _saving = true);
@@ -120,7 +126,9 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
     // default style don't change this notebook.
     Navigator.pop(context, (
       notebook: NewNotebook(
-        title: title.isEmpty ? (template?.name ?? 'Untitled notebook') : title,
+        title: title.isEmpty
+            ? (template?.name ?? mine?.title ?? 'Untitled notebook')
+            : title,
         cover: _cover,
         paper: _paper ?? style.paper.style,
         paperSize: size,
@@ -130,6 +138,7 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
       ),
       template: template,
       variant: _variant,
+      mine: mine,
     ));
   }
 
@@ -150,6 +159,10 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
           ]
         : const <CatalogItem>[];
     final template = _template;
+    final mine = _mine;
+    final myTemplates = isNew
+        ? ref.watch(myTemplatesProvider).value ?? const <Notebook>[]
+        : const <Notebook>[];
 
     Widget heading(String text) => Padding(
       padding: const EdgeInsets.only(top: 24, bottom: 8),
@@ -231,7 +244,7 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
                     ),
                     onSubmitted: (_) => _save(),
                   ),
-                  if (planners.isNotEmpty) ...[
+                  if ((planners.isNotEmpty || myTemplates.isNotEmpty)) ...[
                     heading('Start with'),
                     Wrap(
                       spacing: 8,
@@ -239,9 +252,28 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
                       children: [
                         ChoiceChip(
                           label: const Text('Blank pages'),
-                          selected: template == null,
-                          onSelected: (_) => setState(() => _template = null),
+                          selected: template == null && mine == null,
+                          onSelected: (_) => setState(() {
+                            _template = null;
+                            _mine = null;
+                          }),
                         ),
+                        for (final t in myTemplates)
+                          ChoiceChip(
+                            avatar: const Icon(
+                              Icons.copy_all_outlined,
+                              size: 18,
+                            ),
+                            tooltip: 'My template',
+                            label: Text(t.title),
+                            selected: t.id == mine?.id,
+                            onSelected: (_) => setState(() {
+                              _mine = t;
+                              _template = null;
+                              _cover = t.cover;
+                              _styleId = t.collectionId ?? _styleId;
+                            }),
+                          ),
                       ],
                     ),
                     if (planners.isNotEmpty) ...[
@@ -251,10 +283,21 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
                         selected: template,
                         onSelected: (t) => setState(() {
                           _template = t;
+                          _mine = null;
                           _variant = PageTemplate.defaultFile;
                         }),
                       ),
                     ],
+                    if (mine != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: Text(
+                          'A copy of your template: its sections, pages and '
+                          'everything on them. Manage your templates in '
+                          'Settings.',
+                          style: theme.textTheme.bodySmall,
+                        ),
+                      ),
                     if (template != null)
                       _ColourwayPicker(
                         template: template,
@@ -280,7 +323,7 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
                     selected: _cover,
                     onChanged: (c) => setState(() => _cover = c),
                   ),
-                  if (template == null)
+                  if (template == null && mine == null)
                     PaperPicker(
                       selected: paper,
                       onChanged: (p) => setState(() => _paper = p),
@@ -357,6 +400,9 @@ typedef NotebookEditorResult = ({
 
   /// The planner's colourway (its PDF in the pack).
   String variant,
+
+  /// One of the user's own templates to copy.
+  Notebook? mine,
 });
 
 /// The first page of a planner, as the editor's page preview.

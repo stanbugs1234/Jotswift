@@ -12,6 +12,7 @@ import 'new_page_sheet.dart';
 import 'notes_providers.dart';
 import 'page_grid.dart';
 import 'paper_picker.dart';
+import 'my_templates.dart';
 
 /// One notebook: its sections as tabs, and the pages in the chosen section.
 class NotebookScreen extends ConsumerStatefulWidget {
@@ -179,7 +180,11 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(notebook.value?.title ?? ''),
+        title: Text(
+          notebook.value?.isTemplate ?? false
+              ? 'Template: ${notebook.value!.title}'
+              : notebook.value?.title ?? '',
+        ),
         actions: [
           ExportButton(notebookId: widget.notebookId, sectionId: current?.id),
           if (notebook.value case final nb?)
@@ -187,6 +192,7 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
               tooltip: 'Notebook options',
               onSelected: (action) => switch (action) {
                 'edit' => editNotebook(context, ref, nb),
+                'save_template' => saveAsTemplate(context, ref, nb),
                 'template' when current != null => _newPageFromSheet(
                   current.id,
                 ),
@@ -194,20 +200,25 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
                 _ when current != null => _newPageWithPaper(current.id),
                 _ => null,
               },
-              itemBuilder: (context) => const [
-                PopupMenuItem(
+              itemBuilder: (context) => [
+                const PopupMenuItem(
                   value: 'edit',
                   child: Text('Cover, paper & style'),
                 ),
-                PopupMenuItem(
+                if (!nb.isTemplate)
+                  const PopupMenuItem(
+                    value: 'save_template',
+                    child: Text('Save as template'),
+                  ),
+                const PopupMenuItem(
                   value: 'page',
                   child: Text('New page with different paper'),
                 ),
-                PopupMenuItem(
+                const PopupMenuItem(
                   value: 'template',
                   child: Text('New page from template'),
                 ),
-                PopupMenuItem(
+                const PopupMenuItem(
                   value: 'import',
                   child: Text('Import PDF or images'),
                 ),

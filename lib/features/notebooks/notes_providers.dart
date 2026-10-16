@@ -54,8 +54,33 @@ final strokeRepositoryProvider = Provider<StrokeRepository>(
       ref.watch(notesBackendProvider).strokes(ref.watch(currentUidProvider)),
 );
 
+/// The notebooks on the shelf (not the user's own templates).
 final notebooksProvider = StreamProvider<List<Notebook>>(
-  (ref) => ref.watch(notebookRepositoryProvider).watchNotebooks(),
+  (ref) => ref
+      .watch(notebookRepositoryProvider)
+      .watchNotebooks()
+      .map(
+        (all) => [
+          for (final n in all)
+            if (!n.isTemplate) n,
+        ],
+      ),
+);
+
+/// The user's own templates ("Save as template"), by name.
+final myTemplatesProvider = StreamProvider<List<Notebook>>(
+  (ref) => ref
+      .watch(notebookRepositoryProvider)
+      .watchNotebooks()
+      .map(
+        (all) =>
+            [
+              for (final n in all)
+                if (n.isTemplate && !n.inTrash) n,
+            ]..sort(
+              (a, b) => a.title.toLowerCase().compareTo(b.title.toLowerCase()),
+            ),
+      ),
 );
 
 final notebookProvider = StreamProvider.family<Notebook?, String>(

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
@@ -179,6 +180,21 @@ void main() {
       ).toMap().containsKey('file'),
       isFalse,
     );
+  });
+
+  test('the Preconstruction Project has its 12 sections, in order', () {
+    final spec = TemplateSpec.fromJson(
+      File('catalog/precon_project/template.json').readAsBytesSync(),
+    );
+    expect(spec.mode, TemplateMode.notebook);
+    expect(spec.sections.map((s) => s.title), [
+      '00 - Dashboard', '01 - Scope', '02 - Key Dates', //
+      '03 - Strategy Meeting', '04 - Site Visit', "05 - RFI's",
+      '06 - Takeoff', '07 - Quotes', '08 - Risks', '09 - Bid Review',
+      '10 - Bid Day', '11 - Post Bid',
+    ]);
+    expect(spec.sections.first.pages.single.pdfPage, 1);
+    expect(spec.variants, hasLength(3));
   });
 
   test('template.json is read for planners and single pages', () {

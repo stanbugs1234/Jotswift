@@ -20,6 +20,8 @@ import '../store/paywall.dart';
 import 'page_turn_picker.dart';
 import '../store/store_actions.dart';
 import '../store/store_screen.dart';
+import '../notebooks/my_templates.dart';
+import '../notebooks/notes_providers.dart' show myTemplatesProvider;
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -166,6 +168,19 @@ class SettingsScreen extends ConsumerWidget {
             ),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => showCalendarTemplates(context),
+          ),
+          ListTile(
+            leading: const Icon(Icons.copy_all_outlined),
+            title: const Text('My templates'),
+            subtitle: Text(
+              switch (ref.watch(myTemplatesProvider).value?.length ?? 0) {
+                0 => 'Save any notebook as a template to start new ones from',
+                1 => '1 template',
+                final n => '$n templates',
+              },
+            ),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push(myTemplatesPath),
           ),
           ListTile(
             leading: const Icon(Icons.palette_outlined),

@@ -33,6 +33,7 @@ class Notebook {
     this.lastPageAt,
     this.starred = false,
     this.trashedAt,
+    this.isTemplate = false,
   });
 
   factory Notebook.fromMap(String id, Map<String, dynamic> map) => Notebook(
@@ -63,6 +64,7 @@ class Notebook {
     lastPageAt: map['lastPageAt'] as int?,
     starred: map['starred'] as bool? ?? false,
     trashedAt: map['trashedAt'] as int?,
+    isTemplate: map['isTemplate'] as bool? ?? false,
     createdAt: map['createdAt'] as int? ?? 0,
     updatedAt: map['updatedAt'] as int? ?? 0,
   );
@@ -115,6 +117,10 @@ class Notebook {
 
   bool get inTrash => trashedAt != null;
 
+  /// One of the user's own templates (see "Save as template"): kept off the
+  /// shelf, and copied to start new notebooks.
+  final bool isTemplate;
+
   double get sortOrder => order ?? createdAt.toDouble();
 
   Map<String, dynamic> toMap() => {
@@ -135,6 +141,7 @@ class Notebook {
     'lastPageAt': ?lastPageAt,
     if (starred) 'starred': true,
     'trashedAt': ?trashedAt,
+    if (isTemplate) 'isTemplate': true,
     'createdAt': createdAt,
     'updatedAt': updatedAt,
   };
@@ -171,6 +178,7 @@ class Notebook {
     lastPageAt: lastPage?.at ?? lastPageAt,
     starred: starred ?? this.starred,
     trashedAt: restore ? null : trashedAt ?? this.trashedAt,
+    isTemplate: isTemplate,
     createdAt: createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );
@@ -187,6 +195,7 @@ class NewNotebook {
     this.orientation = PaperOrientation.portrait,
     this.collectionId,
     this.place = unfiled,
+    this.isTemplate = false,
   });
 
   final String title;
@@ -199,6 +208,9 @@ class NewNotebook {
   /// Where on the shelf it goes.
   final ShelfPlace place;
 
+  /// Made as one of the user's own templates.
+  final bool isTemplate;
+
   Notebook build(String id, int now) => Notebook(
     id: id,
     title: title,
@@ -210,6 +222,7 @@ class NewNotebook {
     categoryId: place.groupId == null ? place.categoryId : null,
     groupId: place.groupId,
     order: now.toDouble(),
+    isTemplate: isTemplate,
     createdAt: now,
     updatedAt: now,
   );
