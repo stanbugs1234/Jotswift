@@ -2056,6 +2056,81 @@ class _ZoomBadge extends StatelessWidget {
 }
 
 /// What a page item shows: a sticker, a photo or a text box.
+/// How wide (in pixels) template pages are drawn, on screen and in print.
+const templateDrawWidth = _PageCanvasState._templateWidth;
+
+/// A page as it's exported or printed: its paper or template, items and
+/// ink, with nothing to edit. Laid out in page units.
+class PagePrint extends ConsumerWidget {
+  const PagePrint({required this.pageId, super.key});
+
+  final String pageId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final size = ref.watch(pageDimensionsProvider(pageId));
+    final paper =
+        ref.watch(pagePaperProvider(pageId)) ?? NotelySkin.of(context).paper;
+    final template = ref.watch(pageProvider(pageId)).value?.template;
+    final image = template == null
+        ? null
+        : ref
+              .watch(
+                templateImageProvider((
+                  template: template,
+                  width: templateDrawWidth,
+                )),
+              )
+              .value;
+    final strokes = [
+      for (final s in ref.watch(strokesProvider(pageId)).value ?? <Stroke>[])
+        if (!s.deleted) s,
+    ];
+    final elements = [
+      for (final e
+          in ref.watch(elementsProvider(pageId)).value ?? <PageElement>[])
+        if (!e.deleted) e,
+    ];
+    return SizedBox.fromSize(
+      size: size,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          if (template == null)
+            CustomPaint(painter: PaperPainter(paper, scale: _paperScale))
+          else ...[
+            const ColoredBox(color: Colors.white),
+            if (image != null)
+              Positioned.fromRect(
+                rect: Alignment.center.inscribe(
+                  applyBoxFit(
+                    BoxFit.contain,
+                    Size(image.width.toDouble(), image.height.toDouble()),
+                    size,
+                  ).destination,
+                  Offset.zero & size,
+                ),
+                child: RawImage(image: image, fit: BoxFit.fill),
+              ),
+          ],
+          for (final e in elements)
+            Positioned(
+              left: e.frame.center.dx - e.frame.width / 2,
+              top: e.frame.center.dy - e.frame.height / 2,
+              width: e.frame.width,
+              height: e.frame.height,
+              child: Transform.rotate(
+                angle: e.frame.rotation,
+                child: _ElementView(e),
+              ),
+            ),
+          CustomPaint(painter: StrokesPainter(strokes)),
+        ],
+      ),
+    );
+  }
+}
+
 class _ElementView extends StatelessWidget {
   const _ElementView(this.element);
 
