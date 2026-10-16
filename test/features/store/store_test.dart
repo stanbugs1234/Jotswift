@@ -360,8 +360,9 @@ void main() {
       await tester.pumpAndSettle();
       // Each tile shows once: in its category's row, not also under
       // Page templates.
-      expect(find.text('Productivity'), findsOneWidget);
-      expect(find.text('Page templates'), findsOneWidget);
+      // A chip and a row heading each.
+      expect(find.text('Productivity'), findsNWidgets(2));
+      expect(find.text('Page templates'), findsNWidgets(2));
       expect(find.bySemanticsLabel(RegExp('^work_pages')), findsOneWidget);
       // A productivity planner is in Productivity, not in Planners.
       expect(find.bySemanticsLabel(RegExp('^goals_planner')), findsOneWidget);
@@ -369,8 +370,19 @@ void main() {
       expect(find.bySemanticsLabel(RegExp('^starter_pages')), findsOneWidget);
       expect(
         tester.getTopLeft(find.bySemanticsLabel(RegExp('^work_pages'))).dy,
-        lessThan(tester.getTopLeft(find.text('Page templates')).dy),
+        lessThan(tester.getTopLeft(find.text('Page templates').last).dy),
       );
+
+      // A category chip shows just that category.
+      await tester.tap(find.widgetWithText(ChoiceChip, 'Page templates'));
+      await tester.pumpAndSettle();
+      expect(find.bySemanticsLabel(RegExp('^starter_pages')), findsOneWidget);
+      expect(find.bySemanticsLabel(RegExp('^work_pages')), findsNothing);
+      expect(find.text('Productivity'), findsOneWidget, reason: 'its chip');
+
+      await tester.tap(find.widgetWithText(ChoiceChip, 'All categories'));
+      await tester.pumpAndSettle();
+      expect(find.bySemanticsLabel(RegExp('^work_pages')), findsOneWidget);
     });
 
     testWidgets('templates with linked pages are marked', (tester) async {

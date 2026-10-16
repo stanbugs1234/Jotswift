@@ -62,6 +62,23 @@ class StoreScreen extends ConsumerStatefulWidget {
 class _StoreScreenState extends ConsumerState<StoreScreen> {
   _Filter _filter = _Filter.all;
 
+  /// The one row shown, by its title; every row when null.
+  String? _category;
+
+  final _scroll = ScrollController();
+
+  @override
+  void dispose() {
+    _scroll.dispose();
+    super.dispose();
+  }
+
+  /// Shows one category, or all of them, from the top.
+  void _show(String? category) {
+    setState(() => _category = category);
+    if (_scroll.hasClients) _scroll.jumpTo(0);
+  }
+
   bool _matches(Entitlements entitlements, CatalogItem item) =>
       switch (_filter) {
         _Filter.all => true,
@@ -83,6 +100,12 @@ class _StoreScreenState extends ConsumerState<StoreScreen> {
         if (_matches(entitlements, i)) i,
     ];
     final available = ref.watch(purchasesClientProvider).isAvailable;
+    final rows = [
+      for (final (title, belongs) in _sections)
+        if (items.where(belongs).toList() case final row when row.isNotEmpty)
+          (title, row),
+    ];
+    final chosen = rows.where((r) => r.$1 == _category).firstOrNull?.$2;
 
     return Scaffold(
       appBar: AppBar(
@@ -96,6 +119,7 @@ class _StoreScreenState extends ConsumerState<StoreScreen> {
         ],
       ),
       body: ListView(
+        controller: _scroll,
         padding: const EdgeInsets.only(bottom: 32),
         children: [
           Padding(
@@ -117,9 +141,31 @@ class _StoreScreenState extends ConsumerState<StoreScreen> {
               ],
             ),
           ),
-          if (!catalog.isLoading && _featured(items).isNotEmpty)
+          // The rows there are, to show one of them on its own.
+          if (rows.length > 1 || _category != null)
+            SizedBox(
+              height: 48,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.fromLTRB(16, 8, 8, 0),
+                children: [
+                  for (final title in [null, ...rows.map((r) => r.$1)])
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: ChoiceChip(
+                        label: Text(title ?? 'All categories'),
+                        selected: _category == title,
+                        onSelected: (_) => _show(title),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          if (_category == null &&
+              !catalog.isLoading &&
+              _featured(items).isNotEmpty)
             _Featured(items: _featured(items)),
-          if (!entitlements.pro) const _ProBanner(),
+          if (_category == null && !entitlements.pro) const _ProBanner(),
           if (catalog.isLoading)
             // Rows of cards stand in until the catalog arrives.
             for (var row = 0; row < 2; row++)
@@ -141,7 +187,7 @@ class _StoreScreenState extends ConsumerState<StoreScreen> {
                   ],
                 ),
               )
-          else if (items.isEmpty)
+          else if (items.isEmpty && _category == null)
             Padding(
               padding: const EdgeInsets.only(top: Insets.xxxl),
               child: catalog.hasError
@@ -155,9 +201,24 @@ class _StoreScreenState extends ConsumerState<StoreScreen> {
                       title: 'Nothing here yet.',
                     ),
             ),
-          for (final (title, belongs) in _sections)
-            if (items.where(belongs).toList() case final row
-                when row.isNotEmpty) ...[
+          if (_category != null) ...[
+            // One category: all of it at once, as a grid.
+            if (chosen != null)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
+                child: _Grid(items: chosen),
+              )
+            else if (!catalog.isLoading)
+              const Padding(
+                padding: EdgeInsets.only(top: Insets.xxxl),
+                child: EmptyState(
+                  icon: Icons.search_off,
+                  title: 'Nothing here.',
+                  message: 'Try All, or another category.',
+                ),
+              ),
+          ] else
+            for (final (title, row) in rows) ...[
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 24, 8, 4),
                 child: Row(
@@ -166,11 +227,8 @@ class _StoreScreenState extends ConsumerState<StoreScreen> {
                       child: Text(title, style: theme.textTheme.titleMedium),
                     ),
                     TextButton(
-                      onPressed: () => Navigator.of(context).push(
-                        MaterialPageRoute<void>(
-                          builder: (_) => _SeeAll(title: title, items: row),
-                        ),
-                      ),
+                      // The same as choosing its category.
+                      onPressed: () => _show(title),
                       child: Text('See all ${row.length}'),
                     ),
                   ],
@@ -304,27 +362,25 @@ class _Featured extends ConsumerWidget {
   }
 }
 
-/// Everything in one row of the store, as a grid.
-class _SeeAll extends StatelessWidget {
-  const _SeeAll({required this.title, required this.items});
+/// Store tiles in a grid as wide as there's room for.
+class _Grid extends StatelessWidget {
+  const _Grid({required this.items});
 
-  final String title;
   final List<CatalogItem> items;
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: Text(title)),
-    body: GridView.builder(
-      padding: EdgeInsets.all(gutterOf(context)),
-      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 160,
-        mainAxisExtent: 262,
-        crossAxisSpacing: Insets.lg,
-        mainAxisSpacing: Insets.lg,
-      ),
-      itemCount: items.length,
-      itemBuilder: (context, i) => StoreTile(item: items[i]),
+  Widget build(BuildContext context) => GridView.builder(
+    shrinkWrap: true,
+    physics: const NeverScrollableScrollPhysics(),
+    padding: EdgeInsets.zero,
+    gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+      maxCrossAxisExtent: 160,
+      mainAxisExtent: 262,
+      crossAxisSpacing: Insets.lg,
+      mainAxisSpacing: Insets.lg,
     ),
+    itemCount: items.length,
+    itemBuilder: (context, i) => StoreTile(item: items[i]),
   );
 }
 
