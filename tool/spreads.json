@@ -171,6 +171,26 @@
         {"tab": "Work", "pages": ["life.clients", {"layout": "life.income", "repeat": 4, "title": "Income {n}"}, "life.invoices", {"layout": "life.content", "repeat": 4, "title": "Content {n}"}, {"layout": "life.meeting", "repeat": 4, "title": "Meeting {n}"}]},
         {"tab": "Notes", "pages": ["notes.lined", "notes.dotted", "notes.grid", "notes.blank", "notes.cornell"]}
       ]
+    },
+    "precon_project": {
+      "name": "Preconstruction Project",
+      "short": "Precon Project",
+      "tags": ["work", "projects", "construction", "estimating", "spreads", "tabs"],
+      "unlock": { "pro": true },
+      "index": { "tab": "Dashboard", "title": "00 - Dashboard", "layout": "precon.dashboard" },
+      "sections": [
+        { "tab": "Scope", "title": "01 - Scope", "pages": [{ "layout": "precon.scope", "repeat": 2, "title": "Scope {n}" }] },
+        { "tab": "Dates", "title": "02 - Key Dates", "pages": [{ "layout": "precon.dates", "title": "Key dates" }] },
+        { "tab": "Strategy", "title": "03 - Strategy Meeting", "pages": [{ "layout": "precon.strategy", "repeat": 3, "title": "Strategy meeting {n}" }] },
+        { "tab": "Site", "title": "04 - Site Visit", "pages": [{ "layout": "precon.site", "repeat": 2, "title": "Site visit {n}" }] },
+        { "tab": "RFIs", "title": "05 - RFI's", "pages": [{ "layout": "precon.rfis", "repeat": 3, "title": "RFI log {n}" }] },
+        { "tab": "Takeoff", "title": "06 - Takeoff", "pages": [{ "layout": "precon.takeoff", "repeat": 4, "title": "Takeoff {n}" }] },
+        { "tab": "Quotes", "title": "07 - Quotes", "pages": [{ "layout": "precon.quotes", "repeat": 4, "title": "Quotes: trade {n}" }] },
+        { "tab": "Risks", "title": "08 - Risks", "pages": [{ "layout": "precon.risks", "repeat": 2, "title": "Risks {n}" }] },
+        { "tab": "Review", "title": "09 - Bid Review", "pages": [{ "layout": "precon.review", "repeat": 2, "title": "Bid review {n}" }] },
+        { "tab": "Bid Day", "title": "10 - Bid Day", "pages": [{ "layout": "precon.bid_day", "title": "Bid day" }] },
+        { "tab": "Post Bid", "title": "11 - Post Bid", "pages": [{ "layout": "precon.post_bid", "title": "Post bid" }] }
+      ]
     }
   }
 }

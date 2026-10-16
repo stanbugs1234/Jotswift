@@ -1,0 +1,17 @@
+{
+  "kind": "template",
+  "name": "Preconstruction Project",
+  "version": 1,
+  "unlock": {
+    "pro": true
+  },
+  "category": "spreads",
+  "tags": [
+    "work",
+    "projects",
+    "construction",
+    "estimating",
+    "spreads",
+    "tabs"
+  ]
+}

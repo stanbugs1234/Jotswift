@@ -103,14 +103,15 @@ def draw_frame(sp, colourway):
     p.line(LEFT_X + 10, H - 38, MID - GUTTER, H - 38, rgb=c.header, width=1.2)
     p.text(RIGHT_X - 10, H - 32, sp.planner.upper(), 7.5, rgb=c.style.soft, bold=True, right=True)
     if sp.index_page is not None:
-        p.text(MID + GUTTER, H - 32, "< INDEX", 7.5, rgb=c.header, bold=True)
-        p.link(MID + GUTTER - 4, H - 38, 48, 16, sp.index_page)
+        back = f"< {getattr(sp, 'index_label', 'Index').upper()}"
+        p.text(MID + GUTTER, H - 32, back, 7.5, rgb=c.header, bold=True)
+        p.link(MID + GUTTER - 4, H - 38, max(48, mp.text_width(back, 7.5) + 10), 16, sp.index_page)
     p.line(MID + GUTTER, H - 38, RIGHT_X - 10, H - 38, rgb=c.style.rule, width=0.8)
     if sp.steps:
         # Back, "3 / 12" (opens the section's contents) and next.
         from planner_nav import chevron
         prev, contents, n, count, next_ = sp.steps
-        x = MID + GUTTER + 70
+        x = MID + GUTTER + max(70, mp.text_width(back, 7.5) + 22)
         label = f"{n} / {count}"
         lw = mp.text_width(label, 8)
         if prev is not None:
@@ -132,7 +133,7 @@ def draw_frame(sp, colourway):
         color = c.tabs[i % len(c.tabs)]
         x = TAB_X - (6 if on else 0)
         p.rect(x, y, TAB_W + (6 if on else 0) + 8, th, fill=color)
-        size = 6.5 if len(label) > 7 else 7.5
+        size = 5.5 if len(label) > 8 else 6.5 if len(label) > 7 else 7.5
         width = mp.text_width(label.upper(), size)
         text_up(p, x + TAB_W / 2 + 2.5 + (3 if on else 0), y + (th - width) / 2, label.upper(), size,
                 (1, 1, 1) if on else tuple(ch * 0.35 for ch in color), bold=True)

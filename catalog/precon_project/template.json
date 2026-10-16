@@ -1,0 +1,218 @@
+{
+  "mode": "notebook",
+  "sections": [
+    {
+      "title": "00 - Dashboard",
+      "pages": [
+        {
+          "pdfPage": 1,
+          "title": "00 - Dashboard"
+        }
+      ]
+    },
+    {
+      "title": "01 - Scope",
+      "pages": [
+        {
+          "pdfPage": 2,
+          "title": "Contents"
+        },
+        {
+          "pdfPage": 3,
+          "title": "Scope 1"
+        },
+        {
+          "pdfPage": 4,
+          "title": "Scope 2"
+        }
+      ]
+    },
+    {
+      "title": "02 - Key Dates",
+      "pages": [
+        {
+          "pdfPage": 5,
+          "title": "Key dates"
+        }
+      ]
+    },
+    {
+      "title": "03 - Strategy Meeting",
+      "pages": [
+        {
+          "pdfPage": 6,
+          "title": "Contents"
+        },
+        {
+          "pdfPage": 7,
+          "title": "Strategy meeting 1"
+        },
+        {
+          "pdfPage": 8,
+          "title": "Strategy meeting 2"
+        },
+        {
+          "pdfPage": 9,
+          "title": "Strategy meeting 3"
+        }
+      ]
+    },
+    {
+      "title": "04 - Site Visit",
+      "pages": [
+        {
+          "pdfPage": 10,
+          "title": "Contents"
+        },
+        {
+          "pdfPage": 11,
+          "title": "Site visit 1"
+        },
+        {
+          "pdfPage": 12,
+          "title": "Site visit 2"
+        }
+      ]
+    },
+    {
+      "title": "05 - RFI's",
+      "pages": [
+        {
+          "pdfPage": 13,
+          "title": "Contents"
+        },
+        {
+          "pdfPage": 14,
+          "title": "RFI log 1"
+        },
+        {
+          "pdfPage": 15,
+          "title": "RFI log 2"
+        },
+        {
+          "pdfPage": 16,
+          "title": "RFI log 3"
+        }
+      ]
+    },
+    {
+      "title": "06 - Takeoff",
+      "pages": [
+        {
+          "pdfPage": 17,
+          "title": "Contents"
+        },
+        {
+          "pdfPage": 18,
+          "title": "Takeoff 1"
+        },
+        {
+          "pdfPage": 19,
+          "title": "Takeoff 2"
+        },
+        {
+          "pdfPage": 20,
+          "title": "Takeoff 3"
+        },
+        {
+          "pdfPage": 21,
+          "title": "Takeoff 4"
+        }
+      ]
+    },
+    {
+      "title": "07 - Quotes",
+      "pages": [
+        {
+          "pdfPage": 22,
+          "title": "Contents"
+        },
+        {
+          "pdfPage": 23,
+          "title": "Quotes: trade 1"
+        },
+        {
+          "pdfPage": 24,
+          "title": "Quotes: trade 2"
+        },
+        {
+          "pdfPage": 25,
+          "title": "Quotes: trade 3"
+        },
+        {
+          "pdfPage": 26,
+          "title": "Quotes: trade 4"
+        }
+      ]
+    },
+    {
+      "title": "08 - Risks",
+      "pages": [
+        {
+          "pdfPage": 27,
+          "title": "Contents"
+        },
+        {
+          "pdfPage": 28,
+          "title": "Risks 1"
+        },
+        {
+          "pdfPage": 29,
+          "title": "Risks 2"
+        }
+      ]
+    },
+    {
+      "title": "09 - Bid Review",
+      "pages": [
+        {
+          "pdfPage": 30,
+          "title": "Contents"
+        },
+        {
+          "pdfPage": 31,
+          "title": "Bid review 1"
+        },
+        {
+          "pdfPage": 32,
+          "title": "Bid review 2"
+        }
+      ]
+    },
+    {
+      "title": "10 - Bid Day",
+      "pages": [
+        {
+          "pdfPage": 33,
+          "title": "Bid day"
+        }
+      ]
+    },
+    {
+      "title": "11 - Post Bid",
+      "pages": [
+        {
+          "pdfPage": 34,
+          "title": "Post bid"
+        }
+      ]
+    }
+  ],
+  "variants": [
+    {
+      "name": "Classic",
+      "file": "template.pdf",
+      "color": "#2C3E66"
+    },
+    {
+      "name": "Pastel",
+      "file": "template_pastel.pdf",
+      "color": "#7E6AAE"
+    },
+    {
+      "name": "Neutral",
+      "file": "template_neutral.pdf",
+      "color": "#7A6552"
+    }
+  ]
+}

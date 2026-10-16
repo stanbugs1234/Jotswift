@@ -21,6 +21,11 @@ A planner in spreads.json:
        "pages": [{"layout": "dated.month", "repeat": 12, "title": "Month {n}"}]},
       {"tab": "Weeks", "pages": [{"layout": "dated.week", "repeat": 52}]}]}
 
+A planner may replace the index with its own home page, which gets the
+entries and tabs so it can link each section:
+  "index": {"tab": "Dashboard", "title": "00 - Dashboard",
+            "layout": "precon.dashboard"}
+
 Every planner starts with an index page that links to each section. A
 section of more than one page starts with a Contents page linking each of
 its pages, and each page's header steps through its section.
@@ -49,7 +54,12 @@ CONTENTS = "contents"
 def plan(planner):
     """The pages in order: (section, tab, layout, n, title). Page 0 is the
     index; a section of several pages starts with its Contents page."""
-    entries = [("Index", "Index", None, 1, "Index")]
+    home = planner.get("index")
+    if home:
+        make, _ = spreads.get(home["layout"])
+        entries = [(home["title"], home["tab"], make, 1, home["title"])]
+    else:
+        entries = [("Index", "Index", None, 1, "Index")]
     for section in planner["sections"]:
         tab = section["tab"]
         title = section.get("title", tab)
@@ -139,6 +149,7 @@ def build(planner, colourway):
         p = new_page(colourway)
         sp = Spread(p, planner.get("short", planner["name"]), tab, title, tabs, 0 if i else None)
         sp.colourway = colourway
+        sp.index_label = entries[0][1]
         siblings = [k for k, e in enumerate(entries) if e[1] == tab and e[2] is not CONTENTS]
         if make not in (None, CONTENTS) and len(siblings) > 1:
             at = siblings.index(i)
@@ -147,6 +158,8 @@ def build(planner, colourway):
         draw_frame(sp, colourway)
         if make is None:
             index_page(sp, planner, entries, tabs)
+        elif i == 0:
+            make(sp, entries, tabs)
         elif make is CONTENTS:
             contents_page(sp, entries, i, colourway.tabs[[t for t, _ in tabs].index(tab) % len(colourway.tabs)])
         else:
