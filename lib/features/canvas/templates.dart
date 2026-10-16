@@ -89,6 +89,22 @@ final templateSpecProvider = FutureProvider.family<TemplateSpec, CatalogItem>((
   return TemplateSpec.fromJson(json);
 });
 
+/// The pages of one PDF of a template (an exact version): template.json,
+/// with the page list of that PDF's variant when it has its own.
+final templateFileSpecProvider =
+    FutureProvider.family<TemplateSpec, TemplateFileKey>((ref, key) async {
+      final files = await ref.watch(packCacheProvider).files(_itemFor(key));
+      final json = files['template.json'];
+      if (json == null) throw StateError('${key.itemId} has no template.json');
+      final spec = TemplateSpec.fromJson(json);
+      final own = spec.variants
+          .where((v) => v.file == key.file)
+          .firstOrNull
+          ?.spec;
+      final ownJson = own == null ? null : files[own];
+      return ownJson == null ? spec : spec.withSectionsFrom(ownJson);
+    });
+
 /// A template's opened PDF, for its current version.
 final catalogTemplatePdfProvider = FutureProvider.family<PdfFile, CatalogItem>(
   (ref, item) =>
@@ -144,19 +160,38 @@ final notebookTemplatePagesProvider =
   return (size, orientation);
 }
 
-/// Makes [notebook] with every page of the planner [item], in the planner's
-/// sections. Returns the new notebook.
+/// Makes [notebook] with the pages of the planner [item] in the planner's
+/// sections, from its PDF [file], leaving out the page groups in [skip]
+/// (and sections left empty). Calls [onProgress] with pages made so far
+/// and the total. Returns the new notebook.
 Future<Notebook> createNotebookFromTemplate(
   Ref ref,
   NewNotebook notebook,
   CatalogItem item, {
   String file = PageTemplate.defaultFile,
+  Set<String> skip = const {},
+  void Function(int done, int total)? onProgress,
 }) async {
-  final spec = await ref.read(templateSpecProvider(item).future);
+  final spec = await ref.read(
+    templateFileSpecProvider(templatePage(item, 1, file: file).fileKey).future,
+  );
+  final sections = [
+    for (final s in spec.sections)
+      (
+        title: s.title,
+        pages: [
+          for (final p in s.pages)
+            if (!skip.contains(p.group)) p,
+        ],
+      ),
+  ].where((s) => s.pages.isNotEmpty).toList();
+  final total = sections.fold(0, (n, s) => n + s.pages.length);
   final repo = ref.read(notebookRepositoryProvider);
   final created = await repo.createNotebook(notebook);
   final first = (await repo.watchSections(created.id).first).first;
-  for (final (i, section) in spec.sections.indexed) {
+  var done = 0;
+  onProgress?.call(done, total);
+  for (final (i, section) in sections.indexed) {
     final sectionId = i == 0
         ? first.id
         : (await repo.createSection(created.id, section.title)).id;
@@ -174,6 +209,8 @@ Future<Notebook> createNotebookFromTemplate(
       ],
       periods: [for (final p in section.pages) p.period],
     );
+    done += section.pages.length;
+    onProgress?.call(done, total);
   }
   return created;
 }
@@ -181,11 +218,129 @@ Future<Notebook> createNotebookFromTemplate(
 /// What [createNotebookFromTemplate] needs, so widgets can call it.
 final createFromTemplateProvider =
     Provider<
-      Future<Notebook> Function(NewNotebook, CatalogItem, {String file})
+      Future<Notebook> Function(
+        NewNotebook,
+        CatalogItem, {
+        String file,
+        Set<String> skip,
+        void Function(int done, int total)? onProgress,
+      })
     >(
       (ref) =>
-          (notebook, item, {file = PageTemplate.defaultFile}) =>
-              createNotebookFromTemplate(ref, notebook, item, file: file),
+          (
+            notebook,
+            item, {
+            file = PageTemplate.defaultFile,
+            skip = const {},
+            onProgress,
+          }) => createNotebookFromTemplate(
+            ref,
+            notebook,
+            item,
+            file: file,
+            skip: skip,
+            onProgress: onProgress,
+          ),
+    );
+
+/// The title of [template]'s page in its planner, if the planner lists it.
+Future<String?> templatePageTitle(Ref ref, PageTemplate template) async {
+  final spec = await ref.read(
+    templateFileSpecProvider(template.fileKey).future,
+  );
+  return spec.pages
+      .where((p) => p.pdfPage == template.pdfPage)
+      .firstOrNull
+      ?.title;
+}
+
+/// Adds the planner page [template] to [notebookId], where the planner
+/// puts it: in its section (made if missing), after the planner pages
+/// before it. For a page left out when the notebook was made, and then
+/// linked to. Returns the new page's id, or null if the planner doesn't
+/// list the page.
+Future<String?> addTemplatePage(
+  Ref ref,
+  String notebookId,
+  PageTemplate template,
+) async {
+  final spec = await ref.read(
+    templateFileSpecProvider(template.fileKey).future,
+  );
+  final found = [
+    for (final s in spec.sections)
+      for (final p in s.pages)
+        if (p.pdfPage == template.pdfPage) (section: s.title, page: p),
+  ].firstOrNull;
+  if (found == null) return null;
+  final repo = ref.read(notebookRepositoryProvider);
+  final sections = await repo.watchSections(notebookId).first;
+  // Its section by name; or, if renamed, the section of the planner page
+  // before it; or a new one.
+  final earlier = [
+    for (final p in await repo.watchNotebookPages(notebookId).first)
+      if (p.template case final t?
+          when t.itemId == template.itemId && t.pdfPage < template.pdfPage)
+        p,
+  ]..sort((a, b) => a.template!.pdfPage.compareTo(b.template!.pdfPage));
+  final sectionId =
+      sections.where((s) => s.title == found.section).firstOrNull?.id ??
+      earlier.lastOrNull?.sectionId ??
+      (await repo.createSection(notebookId, found.section)).id;
+  await repo.createPages(
+    notebookId,
+    sectionId,
+    [(title: found.page.title, paper: null, template: template)],
+    periods: [found.page.period],
+  );
+  bool isNew(NotePage p) =>
+      p.template?.itemId == template.itemId &&
+      p.template?.pdfPage == template.pdfPage;
+  final pages = await repo
+      .watchPages(notebookId, sectionId)
+      .firstWhere((pages) => pages.any(isNew));
+  final created = pages.firstWhere(isNew);
+  final others = [
+    for (final p in pages)
+      if (p.id != created.id) p,
+  ]..sort((a, b) => a.order.compareTo(b.order));
+  // After the last page of this planner that comes before it.
+  final before = others.lastIndexWhere(
+    (p) =>
+        p.template?.itemId == template.itemId &&
+        p.template!.pdfPage < template.pdfPage,
+  );
+  final double? order;
+  if (before == -1) {
+    order = others.isEmpty ? null : others.first.order - 1;
+  } else if (before + 1 < others.length) {
+    order = (others[before].order + others[before + 1].order) / 2;
+  } else {
+    order = null; // Already last.
+  }
+  if (order != null) {
+    await repo.movePage(
+      created.id,
+      notebookId: notebookId,
+      sectionId: sectionId,
+      order: order,
+    );
+  }
+  return created.id;
+}
+
+/// [addTemplatePage], for widgets.
+final addTemplatePageProvider =
+    Provider<Future<String?> Function(String notebookId, PageTemplate)>(
+      (ref) =>
+          (notebookId, template) => addTemplatePage(ref, notebookId, template),
+    );
+
+/// [templatePageTitle], for widgets.
+final templatePageTitleProvider =
+    Provider<Future<String?> Function(PageTemplate)>(
+      (ref) =>
+          (template) => templatePageTitle(ref, template),
     );
 
 /// The pages a NewPage list gets from a single-page template.

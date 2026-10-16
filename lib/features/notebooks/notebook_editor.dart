@@ -13,6 +13,7 @@ import '../shelf/cover_view.dart';
 import 'cover_picker.dart';
 import 'domain/notebook_models.dart';
 import 'paper_picker.dart';
+import 'planner_builder.dart';
 import 'template_gallery.dart';
 import 'notes_providers.dart' show myTemplatesProvider;
 
@@ -68,8 +69,15 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
   /// The planner the new notebook starts from, or null for blank pages.
   late CatalogItem? _template = widget.template;
 
-  /// The planner's colourway: which PDF of its pack.
+  /// The planner's colourway, or its layout and week start: which PDF of
+  /// its pack.
   String _variant = PageTemplate.defaultFile;
+
+  /// The planner builder's choices (layout, week start), by option id.
+  Map<String, String> _options = const {};
+
+  /// Page groups to leave out; null for the planner's defaults.
+  Set<String>? _skip;
 
   /// One of the user's own templates to copy, instead of a planner.
   Notebook? _mine;
@@ -138,6 +146,14 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
       ),
       template: template,
       variant: _variant,
+      skip: template == null
+          ? const <String>{}
+          : _skip ??
+                ref
+                    .read(templateSpecProvider(template))
+                    .value
+                    ?.defaultSkipped ??
+                const <String>{},
       mine: mine,
     ));
   }
@@ -285,6 +301,8 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
                           _template = t;
                           _mine = null;
                           _variant = PageTemplate.defaultFile;
+                          _options = const {};
+                          _skip = null;
                         }),
                       ),
                     ],
@@ -305,6 +323,23 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
                         onChanged: (file) => setState(() => _variant = file),
                       ),
                     if (template != null)
+                      PlannerBuilder(
+                        template: template,
+                        options: _options,
+                        skip: _skip,
+                        onOptions: (options, file) => setState(() {
+                          _options = options;
+                          _variant = file;
+                        }),
+                        onSkip: (skip) => setState(() => _skip = skip),
+                      ),
+                    if (template != null &&
+                        (ref
+                                .watch(templateSpecProvider(template))
+                                .value
+                                ?.options
+                                .isEmpty ??
+                            true))
                       Padding(
                         padding: const EdgeInsets.only(top: 8),
                         child: Text(
@@ -401,6 +436,9 @@ typedef NotebookEditorResult = ({
   /// The planner's colourway (its PDF in the pack).
   String variant,
 
+  /// The planner's page groups to leave out.
+  Set<String> skip,
+
   /// One of the user's own templates to copy.
   Notebook? mine,
 });
@@ -452,9 +490,12 @@ class _ColourwayPicker extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final variants =
-        ref.watch(templateSpecProvider(template)).value?.variants ?? const [];
-    if (variants.length < 2) return const SizedBox.shrink();
+    final spec = ref.watch(templateSpecProvider(template)).value;
+    final variants = spec?.variants ?? const [];
+    // Planners with a builder pick their PDF by layout and week start.
+    if (variants.length < 2 || spec!.options.isNotEmpty) {
+      return const SizedBox.shrink();
+    }
     return Padding(
       padding: const EdgeInsets.only(top: 12),
       child: Wrap(

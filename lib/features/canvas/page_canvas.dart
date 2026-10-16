@@ -709,7 +709,19 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
       if (target != null) {
         if (target != widget.pageId) widget.onOpenPage?.call(target);
       } else {
-        _openWhenFound(page.notebookId, key);
+        _openWhenFound(
+          page.notebookId,
+          key,
+          PageTemplate(
+            itemId: template.itemId,
+            version: template.version,
+            pdfPage: link.targetPage,
+            pack: template.pack,
+            sha256: template.sha256,
+            bytes: template.bytes,
+            file: template.file,
+          ),
+        );
       }
       return true;
     }
@@ -718,27 +730,84 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
 
   /// Just after the app starts, the notebook's list of pages can come from
   /// the device's cache and miss pages not opened before. Waits a moment
-  /// for the full list, then opens the page a link points to.
-  Future<void> _openWhenFound(String notebookId, (String, int) key) async {
+  /// for the full list, then opens the page a link points to. If it's
+  /// still missing (left out when the planner was made, or deleted),
+  /// offers to add [target] to the notebook.
+  Future<void> _openWhenFound(
+    String notebookId,
+    (String, int) key,
+    PageTemplate target,
+  ) async {
     String? found(List<NotePage> pages) => pages
         .where(
           (p) => (p.template?.itemId, p.template?.pdfPage) == (key.$1, key.$2),
         )
         .firstOrNull
         ?.id;
+    final messenger = ScaffoldMessenger.maybeOf(context);
+    final pages = ref
+        .read(notebookRepositoryProvider)
+        .watchNotebookPages(notebookId)
+        .map(found)
+        .firstWhere((id) => id != null);
+    // A quick look first, so a page that isn't there is offered at once.
+    var offered = false;
+    String? id;
     try {
-      final pages = await ref
-          .read(notebookRepositoryProvider)
-          .watchNotebookPages(notebookId)
-          .firstWhere((pages) => found(pages) != null)
-          .timeout(const Duration(seconds: 4));
-      final target = found(pages);
-      if (mounted && target != null && target != widget.pageId) {
-        widget.onOpenPage?.call(target);
+      id = await pages.timeout(const Duration(milliseconds: 1200));
+    } on TimeoutException {
+      offered = true;
+      _offerToAdd(messenger, notebookId, target);
+      try {
+        id = await ref
+            .read(notebookRepositoryProvider)
+            .watchNotebookPages(notebookId)
+            .map(found)
+            .firstWhere((id) => id != null)
+            .timeout(const Duration(seconds: 3));
+        messenger?.hideCurrentSnackBar();
+      } on Object {
+        return;
       }
     } on Object {
-      // Not in this notebook (the page was deleted): nothing to open.
+      return;
     }
+    if (mounted && id != null && id != widget.pageId) {
+      widget.onOpenPage?.call(id);
+    } else if (offered) {
+      messenger?.hideCurrentSnackBar();
+    }
+  }
+
+  /// "(Page) isn't in this notebook", with Add it to make the page and
+  /// open it.
+  Future<void> _offerToAdd(
+    ScaffoldMessengerState? messenger,
+    String notebookId,
+    PageTemplate target,
+  ) async {
+    if (messenger == null) return;
+    String? title;
+    try {
+      title = await ref.read(templatePageTitleProvider)(target);
+    } on Object {
+      return;
+    }
+    if (title == null || !mounted) return;
+    final add = ref.read(addTemplatePageProvider);
+    final open = widget.onOpenPage;
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text('$title isn\'t in this notebook.'),
+        action: SnackBarAction(
+          label: 'Add it',
+          onPressed: () async {
+            final id = await add(notebookId, target);
+            if (id != null) open?.call(id);
+          },
+        ),
+      ),
+    );
   }
 
   ui.Image? _templateImage(PageTemplate template) => ref

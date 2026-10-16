@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -60,12 +62,81 @@ Future<void> createNotebookAt(
       ? await ref
             .read(notebookRepositoryProvider)
             .createNotebook(result.notebook)
-      : await ref.read(createFromTemplateProvider)(
-          result.notebook,
-          planner,
-          file: result.variant,
-        );
+      : await _createPlanner(context, ref, result, planner);
+  if (notebook == null) return;
   if (context.mounted) await openNotebook(context, ref, notebook);
+}
+
+/// Makes a notebook from [planner], showing "Setting up your planner..."
+/// with progress while its pages are made.
+Future<Notebook?> _createPlanner(
+  BuildContext context,
+  WidgetRef ref,
+  NotebookEditorResult result,
+  CatalogItem planner,
+) async {
+  final progress = ValueNotifier<(int, int)>((0, 0));
+  final navigator = Navigator.of(context, rootNavigator: true);
+  var showing = true;
+  unawaited(
+    showDialog<void>(
+      context: context,
+      useRootNavigator: true,
+      barrierDismissible: false,
+      builder: (context) => PopScope(
+        canPop: false,
+        child: AlertDialog(
+          content: ValueListenableBuilder(
+            valueListenable: progress,
+            builder: (context, value, _) {
+              final (done, total) = value;
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Setting up your planner…'),
+                  const SizedBox(height: 16),
+                  LinearProgressIndicator(
+                    value: total == 0 ? null : done / total,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    total == 0 ? '' : '$done of $total pages',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+      ),
+    ).whenComplete(() => showing = false),
+  );
+  try {
+    return await ref.read(createFromTemplateProvider)(
+      result.notebook,
+      planner,
+      file: result.variant,
+      skip: result.skip,
+      onProgress: (done, total) => progress.value = (done, total),
+    );
+  } on Object catch (e) {
+    debugPrint('Could not make ${planner.id}: $e');
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Could not set up the planner. Check your connection and try '
+            'again.',
+          ),
+        ),
+      );
+    }
+    return null;
+  } finally {
+    if (showing) navigator.pop();
+    progress.dispose();
+  }
 }
 
 /// Asks for PDFs or images (unless given [files], sent from another app)

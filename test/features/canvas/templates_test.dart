@@ -30,6 +30,7 @@ import 'package:notely/features/notebooks/data/in_memory_notes_backend.dart';
 import 'package:notely/features/notebooks/data/notes_repository.dart';
 import 'package:notely/features/notebooks/domain/notebook_models.dart';
 import 'package:notely/features/notebooks/notes_providers.dart';
+import 'package:notely/features/notebooks/page_order.dart';
 
 import '../../core/catalog/catalog_test.dart' show FakeDownloader, zip;
 import '../../helpers.dart';
@@ -120,6 +121,7 @@ CatalogItem template(
   Map<String, Object?> spec, {
   int version = 1,
   List<String> extraPdfs = const [],
+  Map<String, Object> extraJson = const {},
   bool free = true,
   String? name,
   String? category,
@@ -129,6 +131,8 @@ CatalogItem template(
     'template.pdf': utf8.encode('%PDF-$version'),
     'template.json': utf8.encode(jsonEncode(spec)),
     for (final f in extraPdfs) f: utf8.encode('%PDF-$version-$f'),
+    for (final MapEntry(:key, :value) in extraJson.entries)
+      key: utf8.encode(jsonEncode(value)),
   });
   final path = 'catalog/$id/$version/pack.zip';
   downloader.files[path] = pack;
@@ -158,7 +162,130 @@ const colourPlannerJson = {
   ],
 };
 
+/// A planner with a builder: layout and week start pick its PDF, and the
+/// daily check-ins can be left out.
+const builderJson = {
+  'mode': 'notebook',
+  'sections': [
+    {
+      'title': 'Start',
+      'pages': [
+        {'pdfPage': 1, 'title': 'Home'},
+      ],
+    },
+    {
+      'title': 'January',
+      'pages': [
+        {'pdfPage': 2, 'title': 'January'},
+        {'pdfPage': 3, 'title': 'Jan 1 check-in', 'group': 'checkin'},
+      ],
+    },
+  ],
+  'options': [
+    {
+      'id': 'layout',
+      'title': 'Layout',
+      'choices': [
+        {'id': 'landscape', 'name': 'Landscape'},
+        {'id': 'portrait', 'name': 'Portrait'},
+      ],
+    },
+    {
+      'id': 'weekStart',
+      'title': 'Week starts',
+      'choices': [
+        {'id': 'monday', 'name': 'Monday'},
+        {'id': 'sunday', 'name': 'Sunday'},
+      ],
+    },
+  ],
+  'groups': [
+    {'id': 'checkin', 'title': 'Daily check-ins', 'optional': true, 'on': true},
+    {'id': 'extras', 'title': 'Extras', 'optional': true, 'on': false},
+  ],
+  'variants': [
+    {
+      'name': 'Landscape · Monday',
+      'file': 'template.pdf',
+      'options': {'layout': 'landscape', 'weekStart': 'monday'},
+    },
+    {
+      'name': 'Landscape · Sunday',
+      'file': 'template_sunday.pdf',
+      'options': {'layout': 'landscape', 'weekStart': 'sunday'},
+    },
+    {
+      'name': 'Portrait · Monday',
+      'file': 'template_portrait.pdf',
+      'options': {'layout': 'portrait', 'weekStart': 'monday'},
+    },
+    {
+      'name': 'Portrait · Sunday',
+      'file': 'template_portrait_sunday.pdf',
+      'spec': 'template_portrait_sunday.json',
+      'options': {'layout': 'portrait', 'weekStart': 'sunday'},
+    },
+  ],
+};
+
+/// The Portrait · Sunday variant's own page list.
+const portraitSundayJson = {
+  'sections': [
+    {
+      'title': 'Start',
+      'pages': [
+        {'pdfPage': 1, 'title': 'Home'},
+      ],
+    },
+    {
+      'title': 'January (Sun)',
+      'pages': [
+        {'pdfPage': 2, 'title': 'January'},
+        {'pdfPage': 3, 'title': 'Jan 1 check-in', 'group': 'checkin'},
+      ],
+    },
+  ],
+};
+
 void main() {
+  test("a planner builder's options, groups and variants are read", () {
+    final spec = TemplateSpec.fromJson(
+      Uint8List.fromList(utf8.encode(jsonEncode(builderJson))),
+    );
+    expect(spec.options.map((o) => o.id), ['layout', 'weekStart']);
+    expect(spec.options.first.choices.map((c) => c.name), [
+      'Landscape',
+      'Portrait',
+    ]);
+    expect(spec.variantFor({})!.file, 'template.pdf');
+    expect(
+      spec.variantFor({'layout': 'portrait', 'weekStart': 'sunday'})!.spec,
+      'template_portrait_sunday.json',
+    );
+    expect(
+      spec.variantFor({'weekStart': 'sunday'})!.file,
+      'template_sunday.pdf',
+    );
+    expect(spec.pages.last.group, 'checkin');
+    expect(spec.defaultSkipped, {'extras'});
+    expect(spec.pageCount(), 3);
+    expect(spec.pageCount(skip: {'checkin'}), 2);
+    final sunday = spec.withSectionsFrom(
+      Uint8List.fromList(utf8.encode(jsonEncode(portraitSundayJson))),
+    );
+    expect(sunday.sections.last.title, 'January (Sun)');
+    expect(sunday.options, spec.options);
+
+    // Older planners have none of this.
+    final plain = TemplateSpec.fromJson(
+      Uint8List.fromList(utf8.encode(jsonEncode(plannerJson))),
+    );
+    expect(plain.options, isEmpty);
+    expect(plain.groups, isEmpty);
+    expect(plain.variantFor({}), isNull);
+    expect(plain.pages.first.group, isNull);
+  });
+
   test('colourways are read from template.json', () {
     final spec = TemplateSpec.fromJson(
       Uint8List.fromList(utf8.encode(jsonEncode(colourPlannerJson))),
@@ -411,6 +538,7 @@ void main() {
       ValueChanged<String>? onOpenPage,
       Map<String, Object> prefs = const {},
       bool turnable = false,
+      List<int> madePages = const [1, 2, 3],
     }) async {
       tester.view
         ..physicalSize = const Size(800, 1000)
@@ -425,7 +553,7 @@ void main() {
       );
       final section = (await repo.watchSections(nb.id).first).single;
       await repo.createPages(nb.id, section.id, [
-        for (var n = 1; n <= 3; n++)
+        for (final n in madePages)
           (title: 'Page $n', paper: null, template: templatePage(made, n)),
       ]);
       final pages = {
@@ -708,6 +836,93 @@ void main() {
       await settle(tester);
       final nb = (await backend.notebooks(uid).watchNotebooks().first).single;
       expect(nb.title, 'Budget Planner');
+    });
+
+    testWidgets('the planner builder picks a layout and leaves pages out', (
+      tester,
+    ) async {
+      final planner = template(
+        downloader,
+        'focus',
+        builderJson,
+        name: 'Focus Planner',
+        extraPdfs: [
+          'template_sunday.pdf',
+          'template_portrait.pdf',
+          'template_portrait_sunday.pdf',
+        ],
+        extraJson: {'template_portrait_sunday.json': portraitSundayJson},
+      );
+      final auth = await pumpApp(
+        tester,
+        skins,
+        size: const Size(900, 2600),
+        overrides: overrides([planner]),
+      );
+      uid = auth.currentUser!.uid;
+
+      await tester.tap(find.text('New notebook').last);
+      await settle(tester);
+      await tester.tap(find.text('Focus Planner'));
+      await settle(tester);
+      expect(find.text('Colours'), findsNothing);
+      expect(find.text('Daily check-ins'), findsOneWidget);
+      // Off by default, with no pages: not offered.
+      expect(find.text('Extras'), findsNothing);
+      expect(find.textContaining('3 pages, with links'), findsOneWidget);
+
+      await tester.tap(find.text('Portrait'));
+      await tester.pump();
+      await tester.tap(find.text('Sunday'));
+      await settle(tester);
+      await tester.tap(find.text('Daily check-ins'));
+      await settle(tester);
+      expect(find.textContaining('2 pages, with links'), findsOneWidget);
+      await tester.tap(find.text('Create'));
+      await settle(tester);
+
+      final repo = backend.notebooks(uid);
+      final nb = (await repo.watchNotebooks().first).single;
+      final sections = await repo.watchSections(nb.id).first;
+      expect(sections.map((s) => s.title), ['Start', 'January (Sun)']);
+      final pages = await repo.watchNotebookPages(nb.id).first;
+      expect(pages.map((p) => p.title), unorderedEquals(['Home', 'January']));
+      expect(pages.map((p) => p.template!.file).toSet(), {
+        'template_portrait_sunday.pdf',
+      });
+    });
+
+    testWidgets('a link to a page left out offers to add it', (tester) async {
+      String? opened;
+      final (container, first, _) = await pumpPlannerPage(
+        tester,
+        made: template(downloader, 'planner', plannerJson),
+        onOpenPage: (id) => opened = id,
+        madePages: [1, 3],
+      );
+
+      final canvas = tester.getRect(find.byType(PageCanvas));
+      await tester.tapAt(canvas.topLeft + const Offset(150, 150));
+      await settle(tester);
+      await tester.pump(const Duration(milliseconds: 1300));
+      await settle(tester);
+      expect(find.text("January isn't in this notebook."), findsOneWidget);
+
+      await tester.tap(find.text('Add it'));
+      await settle(tester);
+      final repo = backend.notebooks(uid);
+      final notebookId = container.read(pageProvider(first)).value!.notebookId;
+      final all = await repo.watchNotebookPages(notebookId).first;
+      final added = all.singleWhere((p) => p.template!.pdfPage == 2);
+      expect(added.title, 'January');
+      expect(opened, added.id);
+      // In the planner's order: after page 1, before page 3.
+      final sections = await repo.watchSections(notebookId).first;
+      expect(sortPages(sections, all).map((p) => p.template!.pdfPage), [
+        1,
+        2,
+        3,
+      ]);
     });
 
     testWidgets('pages keep the template version they were made with', (
