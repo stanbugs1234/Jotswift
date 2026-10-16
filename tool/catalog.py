@@ -88,7 +88,7 @@ def variant_files(folder):
         spec = json.loads((folder / "template.json").read_text())
     except (OSError, json.JSONDecodeError):
         return []
-    files = [v.get("file") for v in spec.get("variants", []) if isinstance(v, dict)]
+    files = [v.get(key) for v in spec.get("variants", []) if isinstance(v, dict) for key in ("file", "spec")]
     return sorted({f for f in files if isinstance(f, str) and f != "template.pdf"})
 
 
@@ -237,6 +237,22 @@ def check(item_id):
                          f"{file} has {pdf_page_count(folder / file)} pages; template.pdf has {count}")
                 elif isinstance(file, str):
                     problems.append(f"variant file {file} is missing")
+                own = v.get("spec") if isinstance(v, dict) else None
+                if own is not None:
+                    need(isinstance(own, str) and re.fullmatch(r"template[a-z0-9_]*\.json", own),
+                         f"variant spec {own!r} must be template<_name>.json")
+                    try:
+                        own_pages = [p for sec in json.loads((folder / own).read_text())["sections"]
+                                     for p in sec["pages"]]
+                        need(len(own_pages) == len(pages), f"{own} lists {len(own_pages)} pages, not {len(pages)}")
+                        need(all(1 <= p.get("pdfPage", 0) <= count for p in own_pages),
+                             f"{own} lists pages outside its PDF")
+                    except (OSError, json.JSONDecodeError, KeyError, TypeError):
+                        problems.append(f"variant spec {own} is missing or not valid")
+            groups = {g.get("id") for g in spec.get("groups", []) if isinstance(g, dict)}
+            for p in pages:
+                g = p.get("group") if isinstance(p, dict) else None
+                need(g is None or g in groups, f"page {p.get('pdfPage')}: group {g!r} isn't in \"groups\"")
     elif kind == "paper":
         paper = listing.get("paper")
         if not isinstance(paper, dict):
@@ -287,9 +303,14 @@ def check(item_id):
 def build_pack(folder, kind):
     """The item's pack.zip. Same files give the same bytes (and checksum)."""
     out = io.BytesIO()
+    # Planners with layout options hold four big PDFs: compress them. Other
+    # packs stay stored, so their checksums don't change.
+    deflate = kind == "template" and "options" in template_spec(folder)[0]
     with zipfile.ZipFile(out, "w", zipfile.ZIP_STORED) as z:
         for name in pack_files(folder, kind):
             info = zipfile.ZipInfo(name, date_time=(2020, 1, 1, 0, 0, 0))
+            if deflate:
+                info.compress_type = zipfile.ZIP_DEFLATED
             z.writestr(info, (folder / name).read_bytes())
     return out.getvalue()
 

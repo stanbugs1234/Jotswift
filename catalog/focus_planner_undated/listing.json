@@ -1,0 +1,23 @@
+{
+  "kind": "template",
+  "name": "Focus Planner (undated)",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "planner_focus_planner_undated"
+    ]
+  },
+  "category": "planners",
+  "tags": [
+    "adhd",
+    "focus",
+    "time blocking",
+    "brain dump",
+    "wellness",
+    "linked",
+    "undated",
+    "landscape",
+    "portrait"
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "kind": "template",
+  "name": "Focus Planner 2027",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "planner_focus_planner_2027"
+    ]
+  },
+  "category": "planners",
+  "tags": [
+    "adhd",
+    "focus",
+    "time blocking",
+    "brain dump",
+    "wellness",
+    "linked",
+    "dated",
+    "2027",
+    "landscape",
+    "portrait"
+  ]
+}
