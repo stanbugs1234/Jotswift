@@ -27,10 +27,10 @@ bool _isTemplate(CatalogItem i, TemplateMode mode, Set<String> categories) =>
 /// Template categories with their own row, in the order shown.
 const _categoryRows = [
   ('spreads', 'Spread planners'),
+  ('productivity', 'Productivity'),
   ('diaries', 'Diaries'),
   ('journals', 'Journals'),
   ('study', 'Study'),
-  ('work', 'Work'),
   ('wellness', 'Wellness'),
   ('lifestyle', 'Lifestyle'),
   ('creative', 'Creative'),

@@ -112,7 +112,21 @@ final workPages = item(
   'work_pages',
   'template',
   {'pro': true},
-  extra: {'category': 'work', 'templateMode': 'pages', ..._templateFiles},
+  extra: {
+    'category': 'productivity',
+    'templateMode': 'pages',
+    ..._templateFiles,
+  },
+);
+final goalsPlanner = item(
+  'goals_planner',
+  'template',
+  {'pro': true},
+  extra: {
+    'category': 'productivity',
+    'templateMode': 'notebook',
+    ..._templateFiles,
+  },
 );
 final starterPages = item(
   'starter_pages',
@@ -338,7 +352,7 @@ void main() {
         overrides: [
           purchasesClientProvider.overrideWithValue(FakePurchases()),
           catalogRepositoryProvider.overrideWithValue(
-            InMemoryCatalogRepository([workPages, starterPages]),
+            InMemoryCatalogRepository([workPages, goalsPlanner, starterPages]),
           ),
         ],
       );
@@ -346,9 +360,12 @@ void main() {
       await tester.pumpAndSettle();
       // Each tile shows once: in its category's row, not also under
       // Page templates.
-      expect(find.text('Work'), findsOneWidget);
+      expect(find.text('Productivity'), findsOneWidget);
       expect(find.text('Page templates'), findsOneWidget);
       expect(find.bySemanticsLabel(RegExp('^work_pages')), findsOneWidget);
+      // A productivity planner is in Productivity, not in Planners.
+      expect(find.bySemanticsLabel(RegExp('^goals_planner')), findsOneWidget);
+      expect(find.text('Planners'), findsNothing);
       expect(find.bySemanticsLabel(RegExp('^starter_pages')), findsOneWidget);
       expect(
         tester.getTopLeft(find.bySemanticsLabel(RegExp('^work_pages'))).dy,
