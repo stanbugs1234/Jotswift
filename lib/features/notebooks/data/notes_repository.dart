@@ -78,6 +78,24 @@ abstract interface class NotebookRepository {
   /// notebook's paper.
   Future<void> setPagePaper(String pageId, PaperStyle? paper);
   Future<void> deletePage(String pageId);
+
+  /// Moves a page to [order] in a section, which may be in another
+  /// notebook. Its ink and items go with it.
+  Future<void> movePage(
+    String pageId, {
+    required String notebookId,
+    required String sectionId,
+    required double order,
+  });
+
+  /// Copies a page, with its ink and items, to [order] in a section (of
+  /// this or another notebook). Returns the copy's id.
+  Future<String> copyPage(
+    String pageId, {
+    required String notebookId,
+    required String sectionId,
+    required double order,
+  });
 }
 
 /// Categories, groups and where notebooks sit on the shelf.

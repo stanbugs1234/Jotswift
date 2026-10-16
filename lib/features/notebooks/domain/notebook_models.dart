@@ -343,17 +343,22 @@ class NotePage {
   };
 
   NotePage copyWith({
+    String? id,
+    String? notebookId,
+    String? sectionId,
+    double? order,
+    int? createdAt,
     String? title,
     PaperStyle? Function()? paper,
     int? updatedAt,
     bool? bookmarked,
   }) => NotePage(
-    id: id,
-    notebookId: notebookId,
-    sectionId: sectionId,
+    id: id ?? this.id,
+    notebookId: notebookId ?? this.notebookId,
+    sectionId: sectionId ?? this.sectionId,
     title: title ?? this.title,
-    order: order,
-    createdAt: createdAt,
+    order: order ?? this.order,
+    createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
     paper: paper == null ? this.paper : paper(),
     template: template,

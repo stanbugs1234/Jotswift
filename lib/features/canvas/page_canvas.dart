@@ -2062,9 +2062,16 @@ const templateDrawWidth = _PageCanvasState._templateWidth;
 /// A page as it's exported or printed: its paper or template, items and
 /// ink, with nothing to edit. Laid out in page units.
 class PagePrint extends ConsumerWidget {
-  const PagePrint({required this.pageId, super.key});
+  const PagePrint({
+    required this.pageId,
+    this.templateWidth = templateDrawWidth,
+    super.key,
+  });
 
   final String pageId;
+
+  /// How wide (in pixels) to draw a template page: smaller for thumbnails.
+  final int templateWidth;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -2078,7 +2085,7 @@ class PagePrint extends ConsumerWidget {
               .watch(
                 templateImageProvider((
                   template: template,
-                  width: templateDrawWidth,
+                  width: templateWidth,
                 )),
               )
               .value;

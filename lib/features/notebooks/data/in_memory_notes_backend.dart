@@ -482,6 +482,55 @@ class _InMemoryUserData
     _changed();
   }
 
+  @override
+  Future<void> movePage(
+    String pageId, {
+    required String notebookId,
+    required String sectionId,
+    required double order,
+  }) async {
+    final p = _pages[pageId];
+    if (p == null) return;
+    _pages[pageId] = p.copyWith(
+      notebookId: notebookId,
+      sectionId: sectionId,
+      order: order,
+      updatedAt: nowMillis(),
+    );
+    _changed();
+  }
+
+  @override
+  Future<String> copyPage(
+    String pageId, {
+    required String notebookId,
+    required String sectionId,
+    required double order,
+  }) async {
+    final p = _pages[pageId];
+    if (p == null) throw StateError('No page $pageId');
+    final id = _id();
+    final now = nowMillis();
+    _pages[id] = p.copyWith(
+      id: id,
+      notebookId: notebookId,
+      sectionId: sectionId,
+      order: order,
+      createdAt: now,
+      updatedAt: now,
+    );
+    _strokes[id] = {
+      for (final s in _strokes[pageId]?.values ?? const <Stroke>[])
+        if (!s.deleted) s.id: s,
+    };
+    _elements[id] = {
+      for (final e in _elements[pageId]?.values ?? const <PageElement>[])
+        if (!e.deleted) e.id: e,
+    };
+    _changed();
+    return id;
+  }
+
   void _removePage(String pageId) {
     _pages.remove(pageId);
     _strokes.remove(pageId);

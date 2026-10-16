@@ -10,6 +10,7 @@ import '../imports/import_actions.dart';
 import '../shelf/shelf_actions.dart';
 import 'domain/notebook_models.dart';
 import 'notes_providers.dart';
+import 'page_grid.dart';
 import 'paper_picker.dart';
 
 /// One notebook: its sections as tabs, and the pages in the chosen section.
@@ -215,7 +216,7 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
             ),
       body: current == null
           ? const Center(child: CircularProgressIndicator())
-          : _PageList(
+          : PageGrid(
               notebookId: widget.notebookId,
               section: current,
               onOpen: _openPage,
@@ -270,109 +271,4 @@ class _SectionTabs extends StatelessWidget {
       ),
     );
   }
-}
-
-class _PageList extends ConsumerWidget {
-  const _PageList({
-    required this.notebookId,
-    required this.section,
-    required this.onOpen,
-    required this.onCreate,
-  });
-
-  final String notebookId;
-  final Section section;
-  final ValueChanged<String> onOpen;
-  final VoidCallback onCreate;
-
-  Future<void> _pageMenu(
-    BuildContext context,
-    WidgetRef ref,
-    NotePage page,
-    String action,
-  ) async {
-    final repo = ref.read(notebookRepositoryProvider);
-    if (action == 'rename') {
-      final title = await askForText(
-        context,
-        title: 'Rename page',
-        confirmLabel: 'Rename',
-        initialValue: page.title,
-      );
-      if (title != null) await repo.renamePage(page.id, title);
-    } else if (action == 'paper') {
-      final choice = await showPagePaperSheet(
-        context,
-        current: page.paper ?? notebookPaper(ref, notebookId),
-        offerNotebookPaper: true,
-      );
-      if (choice != null) await repo.setPagePaper(page.id, choice.paper);
-    } else if (action == 'delete') {
-      final ok = await confirmDelete(
-        context,
-        title: 'Delete "${page.displayTitle}"?',
-        message: 'This deletes the page and everything written on it.',
-      );
-      if (ok) await repo.deletePage(page.id);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final pages = ref
-        .watch(pagesProvider((notebookId: notebookId, sectionId: section.id)))
-        .value;
-    if (pages == null) return const Center(child: CircularProgressIndicator());
-    if (pages.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('No pages in ${section.title} yet.'),
-            const SizedBox(height: 12),
-            OutlinedButton.icon(
-              onPressed: onCreate,
-              icon: const Icon(Icons.note_add_outlined),
-              label: const Text('Add a page'),
-            ),
-          ],
-        ),
-      );
-    }
-    return ListView.separated(
-      padding: const EdgeInsets.only(bottom: 96),
-      itemCount: pages.length,
-      separatorBuilder: (_, _) => const Divider(height: 1),
-      itemBuilder: (context, i) {
-        final page = pages[i];
-        return ListTile(
-          leading: const Icon(Icons.description_outlined),
-          title: Text(page.displayTitle),
-          subtitle: Text('Edited ${_formatDate(page.updatedAt)}'),
-          onTap: () => onOpen(page.id),
-          trailing: PopupMenuButton<String>(
-            tooltip: 'Page options',
-            onSelected: (a) => _pageMenu(context, ref, page, a),
-            itemBuilder: (context) => const [
-              PopupMenuItem(value: 'rename', child: Text('Rename')),
-              PopupMenuItem(value: 'paper', child: Text('Change paper')),
-              PopupMenuItem(value: 'delete', child: Text('Delete')),
-            ],
-          ),
-        );
-      },
-    );
-  }
-}
-
-String _formatDate(int millis) {
-  final d = DateTime.fromMillisecondsSinceEpoch(millis);
-  final now = DateTime.now();
-  final time =
-      '${d.hour % 12 == 0 ? 12 : d.hour % 12}:${d.minute.toString().padLeft(2, '0')} '
-      '${d.hour < 12 ? 'AM' : 'PM'}';
-  if (d.year == now.year && d.month == now.month && d.day == now.day) {
-    return 'today at $time';
-  }
-  return '${d.month}/${d.day}/${d.year}';
 }

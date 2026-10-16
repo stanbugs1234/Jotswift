@@ -514,6 +514,59 @@ class _FirestoreUserNotes
     _pages.doc(pageId).delete().ignore();
   }
 
+  @override
+  Future<void> movePage(
+    String pageId, {
+    required String notebookId,
+    required String sectionId,
+    required double order,
+  }) async => _pages.doc(pageId).update({
+    'notebookId': notebookId,
+    'sectionId': sectionId,
+    'order': order,
+    'updatedAt': nowMillis(),
+  }).ignore();
+
+  @override
+  Future<String> copyPage(
+    String pageId, {
+    required String notebookId,
+    required String sectionId,
+    required double order,
+  }) async {
+    final source = await _pages.doc(pageId).get();
+    final data = source.data();
+    if (data == null) throw StateError('No page $pageId');
+    final strokes = await _strokes(pageId).get();
+    final elements = await _elements(pageId).get();
+    final ref = _pages.doc();
+    final now = nowMillis();
+    final writes = <void Function(WriteBatch)>[
+      (b) => b.set(ref, {
+        ...data,
+        'notebookId': notebookId,
+        'sectionId': sectionId,
+        'order': order,
+        'createdAt': now,
+        'updatedAt': now,
+      }),
+      for (final d in strokes.docs)
+        if (d.data()['deleted'] != true)
+          (b) => b.set(_strokes(ref.id).doc(d.id), d.data()),
+      for (final d in elements.docs)
+        if (d.data()['deleted'] != true)
+          (b) => b.set(_elements(ref.id).doc(d.id), d.data()),
+    ];
+    for (var i = 0; i < writes.length; i += _batchLimit) {
+      final batch = _user.firestore.batch();
+      for (final write in writes.skip(i).take(_batchLimit)) {
+        write(batch);
+      }
+      _commitInBackground(batch);
+    }
+    return ref.id;
+  }
+
   // Strokes
 
   @override
