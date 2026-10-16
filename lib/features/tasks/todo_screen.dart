@@ -1,3 +1,8 @@
+import '../../shared/ui/empty_state.dart';
+import '../../shared/ui/skeleton.dart';
+import '../../shared/ui/tab_title.dart';
+import '../../shared/ui/tokens.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -43,7 +48,9 @@ class TodoScreen extends ConsumerWidget {
         final wide = constraints.maxWidth >= paneBreakpoint;
         final scaffold = Scaffold(
           appBar: AppBar(
-            title: Text(title),
+            centerTitle: false,
+            titleSpacing: gutterOf(context),
+            title: TabTitle(title),
             actions: [
               if (list != null) _ListMenu(list: list),
               IconButton(
@@ -308,8 +315,13 @@ class _TaskPane extends ConsumerWidget {
 
     final Widget content;
     if (tasks.isLoading && !tasks.hasValue) {
-      content = const SliverFillRemaining(
-        child: Center(child: CircularProgressIndicator()),
+      content = SliverPadding(
+        padding: EdgeInsets.all(gutterOf(context)),
+        sliver: SliverList.separated(
+          itemCount: 4,
+          separatorBuilder: (_, _) => const SizedBox(height: Insets.md),
+          itemBuilder: (_, _) => const Skeleton(height: 40),
+        ),
       );
     } else {
       content = switch (view) {
@@ -354,7 +366,11 @@ class _TaskPane extends ConsumerWidget {
   ) {
     if (days.isEmpty) {
       return const SliverToBoxAdapter(
-        child: _Empty('Nothing coming up. Give tasks a due day to see them.'),
+        child: _Empty(
+          'Nothing coming up.',
+          message: 'Give tasks a due day to see them here.',
+          icon: Icons.event_note_outlined,
+        ),
       );
     }
     final theme = Theme.of(context);
@@ -385,18 +401,16 @@ class _TaskPane extends ConsumerWidget {
 }
 
 class _Empty extends StatelessWidget {
-  const _Empty(this.text);
+  const _Empty(this.text, {this.message, this.icon = Icons.task_alt});
 
   final String text;
+  final String? message;
+  final IconData icon;
 
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.all(48),
-    child: Text(
-      text,
-      textAlign: TextAlign.center,
-      style: Theme.of(context).textTheme.bodyLarge,
-    ),
+    padding: const EdgeInsets.only(top: Insets.xxxl),
+    child: EmptyState(icon: icon, title: text, message: message),
   );
 }
 
@@ -418,7 +432,13 @@ class _ListContents extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (tasks.open.isEmpty && tasks.done.isEmpty) {
-      return const SliverToBoxAdapter(child: _Empty('No tasks yet.'));
+      return const SliverToBoxAdapter(
+        child: _Empty(
+          'No tasks yet.',
+          message: 'Add one above.',
+          icon: Icons.checklist,
+        ),
+      );
     }
     return SliverMainAxisGroup(
       slivers: [

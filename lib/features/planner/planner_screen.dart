@@ -1,3 +1,7 @@
+import '../../shared/ui/empty_state.dart';
+import '../../shared/ui/tab_title.dart';
+import '../../shared/ui/tokens.dart';
+
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
@@ -93,13 +97,18 @@ class PlannerScreen extends ConsumerWidget {
         onPressed: () => context.push('/settings'),
       ),
     ];
-    final title = Text(local.formatFullDate(day.toDateTime()));
+    final title = TabTitle(local.formatFullDate(day.toDateTime()));
 
     return LayoutBuilder(
       builder: (context, constraints) {
         if (constraints.maxWidth >= wideBreakpoint) {
           return Scaffold(
-            appBar: AppBar(title: title, actions: actions),
+            appBar: AppBar(
+              centerTitle: false,
+              titleSpacing: gutterOf(context),
+              title: title,
+              actions: actions,
+            ),
             body: Row(
               children: [
                 SizedBox(width: 360, child: _DayPanel(day: day)),
@@ -115,6 +124,8 @@ class PlannerScreen extends ConsumerWidget {
           length: 2,
           child: Scaffold(
             appBar: AppBar(
+              centerTitle: false,
+              titleSpacing: gutterOf(context),
               title: title,
               actions: actions,
               bottom: const TabBar(
@@ -194,8 +205,13 @@ class _DayPanel extends ConsumerWidget {
         ),
         if (events.isEmpty)
           const Padding(
-            padding: EdgeInsets.fromLTRB(16, 4, 16, 8),
-            child: Text('Nothing scheduled.'),
+            padding: EdgeInsets.symmetric(horizontal: Insets.lg),
+            child: EmptyState(
+              compact: true,
+              icon: Icons.event_available_outlined,
+              title: 'Nothing scheduled.',
+              message: 'Tap + to add an event.',
+            ),
           ),
         for (final o in events)
           ListTile(
@@ -224,8 +240,13 @@ class _DayPanel extends ConsumerWidget {
         _AddTask(day: day),
         if (tasks.isEmpty)
           const Padding(
-            padding: EdgeInsets.fromLTRB(16, 4, 16, 8),
-            child: Text('Nothing due. Add the three things that matter most.'),
+            padding: EdgeInsets.symmetric(horizontal: Insets.lg),
+            child: EmptyState(
+              compact: true,
+              icon: Icons.flag_outlined,
+              title: 'Nothing due.',
+              message: 'Add the three things that matter most.',
+            ),
           ),
         for (final t in top) TaskTile(key: ValueKey(t.id), task: t),
         if (rest.isNotEmpty) ...[
