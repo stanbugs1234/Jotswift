@@ -583,13 +583,20 @@ class _PenOptionsButton extends ConsumerWidget {
       builder: (context, onPressed) => IconButton(
         tooltip: 'Pen options',
         constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
+        // The color inside a ring, so dark ink still shows on a dark bar.
         icon: Container(
-          width: 26,
-          height: 26,
+          width: 30,
+          height: 30,
+          padding: const EdgeInsets.all(3),
           decoration: BoxDecoration(
-            color: color,
             shape: BoxShape.circle,
-            border: Border.all(color: Theme.of(context).colorScheme.outline),
+            border: Border.all(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+              width: 1.5,
+            ),
+          ),
+          child: DecoratedBox(
+            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
           ),
         ),
         onPressed: onPressed,
