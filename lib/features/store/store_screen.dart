@@ -117,6 +117,8 @@ class _StoreScreenState extends ConsumerState<StoreScreen> {
               ],
             ),
           ),
+          if (!catalog.isLoading && _featured(items).isNotEmpty)
+            _Featured(items: _featured(items)),
           if (!entitlements.pro) const _ProBanner(),
           if (catalog.isLoading)
             // Rows of cards stand in until the catalog arrives.
@@ -157,11 +159,25 @@ class _StoreScreenState extends ConsumerState<StoreScreen> {
             if (items.where(belongs).toList() case final row
                 when row.isNotEmpty) ...[
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
-                child: Text(title, style: theme.textTheme.titleMedium),
+                padding: const EdgeInsets.fromLTRB(16, 24, 8, 4),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(title, style: theme.textTheme.titleMedium),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => _SeeAll(title: title, items: row),
+                        ),
+                      ),
+                      child: Text('See all ${row.length}'),
+                    ),
+                  ],
+                ),
               ),
               SizedBox(
-                height: 236,
+                height: 262,
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -179,6 +195,137 @@ class _StoreScreenState extends ConsumerState<StoreScreen> {
       ),
     );
   }
+}
+
+/// What the top of the store features: items tagged "featured", or else
+/// the planners that run into next year (the ones people want now).
+List<CatalogItem> _featured(List<CatalogItem> items) {
+  final tagged = [
+    for (final i in items)
+      if (i.tags.contains('featured')) i,
+  ];
+  if (tagged.isNotEmpty) return tagged.take(6).toList();
+  return [
+    for (final i in items)
+      if (i.kind == CatalogKind.template &&
+          i.templateMode == TemplateMode.notebook &&
+          i.tags.contains('15 months'))
+        i,
+  ].take(6).toList();
+}
+
+/// Large cards across the top of the store.
+class _Featured extends ConsumerWidget {
+  const _Featured({required this.items});
+
+  final List<CatalogItem> items;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final width = MediaQuery.sizeOf(context).width;
+    final cardWidth = width < 600 ? width - 48 : 460.0;
+    return Padding(
+      padding: const EdgeInsets.only(top: Insets.lg),
+      child: SizedBox(
+        height: 200,
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          itemCount: items.length,
+          separatorBuilder: (_, _) => const SizedBox(width: Insets.lg),
+          itemBuilder: (context, i) {
+            final item = items[i];
+            return SizedBox(
+              width: cardWidth,
+              child: Material(
+                color: theme.colorScheme.primaryContainer,
+                borderRadius: BorderRadius.circular(Radii.lg),
+                clipBehavior: Clip.antiAlias,
+                child: InkWell(
+                  onTap: () => context.push('$storePath/${item.id}'),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 150,
+                        height: double.infinity,
+                        child: ItemPreview(item: item),
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(Insets.lg),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'FEATURED',
+                                style: theme.textTheme.labelSmall?.copyWith(
+                                  color: theme.colorScheme.primary,
+                                  letterSpacing: 1.2,
+                                ),
+                              ),
+                              const SizedBox(height: Insets.xs),
+                              Text(
+                                item.name,
+                                maxLines: 3,
+                                overflow: TextOverflow.ellipsis,
+                                style: theme.textTheme.titleLarge?.copyWith(
+                                  color: theme.colorScheme.onPrimaryContainer,
+                                ),
+                              ),
+                              const SizedBox(height: Insets.xs),
+                              Text(
+                                kindLabel(item),
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: theme.colorScheme.onPrimaryContainer,
+                                ),
+                              ),
+                              const SizedBox(height: Insets.sm),
+                              Text(
+                                ref.watch(itemBadgeProvider(item)),
+                                style: theme.textTheme.labelLarge?.copyWith(
+                                  color: theme.colorScheme.primary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+/// Everything in one row of the store, as a grid.
+class _SeeAll extends StatelessWidget {
+  const _SeeAll({required this.title, required this.items});
+
+  final String title;
+  final List<CatalogItem> items;
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: Text(title)),
+    body: GridView.builder(
+      padding: EdgeInsets.all(gutterOf(context)),
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 160,
+        mainAxisExtent: 262,
+        crossAxisSpacing: Insets.lg,
+        mainAxisSpacing: Insets.lg,
+      ),
+      itemCount: items.length,
+      itemBuilder: (context, i) => StoreTile(item: items[i]),
+    ),
+  );
 }
 
 class _ProBanner extends ConsumerWidget {
@@ -255,11 +402,14 @@ class StoreTile extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 6),
-              Text(
-                item.name,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.titleSmall,
+              SizedBox(
+                height: 40,
+                child: Text(
+                  item.name,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.titleSmall?.copyWith(height: 1.25),
+                ),
               ),
               Text(
                 badge,
