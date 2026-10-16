@@ -130,12 +130,16 @@ class _FirestoreUserNotes
 
   @override
   Future<void> deleteNotebook(String notebookId) async {
-    final pages = await _pages.where('notebookId', isEqualTo: notebookId).get();
-    for (final page in pages.docs) {
-      await deletePage(page.id);
-    }
-    await _deleteAll(await _sections(notebookId).get());
+    // The notebook goes first, so it leaves the shelf at once; its pages
+    // and ink are cleaned up after, all at the same time rather than one
+    // page after another (a planner has dozens of pages).
     _notebooks.doc(notebookId).delete().ignore();
+    final (pages, sections) = await (
+      _pages.where('notebookId', isEqualTo: notebookId).get(),
+      _sections(notebookId).get(),
+    ).wait;
+    await _deleteAll(sections);
+    await Future.wait([for (final page in pages.docs) deletePage(page.id)]);
   }
 
   @override
@@ -378,10 +382,8 @@ class _FirestoreUserNotes
         .where('notebookId', isEqualTo: notebookId)
         .where('sectionId', isEqualTo: sectionId)
         .get();
-    for (final page in pages.docs) {
-      await deletePage(page.id);
-    }
     _sections(notebookId).doc(sectionId).delete().ignore();
+    await Future.wait([for (final page in pages.docs) deletePage(page.id)]);
   }
 
   // Pages
@@ -515,9 +517,13 @@ class _FirestoreUserNotes
 
   @override
   Future<void> deletePage(String pageId) async {
-    await _deleteAll(await _strokes(pageId).get());
-    await _deleteAll(await _elements(pageId).get());
     _pages.doc(pageId).delete().ignore();
+    final (strokes, elements) = await (
+      _strokes(pageId).get(),
+      _elements(pageId).get(),
+    ).wait;
+    await _deleteAll(strokes);
+    await _deleteAll(elements);
   }
 
   @override

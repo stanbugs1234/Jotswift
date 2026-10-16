@@ -169,6 +169,7 @@ void main() {
     );
     await tester.pumpAndSettle();
     expect(find.text('The Trash is empty'), findsOneWidget);
+    expect(find.text('Trash emptied'), findsOneWidget);
 
     final container = ProviderScope.containerOf(
       tester.element(find.byType(NotelyApp)),

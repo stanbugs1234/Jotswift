@@ -388,11 +388,28 @@ Future<void> emptyTrash(
     message: 'This deletes $count and every page in them. It cannot be undone.',
     confirmLabel: 'Empty Trash',
   );
-  if (!ok) return;
+  if (!ok || !context.mounted) return;
   final repo = ref.read(notebookRepositoryProvider);
-  for (final n in trashed) {
-    await repo.deleteNotebook(n.id);
-  }
+  final messenger = ScaffoldMessenger.of(context);
+  // All at once; each notebook leaves the Trash as soon as its delete
+  // starts, and one that fails doesn't stop the others.
+  final results = await Future.wait([
+    for (final n in trashed)
+      repo.deleteNotebook(n.id).then((_) => true, onError: (_) => false),
+  ]);
+  final failed = results.where((ok) => !ok).length;
+  messenger
+    ..hideCurrentSnackBar()
+    ..showSnackBar(
+      SnackBar(
+        content: Text(
+          failed == 0
+              ? 'Trash emptied'
+              : "$failed couldn't be deleted. Check your connection and try "
+                    'again.',
+        ),
+      ),
+    );
 }
 
 enum GroupAction { rename, move, delete }
