@@ -1,4 +1,7 @@
+import 'dart:math' as math;
+
 import '../../shared/ui/skeleton.dart';
+import '../../shared/ui/tokens.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,175 +10,184 @@ import '../../core/catalog/catalog_item.dart';
 import '../../core/catalog/template_spec.dart';
 import '../canvas/templates.dart';
 import '../store/store_item.dart';
-import 'template_filter.dart';
 
-/// Planners to start a notebook with, as cards showing what each looks
-/// like. Tap a card to choose it; "Look inside" shows every page first.
-/// With more than a few, a search and category chips narrow them down.
-class TemplateGallery extends StatefulWidget {
-  const TemplateGallery({
-    required this.templates,
+/// A template as a card: its first page, name and page count, with a
+/// button to look through every page. Tap to choose it; long-press also
+/// looks inside. [preview] replaces the template's picture (for a blank
+/// notebook or one of the user's own templates).
+class TemplateCard extends StatelessWidget {
+  const TemplateCard({
+    required this.title,
     required this.selected,
-    required this.onSelected,
+    required this.onTap,
+    this.item,
+    this.preview,
+    this.subtitle,
+    this.onLookInside,
     super.key,
   });
 
-  final List<CatalogItem> templates;
-  final CatalogItem? selected;
-  final ValueChanged<CatalogItem> onSelected;
-
-  /// How many templates it takes to show the search.
-  static const searchFrom = 5;
-
-  @override
-  State<TemplateGallery> createState() => _TemplateGalleryState();
-}
-
-class _TemplateGalleryState extends State<TemplateGallery> {
-  var _filter = const TemplateFilter();
-
-  @override
-  Widget build(BuildContext context) {
-    final templates = widget.templates.where(_filter.matches).toList();
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (widget.templates.length >= TemplateGallery.searchFrom) ...[
-          TemplateFilterBar(
-            templates: widget.templates,
-            filter: _filter,
-            onChanged: (f) => setState(() => _filter = f),
-          ),
-          const SizedBox(height: 12),
-        ],
-        SizedBox(
-          height: 286,
-          child: templates.isEmpty
-              ? const Center(child: Text('No templates match.'))
-              : ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: templates.length,
-                  separatorBuilder: (_, _) => const SizedBox(width: 12),
-                  itemBuilder: (context, i) {
-                    final t = templates[i];
-                    return _TemplateCard(
-                      item: t,
-                      selected: t.id == widget.selected?.id,
-                      onTap: () => widget.onSelected(t),
-                      onLookInside: () async {
-                        if (await showTemplatePages(context, t) == true) {
-                          widget.onSelected(t);
-                        }
-                      },
-                    );
-                  },
-                ),
-        ),
-      ],
-    );
-  }
-}
-
-class _TemplateCard extends StatelessWidget {
-  const _TemplateCard({
-    required this.item,
-    required this.selected,
-    required this.onTap,
-    required this.onLookInside,
-  });
-
-  final CatalogItem item;
+  final CatalogItem? item;
+  final Widget? preview;
+  final String title;
+  final String? subtitle;
   final bool selected;
   final VoidCallback onTap;
-  final VoidCallback onLookInside;
+  final VoidCallback? onLookInside;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
-    return SizedBox(
-      width: 132,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Semantics(
-            button: true,
-            selected: selected,
-            label: '${item.name}${item.linked ? ', linked pages' : ''}',
-            excludeSemantics: true,
-            child: InkWell(
-              borderRadius: BorderRadius.circular(10),
-              onTap: onTap,
-              onLongPress: onLookInside,
-              child: Column(
+    final item = this.item;
+    return Semantics(
+      button: true,
+      selected: selected,
+      label: '$title${item?.linked ?? false ? ', linked pages' : ''}',
+      child: InkWell(
+        borderRadius: BorderRadius.circular(Radii.md),
+        onTap: onTap,
+        onLongPress: onLookInside,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 150),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(Radii.md),
+                  border: Border.all(
+                    color: selected ? scheme.primary : scheme.outlineVariant,
+                    width: selected ? 3 : 1,
+                  ),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(
+                    selected ? Radii.md - 3 : Radii.md - 1,
+                  ),
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      ?preview,
+                      if (preview == null && item != null)
+                        ItemPreview(item: item),
+                      if (item?.linked ?? false)
+                        const Positioned(
+                          top: 6,
+                          right: 6,
+                          child: LinkedPagesBadge(size: 13),
+                        ),
+                      if (selected)
+                        Positioned(
+                          top: 6,
+                          left: 6,
+                          child: Icon(
+                            Icons.check_circle,
+                            color: scheme.primary,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: Insets.sm),
+            SizedBox(
+              height: _textHeight,
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 150),
-                    height: 168,
-                    width: 132,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color: selected
-                            ? scheme.primary
-                            : scheme.outlineVariant,
-                        width: selected ? 3 : 1,
-                      ),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(selected ? 7 : 9),
-                      child: Stack(
-                        fit: StackFit.expand,
-                        children: [
-                          ItemPreview(item: item),
-                          if (item.linked)
-                            const Positioned(
-                              top: 6,
-                              right: 6,
-                              child: LinkedPagesBadge(size: 13),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.labelLarge,
+                        ),
+                        if (subtitle case final s?)
+                          Text(
+                            s,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: scheme.onSurfaceVariant,
                             ),
-                          if (selected)
-                            Positioned(
-                              top: 6,
-                              left: 6,
-                              child: Icon(
-                                Icons.check_circle,
-                                color: scheme.primary,
-                              ),
-                            ),
-                        ],
-                      ),
+                          ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    item.name,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.labelLarge,
-                  ),
-                  if (item.pageCount case final n?)
-                    Text('$n pages', style: theme.textTheme.labelSmall),
+                  if (onLookInside case final look?)
+                    IconButton(
+                      tooltip: 'Look inside',
+                      visualDensity: VisualDensity.compact,
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(
+                        minWidth: 32,
+                        minHeight: 32,
+                      ),
+                      iconSize: 20,
+                      icon: const Icon(Icons.visibility_outlined),
+                      onPressed: look,
+                    ),
                 ],
               ),
             ),
-          ),
-          const Spacer(),
-          TextButton.icon(
-            style: TextButton.styleFrom(
-              visualDensity: VisualDensity.compact,
-              padding: EdgeInsets.zero,
-            ),
-            onPressed: onLookInside,
-            icon: const Icon(Icons.visibility_outlined, size: 16),
-            label: const Text('Look inside'),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
+}
+
+/// Room under a card's picture: two lines of name and one of detail.
+const _textHeight = 62.0;
+
+/// A template's page count and whether its pages link, for a card.
+String? templateSummary(CatalogItem item) => switch (item.pageCount) {
+  final n? => item.linked ? '$n pages · linked' : '$n pages',
+  null => item.linked ? 'Linked pages' : null,
+};
+
+/// A grid of cards that fills the width: as many columns as fit at about
+/// [maxCardWidth], each card's picture 3:4 with room for its name below.
+class TemplateCardGrid extends StatelessWidget {
+  const TemplateCardGrid({
+    required this.itemCount,
+    required this.itemBuilder,
+    this.maxCardWidth = 190,
+    super.key,
+  });
+
+  final int itemCount;
+  final IndexedWidgetBuilder itemBuilder;
+  final double maxCardWidth;
+
+  @override
+  Widget build(BuildContext context) => SliverLayoutBuilder(
+    builder: (context, constraints) {
+      const gap = Insets.lg;
+      final width = constraints.crossAxisExtent;
+      final columns = math.max(
+        2,
+        ((width + gap) / (maxCardWidth + gap)).ceil(),
+      );
+      final cardWidth = (width - gap * (columns - 1)) / columns;
+      return SliverGrid.builder(
+        itemCount: itemCount,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: columns,
+          crossAxisSpacing: gap,
+          mainAxisSpacing: Insets.xl,
+          // The 3:4 picture, the gap and two lines of text.
+          mainAxisExtent: cardWidth * 4 / 3 + Insets.sm + _textHeight,
+        ),
+        itemBuilder: itemBuilder,
+      );
+    },
+  );
 }
 
 /// Shows every page of [item], by section. Returns true if the user chose

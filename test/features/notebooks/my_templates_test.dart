@@ -203,7 +203,7 @@ void main() {
       initial: const NewNotebook(title: '', cover: NotebookCover.color(2)),
     );
     await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(ChoiceChip, 'My Precon Project'));
+    await tester.tap(find.text('My Precon Project'));
     await tester.pumpAndSettle();
     expect(find.textContaining('A copy of your template'), findsOneWidget);
     await tester.enterText(find.byType(TextField).first, 'Clinic bid');

@@ -471,6 +471,35 @@ void main() {
       expect(months.map((p) => p.template!.pdfPage), [2, 3]);
     });
 
+    testWidgets('New notebook chooses a start, then its details', (
+      tester,
+    ) async {
+      final planner = template(downloader, 'planner', plannerJson);
+      await pumpApp(
+        tester,
+        skins,
+        size: const Size(900, 2600),
+        overrides: overrides([planner]),
+      );
+
+      await tester.tap(find.text('New notebook').last);
+      await settle(tester);
+      // The first step: blank or a planner, nothing else yet.
+      expect(find.text('Blank notebook'), findsOneWidget);
+      expect(find.text('Create'), findsNothing);
+      await tester.tap(find.text('2027 Weekly Planner'));
+      await settle(tester);
+      expect(find.text('Create'), findsOneWidget);
+      expect(find.text('Page size'), findsNothing);
+
+      // Change goes back to choose blank pages instead.
+      await tester.tap(find.text('Change'));
+      await settle(tester);
+      await tester.tap(find.text('Blank notebook'));
+      await settle(tester);
+      expect(find.text('Page size'), findsOneWidget);
+    });
+
     testWidgets('a planner can start in another colourway', (tester) async {
       final planner = template(
         downloader,
@@ -772,7 +801,7 @@ void main() {
 
       await tester.tap(find.text('New notebook').last);
       await settle(tester);
-      await tester.tap(find.text('Look inside'));
+      await tester.tap(find.byTooltip('Look inside'));
       await settle(tester);
       expect(find.text('Months · 2 pages'), findsOneWidget);
       expect(find.text('February'), findsOneWidget);
@@ -985,7 +1014,7 @@ void main() {
       uid = auth.currentUser!.uid;
       await tester.tap(find.text('New notebook').last);
       await settle(tester);
-      await tester.tap(find.text('Blank pages'));
+      await tester.tap(find.text('Blank notebook'));
       await settle(tester);
       await tester.tap(find.text('Create'));
       await settle(tester);

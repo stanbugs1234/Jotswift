@@ -17,7 +17,9 @@ import 'cover_picker.dart';
 import 'domain/notebook_models.dart';
 import 'paper_picker.dart';
 import 'planner_builder.dart';
+import 'notebook_start.dart';
 import 'template_gallery.dart';
+import '../store/store_item.dart' show ItemPreview;
 import 'notes_providers.dart' show myTemplatesProvider;
 
 /// Makes a new notebook, or (with [editing]) changes one: title, cover,
@@ -85,6 +87,23 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
   /// One of the user's own templates to copy, instead of a planner.
   Notebook? _mine;
   bool _saving = false;
+
+  /// On the first step, choosing what the notebook starts from. Skipped
+  /// when a planner was already chosen, and when editing.
+  late bool _choosing = widget.editing == null && widget.template == null;
+
+  void _start({CatalogItem? template, Notebook? mine}) => setState(() {
+    _choosing = false;
+    _template = template;
+    _mine = mine;
+    _variant = PageTemplate.defaultFile;
+    _options = const {};
+    _skip = null;
+    if (mine != null) {
+      _cover = mine.cover;
+      _styleId = mine.collectionId ?? _styleId;
+    }
+  });
 
   @override
   void dispose() {
@@ -197,237 +216,305 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
     });
 
     final page = _size.dimensions(_orientation);
+    final canChoose = isNew && (planners.isNotEmpty || myTemplates.isNotEmpty);
 
-    return Scaffold(
-      appBar: AppBar(
-        leading: const CloseButton(),
-        title: Text(isNew ? 'New notebook' : 'Edit notebook'),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: Insets.lg),
-            child: FilledButton(
-              onPressed: _saving ? null : _save,
-              child: Text(isNew ? 'Create' : 'Save'),
-            ),
-          ),
-        ],
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          padding: const EdgeInsets.all(20),
+    if (_choosing && canChoose) {
+      return Scaffold(
+        appBar: AppBar(
+          leading: const CloseButton(),
+          title: const Text('New notebook'),
+        ),
+        body: SafeArea(
           child: Center(
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 720),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // Preview: the cover and a page.
-                  SizedBox(
-                    height: 170,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        CoverView(cover: _cover),
-                        const SizedBox(width: 20),
-                        if (template != null)
-                          _TemplatePreview(template: template, file: _variant)
-                        else
-                          AspectRatio(
-                            aspectRatio: page.width / page.height,
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: theme.colorScheme.outline,
+              constraints: const BoxConstraints(maxWidth: 1100),
+              child: NotebookStartChooser(
+                templates: planners,
+                myTemplates: myTemplates,
+                blankPaper: paper,
+                onBlank: _start,
+                onTemplate: (t) => _start(template: t),
+                onMine: (t) => _start(mine: t),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    // Back (and the back gesture) returns to the first step.
+    return PopScope(
+      canPop: !canChoose,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) setState(() => _choosing = true);
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          leading: canChoose
+              ? BackButton(onPressed: () => setState(() => _choosing = true))
+              : const CloseButton(),
+          title: Text(isNew ? 'New notebook' : 'Edit notebook'),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: Insets.lg),
+              child: FilledButton(
+                onPressed: _saving ? null : _save,
+                child: Text(isNew ? 'Create' : 'Save'),
+              ),
+            ),
+          ],
+        ),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            padding: const EdgeInsets.all(20),
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 720),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // Preview: the cover and a page.
+                    SizedBox(
+                      height: 170,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          CoverView(cover: _cover),
+                          const SizedBox(width: 20),
+                          if (template != null)
+                            _TemplatePreview(template: template, file: _variant)
+                          else
+                            AspectRatio(
+                              aspectRatio: page.width / page.height,
+                              child: DecoratedBox(
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: theme.colorScheme.outline,
+                                  ),
                                 ),
-                              ),
-                              child: CustomPaint(
-                                painter: PaperPainter(
-                                  paper,
-                                  scale: 170 / page.height,
+                                child: CustomPaint(
+                                  painter: PaperPainter(
+                                    paper,
+                                    scale: 170 / page.height,
+                                  ),
                                 ),
                               ),
                             ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    TextField(
+                      controller: _title,
+                      // No keyboard until asked for: on a tablet it would
+                      // hide half of the choices below.
+                      onTapOutside: (_) => FocusScope.of(context).unfocus(),
+                      textCapitalization: TextCapitalization.sentences,
+                      decoration: InputDecoration(
+                        labelText: 'Title',
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                        // Left empty, the notebook takes this name.
+                        hintText:
+                            template?.name ??
+                            mine?.title ??
+                            'e.g. School, Work, Journal',
+                      ),
+                      onSubmitted: (_) => _save(),
+                    ),
+                    if (canChoose) ...[
+                      heading('Start with'),
+                      _StartSummary(
+                        template: template,
+                        mine: mine,
+                        paper: paper,
+                        onChange: () => setState(() => _choosing = true),
+                      ),
+                      if (template != null)
+                        _ColourwayPicker(
+                          template: template,
+                          selected: _variant,
+                          onChanged: (file) => setState(() => _variant = file),
+                        ),
+                      if (template != null)
+                        PlannerBuilder(
+                          template: template,
+                          options: _options,
+                          skip: _skip,
+                          onOptions: (options, file) => setState(() {
+                            _options = options;
+                            _variant = file;
+                          }),
+                          onSkip: (skip) => setState(() => _skip = skip),
+                        ),
+                      if (template != null &&
+                          (ref
+                                  .watch(templateSpecProvider(template))
+                                  .value
+                                  ?.options
+                                  .isEmpty ??
+                              true))
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8),
+                          child: Text(
+                            template.linked
+                                ? '${template.pageCount ?? 'All'} pages, with '
+                                      'links between them. Pages are sized to '
+                                      'fit the planner.'
+                                : '${template.pageCount ?? 'All'} pages. Pages '
+                                      'are sized to fit the planner.',
+                            style: theme.textTheme.bodySmall,
                           ),
-                      ],
+                        ),
+                    ],
+                    heading('Cover'),
+                    CoverPicker(
+                      selected: _cover,
+                      onChanged: (c) => setState(() => _cover = c),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  TextField(
-                    controller: _title,
-                    // No keyboard until asked for: on a tablet it would
-                    // hide half of the choices below.
-                    onTapOutside: (_) => FocusScope.of(context).unfocus(),
-                    textCapitalization: TextCapitalization.sentences,
-                    decoration: const InputDecoration(
-                      labelText: 'Title',
-                      hintText: 'e.g. School, Work, Journal',
-                    ),
-                    onSubmitted: (_) => _save(),
-                  ),
-                  if ((planners.isNotEmpty || myTemplates.isNotEmpty)) ...[
-                    heading('Start with'),
+                    if (template == null && mine == null)
+                      PaperPicker(
+                        selected: paper,
+                        onChanged: (p) => setState(() => _paper = p),
+                        stylePapers: ref.watch(stylePapersProvider),
+                      ),
+                    if (!isNew)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: Text(
+                          "Pages that have their own paper keep it.",
+                          style: theme.textTheme.bodySmall,
+                        ),
+                      ),
+                    heading('Style (ink colors and fonts)'),
                     Wrap(
                       spacing: 8,
                       runSpacing: 8,
                       children: [
-                        ChoiceChip(
-                          label: const Text('Blank pages'),
-                          selected: template == null && mine == null,
-                          onSelected: (_) => setState(() {
-                            _template = null;
-                            _mine = null;
-                          }),
-                        ),
-                        for (final t in myTemplates)
+                        for (final s in styles)
                           ChoiceChip(
-                            avatar: const Icon(
-                              Icons.copy_all_outlined,
-                              size: 18,
-                            ),
-                            tooltip: 'My template',
-                            label: Text(t.title),
-                            selected: t.id == mine?.id,
-                            onSelected: (_) => setState(() {
-                              _mine = t;
-                              _template = null;
-                              _cover = t.cover;
-                              _styleId = t.collectionId ?? _styleId;
-                            }),
+                            label: Text(s.name),
+                            selected: s.id == style.id,
+                            onSelected: (_) => pickStyle(s),
                           ),
                       ],
                     ),
-                    if (planners.isNotEmpty) ...[
+                    if (isNew && template == null) ...[
+                      heading('Page size'),
+                      SegmentedButton<PaperSize>(
+                        showSelectedIcon: false,
+                        segments: [
+                          for (final s in PaperSize.values)
+                            ButtonSegment(value: s, label: Text(s.label)),
+                        ],
+                        selected: {_size},
+                        onSelectionChanged: (s) =>
+                            setState(() => _size = s.first),
+                      ),
                       const SizedBox(height: 12),
-                      TemplateGallery(
-                        templates: planners,
-                        selected: template,
-                        onSelected: (t) => setState(() {
-                          _template = t;
-                          _mine = null;
-                          _variant = PageTemplate.defaultFile;
-                          _options = const {};
-                          _skip = null;
-                        }),
+                      SegmentedButton<PaperOrientation>(
+                        showSelectedIcon: false,
+                        segments: const [
+                          ButtonSegment(
+                            value: PaperOrientation.portrait,
+                            icon: Icon(Icons.crop_portrait),
+                            label: Text('Portrait'),
+                          ),
+                          ButtonSegment(
+                            value: PaperOrientation.landscape,
+                            icon: Icon(Icons.crop_landscape),
+                            label: Text('Landscape'),
+                          ),
+                        ],
+                        selected: {_orientation},
+                        onSelectionChanged: (s) =>
+                            setState(() => _orientation = s.first),
                       ),
                     ],
-                    if (mine != null)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8),
-                        child: Text(
-                          'A copy of your template: its sections, pages and '
-                          'everything on them. Manage your templates in '
-                          'Settings.',
-                          style: theme.textTheme.bodySmall,
-                        ),
-                      ),
-                    if (template != null)
-                      _ColourwayPicker(
-                        template: template,
-                        selected: _variant,
-                        onChanged: (file) => setState(() => _variant = file),
-                      ),
-                    if (template != null)
-                      PlannerBuilder(
-                        template: template,
-                        options: _options,
-                        skip: _skip,
-                        onOptions: (options, file) => setState(() {
-                          _options = options;
-                          _variant = file;
-                        }),
-                        onSkip: (skip) => setState(() => _skip = skip),
-                      ),
-                    if (template != null &&
-                        (ref
-                                .watch(templateSpecProvider(template))
-                                .value
-                                ?.options
-                                .isEmpty ??
-                            true))
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8),
-                        child: Text(
-                          template.linked
-                              ? '${template.pageCount ?? 'All'} pages, with '
-                                    'links between them. Pages are sized to '
-                                    'fit the planner.'
-                              : '${template.pageCount ?? 'All'} pages. Pages '
-                                    'are sized to fit the planner.',
-                          style: theme.textTheme.bodySmall,
-                        ),
-                      ),
+                    const SizedBox(height: 32),
                   ],
-                  heading('Cover'),
-                  CoverPicker(
-                    selected: _cover,
-                    onChanged: (c) => setState(() => _cover = c),
-                  ),
-                  if (template == null && mine == null)
-                    PaperPicker(
-                      selected: paper,
-                      onChanged: (p) => setState(() => _paper = p),
-                      stylePapers: ref.watch(stylePapersProvider),
-                    ),
-                  if (!isNew)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8),
-                      child: Text(
-                        "Pages that have their own paper keep it.",
-                        style: theme.textTheme.bodySmall,
-                      ),
-                    ),
-                  heading('Style (ink colors and fonts)'),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: [
-                      for (final s in styles)
-                        ChoiceChip(
-                          label: Text(s.name),
-                          selected: s.id == style.id,
-                          onSelected: (_) => pickStyle(s),
-                        ),
-                    ],
-                  ),
-                  if (isNew && template == null) ...[
-                    heading('Page size'),
-                    SegmentedButton<PaperSize>(
-                      showSelectedIcon: false,
-                      segments: [
-                        for (final s in PaperSize.values)
-                          ButtonSegment(value: s, label: Text(s.label)),
-                      ],
-                      selected: {_size},
-                      onSelectionChanged: (s) =>
-                          setState(() => _size = s.first),
-                    ),
-                    const SizedBox(height: 12),
-                    SegmentedButton<PaperOrientation>(
-                      showSelectedIcon: false,
-                      segments: const [
-                        ButtonSegment(
-                          value: PaperOrientation.portrait,
-                          icon: Icon(Icons.crop_portrait),
-                          label: Text('Portrait'),
-                        ),
-                        ButtonSegment(
-                          value: PaperOrientation.landscape,
-                          icon: Icon(Icons.crop_landscape),
-                          label: Text('Landscape'),
-                        ),
-                      ],
-                      selected: {_orientation},
-                      onSelectionChanged: (s) =>
-                          setState(() => _orientation = s.first),
-                    ),
-                  ],
-                  const SizedBox(height: 32),
-                ],
+                ),
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// What the notebook starts from, on the details step, with a way back to
+/// choose again.
+class _StartSummary extends StatelessWidget {
+  const _StartSummary({
+    required this.template,
+    required this.mine,
+    required this.paper,
+    required this.onChange,
+  });
+
+  final CatalogItem? template;
+  final Notebook? mine;
+  final PaperStyle paper;
+  final VoidCallback onChange;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final template = this.template;
+    final mine = this.mine;
+    final (title, subtitle) = switch ((template, mine)) {
+      (final t?, _) => (t.name, templateSummary(t) ?? 'Planner'),
+      (_, final m?) => (
+        m.title,
+        'A copy of your template: its sections, pages and everything on '
+            'them.',
+      ),
+      _ => ('Blank notebook', 'Pick its paper below.'),
+    };
+    return Material(
+      color: theme.colorScheme.surfaceContainer,
+      borderRadius: BorderRadius.circular(Radii.md),
+      child: Padding(
+        padding: const EdgeInsets.all(Insets.md),
+        child: Row(
+          children: [
+            SizedBox(
+              width: 48,
+              height: 64,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: switch ((template, mine)) {
+                  (final t?, _) => ItemPreview(item: t),
+                  (_, final m?) => CoverView(cover: m.cover, elevation: 0),
+                  _ => ColoredBox(
+                    color: paper.color,
+                    child: CustomPaint(
+                      painter: PaperPainter(paper, scale: 0.3),
+                    ),
+                  ),
+                },
+              ),
+            ),
+            const SizedBox(width: Insets.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: theme.textTheme.titleSmall),
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            TextButton(onPressed: onChange, child: const Text('Change')),
+          ],
         ),
       ),
     );
