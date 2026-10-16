@@ -211,6 +211,7 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           padding: const EdgeInsets.all(20),
           child: Center(
             child: ConstrainedBox(
@@ -252,7 +253,9 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
                   const SizedBox(height: 20),
                   TextField(
                     controller: _title,
-                    autofocus: isNew,
+                    // No keyboard until asked for: on a tablet it would
+                    // hide half of the choices below.
+                    onTapOutside: (_) => FocusScope.of(context).unfocus(),
                     textCapitalization: TextCapitalization.sentences,
                     decoration: const InputDecoration(
                       labelText: 'Title',

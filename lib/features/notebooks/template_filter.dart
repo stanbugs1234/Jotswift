@@ -81,6 +81,7 @@ class _TemplateFilterBarState extends State<TemplateFilterBar> {
         TextField(
           controller: _search,
           textInputAction: TextInputAction.search,
+          onTapOutside: (_) => FocusScope.of(context).unfocus(),
           decoration: InputDecoration(
             isDense: true,
             prefixIcon: const Icon(Icons.search),

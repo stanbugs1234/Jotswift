@@ -257,6 +257,7 @@ class _TemplateRow extends ConsumerWidget {
           AsyncData(value: final spec) => SizedBox(
             height: 190,
             child: ListView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               scrollDirection: Axis.horizontal,
               children: [
                 for (final section in spec.sections)

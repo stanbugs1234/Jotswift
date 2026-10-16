@@ -220,6 +220,7 @@ class _EventEditorState extends ConsumerState<EventEditor> {
         ],
       ),
       body: ListView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         padding: const EdgeInsets.all(24),
         children: [
           TextField(
