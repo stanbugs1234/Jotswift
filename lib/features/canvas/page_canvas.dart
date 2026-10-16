@@ -285,7 +285,13 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
       _minScale,
       _maxScale,
     );
-    _offset = Offset((viewport.width - _pageSize.width * _scale) / 2, _margin);
+    // A page shorter than the screen (a landscape page on an upright
+    // tablet) sits in the middle rather than at the top.
+    final height = _pageSize.height * _scale;
+    _offset = Offset(
+      (viewport.width - _pageSize.width * _scale) / 2,
+      math.max(_margin, (viewport.height - height) / 2),
+    );
   }
 
   /// Lets the page move freely, but keeps at least a quarter of the
