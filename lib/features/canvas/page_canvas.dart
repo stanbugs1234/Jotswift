@@ -1087,9 +1087,10 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     final tool = ref.read(inkToolProvider);
     final colors = NotelySkin.of(context).inkColors;
     var color = tool.colorFrom(colors);
+    final shape = tool.kind == InkToolKind.shape;
     if (tool.kind == InkToolKind.highlighter) {
       color = color.withValues(alpha: 0.35);
-    } else if (tool.penOpacity < 1) {
+    } else if (tool.penOpacity < 1 && !shape) {
       color = color.withValues(alpha: color.a * tool.penOpacity);
     }
     _live.value = Stroke(
@@ -1103,10 +1104,14 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
       createdAt: DateTime.now().millisecondsSinceEpoch,
       pressureSensitive:
           e.kind == PointerDeviceKind.stylus && e.pressureMax > e.pressureMin,
-      style: tool.kind == InkToolKind.highlighter
-          ? PenStyle.fountain
-          : tool.penStyle,
+      style: switch (tool.kind) {
+        InkToolKind.highlighter => PenStyle.fountain,
+        // Shapes are drawn evenly, like with a fineliner.
+        InkToolKind.shape => PenStyle.ballpoint,
+        _ => tool.penStyle,
+      },
       followsPen: e.kind == PointerDeviceKind.stylus,
+      dash: shape ? tool.lineDash : LineDash.solid,
     );
     _clearPrediction();
     _penTrail
@@ -1158,7 +1163,35 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     HapticFeedback.mediumImpact();
     _clearPrediction();
     _snapped = shape.kind;
-    _live.value = _shapeStroke(stroke, shape.outline);
+    _live.value = _filled(_shapeStroke(stroke, shape.outline), shape.kind);
+  }
+
+  /// [stroke] with the shape tool's fill, when it's a closed shape drawn
+  /// with the shape tool.
+  Stroke _filled(Stroke stroke, ShapeKind kind) {
+    final tool = ref.read(inkToolProvider);
+    if (tool.kind != InkToolKind.shape ||
+        kind == ShapeKind.line ||
+        tool.shapeFill == ShapeFill.none) {
+      return stroke;
+    }
+    final color = Color(stroke.color);
+    final fill = color.withValues(
+      alpha: tool.shapeFill == ShapeFill.light ? 0.22 : 1,
+    );
+    return Stroke(
+      id: stroke.id,
+      tool: stroke.tool,
+      color: stroke.color,
+      width: stroke.width,
+      points: stroke.points,
+      createdAt: stroke.createdAt,
+      pressureSensitive: stroke.pressureSensitive,
+      style: stroke.style,
+      followsPen: stroke.followsPen,
+      dash: stroke.dash,
+      fill: fill.toARGB32(),
+    );
   }
 
   /// [stroke] redrawn along [outline], evenly and at its full width.
@@ -1172,6 +1205,8 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     pressureSensitive: true,
     style: stroke.style,
     followsPen: stroke.followsPen,
+    dash: stroke.dash,
+    fill: stroke.fill,
   );
 
   /// [p] moved onto the ruler edge the stroke follows.
@@ -1245,7 +1280,20 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
   }
 
   void _finishStroke() {
-    final stroke = _live.value;
+    var stroke = _live.value;
+    // The shape tool makes what was drawn neat on lifting (a scribble that
+    // isn't a shape stays as drawn).
+    if (stroke != null &&
+        _snapped == null &&
+        _rulerSide == null &&
+        ref.read(inkToolProvider).kind == InkToolKind.shape) {
+      if (recognizeShape([for (final p in stroke.points) p.offset])
+          case final shape?) {
+        stroke = _filled(_shapeStroke(stroke, shape.outline), shape.kind);
+        _snapped = shape.kind;
+        _live.value = stroke;
+      }
+    }
     final kind = _drawKind;
     _drawPointer = null;
     widget.onWriting?.call(false);
@@ -1290,6 +1338,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
   List<String> _scribbledOut(Stroke stroke) {
     if (stroke.tool != InkTool.pen ||
         _snapped != null ||
+        ref.read(inkToolProvider).kind != InkToolKind.pen ||
         !ref.read(scribbleEraseProvider)) {
       return const [];
     }
@@ -2838,7 +2887,9 @@ class _HoverPainter extends CustomPainter {
     final at = hover.value;
     if (at == null) return;
     final radius = switch (tool.kind) {
-      InkToolKind.pen || InkToolKind.highlighter => tool.size * scale / 2,
+      InkToolKind.pen ||
+      InkToolKind.highlighter ||
+      InkToolKind.shape => tool.size * scale / 2,
       InkToolKind.eraser => tool.size,
       _ => 0.0,
     };

@@ -19,6 +19,9 @@ abstract final class StrokeRenderer {
   /// right at the pen, so nothing moves when the pen lifts. Only a brush's
   /// tapered end waits for the lift.
   static Path buildPath(Stroke stroke, {required bool complete}) {
+    if (stroke.dash != LineDash.solid && stroke.points.length >= 2) {
+      return _dashedPath(stroke);
+    }
     final points = [
       for (final p in stroke.points)
         PointVector(p.x, p.y, stroke.pressureSensitive ? p.pressure : null),
@@ -73,6 +76,87 @@ abstract final class StrokeRenderer {
         ..addOval(Rect.fromCircle(center: at, radius: stroke.width / 2));
     }
     return Path()..addPolygon(outline, true);
+  }
+
+  static final _fillCache = Expando<Path>('strokeFill');
+
+  /// The area a closed shape fills, or null when it isn't filled.
+  static Path? fillPathFor(Stroke stroke) {
+    if (stroke.fill == null || stroke.points.length < 3) return null;
+    return _fillCache[stroke] ??= Path()
+      ..addPolygon([for (final p in stroke.points) p.offset], true);
+  }
+
+  /// Draws [stroke]'s fill, if it has one, then its line.
+  static void paint(Canvas canvas, Stroke stroke, {Path? path}) {
+    if (fillPathFor(stroke) case final fill?) {
+      canvas.drawPath(fill, Paint()..color = Color(stroke.fill!));
+    }
+    canvas.drawPath(path ?? pathFor(stroke), paintFor(stroke));
+  }
+
+  /// An even line broken into dashes, or a row of dots, along the stroke.
+  static Path _dashedPath(Stroke stroke) {
+    final w = stroke.width;
+    final dotted = stroke.dash == LineDash.dotted;
+    final dash = dotted ? 0.0 : w * 3;
+    final gap = w * 2.2;
+    final path = Path();
+    final points = [for (final p in stroke.points) p.offset];
+    var run = <Offset>[points.first];
+    var drawing = true;
+    // Dots start with one at the start; dashes start drawing.
+    var left = dotted ? gap : dash;
+    if (dotted) {
+      path.addOval(Rect.fromCircle(center: points.first, radius: w / 2));
+    }
+
+    void flush() {
+      if (run.length < 2) return;
+      final outline = getStroke(
+        [for (final p in run) PointVector(p.dx, p.dy)],
+        options: StrokeOptions(
+          size: w,
+          thinning: 0,
+          smoothing: 0.3,
+          streamline: 0,
+          simulatePressure: false,
+          isComplete: true,
+        ),
+      );
+      if (outline.length >= 3) path.addPolygon(outline, true);
+    }
+
+    for (var i = 0; i + 1 < points.length; i++) {
+      var a = points[i];
+      final b = points[i + 1];
+      var segment = (b - a).distance;
+      while (segment > 0) {
+        final step = math.min(segment, left);
+        final at = Offset.lerp(a, b, step / (b - a).distance)!;
+        if (drawing && !dotted) run.add(at);
+        segment -= step;
+        left -= step;
+        a = at;
+        if (left <= 0) {
+          if (dotted) {
+            path.addOval(Rect.fromCircle(center: at, radius: w / 2));
+            left = gap;
+          } else if (drawing) {
+            flush();
+            drawing = false;
+            left = gap;
+          } else {
+            drawing = true;
+            run = [at];
+            left = dash;
+          }
+        }
+        if (step == 0) break;
+      }
+    }
+    if (drawing && !dotted) flush();
+    return path;
   }
 
   static Paint paintFor(Stroke stroke) {
@@ -149,10 +233,7 @@ class StrokesPainter extends CustomPainter {
       for (final s in strokes)
         if (s.tool != InkTool.highlighter) s,
     ]) {
-      canvas.drawPath(
-        StrokeRenderer.pathFor(stroke),
-        StrokeRenderer.paintFor(stroke),
-      );
+      StrokeRenderer.paint(canvas, stroke);
     }
   }
 
@@ -176,9 +257,10 @@ class LiveStrokePainter extends CustomPainter {
     if (predicted.value.isNotEmpty) {
       stroke = stroke.withPoints([...stroke.points, ...predicted.value]);
     }
-    canvas.drawPath(
-      StrokeRenderer.buildPath(stroke, complete: false),
-      StrokeRenderer.paintFor(stroke),
+    StrokeRenderer.paint(
+      canvas,
+      stroke,
+      path: StrokeRenderer.buildPath(stroke, complete: false),
     );
   }
 

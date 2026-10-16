@@ -26,6 +26,9 @@ enum PenStyle {
   pencil,
 }
 
+/// How a line is drawn: unbroken, in dashes, or in dots.
+enum LineDash { solid, dashed, dotted }
+
 @immutable
 class InkPoint {
   const InkPoint(this.x, this.y, [this.pressure = 0.5]);
@@ -55,6 +58,8 @@ class Stroke {
     this.deleted = false,
     this.style = PenStyle.fountain,
     this.followsPen = false,
+    this.dash = LineDash.solid,
+    this.fill,
   });
 
   factory Stroke.fromMap(String id, Map<String, dynamic> map) {
@@ -78,6 +83,8 @@ class Stroke {
       deleted: map['deleted'] as bool? ?? false,
       style: PenStyle.values.asNameMap()[map['style']] ?? PenStyle.fountain,
       followsPen: map['followsPen'] as bool? ?? false,
+      dash: LineDash.values.asNameMap()[map['dash']] ?? LineDash.solid,
+      fill: map['fill'] as int?,
     );
   }
 
@@ -98,6 +105,12 @@ class Stroke {
 
   /// How the pen draws (only pen strokes; highlighters ignore it).
   final PenStyle style;
+
+  /// Dashed or dotted (shapes), drawn at an even width.
+  final LineDash dash;
+
+  /// A closed shape's fill (ARGB), or none.
+  final int? fill;
 
   /// Drawn with a stylus, so lightly smoothed: the ink stays right at the
   /// tip. Older strokes and finger strokes are smoothed more.
@@ -121,6 +134,8 @@ class Stroke {
     'deleted': deleted,
     if (style != PenStyle.fountain) 'style': style.name,
     if (followsPen) 'followsPen': true,
+    if (dash != LineDash.solid) 'dash': dash.name,
+    'fill': ?fill,
   };
 
   static double _round(double v, int scale) => (v * scale).round() / scale;
@@ -136,6 +151,8 @@ class Stroke {
     deleted: deleted ?? this.deleted,
     style: style,
     followsPen: followsPen,
+    dash: dash,
+    fill: fill,
   );
 
   /// The same stroke with other [points] (while it's being drawn).
@@ -150,6 +167,8 @@ class Stroke {
     deleted: deleted,
     style: style,
     followsPen: followsPen,
+    dash: dash,
+    fill: fill,
   );
 
   late final Rect bounds = _computeBounds();
@@ -244,6 +263,7 @@ List<Stroke>? eraseFromStroke(
           pressureSensitive: stroke.pressureSensitive,
           style: stroke.style,
           followsPen: stroke.followsPen,
+          dash: stroke.dash,
         ),
       );
     }

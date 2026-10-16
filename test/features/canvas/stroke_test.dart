@@ -33,6 +33,34 @@ void main() {
     ]);
   });
 
+  test('keeps a shape\'s dashes and fill; plain strokes save neither', () {
+    final shape = Stroke(
+      id: 'box',
+      tool: InkTool.pen,
+      color: 0xFF2C4A7C,
+      width: 5,
+      points: const [InkPoint(0, 0), InkPoint(10, 0), InkPoint(10, 10)],
+      createdAt: 1,
+      dash: LineDash.dotted,
+      fill: 0x382C4A7C,
+    );
+    final back = Stroke.fromMap('box', shape.toMap());
+    expect(back.dash, LineDash.dotted);
+    expect(back.fill, 0x382C4A7C);
+    expect(back.withPoints(back.points).fill, 0x382C4A7C);
+
+    final plain = Stroke(
+      id: 'p',
+      tool: InkTool.pen,
+      color: 0xFF000000,
+      width: 3,
+      points: const [InkPoint(0, 0)],
+      createdAt: 1,
+    ).toMap();
+    expect(plain.containsKey('dash'), isFalse);
+    expect(plain.containsKey('fill'), isFalse);
+  });
+
   test('remembers strokes that follow the pen; older ones did not', () {
     final drawn = Stroke.fromMap('s1', {...line().toMap(), 'followsPen': true});
     expect(drawn.followsPen, isTrue);

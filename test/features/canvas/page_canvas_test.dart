@@ -979,6 +979,67 @@ void main() {
     });
   });
 
+  group('shapes', () {
+    /// Draws a rough box with the stylus, about 200 by 120.
+    Future<void> roughBox(WidgetTester tester) async {
+      final c = canvasCenter(tester) + const Offset(-100, -60);
+      final corners = [
+        Offset.zero,
+        const Offset(200, 3),
+        const Offset(198, 120),
+        const Offset(-2, 118),
+        const Offset(1, 2),
+      ];
+      final pen = await tester.startGesture(c, kind: PointerDeviceKind.stylus);
+      for (var i = 0; i + 1 < corners.length; i++) {
+        for (var k = 1; k <= 10; k++) {
+          await pen.moveTo(
+            c + Offset.lerp(corners[i], corners[i + 1], k / 10)!,
+          );
+        }
+      }
+      await pen.up();
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('a rough box comes out square, dashed and filled', (
+      tester,
+    ) async {
+      final page = await pumpPage(tester, penPanel: 'left');
+      await tester.tap(find.byTooltip('Shapes'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('Dashed line'));
+      await tester.tap(find.byTooltip('Light fill'));
+      await tester.pump();
+
+      await roughBox(tester);
+
+      final box = (await page.strokes()).single;
+      expect(box.dash, LineDash.dashed);
+      expect(box.style, PenStyle.ballpoint);
+      expect(Color(box.fill!).a, closeTo(0.22, 0.01));
+      // Made neat: every point lies on the box's straight sides.
+      final b = box.bounds;
+      for (final p in box.points) {
+        final off = [
+          (p.x - b.left).abs(),
+          (p.x - b.right).abs(),
+          (p.y - b.top).abs(),
+          (p.y - b.bottom).abs(),
+        ].reduce(math.min);
+        expect(off, lessThan(0.5));
+      }
+    });
+
+    testWidgets('the pen keeps a rough box as drawn', (tester) async {
+      final page = await pumpPage(tester);
+      await roughBox(tester);
+      final stroke = (await page.strokes()).single;
+      expect(stroke.fill, isNull);
+      expect(stroke.dash, LineDash.solid);
+    });
+  });
+
   group('tape', () {
     testWidgets('lays a strip that a tap peels back and covers again', (
       tester,

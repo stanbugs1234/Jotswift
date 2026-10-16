@@ -30,7 +30,13 @@ enum InkToolKind {
 
   /// Lays strips of tape over the page, to hide answers until tapped.
   tape,
+
+  /// Draws lines and shapes: drawn roughly, made neat on lifting.
+  shape,
 }
+
+/// How a closed shape is filled: not at all, lightly, or solid.
+enum ShapeFill { none, light, solid }
 
 /// What the eraser takes: whole strokes it touches, or only the ink under
 /// it.
@@ -57,6 +63,9 @@ class InkToolState {
     this.tapeColor = defaultTapeColor,
     this.tapePattern = TapePattern.solid,
     this.tapeWidth = 60,
+    this.shapeWidth = 5,
+    this.lineDash = LineDash.solid,
+    this.shapeFill = ShapeFill.none,
   });
 
   factory InkToolState.fromJson(Map<String, dynamic> json) {
@@ -96,6 +105,13 @@ class InkToolState {
         tapeRange.min,
         tapeRange.max,
       ),
+      shapeWidth: (width(json['shapeWidth']) ?? 5).clamp(
+        penRange.min,
+        penRange.max,
+      ),
+      lineDash: LineDash.values.asNameMap()[json['lineDash']] ?? LineDash.solid,
+      shapeFill:
+          ShapeFill.values.asNameMap()[json['shapeFill']] ?? ShapeFill.none,
     );
   }
 
@@ -115,6 +131,9 @@ class InkToolState {
     'tapeColor': tapeColor,
     'tapePattern': tapePattern.name,
     'tapeWidth': tapeWidth,
+    'shapeWidth': shapeWidth,
+    'lineDash': lineDash.name,
+    'shapeFill': shapeFill.name,
   };
 
   final InkToolKind kind;
@@ -157,6 +176,11 @@ class InkToolState {
   final TapePattern tapePattern;
   final double tapeWidth;
 
+  /// The shape tool's line width (page units), line and fill.
+  final double shapeWidth;
+  final LineDash lineDash;
+  final ShapeFill shapeFill;
+
   static const defaultTapeColor = 0xFFF2C94C;
   static const tapeRange = (min: 24.0, max: 200.0);
 
@@ -193,6 +217,7 @@ class InkToolState {
     InkToolKind.highlighter => highlighterWidth ?? highlighterSizes[sizeIndex],
     InkToolKind.eraser => eraserSizes[sizeIndex],
     InkToolKind.tape => tapeWidth,
+    InkToolKind.shape => shapeWidth,
   };
 
   /// The ink color, from the skin's [palette] unless a custom one is set.
@@ -217,6 +242,9 @@ class InkToolState {
     int? tapeColor,
     TapePattern? tapePattern,
     double? tapeWidth,
+    double? shapeWidth,
+    LineDash? lineDash,
+    ShapeFill? shapeFill,
   }) => InkToolState(
     kind: kind ?? this.kind,
     colorIndex: colorIndex ?? this.colorIndex,
@@ -236,6 +264,9 @@ class InkToolState {
     tapeColor: tapeColor ?? this.tapeColor,
     tapePattern: tapePattern ?? this.tapePattern,
     tapeWidth: tapeWidth ?? this.tapeWidth,
+    shapeWidth: shapeWidth ?? this.shapeWidth,
+    lineDash: lineDash ?? this.lineDash,
+    shapeFill: shapeFill ?? this.shapeFill,
   );
 
   static const _keep = Object();
@@ -341,8 +372,12 @@ class InkToolController extends Notifier<InkToolState> {
   void setWidth(double width) => _set(switch (state.kind) {
     InkToolKind.highlighter => state.copyWith(highlighterWidth: width),
     InkToolKind.tape => state.copyWith(tapeWidth: width),
+    InkToolKind.shape => state.copyWith(shapeWidth: width),
     _ => state.copyWith(penWidth: width),
   });
+
+  void setLineDash(LineDash dash) => _set(state.copyWith(lineDash: dash));
+  void setShapeFill(ShapeFill fill) => _set(state.copyWith(shapeFill: fill));
 
   void selectTapeColor(int color) => _set(state.copyWith(tapeColor: color));
   void selectTapePattern(TapePattern pattern) =>

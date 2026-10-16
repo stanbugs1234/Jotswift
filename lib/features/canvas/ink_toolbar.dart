@@ -12,6 +12,7 @@ import 'pencil_actions.dart';
 import 'ruler.dart';
 import 'page_items.dart';
 import 'stickers.dart';
+import 'stroke_painter.dart';
 import 'tape.dart';
 
 /// The page tools: a finger toggle, pen, highlighter, eraser, select, lasso,
@@ -75,6 +76,11 @@ class InkToolbar extends ConsumerWidget {
                     InkToolKind.eraser,
                     Icons.auto_fix_normal,
                     'Eraser',
+                  ),
+                  toolButton(
+                    InkToolKind.shape,
+                    Icons.category_outlined,
+                    'Shapes',
                   ),
                   toolButton(InkToolKind.tape, Icons.crop_7_5, 'Tape'),
                   toolButton(
@@ -244,15 +250,17 @@ class _PenOptions extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     if (wrap) return const PenPanel(withSizes: true);
     final favorites = ref.watch(penFavoritesProvider);
-    if (ref.watch(inkToolProvider.select((t) => t.kind)) == InkToolKind.tape) {
+    final kind = ref.watch(inkToolProvider.select((t) => t.kind));
+    if (kind == InkToolKind.tape || kind == InkToolKind.shape) {
+      final tape = kind == InkToolKind.tape;
       return PenMenu(
         menuChildren: const [PenPanel(withSizes: false)],
         builder: (context, onPressed) => Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const TapeColors(),
+            if (tape) const TapeColors() else const _Palette(),
             IconButton(
-              tooltip: 'Tape settings',
+              tooltip: tape ? 'Tape settings' : 'Shape settings',
               constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
               icon: const Icon(Icons.tune),
               onPressed: onPressed,
@@ -410,6 +418,43 @@ class PenPanel extends ConsumerWidget {
       padding: const EdgeInsets.fromLTRB(4, 10, 4, 4),
       child: Text(label, style: text.labelMedium),
     );
+
+    if (tool.kind == InkToolKind.shape) {
+      return ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 340),
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              heading('Line and fill'),
+              const ShapeStyles(),
+              heading('Color'),
+              const _Palette(wrap: true),
+              heading('Width  ${tool.shapeWidth.toStringAsFixed(1)}'),
+              Slider(
+                min: InkToolState.penRange.min,
+                max: InkToolState.penRange.max,
+                value: tool.shapeWidth.clamp(
+                  InkToolState.penRange.min,
+                  InkToolState.penRange.max,
+                ),
+                onChanged: tools.setWidth,
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(4, 0, 4, 4),
+                child: Text(
+                  'Draw a line, circle, triangle, rectangle or other shape '
+                  'roughly: it\'s made neat when you lift the pen.',
+                  style: text.bodySmall,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
 
     if (tool.kind == InkToolKind.tape) {
       return ConstrainedBox(
@@ -646,6 +691,158 @@ class _FavoriteDot extends ConsumerWidget {
       onPressed: () => ref.read(inkToolProvider.notifier).useFavorite(pen),
     );
   }
+}
+
+/// The shape tool's line (solid, dashed, dotted) and fill (none, light,
+/// solid), each shown as it draws.
+class ShapeStyles extends ConsumerWidget {
+  const ShapeStyles({this.column = false, super.key});
+
+  final bool column;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final scheme = Theme.of(context).colorScheme;
+    final tool = ref.watch(inkToolProvider);
+    final tools = ref.read(inkToolProvider.notifier);
+    final ink = scheme.onSurfaceVariant;
+
+    Widget choice({
+      required String label,
+      required bool selected,
+      required VoidCallback onTap,
+      required CustomPainter painter,
+    }) => Tooltip(
+      message: label,
+      child: Semantics(
+        button: true,
+        selected: selected,
+        label: label,
+        excludeSemantics: true,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(10),
+          onTap: onTap,
+          child: Container(
+            width: 48,
+            height: 36,
+            padding: const EdgeInsets.all(7),
+            decoration: BoxDecoration(
+              color: selected ? scheme.primary.withValues(alpha: 0.14) : null,
+              borderRadius: BorderRadius.circular(10),
+              border: selected
+                  ? Border.all(color: scheme.primary, width: 1.5)
+                  : null,
+            ),
+            child: CustomPaint(painter: painter),
+          ),
+        ),
+      ),
+    );
+
+    final lines = [
+      for (final dash in LineDash.values)
+        choice(
+          label: switch (dash) {
+            LineDash.solid => 'Solid line',
+            LineDash.dashed => 'Dashed line',
+            LineDash.dotted => 'Dotted line',
+          },
+          selected: tool.lineDash == dash,
+          onTap: () => tools.setLineDash(dash),
+          painter: _LineSample(dash, selected: tool.lineDash == dash, ink: ink),
+        ),
+    ];
+    final fills = [
+      for (final fill in ShapeFill.values)
+        choice(
+          label: switch (fill) {
+            ShapeFill.none => 'No fill',
+            ShapeFill.light => 'Light fill',
+            ShapeFill.solid => 'Solid fill',
+          },
+          selected: tool.shapeFill == fill,
+          onTap: () => tools.setShapeFill(fill),
+          painter: _FillSample(
+            fill,
+            color: tool.shapeFill == fill ? scheme.primary : ink,
+          ),
+        ),
+    ];
+    if (column) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [...lines, const SizedBox(height: 8), ...fills],
+      );
+    }
+    return Wrap(
+      spacing: 4,
+      runSpacing: 4,
+      children: [...lines, const SizedBox(width: 12), ...fills],
+    );
+  }
+}
+
+class _LineSample extends CustomPainter {
+  _LineSample(this.dash, {required this.selected, required this.ink});
+
+  final LineDash dash;
+  final bool selected;
+  final Color ink;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final y = size.height / 2;
+    final stroke = Stroke(
+      id: 'sample',
+      tool: InkTool.pen,
+      color: ink.toARGB32(),
+      width: 3,
+      points: [for (var x = 0.0; x <= size.width; x += 2) InkPoint(x, y)],
+      createdAt: 0,
+      style: PenStyle.ballpoint,
+      dash: dash,
+    );
+    canvas.drawPath(
+      StrokeRenderer.buildPath(stroke, complete: true),
+      Paint()..color = ink,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_LineSample old) =>
+      old.dash != dash || old.selected != selected || old.ink != ink;
+}
+
+class _FillSample extends CustomPainter {
+  _FillSample(this.fill, {required this.color});
+
+  final ShapeFill fill;
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final r = RRect.fromRectAndRadius(
+      (Offset.zero & size).deflate(1),
+      const Radius.circular(3),
+    );
+    if (fill != ShapeFill.none) {
+      canvas.drawRRect(
+        r,
+        Paint()
+          ..color = color.withValues(alpha: fill == ShapeFill.light ? 0.25 : 1),
+      );
+    }
+    canvas.drawRRect(
+      r,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2
+        ..color = color,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_FillSample old) => old.fill != fill || old.color != color;
 }
 
 /// The tape colors, and any other color.

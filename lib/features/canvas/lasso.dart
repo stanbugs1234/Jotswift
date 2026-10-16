@@ -110,6 +110,14 @@ class LassoTransform {
     pressureSensitive: stroke.pressureSensitive,
     style: stroke.style,
     followsPen: stroke.followsPen,
+    dash: stroke.dash,
+    // Recolored, the fill takes the new color at its own strength.
+    fill: switch ((stroke.fill, color)) {
+      (final fill?, final color?) => Color(
+        color,
+      ).withValues(alpha: Color(fill).a).toARGB32(),
+      (final fill, _) => fill,
+    },
   );
 
   ElementFrame applyToFrame(ElementFrame frame) => frame.copyWith(

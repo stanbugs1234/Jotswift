@@ -114,7 +114,8 @@ class _PenRailState extends ConsumerState<PenRail> {
       InkToolKind.pen ||
       InkToolKind.highlighter ||
       InkToolKind.eraser ||
-      InkToolKind.tape => true,
+      InkToolKind.tape ||
+      InkToolKind.shape => true,
       _ => false,
     };
     final places = ref.read(penRailPlacementProvider.notifier);
@@ -319,7 +320,13 @@ class _RailBody extends ConsumerWidget {
                     _StyleButton(style: style),
                   divider,
                 ],
-                if (tool.kind == InkToolKind.tape) ...[
+                if (tool.kind == InkToolKind.shape) ...[
+                  const ShapeStyles(column: true),
+                  divider,
+                  const _WidthSlider(),
+                  divider,
+                  const _Colors(),
+                ] else if (tool.kind == InkToolKind.tape) ...[
                   const TapePatterns(column: true),
                   divider,
                   const _WidthSlider(),
@@ -342,6 +349,7 @@ class _RailBody extends ConsumerWidget {
                     tooltip: switch (tool.kind) {
                       InkToolKind.eraser => 'Eraser settings',
                       InkToolKind.tape => 'Tape settings',
+                      InkToolKind.shape => 'Shape settings',
                       _ => 'Pen settings',
                     },
                     constraints: const BoxConstraints(
@@ -530,6 +538,7 @@ class _WidthSlider extends ConsumerWidget {
           label: switch (tool.kind) {
             InkToolKind.highlighter => 'Highlighter width',
             InkToolKind.tape => 'Tape width',
+            InkToolKind.shape => 'Line width',
             _ => 'Pen width',
           },
           height: tool.kind == InkToolKind.pen ? 120 : 150,
@@ -539,7 +548,7 @@ class _WidthSlider extends ConsumerWidget {
           onChanged: tools.setWidth,
         ),
         Text(width.toStringAsFixed(width < 10 ? 1 : 0), style: small),
-        if (tape)
+        if (tool.kind != InkToolKind.pen && !highlighter)
           const SizedBox.shrink()
         else if (highlighter)
           Padding(

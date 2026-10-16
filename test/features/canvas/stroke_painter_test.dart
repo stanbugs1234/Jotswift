@@ -24,6 +24,27 @@ void main() {
     followsPen: followsPen,
   );
 
+  test('dashed and dotted lines are broken into pieces', () {
+    int pieces(LineDash dash) => StrokeRenderer.buildPath(
+      Stroke(
+        id: dash.name,
+        tool: InkTool.pen,
+        color: 0xFF000000,
+        width: 4,
+        points: [for (var x = 0.0; x <= 200; x += 5) InkPoint(x, 0)],
+        createdAt: 0,
+        style: PenStyle.ballpoint,
+        dash: dash,
+      ),
+      complete: true,
+    ).computeMetrics().length;
+
+    expect(pieces(LineDash.solid), 1);
+    // 200 long, 4 wide: a dash and gap every 20.8, a dot every 8.8.
+    expect(pieces(LineDash.dashed), inInclusiveRange(9, 11));
+    expect(pieces(LineDash.dotted), inInclusiveRange(22, 24));
+  });
+
   test('pen ink looks the same while drawn as once saved', () {
     for (final style in [
       PenStyle.ballpoint,
