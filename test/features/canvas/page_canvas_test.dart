@@ -12,6 +12,7 @@ import 'package:notely/features/auth/auth_repository.dart';
 import 'package:notely/features/canvas/domain/page_element.dart';
 import 'package:notely/features/canvas/domain/stroke.dart';
 import 'package:notely/features/canvas/ink_toolbar.dart';
+import 'package:notely/features/canvas/ink_tools.dart';
 import 'package:notely/features/canvas/page_canvas.dart';
 import 'package:notely/features/notebooks/data/in_memory_notes_backend.dart';
 import 'package:notely/features/notebooks/domain/notebook_models.dart';
@@ -606,6 +607,78 @@ void main() {
       final scale = (800 - 32) / pageSize.width;
       expect((end.x - start.x) * scale, closeTo(200, 2));
       expect((end.y - start.y) * scale, closeTo(100, 2));
+    });
+  });
+
+  group('pens', () {
+    Future<void> openPenOptions(WidgetTester tester) async {
+      await tester.tap(find.byTooltip('Pen options'));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('the pen type is saved with the stroke', (tester) async {
+      final page = await pumpPage(tester);
+      await openPenOptions(tester);
+      await tester.tap(find.text('Brush'));
+      await tester.pump();
+
+      await drag(tester, PointerDeviceKind.stylus);
+
+      expect((await page.strokes()).single.style, PenStyle.brush);
+    });
+
+    testWidgets('any color can be chosen by hex code', (tester) async {
+      final page = await pumpPage(tester);
+      await openPenOptions(tester);
+      await tester.tap(find.byTooltip('More colors'));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextField), '1e88e5');
+      await tester.tap(find.text('Use hex'));
+      await tester.pumpAndSettle();
+
+      await drag(tester, PointerDeviceKind.stylus);
+
+      expect((await page.strokes()).single.color, 0xFF1E88E5);
+    });
+
+    testWidgets('the width slider sets any width', (tester) async {
+      final page = await pumpPage(tester);
+      await openPenOptions(tester);
+      await tester.drag(find.byType(Slider), const Offset(400, 0));
+      await tester.pump();
+
+      await drag(tester, PointerDeviceKind.stylus);
+
+      expect((await page.strokes()).single.width, InkToolState.penRange.max);
+    });
+
+    testWidgets('a saved pen brings back its color, width and type', (
+      tester,
+    ) async {
+      final page = await pumpPage(tester);
+      final inkColors = skinById(skins, 'classic').inkColors;
+      await openPenOptions(tester);
+      await tester.tap(find.bySemanticsLabel('Ink color 3'));
+      await tester.tap(find.text('Pencil'));
+      await tester.tap(find.byTooltip('Thick'));
+      await tester.pump();
+      await tester.tap(find.text('Save this pen'));
+      await tester.pumpAndSettle();
+      expect(find.text('Save this pen'), findsNothing);
+
+      // Change everything, then pick the saved pen.
+      await tester.tap(find.bySemanticsLabel('Ink color 1'));
+      await tester.tap(find.text('Ball'));
+      await tester.tap(find.byTooltip('Thin'));
+      await tester.pump();
+      await tester.tap(find.byTooltip('Use saved pen 1'));
+      await tester.pump();
+
+      await drag(tester, PointerDeviceKind.stylus);
+      final stroke = (await page.strokes()).single;
+      expect(stroke.color, inkColors[2].toARGB32());
+      expect(stroke.style, PenStyle.pencil);
+      expect(stroke.width, InkToolState.penSizes[2]);
     });
   });
 

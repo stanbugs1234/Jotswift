@@ -609,7 +609,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
   void _startStroke(PointerDownEvent e) {
     final tool = ref.read(inkToolProvider);
     final colors = NotelySkin.of(context).inkColors;
-    var color = colors[tool.colorIndex.clamp(0, colors.length - 1)];
+    var color = tool.colorFrom(colors);
     if (tool.kind == InkToolKind.highlighter) {
       color = color.withValues(alpha: 0.35);
     }
@@ -624,6 +624,9 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
       createdAt: DateTime.now().millisecondsSinceEpoch,
       pressureSensitive:
           e.kind == PointerDeviceKind.stylus && e.pressureMax > e.pressureMin,
+      style: tool.kind == InkToolKind.highlighter
+          ? PenStyle.fountain
+          : tool.penStyle,
     );
     _snapped = null;
     _waitForHold(e.localPosition);
@@ -670,6 +673,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     points: [for (final p in densify(outline)) InkPoint(p.dx, p.dy)],
     createdAt: stroke.createdAt,
     pressureSensitive: true,
+    style: stroke.style,
   );
 
   void _extendStroke(PointerMoveEvent e) {
@@ -696,6 +700,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
       points: [...stroke.points, _inkPoint(e)],
       createdAt: stroke.createdAt,
       pressureSensitive: stroke.pressureSensitive,
+      style: stroke.style,
     );
   }
 

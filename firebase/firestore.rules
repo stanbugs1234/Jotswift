@@ -38,7 +38,11 @@ service cloud.firestore {
         // checked.
         && (!('monthAnimation' in request.resource.data)
             || (request.resource.data.monthAnimation is string
-                && request.resource.data.monthAnimation.size() <= 32));
+                && request.resource.data.monthAnimation.size() <= 32))
+        // Saved pens, as JSON.
+        && (!('penFavorites' in request.resource.data)
+            || (request.resource.data.penFavorites is string
+                && request.resource.data.penFavorites.size() <= 4000));
 
       // Notebooks, pages, tasks, events... (added in later phases).
       // `{collection}` makes this match only data below the user doc. A bare

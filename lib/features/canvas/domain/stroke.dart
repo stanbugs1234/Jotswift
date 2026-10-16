@@ -10,6 +10,22 @@ const pageSize = Size(1404, 1872);
 
 enum InkTool { pen, highlighter }
 
+/// How a pen stroke looks. Strokes saved before pen styles existed are
+/// [fountain], which is how they were drawn.
+enum PenStyle {
+  /// Even width, like a ballpoint or gel pen.
+  ballpoint,
+
+  /// Thick and thin with pressure.
+  fountain,
+
+  /// Soft and tapered, very responsive to pressure.
+  brush,
+
+  /// Grainy graphite.
+  pencil,
+}
+
 @immutable
 class InkPoint {
   const InkPoint(this.x, this.y, [this.pressure = 0.5]);
@@ -37,6 +53,7 @@ class Stroke {
     required this.createdAt,
     this.pressureSensitive = false,
     this.deleted = false,
+    this.style = PenStyle.fountain,
   });
 
   factory Stroke.fromMap(String id, Map<String, dynamic> map) {
@@ -58,6 +75,7 @@ class Stroke {
       createdAt: map['createdAt'] as int? ?? 0,
       pressureSensitive: map['pressure'] as bool? ?? false,
       deleted: map['deleted'] as bool? ?? false,
+      style: PenStyle.values.asNameMap()[map['style']] ?? PenStyle.fountain,
     );
   }
 
@@ -76,6 +94,9 @@ class Stroke {
   final bool pressureSensitive;
   final bool deleted;
 
+  /// How the pen draws (only pen strokes; highlighters ignore it).
+  final PenStyle style;
+
   /// Points are packed as a flat [x, y, pressure, ...] list, rounded to keep
   /// documents small.
   Map<String, dynamic> toMap() => {
@@ -92,6 +113,7 @@ class Stroke {
     'createdAt': createdAt,
     'pressure': pressureSensitive,
     'deleted': deleted,
+    if (style != PenStyle.fountain) 'style': style.name,
   };
 
   static double _round(double v, int scale) => (v * scale).round() / scale;
@@ -105,6 +127,7 @@ class Stroke {
     createdAt: createdAt,
     pressureSensitive: pressureSensitive,
     deleted: deleted ?? this.deleted,
+    style: style,
   );
 
   late final Rect bounds = _computeBounds();

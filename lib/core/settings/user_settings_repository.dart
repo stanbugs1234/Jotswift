@@ -19,6 +19,9 @@ abstract final class SettingKeys {
   /// How the Calendar moves between months: an animation name, or
   /// "template" for the template's own.
   static const monthAnimation = 'monthAnimation';
+
+  /// Saved pens: a JSON list of tool, style, color and width.
+  static const penFavorites = 'penFavorites';
 }
 
 /// Per-account settings that follow the user across devices, stored in

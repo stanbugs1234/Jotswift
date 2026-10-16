@@ -95,6 +95,13 @@ describe('users/{uid}', () => {
     await assertFails(setDoc(ref, { calendarTemplate: 'x'.repeat(65) }));
     await assertFails(setDoc(ref, { monthAnimation: 3 }));
   });
+
+  test('saved pens are a JSON string of limited size', async () => {
+    const ref = doc(sam(), 'users/sam');
+    await assertSucceeds(setDoc(ref, { penFavorites: '[{"tool":"pen","style":"brush","color":4278190080,"width":6}]' }));
+    await assertFails(setDoc(ref, { penFavorites: 'x'.repeat(4001) }));
+    await assertFails(setDoc(ref, { penFavorites: ['pen'] }));
+  });
 });
 
 describe('data under users/{uid}', () => {

@@ -1,3 +1,6 @@
+import 'dart:math' as math;
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:perfect_freehand/perfect_freehand.dart';
 
@@ -17,20 +20,36 @@ abstract final class StrokeRenderer {
         PointVector(p.x, p.y, stroke.pressureSensitive ? p.pressure : null),
     ];
     final highlighter = stroke.tool == InkTool.highlighter;
+    final real = stroke.pressureSensitive;
+    final style = highlighter ? null : stroke.style;
     final outline = getStroke(
       points,
       options: StrokeOptions(
-        size: stroke.width,
+        size: style == PenStyle.pencil ? stroke.width * 0.85 : stroke.width,
         // Real pressure gets the full effect. Simulated pressure (fingers,
         // mouse) thins lines a lot on fast moves, so keep it subtle.
-        thinning: highlighter
-            ? 0
-            : stroke.pressureSensitive
-            ? 0.6
-            : 0.25,
+        thinning: switch (style) {
+          null => 0,
+          PenStyle.ballpoint => real ? 0.15 : 0.05,
+          PenStyle.fountain => real ? 0.6 : 0.25,
+          PenStyle.brush => real ? 0.85 : 0.55,
+          PenStyle.pencil => real ? 0.35 : 0.1,
+        },
         smoothing: 0.5,
         streamline: highlighter ? 0.6 : 0.4,
-        simulatePressure: !highlighter && !stroke.pressureSensitive,
+        simulatePressure: !highlighter && !real,
+        start: style == PenStyle.brush
+            ? StrokeEndOptions.start(
+                taperEnabled: true,
+                customTaper: stroke.width * 3,
+              )
+            : StrokeEndOptions.start(),
+        end: style == PenStyle.brush
+            ? StrokeEndOptions.end(
+                taperEnabled: true,
+                customTaper: stroke.width * 3,
+              )
+            : StrokeEndOptions.end(),
         isComplete: complete,
       ),
     );
@@ -45,9 +64,61 @@ abstract final class StrokeRenderer {
     return Path()..addPolygon(outline, true);
   }
 
-  static Paint paintFor(Stroke stroke) => Paint()
-    ..color = Color(stroke.color)
-    ..isAntiAlias = true;
+  static Paint paintFor(Stroke stroke) {
+    final paint = Paint()
+      ..color = Color(stroke.color)
+      ..isAntiAlias = true;
+    if (stroke.tool == InkTool.pen && stroke.style == PenStyle.pencil) {
+      // Graphite: the ink color, let through a grainy mask.
+      final grain = _grain;
+      if (grain != null) {
+        paint
+          ..shader = grain
+          ..colorFilter = ColorFilter.mode(
+            Color(stroke.color).withValues(alpha: 0.9),
+            BlendMode.srcIn,
+          );
+      }
+    }
+    return paint;
+  }
+
+  /// A tile of speckled alpha for pencil strokes, made once.
+  static final ui.Shader? _grain = () {
+    try {
+      const size = 64;
+      final random = math.Random(7);
+      final recorder = ui.PictureRecorder();
+      final canvas = Canvas(recorder);
+      canvas.drawRect(
+        const Rect.fromLTWH(0, 0, 64, 64),
+        Paint()..color = const Color(0x99000000),
+      );
+      final dot = Paint();
+      for (var i = 0; i < 1400; i++) {
+        dot.color = Color.fromARGB(80 + random.nextInt(176), 0, 0, 0);
+        canvas.drawRect(
+          Rect.fromLTWH(
+            random.nextDouble() * size,
+            random.nextDouble() * size,
+            1.2,
+            1.2,
+          ),
+          dot,
+        );
+      }
+      final image = recorder.endRecording().toImageSync(size, size);
+      return ImageShader(
+        image,
+        TileMode.repeated,
+        TileMode.repeated,
+        // Page units: a grain fine enough to read as pencil.
+        (Matrix4.identity()..scaleByDouble(0.6, 0.6, 1, 1)).storage,
+      );
+    } catch (_) {
+      return null; // No GPU (tests): plain ink.
+    }
+  }();
 }
 
 /// Saved strokes. Kept in its own layer so drawing a new stroke doesn't

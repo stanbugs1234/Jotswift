@@ -1,5 +1,10 @@
-import 'package:flutter/foundation.dart';
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../core/settings/synced_setting.dart';
+import '../../core/settings/user_settings_repository.dart';
 
 import '../notebooks/notes_providers.dart';
 import '../notebooks/data/notes_repository.dart';
@@ -20,8 +25,8 @@ enum InkToolKind {
   lasso,
 }
 
-/// The selected drawing tool. Shared by all pages, so it sticks when the
-/// user moves between pages.
+/// The selected drawing tool and pen. Shared by all pages, so it sticks
+/// when the user moves between pages, and remembered on the device.
 @immutable
 class InkToolState {
   const InkToolState({
@@ -29,15 +34,58 @@ class InkToolState {
     this.colorIndex = 0,
     this.sizeIndex = 1,
     this.drawMode = true,
+    this.customColor,
+    this.penWidth,
+    this.highlighterWidth,
+    this.penStyle = PenStyle.fountain,
   });
+
+  factory InkToolState.fromJson(Map<String, dynamic> json) {
+    double? width(Object? v) => v is num ? v.toDouble() : null;
+    final kind = InkToolKind.values.asNameMap()[json['kind']];
+    return InkToolState(
+      // The select and lasso tools aren't kept: a page opens ready to write.
+      kind: kind == InkToolKind.select || kind == InkToolKind.lasso
+          ? InkToolKind.pen
+          : kind ?? InkToolKind.pen,
+      colorIndex: (json['colorIndex'] as num?)?.toInt() ?? 0,
+      sizeIndex: ((json['sizeIndex'] as num?)?.toInt() ?? 1).clamp(0, 2),
+      customColor: (json['customColor'] as num?)?.toInt(),
+      penWidth: width(json['penWidth']),
+      highlighterWidth: width(json['highlighterWidth']),
+      penStyle:
+          PenStyle.values.asNameMap()[json['penStyle']] ?? PenStyle.fountain,
+    );
+  }
+
+  Map<String, Object?> toJson() => {
+    'kind': kind.name,
+    'colorIndex': colorIndex,
+    'sizeIndex': sizeIndex,
+    'customColor': ?customColor,
+    'penWidth': ?penWidth,
+    'highlighterWidth': ?highlighterWidth,
+    'penStyle': penStyle.name,
+  };
 
   final InkToolKind kind;
 
-  /// Index into the active skin's ink colors.
+  /// Index into the active skin's ink colors, unless [customColor] is set.
   final int colorIndex;
+
+  /// A color picked from the full palette (ARGB), used instead of the
+  /// skin's colors.
+  final int? customColor;
 
   /// Index into [penSizes] / [highlighterSizes] / [eraserSizes].
   final int sizeIndex;
+
+  /// Widths chosen with the slider, used instead of the [sizeIndex] preset.
+  final double? penWidth;
+  final double? highlighterWidth;
+
+  /// How the pen draws.
+  final PenStyle penStyle;
 
   /// When false ("hand" mode), one finger scrolls instead of drawing. A
   /// stylus always draws.
@@ -47,43 +95,222 @@ class InkToolState {
   static const penSizes = [3.0, 6.0, 12.0];
   static const highlighterSizes = [18.0, 30.0, 48.0];
 
+  /// What the width slider covers.
+  static const penRange = (min: 1.5, max: 30.0);
+  static const highlighterRange = (min: 8.0, max: 80.0);
+
   /// Eraser radius in screen pixels, so it feels the same at any zoom.
   static const eraserSizes = [8.0, 16.0, 32.0];
 
   double get size => switch (kind) {
     InkToolKind.pen ||
     InkToolKind.select ||
-    InkToolKind.lasso => penSizes[sizeIndex],
-    InkToolKind.highlighter => highlighterSizes[sizeIndex],
+    InkToolKind.lasso => penWidth ?? penSizes[sizeIndex],
+    InkToolKind.highlighter => highlighterWidth ?? highlighterSizes[sizeIndex],
     InkToolKind.eraser => eraserSizes[sizeIndex],
   };
+
+  /// The ink color, from the skin's [palette] unless a custom one is set.
+  Color colorFrom(List<Color> palette) => customColor != null
+      ? Color(customColor!)
+      : palette[colorIndex.clamp(0, palette.length - 1)];
 
   InkToolState copyWith({
     InkToolKind? kind,
     int? colorIndex,
     int? sizeIndex,
     bool? drawMode,
+    Object? customColor = _keep,
+    Object? penWidth = _keep,
+    Object? highlighterWidth = _keep,
+    PenStyle? penStyle,
   }) => InkToolState(
     kind: kind ?? this.kind,
     colorIndex: colorIndex ?? this.colorIndex,
     sizeIndex: sizeIndex ?? this.sizeIndex,
     drawMode: drawMode ?? this.drawMode,
+    customColor: customColor == _keep ? this.customColor : customColor as int?,
+    penWidth: penWidth == _keep ? this.penWidth : penWidth as double?,
+    highlighterWidth: highlighterWidth == _keep
+        ? this.highlighterWidth
+        : highlighterWidth as double?,
+    penStyle: penStyle ?? this.penStyle,
   );
+
+  static const _keep = Object();
 }
 
 class InkToolController extends Notifier<InkToolState> {
+  static const _prefsKey = 'inkTool';
+
   @override
-  InkToolState build() => const InkToolState();
+  InkToolState build() {
+    final saved = ref.read(sharedPreferencesProvider).getString(_prefsKey);
+    if (saved == null) return const InkToolState();
+    try {
+      return InkToolState.fromJson(jsonDecode(saved) as Map<String, dynamic>);
+    } catch (_) {
+      return const InkToolState();
+    }
+  }
+
+  void _set(InkToolState next) {
+    state = next;
+    ref
+        .read(sharedPreferencesProvider)
+        .setString(_prefsKey, jsonEncode(next.toJson()));
+  }
 
   void selectTool(InkToolKind kind) =>
-      state = state.copyWith(kind: kind, drawMode: true);
-  void selectColor(int index) => state = state.copyWith(colorIndex: index);
-  void selectSize(int index) => state = state.copyWith(sizeIndex: index);
+      _set(state.copyWith(kind: kind, drawMode: true));
+  void selectColor(int index) =>
+      _set(state.copyWith(colorIndex: index, customColor: null));
+  void selectCustomColor(Color color) =>
+      _set(state.copyWith(customColor: color.toARGB32()));
+
+  /// Picks a preset size; the slider's width is forgotten.
+  void selectSize(int index) => _set(
+    state.copyWith(
+      sizeIndex: index,
+      penWidth: state.kind == InkToolKind.highlighter ? state.penWidth : null,
+      highlighterWidth: state.kind == InkToolKind.highlighter
+          ? null
+          : state.highlighterWidth,
+    ),
+  );
+
+  /// Sets the current pen's (or highlighter's) width from the slider.
+  void setWidth(double width) => _set(
+    state.kind == InkToolKind.highlighter
+        ? state.copyWith(highlighterWidth: width)
+        : state.copyWith(penWidth: width),
+  );
+
+  void selectPenStyle(PenStyle style) => _set(
+    state.copyWith(
+      penStyle: style,
+      kind: state.kind == InkToolKind.highlighter ? null : InkToolKind.pen,
+    ),
+  );
+
   void setDrawMode(bool drawMode) => state = state.copyWith(drawMode: drawMode);
+
+  /// Picks up a saved pen.
+  void useFavorite(PenFavorite pen) => _set(
+    pen.tool == InkTool.highlighter
+        ? state.copyWith(
+            kind: InkToolKind.highlighter,
+            customColor: pen.color,
+            highlighterWidth: pen.width,
+            drawMode: true,
+          )
+        : state.copyWith(
+            kind: InkToolKind.pen,
+            customColor: pen.color,
+            penWidth: pen.width,
+            penStyle: pen.style,
+            drawMode: true,
+          ),
+  );
 }
 
 final inkToolProvider = NotifierProvider<InkToolController, InkToolState>(
   InkToolController.new,
+);
+
+/// A saved pen: tool, style, color and width.
+@immutable
+class PenFavorite {
+  const PenFavorite({
+    required this.tool,
+    required this.style,
+    required this.color,
+    required this.width,
+  });
+
+  static PenFavorite? fromJson(Object? json) {
+    if (json is! Map) return null;
+    final tool = InkTool.values.asNameMap()[json['tool']];
+    final color = json['color'], width = json['width'];
+    if (tool == null || color is! num || width is! num) return null;
+    return PenFavorite(
+      tool: tool,
+      style: PenStyle.values.asNameMap()[json['style']] ?? PenStyle.fountain,
+      color: color.toInt(),
+      width: width.toDouble(),
+    );
+  }
+
+  final InkTool tool;
+  final PenStyle style;
+
+  /// ARGB, without the highlighter's see-through.
+  final int color;
+  final double width;
+
+  Map<String, Object> toJson() => {
+    'tool': tool.name,
+    'style': style.name,
+    'color': color,
+    'width': (width * 10).round() / 10,
+  };
+
+  @override
+  bool operator ==(Object other) =>
+      other is PenFavorite &&
+      other.tool == tool &&
+      other.style == style &&
+      other.color == color &&
+      (other.width - width).abs() < 0.05;
+
+  @override
+  int get hashCode => Object.hash(tool, style, color, (width * 10).round());
+}
+
+/// The user's saved pens, on the account so they follow them to every
+/// device.
+class PenFavoritesController extends SyncedSetting {
+  static const max = 12;
+
+  @override
+  String get key => SettingKeys.penFavorites;
+
+  @override
+  String get defaultValue => '[]';
+
+  Future<void> add(PenFavorite pen) {
+    final pens = _parse(state);
+    if (pens.contains(pen)) return Future.value();
+    return _save([...pens, pen].reversed.take(max).toList().reversed.toList());
+  }
+
+  Future<void> remove(PenFavorite pen) => _save([
+    for (final p in _parse(state))
+      if (p != pen) p,
+  ]);
+
+  Future<void> _save(List<PenFavorite> pens) =>
+      save(jsonEncode([for (final p in pens) p.toJson()]));
+
+  static List<PenFavorite> _parse(String json) {
+    try {
+      final list = jsonDecode(json);
+      if (list is! List) return const [];
+      return [for (final item in list) ?PenFavorite.fromJson(item)];
+    } catch (_) {
+      return const [];
+    }
+  }
+}
+
+final penFavoritesSettingProvider =
+    NotifierProvider<PenFavoritesController, String>(
+      PenFavoritesController.new,
+    );
+
+final penFavoritesProvider = Provider<List<PenFavorite>>(
+  (ref) =>
+      PenFavoritesController._parse(ref.watch(penFavoritesSettingProvider)),
 );
 
 /// Something that can be undone on a page.
