@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:notely/app/router.dart';
 import 'package:notely/core/skins/skin_manifest.dart';
+import 'package:notely/features/canvas/domain/page_element.dart';
+import 'package:notely/features/canvas/domain/stroke.dart';
 import 'package:notely/features/canvas/page_canvas.dart';
 import 'package:notely/features/notebooks/data/in_memory_notes_backend.dart';
 import 'package:notely/features/notebooks/domain/notebook_models.dart';
@@ -24,10 +26,12 @@ void main() {
 
   setUp(() => backend = InMemoryNotesBackend());
 
-  /// A notebook of four pages, open on the first, at 1000 x 900.
+  /// A notebook of four pages (or [titles]), open on the first, at
+  /// 1000 x 900.
   Future<ProviderContainer> pumpPages(
     WidgetTester tester, {
     Map<String, Object> prefs = const {},
+    List<String> titles = const ['One', 'Two', 'Three', 'Four'],
   }) async {
     final auth = await pumpApp(
       tester,
@@ -43,7 +47,7 @@ void main() {
     );
     final section = (await repo.watchSections(nb.id).first).single;
     pageIds = [
-      for (final t in ['One', 'Two', 'Three', 'Four'])
+      for (final t in titles)
         (await repo.createPage(nb.id, section.id, title: t)).id,
     ];
     final container = ProviderScope.containerOf(
@@ -106,6 +110,78 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(appBarTitle(tester), 'Two');
+  });
+
+  for (final fingers in ['on', 'off'])
+    testWidgets('a link scrolls to the page it points to (fingers $fingers)', (
+      tester,
+    ) async {
+      await pumpPages(
+        tester,
+        prefs: {'pageScroll': 'vertical', 'fingerDrawing': fingers},
+      );
+      await backend
+          .elements(uid)
+          .addElement(
+            pageIds[0],
+            PageElement(
+              id: 'to-four',
+              content: LinkContent(pageIds[3]),
+              frame: const ElementFrame(
+                center: Offset(500, 400),
+                width: 400,
+                height: 200,
+              ),
+              z: 1,
+              createdAt: 0,
+            ),
+          );
+      await tester.pumpAndSettle();
+
+      final first = find.byType(PageCanvas).first;
+      final scale = tester.getSize(first).width / pageSize.width;
+      await tester.tapAt(
+        tester.getTopLeft(first) + const Offset(500, 400) * scale,
+      );
+      await tester.pumpAndSettle();
+
+      expect(appBarTitle(tester), 'Four');
+    });
+
+  testWidgets('a link to a page far down goes there, not back to the start', (
+    tester,
+  ) async {
+    await pumpPages(
+      tester,
+      prefs: {'pageScroll': 'vertical', 'fingerDrawing': 'off'},
+      titles: [for (var i = 1; i <= 40; i++) 'Page $i'],
+    );
+    await backend
+        .elements(uid)
+        .addElement(
+          pageIds[0],
+          PageElement(
+            id: 'to-last',
+            content: LinkContent(pageIds.last),
+            frame: const ElementFrame(
+              center: Offset(500, 400),
+              width: 400,
+              height: 200,
+            ),
+            z: 1,
+            createdAt: 0,
+          ),
+        );
+    await tester.pumpAndSettle();
+
+    final first = find.byType(PageCanvas).first;
+    final scale = tester.getSize(first).width / pageSize.width;
+    await tester.tapAt(
+      tester.getTopLeft(first) + const Offset(500, 400) * scale,
+    );
+    await tester.pumpAndSettle();
+
+    expect(appBarTitle(tester), 'Page 40');
   });
 
   testWidgets('the pen writes on a page without scrolling', (tester) async {

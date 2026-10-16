@@ -82,7 +82,9 @@ class PageScreen extends ConsumerWidget {
     }
 
     final title = page.value?.title ?? '';
-    final notebookId = page.value?.notebookId;
+    // While a page scrolled into view loads, the notebook is still the one
+    // opened: the list of pages must stay put, not be rebuilt at the start.
+    final notebookId = page.value?.notebookId ?? routeNotebookId;
     final order = notebookId == null
         ? const <String>[]
         : ref.watch(notebookPageOrderProvider(notebookId));
