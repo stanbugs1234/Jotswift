@@ -18,6 +18,7 @@ import '../calendar/templates/calendar_look.dart' show calendarTemplateProvider;
 import '../calendar/templates/calendar_templates_screen.dart';
 import '../canvas/ink_tools.dart';
 import '../canvas/pen_rail.dart';
+import '../canvas/toolbar_layout.dart';
 import '../canvas/pencil_actions.dart';
 import '../skins/notebook_style_screen.dart';
 import '../store/paywall.dart';
@@ -211,6 +212,13 @@ class SettingsScreen extends ConsumerWidget {
                     ],
                     ref.watch(fingerDrawingProvider),
                     ref.read(fingerDrawingProvider.notifier).set,
+                  ),
+                  link(
+                    Icons.handyman_outlined,
+                    'Toolbar',
+                    'Put the page tools in your order, and hide the ones you '
+                        'don\'t use.',
+                    () => showToolbarEditor(context),
                   ),
                   SwitchListTile(
                     secondary: const Icon(Icons.touch_app_outlined),

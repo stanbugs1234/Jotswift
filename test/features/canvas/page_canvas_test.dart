@@ -706,6 +706,7 @@ void main() {
       await loop(tester);
       expect(find.byTooltip('Delete'), findsOneWidget);
 
+      await tester.ensureVisible(find.byTooltip('Pen'));
       await tester.tap(find.byTooltip('Pen'));
       await tester.pumpAndSettle();
       expect(find.byTooltip('Delete'), findsNothing);
@@ -1205,6 +1206,31 @@ void main() {
       final after = container.read(zoomBoxProvider(page.pageId)).rect;
       expect(after.left, greaterThan(before.left));
       expect(after.top, before.top);
+    });
+  });
+
+  group('toolbar', () {
+    testWidgets('tools can be hidden and put in another order', (tester) async {
+      await pumpPage(tester);
+      await tester.ensureVisible(find.byTooltip('Customize toolbar'));
+      await tester.tap(find.byTooltip('Customize toolbar'));
+      await tester.pumpAndSettle();
+
+      final laser = find.ancestor(
+        of: find.text('Laser pointer'),
+        matching: find.byType(ListTile),
+      );
+      await tester.tap(
+        find.descendant(of: laser, matching: find.byType(Switch)),
+      );
+      await tester.pumpAndSettle();
+      // The pen can't be switched off.
+      expect(find.text('Always shown'), findsOneWidget);
+      await tester.tapAt(const Offset(400, 20)); // Close the sheet.
+      await tester.pumpAndSettle();
+
+      expect(find.byTooltip('Laser pointer'), findsNothing);
+      expect(find.byTooltip('Lasso'), findsOneWidget);
     });
   });
 

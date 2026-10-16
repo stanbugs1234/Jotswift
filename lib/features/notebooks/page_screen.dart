@@ -12,6 +12,7 @@ import '../../shared/dialogs.dart';
 import '../canvas/ink_toolbar.dart';
 import '../canvas/page_canvas.dart';
 import '../canvas/pen_rail.dart';
+import '../canvas/toolbar_layout.dart';
 import '../canvas/zoom_window.dart';
 import '../canvas/templates.dart' show templateImageProvider;
 import '../exports/export_sheet.dart';
@@ -347,6 +348,14 @@ class PageScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
+                if (!readOnly)
+                  PopupMenuItem(
+                    value: () => showToolbarEditor(context),
+                    child: const ListTile(
+                      leading: Icon(Icons.handyman_outlined),
+                      title: Text('Customize toolbar'),
+                    ),
+                  ),
               ],
             ),
           ],

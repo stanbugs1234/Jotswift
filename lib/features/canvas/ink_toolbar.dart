@@ -14,6 +14,7 @@ import 'page_items.dart';
 import 'stickers.dart';
 import 'stroke_painter.dart';
 import 'tape.dart';
+import 'toolbar_layout.dart';
 import 'zoom_window.dart';
 
 /// The page tools: a finger toggle, pen, highlighter, eraser, select, lasso,
@@ -44,15 +45,23 @@ class InkToolbar extends ConsumerWidget {
     final canPaste = ref.watch(inkClipboardProvider) != null;
     if (inkEnabled) ref.watch(pencilGesturesProvider);
 
-    Widget toolButton(InkToolKind kind, IconData icon, String label) {
-      final selected = tool.kind == kind;
-      return _ToolButton(
-        tooltip: label,
-        icon: icon,
-        selected: selected,
-        onPressed: () => tools.selectTool(kind),
-      );
-    }
+    Widget button(ToolbarTool t) => _ToolButton(
+      tooltip: t.label,
+      icon: t.icon,
+      selected: switch (t) {
+        ToolbarTool.zoomWindow => ref.watch(zoomWindowProvider),
+        ToolbarTool.ruler => ref.watch(rulerVisibleProvider),
+        _ => t.kind != null && tool.kind == t.kind,
+      },
+      onPressed: switch (t) {
+        ToolbarTool.zoomWindow => ref.read(zoomWindowProvider.notifier).toggle,
+        ToolbarTool.ruler => ref.read(rulerVisibleProvider.notifier).toggle,
+        ToolbarTool.text => () => addTextBox(context, ref, pageId),
+        ToolbarTool.photo => () => addPhoto(context, ref, pageId),
+        ToolbarTool.stickers => () => showStickerTray(context, pageId),
+        _ => () => tools.selectTool(t.kind!),
+      },
+    );
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -75,81 +84,30 @@ class InkToolbar extends ConsumerWidget {
                       if (inkEnabled) ...[
                         FingerToggle(compact: constraints.maxWidth < 1000),
                         const _Divider(),
-                        toolButton(InkToolKind.pen, Icons.edit, 'Pen'),
-                        toolButton(
-                          InkToolKind.highlighter,
-                          Icons.highlight,
-                          'Highlighter',
-                        ),
-                        toolButton(
-                          InkToolKind.eraser,
-                          Icons.auto_fix_normal,
-                          'Eraser',
-                        ),
-                        toolButton(
-                          InkToolKind.shape,
-                          Icons.category_outlined,
-                          'Shapes',
-                        ),
-                        toolButton(InkToolKind.tape, Icons.crop_7_5, 'Tape'),
-                        toolButton(
-                          InkToolKind.select,
-                          Icons.near_me_outlined,
-                          'Select',
-                        ),
-                        toolButton(
-                          InkToolKind.lasso,
-                          Icons.highlight_alt,
-                          'Lasso',
-                        ),
-                        toolButton(
-                          InkToolKind.laser,
-                          Icons.flare,
-                          'Laser pointer',
-                        ),
-                        _ToolButton(
-                          tooltip: 'Zoom window',
-                          icon: Icons.pageview_outlined,
-                          selected: ref.watch(zoomWindowProvider),
-                          onPressed: ref
-                              .read(zoomWindowProvider.notifier)
-                              .toggle,
-                        ),
-                        _ToolButton(
-                          tooltip: 'Ruler',
-                          icon: Icons.straighten,
-                          selected: ref.watch(rulerVisibleProvider),
-                          onPressed: ref
-                              .read(rulerVisibleProvider.notifier)
-                              .toggle,
-                        ),
-                        if (canPaste)
-                          _ToolButton(
-                            tooltip: 'Paste',
-                            icon: Icons.content_paste,
-                            selected: false,
-                            onPressed: () => ref
-                                .read(pasteRequestProvider(pageId).notifier)
-                                .request(),
-                          ),
                       ],
-                      _ToolButton(
-                        tooltip: 'Text',
-                        icon: Icons.text_fields,
-                        selected: false,
-                        onPressed: () => addTextBox(context, ref, pageId),
-                      ),
-                      _ToolButton(
-                        tooltip: 'Photo',
-                        icon: Icons.add_photo_alternate_outlined,
-                        selected: false,
-                        onPressed: () => addPhoto(context, ref, pageId),
-                      ),
-                      _ToolButton(
-                        tooltip: 'Stickers',
-                        icon: Icons.emoji_emotions_outlined,
-                        selected: false,
-                        onPressed: () => showStickerTray(context, pageId),
+                      for (final t in ref.watch(toolbarLayoutProvider).shown)
+                        if (inkEnabled || !t.needsInk) button(t),
+                      if (inkEnabled && canPaste)
+                        _ToolButton(
+                          tooltip: 'Paste',
+                          icon: Icons.content_paste,
+                          selected: false,
+                          onPressed: () => ref
+                              .read(pasteRequestProvider(pageId).notifier)
+                              .request(),
+                        ),
+                      IconButton(
+                        tooltip: 'Customize toolbar',
+                        constraints: const BoxConstraints(
+                          minWidth: 40,
+                          minHeight: 44,
+                        ),
+                        icon: Icon(
+                          Icons.tune_outlined,
+                          size: 20,
+                          color: scheme.onSurfaceVariant,
+                        ),
+                        onPressed: () => showToolbarEditor(context),
                       ),
                       // With the pen panel at the side, the toolbar keeps to tools.
                       if (inkEnabled && !showsPenRail(context, ref)) ...[
