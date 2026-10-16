@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import '../../audio/recording.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../../core/paper/paper_style.dart';
@@ -152,6 +154,28 @@ class _FirestoreUserNotes
       'lastPageAt': now,
     }).ignore();
   }
+
+  CollectionReference<Map<String, dynamic>> _recordings(String notebookId) =>
+      _notebooks.doc(notebookId).collection('recordings');
+
+  @override
+  Stream<List<Recording>> watchRecordings(String notebookId) =>
+      _recordings(notebookId).snapshots().map(
+        (snap) =>
+            [for (final d in snap.docs) ?Recording.fromMap(d.id, d.data())]
+              ..sort((a, b) => a.createdAt.compareTo(b.createdAt)),
+      );
+
+  @override
+  Future<void> addRecording(String notebookId, Recording recording) async =>
+      _recordings(notebookId).doc(recording.id).set(recording.toMap()).ignore();
+
+  @override
+  Future<void> deleteRecording(String notebookId, String recordingId) async =>
+      _recordings(notebookId).doc(recordingId).delete().ignore();
+
+  @override
+  String newRecordingId() => _notebooks.doc().id;
 
   @override
   Future<void> setPageInkText(String pageId, String text) async =>

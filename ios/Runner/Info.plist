@@ -34,6 +34,8 @@
 	<false/>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Jotswift records sound while you write, so you can play it back with your notes.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Jotswift adds the photos you choose to your pages or notebook covers.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>

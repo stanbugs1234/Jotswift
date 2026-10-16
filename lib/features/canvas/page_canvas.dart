@@ -34,6 +34,7 @@ import 'handwriting.dart';
 import '../exports/export_sheet.dart' show shareFilesProvider;
 import '../exports/page_export.dart' show PageRenderer;
 import 'zoom_window.dart';
+import '../audio/audio_controllers.dart';
 import '../notebooks/page_jumper.dart';
 import '../../core/motion/motion.dart';
 
@@ -840,7 +841,9 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     if (_turnCandidate?.$1.pointer == e.pointer) {
       // A tap at the edge.
       _turnCandidate = null;
-      if (!_toggleTapeAt(e.localPosition)) _followLinkAt(e.localPosition);
+      if (!_toggleTapeAt(e.localPosition) && !_playFromInkAt(e.localPosition)) {
+        _followLinkAt(e.localPosition);
+      }
       return;
     }
     if (e.pointer == _turnPointer) {
@@ -877,7 +880,9 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
         _navPointers.length == 1 &&
         (e.localPosition - start.$1).distance < 10 &&
         e.timeStamp - start.$2 < const Duration(milliseconds: 400)) {
-      if (!_toggleTapeAt(e.localPosition)) _followLinkAt(e.localPosition);
+      if (!_toggleTapeAt(e.localPosition) && !_playFromInkAt(e.localPosition)) {
+        _followLinkAt(e.localPosition);
+      }
     }
     if (e.pointer == _drawPointer) {
       if (_erasing) {
@@ -941,6 +946,28 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
             createdAt: draft.createdAt,
           ),
         );
+  }
+
+  /// With a recording open to play, a tap on writing made during it plays
+  /// from a moment before that writing. Returns whether it did.
+  bool _playFromInkAt(Offset screen) {
+    final playback = ref.read(playbackProvider);
+    final notebookId = ref.read(pageProvider(widget.pageId)).value?.notebookId;
+    if (playback == null || playback.notebookId != notebookId) return false;
+    final point = _toPage(screen);
+    final ink = _currentStrokes().reversed
+        .where(
+          (s) =>
+              s.audioId == playback.recording.id &&
+              s.audioAt != null &&
+              s.hitTest(point, 10 / _scale),
+        )
+        .firstOrNull;
+    if (ink == null) return false;
+    HapticFeedback.selectionClick();
+    final at = Duration(milliseconds: math.max(0, ink.audioAt! - 1500));
+    ref.read(playbackProvider.notifier).playFrom(at);
+    return true;
   }
 
   /// Peels back the tape at [screen], or puts it back. Returns whether
@@ -1232,8 +1259,18 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     } else if (tool.penOpacity < 1 && !shape) {
       color = color.withValues(alpha: color.a * tool.penOpacity);
     }
+    // Written while recording in this notebook: kept in time with it.
+    final recording = ref.read(recordingSessionProvider);
+    final audio =
+        recording != null &&
+            recording.notebookId ==
+                ref.read(pageProvider(widget.pageId)).value?.notebookId
+        ? recording
+        : null;
     _live.value = Stroke(
       id: ref.read(strokeRepositoryProvider).newStrokeId(),
+      audioId: audio?.id,
+      audioAt: audio?.elapsed.inMilliseconds,
       tool: tool.kind == InkToolKind.highlighter
           ? InkTool.highlighter
           : InkTool.pen,
@@ -1330,6 +1367,8 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
       followsPen: stroke.followsPen,
       dash: stroke.dash,
       fill: fill.toARGB32(),
+      audioId: stroke.audioId,
+      audioAt: stroke.audioAt,
     );
   }
 
@@ -1346,6 +1385,8 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     followsPen: stroke.followsPen,
     dash: stroke.dash,
     fill: stroke.fill,
+    audioId: stroke.audioId,
+    audioAt: stroke.audioAt,
   );
 
   /// [p] moved onto the ruler edge the stroke follows.
@@ -1447,7 +1488,8 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     final first = stroke.points.first;
     if (bounds.longestSide * _scale < 10 &&
         DateTime.now().millisecondsSinceEpoch - stroke.createdAt < 400 &&
-        _toggleTapeAt(Offset(first.x, first.y) * _scale + _offset)) {
+        (_toggleTapeAt(Offset(first.x, first.y) * _scale + _offset) ||
+            _playFromInkAt(Offset(first.x, first.y) * _scale + _offset))) {
       _live.value = null;
       return;
     }
@@ -2541,6 +2583,24 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
             !held.contains(s.id))
           s,
     ];
+    // Playing a recording: its writing appears as it was written.
+    final replay = ref.watch(
+      playbackProvider.select(
+        (p) => p == null
+            ? null
+            : (p.notebookId, p.recording.id, p.position.inMilliseconds ~/ 100),
+      ),
+    );
+    final notebookId = ref.watch(
+      pageProvider(widget.pageId).select((p) => p.value?.notebookId),
+    );
+    final faded = replay == null || replay.$1 != notebookId
+        ? const <String>{}
+        : {
+            for (final s in visible)
+              if (s.audioId == replay.$2 && (s.audioAt ?? 0) > replay.$3 * 100)
+                s.id,
+          };
     final heldStrokes = [
       for (final s in shown)
         if (held.contains(s.id) && !s.deleted) s,
@@ -2701,6 +2761,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
                                 selected: selected?.frame,
                                 handleScale: _handleSize / _scale,
                                 strokes: visible,
+                                faded: faded,
                                 live: _live,
                                 predicted: _predicted,
                                 overlays: [
@@ -2837,8 +2898,12 @@ class _PageSurface extends StatelessWidget {
     required this.strokes,
     required this.live,
     required this.predicted,
+    this.faded = const {},
     this.overlays = const [],
   });
+
+  /// Strokes drawn faint (see [StrokesPainter.faded]).
+  final Set<String> faded;
 
   final Size size;
   final PaperStyle paper;
@@ -2913,7 +2978,9 @@ class _PageSurface extends StatelessWidget {
           ],
           for (final e in elements)
             if (e.content is! TapeContent) placed(e),
-          RepaintBoundary(child: CustomPaint(painter: StrokesPainter(strokes))),
+          RepaintBoundary(
+            child: CustomPaint(painter: StrokesPainter(strokes, faded: faded)),
+          ),
           // Its own layer: the pen repaints only the ink it's drawing.
           RepaintBoundary(
             child: CustomPaint(painter: LiveStrokePainter(live, predicted)),

@@ -115,6 +115,34 @@ describe('users/{uid}/documents', () => {
   });
 });
 
+describe('users/{uid}/audio', () => {
+  const m4a = new Uint8Array([0x00, 0x00, 0x00, 0x18, 0x66, 0x74, 0x79, 0x70]);
+  const asM4a = { contentType: 'audio/mp4' };
+
+  test('people can upload, play and delete their recordings', async () => {
+    const file = ref(sam(), 'users/sam/audio/rec-1.m4a');
+    await assertSucceeds(uploadBytes(file, m4a, asM4a));
+    await assertSucceeds(getBytes(file));
+    await assertSucceeds(deleteObject(file));
+  });
+
+  test('nobody else can hear or add to them', async () => {
+    await uploadBytes(ref(sam(), 'users/sam/audio/a.m4a'), m4a, asM4a);
+    await assertFails(getBytes(ref(alex(), 'users/sam/audio/a.m4a')));
+    await assertFails(uploadBytes(ref(alex(), 'users/sam/audio/b.m4a'), m4a, asM4a));
+    await assertFails(getBytes(ref(guest(), 'users/sam/audio/a.m4a')));
+  });
+
+  test('only .m4a sound under 100 MB, never replaced', async () => {
+    await assertFails(uploadBytes(ref(sam(), 'users/sam/audio/a.mp3'), m4a, asM4a));
+    await assertFails(uploadBytes(ref(sam(), 'users/sam/audio/a.m4a'), m4a, asJpeg));
+    const big = new Uint8Array(100 * 1024 * 1024);
+    await assertFails(uploadBytes(ref(sam(), 'users/sam/audio/big.m4a'), big, asM4a));
+    await uploadBytes(ref(sam(), 'users/sam/audio/c.m4a'), m4a, asM4a);
+    await assertFails(uploadBytes(ref(sam(), 'users/sam/audio/c.m4a'), m4a, asM4a));
+  });
+});
+
 /** Writes as tool/catalog.py would: past the rules. */
 const seedDoc = (path, data) =>
   env.withSecurityRulesDisabled((ctx) => setDoc(doc(ctx.firestore(), path), data));

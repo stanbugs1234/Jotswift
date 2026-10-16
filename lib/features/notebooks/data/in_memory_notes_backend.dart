@@ -1,4 +1,7 @@
 import 'dart:async';
+
+import '../../audio/recording.dart';
+
 import 'dart:math';
 
 import '../../../core/paper/paper_style.dart';
@@ -128,6 +131,31 @@ class _InMemoryUserData
       ),
     );
   }
+
+  final _recordings = <String, Map<String, Recording>>{};
+  var _recordingCount = 0;
+
+  @override
+  Stream<List<Recording>> watchRecordings(String notebookId) => _watch(
+    () =>
+        [...?_recordings[notebookId]?.values]
+          ..sort((a, b) => a.createdAt.compareTo(b.createdAt)),
+  );
+
+  @override
+  Future<void> addRecording(String notebookId, Recording recording) async {
+    (_recordings[notebookId] ??= {})[recording.id] = recording;
+    _changed();
+  }
+
+  @override
+  Future<void> deleteRecording(String notebookId, String recordingId) async {
+    _recordings[notebookId]?.remove(recordingId);
+    _changed();
+  }
+
+  @override
+  String newRecordingId() => 'recording-${++_recordingCount}';
 
   @override
   Future<void> setPageInkText(String pageId, String text) async {

@@ -1,4 +1,5 @@
 import '../../../core/paper/paper_style.dart';
+import '../../audio/recording.dart';
 import '../../canvas/domain/page_element.dart';
 import '../../canvas/domain/stroke.dart';
 import '../domain/notebook_models.dart';
@@ -85,6 +86,14 @@ abstract interface class NotebookRepository {
   /// Every page, in every notebook (to read the handwriting of pages that
   /// haven't been).
   Future<List<NotePage>> allPages();
+
+  /// A notebook's sound recordings, oldest first.
+  Stream<List<Recording>> watchRecordings(String notebookId);
+  Future<void> addRecording(String notebookId, Recording recording);
+  Future<void> deleteRecording(String notebookId, String recordingId);
+
+  /// A new recording's id.
+  String newRecordingId();
 
   /// Every page of a notebook, in every section (to follow links).
   Stream<List<NotePage>> watchNotebookPages(String notebookId);

@@ -13,6 +13,7 @@ import '../canvas/ink_toolbar.dart';
 import '../canvas/page_canvas.dart';
 import '../canvas/pen_rail.dart';
 import '../canvas/toolbar_layout.dart';
+import '../audio/audio_bar.dart';
 import '../canvas/zoom_window.dart';
 import '../canvas/templates.dart' show templateImageProvider;
 import '../exports/export_sheet.dart';
@@ -367,6 +368,7 @@ class PageScreen extends ConsumerWidget {
               _Preload(pageIds: [?adjacent.previous, ?adjacent.next]),
             if (!inkEnabled) const _ViewOnlyBanner(),
             if (!readOnly) InkToolbar(pageId: pageId, inkEnabled: inkEnabled),
+            if (notebookId != null) AudioBar(notebookId: notebookId),
             const Divider(height: 1),
             Expanded(
               child: Stack(

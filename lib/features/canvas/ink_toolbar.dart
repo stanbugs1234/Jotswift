@@ -15,6 +15,9 @@ import 'stickers.dart';
 import 'stroke_painter.dart';
 import 'tape.dart';
 import 'toolbar_layout.dart';
+import '../audio/audio_bar.dart';
+import '../audio/audio_controllers.dart';
+import '../notebooks/notes_providers.dart';
 import 'zoom_window.dart';
 
 /// The page tools: a finger toggle, pen, highlighter, eraser, select, lasso,
@@ -61,15 +64,39 @@ class InkToolbar extends ConsumerWidget {
       ref.read(penFavoritesSettingProvider.notifier).replaceAt(index, pen);
     });
 
+    final notebookId = ref.watch(
+      pageProvider(pageId).select((p) => p.value?.notebookId),
+    );
+    final recording = ref.watch(recordingSessionProvider);
+    final hasRecordings =
+        notebookId != null &&
+        (ref.watch(recordingsProvider(notebookId)).value?.isNotEmpty ?? false);
+
     Widget button(ToolbarTool t) => _ToolButton(
-      tooltip: t.label,
-      icon: t.icon,
+      tooltip: switch (t) {
+        ToolbarTool.record when recording != null => 'Stop recording',
+        _ => t.label,
+      },
+      icon: switch (t) {
+        ToolbarTool.record when recording != null => Icons.stop_circle,
+        _ => t.icon,
+      },
       selected: switch (t) {
+        ToolbarTool.record => recording != null,
+        ToolbarTool.recordings =>
+          ref.watch(playbackProvider)?.notebookId == notebookId,
         ToolbarTool.zoomWindow => ref.watch(zoomWindowProvider),
         ToolbarTool.ruler => ref.watch(rulerVisibleProvider),
         _ => t.kind != null && tool.kind == t.kind,
       },
       onPressed: switch (t) {
+        ToolbarTool.record => () {
+          if (notebookId == null) return;
+          toggleRecording(context, ref, notebookId: notebookId, pageId: pageId);
+        },
+        ToolbarTool.recordings => () {
+          if (notebookId != null) togglePlayer(context, ref, notebookId);
+        },
         ToolbarTool.zoomWindow => ref.read(zoomWindowProvider.notifier).toggle,
         ToolbarTool.ruler => ref.read(rulerVisibleProvider.notifier).toggle,
         ToolbarTool.text => () => addTextBox(context, ref, pageId),
@@ -102,7 +129,8 @@ class InkToolbar extends ConsumerWidget {
                         const _Divider(),
                       ],
                       for (final t in layout.shown)
-                        if (inkEnabled || !t.needsInk) ...[
+                        if ((inkEnabled || !t.needsInk) &&
+                            (t != ToolbarTool.recordings || hasRecordings)) ...[
                           button(t),
                           if (t == ToolbarTool.pen &&
                               inkEnabled &&

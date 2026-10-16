@@ -1286,6 +1286,7 @@ void main() {
       // Its own button, after the pen.
       expect(find.byTooltip('Saved pen 1: Fountain'), findsOneWidget);
 
+      await tester.ensureVisible(find.byTooltip('Saved pen 1: Fountain'));
       await tester.tap(find.byTooltip('Saved pen 1: Fountain'));
       await tester.pump();
       await penOptions();

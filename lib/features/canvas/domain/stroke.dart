@@ -60,6 +60,8 @@ class Stroke {
     this.followsPen = false,
     this.dash = LineDash.solid,
     this.fill,
+    this.audioId,
+    this.audioAt,
   });
 
   factory Stroke.fromMap(String id, Map<String, dynamic> map) {
@@ -85,6 +87,8 @@ class Stroke {
       followsPen: map['followsPen'] as bool? ?? false,
       dash: LineDash.values.asNameMap()[map['dash']] ?? LineDash.solid,
       fill: map['fill'] as int?,
+      audioId: map['audioId'] as String?,
+      audioAt: map['audioAt'] as int?,
     );
   }
 
@@ -112,6 +116,10 @@ class Stroke {
   /// A closed shape's fill (ARGB), or none.
   final int? fill;
 
+  /// Written while recording: the recording, and how far into it (ms).
+  final String? audioId;
+  final int? audioAt;
+
   /// Drawn with a stylus, so lightly smoothed: the ink stays right at the
   /// tip. Older strokes and finger strokes are smoothed more.
   final bool followsPen;
@@ -136,6 +144,8 @@ class Stroke {
     if (followsPen) 'followsPen': true,
     if (dash != LineDash.solid) 'dash': dash.name,
     'fill': ?fill,
+    'audioId': ?audioId,
+    'audioAt': ?audioAt,
   };
 
   static double _round(double v, int scale) => (v * scale).round() / scale;
@@ -153,6 +163,8 @@ class Stroke {
     followsPen: followsPen,
     dash: dash,
     fill: fill,
+    audioId: audioId,
+    audioAt: audioAt,
   );
 
   /// The same stroke with other [points] (while it's being drawn).
@@ -169,6 +181,8 @@ class Stroke {
     followsPen: followsPen,
     dash: dash,
     fill: fill,
+    audioId: audioId,
+    audioAt: audioAt,
   );
 
   late final Rect bounds = _computeBounds();
@@ -264,6 +278,8 @@ List<Stroke>? eraseFromStroke(
           style: stroke.style,
           followsPen: stroke.followsPen,
           dash: stroke.dash,
+          audioId: stroke.audioId,
+          audioAt: stroke.audioAt,
         ),
       );
     }

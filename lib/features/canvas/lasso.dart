@@ -111,6 +111,8 @@ class LassoTransform {
     style: stroke.style,
     followsPen: stroke.followsPen,
     dash: stroke.dash,
+    audioId: stroke.audioId,
+    audioAt: stroke.audioAt,
     // Recolored, the fill takes the new color at its own strength.
     fill: switch ((stroke.fill, color)) {
       (final fill?, final color?) => Color(

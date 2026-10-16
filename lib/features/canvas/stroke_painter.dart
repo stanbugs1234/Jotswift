@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
+import 'package:flutter/foundation.dart' show setEquals;
 import 'package:flutter/material.dart';
 import 'package:perfect_freehand/perfect_freehand.dart';
 
@@ -219,26 +220,38 @@ abstract final class StrokeRenderer {
 /// Saved strokes. Kept in its own layer so drawing a new stroke doesn't
 /// repaint the whole page.
 class StrokesPainter extends CustomPainter {
-  StrokesPainter(this.strokes);
+  StrokesPainter(this.strokes, {this.faded = const {}});
 
   final List<Stroke> strokes;
+
+  /// Strokes drawn faint: written later in a recording than it's played.
+  final Set<String> faded;
 
   @override
   void paint(Canvas canvas, Size size) {
     // Highlighters go under the ink, as a highlighter on paper sits under
     // what it marks, so a highlight never dulls the writing.
-    for (final stroke in [
+    List<Stroke> ordered(bool Function(Stroke) which) => [
       for (final s in strokes)
-        if (s.tool == InkTool.highlighter) s,
+        if (s.tool == InkTool.highlighter && which(s)) s,
       for (final s in strokes)
-        if (s.tool != InkTool.highlighter) s,
-    ]) {
+        if (s.tool != InkTool.highlighter && which(s)) s,
+    ];
+    for (final stroke in ordered((s) => !faded.contains(s.id))) {
       StrokeRenderer.paint(canvas, stroke);
     }
+    if (faded.isEmpty) return;
+    // Faint, together in one layer.
+    canvas.saveLayer(null, Paint()..color = const Color(0x33000000));
+    for (final stroke in ordered((s) => faded.contains(s.id))) {
+      StrokeRenderer.paint(canvas, stroke);
+    }
+    canvas.restore();
   }
 
   @override
-  bool shouldRepaint(StrokesPainter old) => !identical(old.strokes, strokes);
+  bool shouldRepaint(StrokesPainter old) =>
+      !identical(old.strokes, strokes) || !setEquals(old.faded, faded);
 }
 
 /// The stroke being drawn right now, plus where the pen is [predicted] to

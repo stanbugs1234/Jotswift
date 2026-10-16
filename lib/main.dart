@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'features/audio/audio_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -111,6 +112,9 @@ Future<List<Override>> _backendOverrides() async {
     purchasesClientProvider.overrideWithValue(createPurchasesClient()),
     documentStoreProvider.overrideWithValue(
       FirebaseDocumentStore(FirebaseStorage.instance),
+    ),
+    audioStoreProvider.overrideWithValue(
+      FirebaseAudioStore(FirebaseStorage.instance),
     ),
     packCacheProvider.overrideWithValue(
       PackCache(
