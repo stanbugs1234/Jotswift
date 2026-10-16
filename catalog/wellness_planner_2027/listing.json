@@ -1,0 +1,24 @@
+{
+  "kind": "template",
+  "name": "Wellness Planner 2027",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "planner_wellness_planner_2027"
+    ]
+  },
+  "category": "planners",
+  "tags": [
+    "wellness",
+    "mental health",
+    "self-care",
+    "journal",
+    "therapy",
+    "linked",
+    "dated",
+    "2027",
+    "landscape",
+    "portrait"
+  ]
+}

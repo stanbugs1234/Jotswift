@@ -1,0 +1,23 @@
+{
+  "kind": "template",
+  "name": "Wellness Planner (undated)",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "planner_wellness_planner_undated"
+    ]
+  },
+  "category": "planners",
+  "tags": [
+    "wellness",
+    "mental health",
+    "self-care",
+    "journal",
+    "therapy",
+    "linked",
+    "undated",
+    "landscape",
+    "portrait"
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "kind": "template",
+  "name": "Life Planner (undated)",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "planner_life_planner_undated"
+    ]
+  },
+  "category": "planners",
+  "tags": [
+    "life",
+    "goals",
+    "budget",
+    "habits",
+    "vision board",
+    "meal planning",
+    "linked",
+    "undated",
+    "landscape",
+    "portrait"
+  ]
+}

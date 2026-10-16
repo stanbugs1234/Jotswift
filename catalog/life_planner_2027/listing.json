@@ -1,0 +1,25 @@
+{
+  "kind": "template",
+  "name": "Life Planner 2027",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "planner_life_planner_2027"
+    ]
+  },
+  "category": "planners",
+  "tags": [
+    "life",
+    "goals",
+    "budget",
+    "habits",
+    "vision board",
+    "meal planning",
+    "linked",
+    "dated",
+    "2027",
+    "landscape",
+    "portrait"
+  ]
+}

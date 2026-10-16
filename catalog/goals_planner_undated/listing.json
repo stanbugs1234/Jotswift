@@ -1,0 +1,23 @@
+{
+  "kind": "template",
+  "name": "Goals & Projects (undated)",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "planner_goals_planner_undated"
+    ]
+  },
+  "category": "planners",
+  "tags": [
+    "goals",
+    "projects",
+    "productivity",
+    "dashboard",
+    "quarterly",
+    "linked",
+    "undated",
+    "landscape",
+    "portrait"
+  ]
+}

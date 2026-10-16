@@ -16,6 +16,7 @@ import json
 import subprocess
 import sys
 import tempfile
+from functools import partial
 from pathlib import Path
 
 import make_planner as mp
@@ -73,7 +74,187 @@ def focus():
     )
 
 
-PLANNERS = {"focus": focus}
+def series(name, body, n):
+    return [(f"{name} {k + 1}", body) for k in range(n)]
+
+
+def reflect(prompts):
+    return partial(pg.month_review, prompts=prompts)
+
+
+def wellness():
+    return dict(
+        title="Wellness Planner", subtitle="Check in with yourself, every day.",
+        style=style("#5E5A9C", "#ECEAF6", "#FCFBFE"),
+        tags=["wellness", "mental health", "self-care", "journal", "therapy", "linked"],
+        front=[("Year in pixels", "heart", pg.year_pixels, "start"),
+               ("Intentions", "star", pg.year_goals, "start")],
+        month_kinds=[Kind("Calendar", pg.month_calendar, "months"),
+                     Kind("Mind", pg.month_mental_health, "mind"),
+                     Kind("Habits", pg.month_habits, "habits"),
+                     Kind("Reflect", reflect([("Highs", "star", None), ("Lows", "cloud", None),
+                                              ("What helped", "leaf", None), ("Boundaries", "check", None),
+                                              ("Joy", "sun", None), ("Next month I need", "heart", None)]),
+                          "month_review")],
+        week_kinds=[Kind("Week", pg.week_plan, "weeks"),
+                    Kind("Check-in", pg.week_review, "week_review")],
+        day_kinds=[Kind("Journal", pg.day_journal, "days")],
+        collections=[Collection("therapy", "Therapy notes", "cloud", "therapy", series("Session", pg.therapy_notes, 24),
+                                "Before, during and after each session."),
+                     Collection("anxiety", "Anxiety journal", "leaf", "anxiety",
+                                series("Entry", pg.anxiety_journal, 12), "Untangle a worry, one question at a time."),
+                     Collection("toolkit", "Toolkit", "heart", "toolkit",
+                                [("Self-care menu", pg.self_care_menu), ("Sleep log", pg.sleep_log),
+                                 ("Sleep log 2", pg.sleep_log), ("Stress tracker", pg.stress_tracker),
+                                 ("Stress tracker 2", pg.stress_tracker)], "What helps, when you need it."),
+                     Collection("gratitude", "Gratitude", "star", "gratitude", series("Gratitude", pg.gratitude, 12),
+                                "Three good things."),
+                     notes()],
+        groups=[Group("weeks", "Week pages"), Group("week_review", "Weekly check-ins"),
+                Group("days", "Daily journal pages"), Group("mind", "Monthly mental health"),
+                Group("habits", "Habit trackers"), Group("month_review", "Monthly reflections"),
+                Group("therapy", "Therapy notes"), Group("anxiety", "Anxiety journal"),
+                Group("toolkit", "Toolkit"), Group("gratitude", "Gratitude journal"), Group("notes", "Notes")],
+    )
+
+
+def life():
+    return dict(
+        title="Life Planner", subtitle="Plan the days, grow the life.",
+        style=style("#A9553A", "#F5E8E1", "#FFFCF8"),
+        tags=["life", "goals", "budget", "habits", "vision board", "meal planning", "linked"],
+        front=[("Year goals", "target", pg.year_goals, "start"),
+               ("Vision board", "star", pg.vision_board, "start"),
+               ("Year in pixels", "heart", pg.year_pixels, "start")],
+        month_kinds=[Kind("Calendar", pg.month_calendar, "months"),
+                     Kind("Goals", pg.month_goals, "month_goals"),
+                     Kind("Vision", pg.vision_board, "vision"),
+                     Kind("Habits", pg.month_habits, "habits"),
+                     Kind("Budget", pg.month_budget, "budget"),
+                     Kind("Wins", pg.wins, "wins"),
+                     Kind("Reflect", pg.month_review, "month_review")],
+        week_kinds=[Kind("Week", pg.week_plan, "weeks"),
+                    Kind("Meals", pg.meals_movement, "meals"),
+                    Kind("Review", pg.week_review, "week_review")],
+        day_kinds=[Kind("Day", pg.day_life, "days")],
+        collections=[Collection("finance", "Finance", "coin", "finance",
+                                [("Year overview", pg.finance_overview), ("Bills", pg.bills_tracker),
+                                 ("Savings goals", pg.savings_goals), ("Debt payoff", pg.debt_payoff),
+                                 ("Subscriptions", pg.subscriptions), ("Wishlist", pg.wishlist)],
+                                "Your money, month by month."),
+                     Collection("health", "Health", "leaf", "health",
+                                [("Meal plan", pg.meal_plan), ("Sleep log", pg.sleep_log),
+                                 ("Reading log", pg.reading_log)], "Eat, move, rest."),
+                     Collection("home", "Home", "home", "home_pages",
+                                [("Cleaning schedule", pg.cleaning_schedule), ("Groceries", pg.checklist_page),
+                                 ("Projects", pg.checklist_page), ("Gift ideas", pg.checklist_page)],
+                                "Keep the house running."),
+                     Collection("travel", "Travel", "plane", "travel", series("Trip", pg.trip_planner, 4),
+                                "Plan every getaway."),
+                     notes()],
+        groups=[Group("weeks", "Week pages"), Group("meals", "Weekly meals & movement"),
+                Group("week_review", "Weekly reviews"), Group("days", "Daily pages"),
+                Group("month_goals", "Monthly goals"), Group("vision", "Monthly vision boards"),
+                Group("habits", "Habit trackers"), Group("budget", "Monthly budgets"),
+                Group("wins", "Monthly wins"), Group("month_review", "Monthly reflections"),
+                Group("finance", "Finance"), Group("health", "Health"), Group("home_pages", "Home"),
+                Group("travel", "Travel"), Group("notes", "Notes")],
+    )
+
+
+def goals():
+    return dict(
+        title="Goals & Projects", subtitle="From a dream to this week's next step.",
+        style=style("#1F3D63", "#E6ECF4"),
+        tags=["goals", "projects", "productivity", "dashboard", "quarterly", "linked"],
+        front=[("Goal roadmap", "target", pg.goal_roadmap, "start"),
+               ("Year goals", "star", pg.year_goals, "start")],
+        month_kinds=[Kind("Calendar", pg.month_calendar, "months"),
+                     Kind("Milestones", pg.milestones, "milestones"),
+                     Kind("Review", pg.month_review, "month_review")],
+        week_kinds=[Kind("Week", pg.week_plan, "weeks"),
+                    Kind("Review", pg.week_review, "week_review")],
+        day_kinds=[Kind("Day", pg.day_goals, "days")],
+        collections=[Collection("goals", "Goals", "target", "goal_pages", series("Goal", pg.goal_dashboard, 12),
+                                "One dashboard per goal: why, milestones, steps."),
+                     Collection("projects", "Projects", "briefcase", "projects",
+                                series("Project", pg.project_dashboard, 12), "Outcome, tasks and notes."),
+                     Collection("quarters", "Quarters", "chart", "quarters",
+                                [(f"Q{k + 1} review", pg.quarter_review) for k in range(4)],
+                                "Step back every three months."),
+                     notes()],
+        groups=[Group("weeks", "Week pages"), Group("week_review", "Weekly reviews"),
+                Group("days", "Daily pages"), Group("milestones", "Monthly milestones"),
+                Group("month_review", "Monthly reviews"), Group("goal_pages", "Goal dashboards"),
+                Group("projects", "Project dashboards"), Group("quarters", "Quarterly reviews"),
+                Group("notes", "Notes")],
+    )
+
+
+def student():
+    return dict(
+        title="Student Planner", subtitle="Classes, deadlines and study time, August to July.",
+        style=style("#2C5BA6", "#E5EDF9"),
+        academic=True,
+        tags=["student", "academic", "school", "college", "study", "assignments", "linked"],
+        front=[("Class schedule", "cap", pg.class_schedule, "start"),
+               ("Year goals", "target", pg.year_goals, "start")],
+        month_kinds=[Kind("Calendar", pg.month_calendar, "months"),
+                     Kind("Assignments", pg.assignment_tracker, "assignments"),
+                     Kind("Review", pg.month_review, "month_review")],
+        week_kinds=[Kind("Week", pg.week_plan, "weeks"),
+                    Kind("Review", pg.week_review, "week_review")],
+        day_kinds=[Kind("Day", pg.day_student, "days")],
+        collections=[Collection("courses", "Courses", "book", "courses", series("Course", pg.course_dashboard, 8),
+                                "One page per class: assignments, grades, notes."),
+                     Collection("exams", "Exams", "cap", "exams", series("Exam plan", pg.exam_planner, 3),
+                                "Plan your revision."),
+                     Collection("study", "Study", "target", "study",
+                                [("Pomodoro log", pg.pomodoro), ("Pomodoro log 2", pg.pomodoro),
+                                 ("GPA tracker", pg.gpa_tracker), ("Reading log", pg.reading_log)],
+                                "Focus sessions, grades and reading."),
+                     notes(30)],
+        groups=[Group("weeks", "Week pages"), Group("week_review", "Weekly reviews"),
+                Group("days", "Daily pages"), Group("assignments", "Monthly assignment trackers"),
+                Group("month_review", "Monthly reviews"), Group("courses", "Course pages"),
+                Group("exams", "Exam plans"), Group("study", "Study logs"), Group("notes", "Class notes")],
+    )
+
+
+def business():
+    return dict(
+        title="Business Planner", subtitle="Strategy, clients and money, in one place.",
+        style=style("#2F343B", "#ECEAE4", "#FFFEFB"),
+        tags=["business", "work", "clients", "marketing", "finance", "content", "linked"],
+        front=[("Year review", "star", pg.year_review, "start"),
+               ("Strategy", "target", pg.business_strategy, "start"),
+               ("Marketing plan", "chart", pg.marketing_plan, "start"),
+               ("Year goals", "check", pg.year_goals, "start")],
+        month_kinds=[Kind("Calendar", pg.month_calendar, "months"),
+                     Kind("Content", pg.content_calendar, "content"),
+                     Kind("Money", pg.income_expenses, "money"),
+                     Kind("Review", pg.month_review, "month_review")],
+        week_kinds=[Kind("Week", pg.week_plan, "weeks"),
+                    Kind("Review", pg.week_review, "week_review")],
+        day_kinds=[Kind("Day", pg.day_business, "days")],
+        collections=[Collection("clients", "Clients", "people", "clients", series("Client", pg.client_card, 20),
+                                "Contacts, projects and invoices."),
+                     Collection("projects", "Projects", "briefcase", "projects",
+                                series("Project", pg.project_dashboard, 12), "Outcome, tasks and notes."),
+                     Collection("finance", "Finance", "coin", "finance",
+                                [("Year overview", pg.finance_overview), ("Subscriptions", pg.subscriptions),
+                                 ("Savings goals", pg.savings_goals)], "The year's numbers."),
+                     notes()],
+        groups=[Group("weeks", "Week pages"), Group("week_review", "Weekly reviews"),
+                Group("days", "Daily pages"), Group("content", "Content calendars"),
+                Group("money", "Monthly income & expenses"), Group("month_review", "Monthly reviews"),
+                Group("clients", "Client pages"), Group("projects", "Project dashboards"),
+                Group("finance", "Finance"), Group("notes", "Notes")],
+    )
+
+
+PLANNERS = {"focus": focus, "wellness": wellness, "life": life, "goals": goals, "student": student,
+            "business": business}
 
 
 # Building
@@ -95,7 +276,11 @@ def file_name(layout, week, ext):
 
 
 def item_id(key, dated):
-    return f"{key}_planner_{YEAR}" if dated else f"{key}_planner_undated"
+    if not dated:
+        return f"{key}_planner_undated"
+    if PLANNERS[key]().get("academic"):
+        return f"{key}_planner_{YEAR - 1}_{str(YEAR)[2:]}"
+    return f"{key}_planner_{YEAR}"
 
 
 def write(key, dated):

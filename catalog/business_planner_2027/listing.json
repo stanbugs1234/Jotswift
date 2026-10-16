@@ -1,0 +1,25 @@
+{
+  "kind": "template",
+  "name": "Business Planner 2027",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "planner_business_planner_2027"
+    ]
+  },
+  "category": "planners",
+  "tags": [
+    "business",
+    "work",
+    "clients",
+    "marketing",
+    "finance",
+    "content",
+    "linked",
+    "dated",
+    "2027",
+    "landscape",
+    "portrait"
+  ]
+}

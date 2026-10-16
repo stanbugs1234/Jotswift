@@ -1,0 +1,24 @@
+{
+  "kind": "template",
+  "name": "Goals & Projects 2027",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "planner_goals_planner_2027"
+    ]
+  },
+  "category": "planners",
+  "tags": [
+    "goals",
+    "projects",
+    "productivity",
+    "dashboard",
+    "quarterly",
+    "linked",
+    "dated",
+    "2027",
+    "landscape",
+    "portrait"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "kind": "template",
+  "name": "Student Planner 2026-27",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "planner_student_planner_2026_27"
+    ]
+  },
+  "category": "planners",
+  "tags": [
+    "student",
+    "academic",
+    "school",
+    "college",
+    "study",
+    "assignments",
+    "linked",
+    "dated",
+    "2026-27",
+    "landscape",
+    "portrait"
+  ]
+}

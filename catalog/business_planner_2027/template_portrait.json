@@ -1,0 +1,3853 @@
+{
+ "sections": [
+  {
+   "title": "Start",
+   "pages": [
+    {
+     "pdfPage": 1,
+     "title": "Home"
+    },
+    {
+     "pdfPage": 2,
+     "title": "2027",
+     "from": "2027-01-01",
+     "to": "2027-12-31"
+    },
+    {
+     "pdfPage": 3,
+     "title": "Year review"
+    },
+    {
+     "pdfPage": 4,
+     "title": "Strategy"
+    },
+    {
+     "pdfPage": 5,
+     "title": "Marketing plan"
+    },
+    {
+     "pdfPage": 6,
+     "title": "Year goals"
+    }
+   ]
+  },
+  {
+   "title": "January",
+   "pages": [
+    {
+     "pdfPage": 7,
+     "title": "January",
+     "from": "2027-01-01",
+     "to": "2027-01-31"
+    },
+    {
+     "pdfPage": 8,
+     "title": "Jan content",
+     "group": "content"
+    },
+    {
+     "pdfPage": 9,
+     "title": "Jan money",
+     "group": "money"
+    },
+    {
+     "pdfPage": 10,
+     "title": "Jan review",
+     "group": "month_review"
+    },
+    {
+     "pdfPage": 11,
+     "title": "Week 1",
+     "group": "weeks",
+     "from": "2026-12-28",
+     "to": "2027-01-03"
+    },
+    {
+     "pdfPage": 12,
+     "title": "Week 1 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 13,
+     "title": "Jan 1",
+     "group": "days",
+     "from": "2027-01-01",
+     "to": "2027-01-01"
+    },
+    {
+     "pdfPage": 14,
+     "title": "Jan 2",
+     "group": "days",
+     "from": "2027-01-02",
+     "to": "2027-01-02"
+    },
+    {
+     "pdfPage": 15,
+     "title": "Jan 3",
+     "group": "days",
+     "from": "2027-01-03",
+     "to": "2027-01-03"
+    },
+    {
+     "pdfPage": 16,
+     "title": "Week 2",
+     "group": "weeks",
+     "from": "2027-01-04",
+     "to": "2027-01-10"
+    },
+    {
+     "pdfPage": 17,
+     "title": "Week 2 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 18,
+     "title": "Jan 4",
+     "group": "days",
+     "from": "2027-01-04",
+     "to": "2027-01-04"
+    },
+    {
+     "pdfPage": 19,
+     "title": "Jan 5",
+     "group": "days",
+     "from": "2027-01-05",
+     "to": "2027-01-05"
+    },
+    {
+     "pdfPage": 20,
+     "title": "Jan 6",
+     "group": "days",
+     "from": "2027-01-06",
+     "to": "2027-01-06"
+    },
+    {
+     "pdfPage": 21,
+     "title": "Jan 7",
+     "group": "days",
+     "from": "2027-01-07",
+     "to": "2027-01-07"
+    },
+    {
+     "pdfPage": 22,
+     "title": "Jan 8",
+     "group": "days",
+     "from": "2027-01-08",
+     "to": "2027-01-08"
+    },
+    {
+     "pdfPage": 23,
+     "title": "Jan 9",
+     "group": "days",
+     "from": "2027-01-09",
+     "to": "2027-01-09"
+    },
+    {
+     "pdfPage": 24,
+     "title": "Jan 10",
+     "group": "days",
+     "from": "2027-01-10",
+     "to": "2027-01-10"
+    },
+    {
+     "pdfPage": 25,
+     "title": "Week 3",
+     "group": "weeks",
+     "from": "2027-01-11",
+     "to": "2027-01-17"
+    },
+    {
+     "pdfPage": 26,
+     "title": "Week 3 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 27,
+     "title": "Jan 11",
+     "group": "days",
+     "from": "2027-01-11",
+     "to": "2027-01-11"
+    },
+    {
+     "pdfPage": 28,
+     "title": "Jan 12",
+     "group": "days",
+     "from": "2027-01-12",
+     "to": "2027-01-12"
+    },
+    {
+     "pdfPage": 29,
+     "title": "Jan 13",
+     "group": "days",
+     "from": "2027-01-13",
+     "to": "2027-01-13"
+    },
+    {
+     "pdfPage": 30,
+     "title": "Jan 14",
+     "group": "days",
+     "from": "2027-01-14",
+     "to": "2027-01-14"
+    },
+    {
+     "pdfPage": 31,
+     "title": "Jan 15",
+     "group": "days",
+     "from": "2027-01-15",
+     "to": "2027-01-15"
+    },
+    {
+     "pdfPage": 32,
+     "title": "Jan 16",
+     "group": "days",
+     "from": "2027-01-16",
+     "to": "2027-01-16"
+    },
+    {
+     "pdfPage": 33,
+     "title": "Jan 17",
+     "group": "days",
+     "from": "2027-01-17",
+     "to": "2027-01-17"
+    },
+    {
+     "pdfPage": 34,
+     "title": "Week 4",
+     "group": "weeks",
+     "from": "2027-01-18",
+     "to": "2027-01-24"
+    },
+    {
+     "pdfPage": 35,
+     "title": "Week 4 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 36,
+     "title": "Jan 18",
+     "group": "days",
+     "from": "2027-01-18",
+     "to": "2027-01-18"
+    },
+    {
+     "pdfPage": 37,
+     "title": "Jan 19",
+     "group": "days",
+     "from": "2027-01-19",
+     "to": "2027-01-19"
+    },
+    {
+     "pdfPage": 38,
+     "title": "Jan 20",
+     "group": "days",
+     "from": "2027-01-20",
+     "to": "2027-01-20"
+    },
+    {
+     "pdfPage": 39,
+     "title": "Jan 21",
+     "group": "days",
+     "from": "2027-01-21",
+     "to": "2027-01-21"
+    },
+    {
+     "pdfPage": 40,
+     "title": "Jan 22",
+     "group": "days",
+     "from": "2027-01-22",
+     "to": "2027-01-22"
+    },
+    {
+     "pdfPage": 41,
+     "title": "Jan 23",
+     "group": "days",
+     "from": "2027-01-23",
+     "to": "2027-01-23"
+    },
+    {
+     "pdfPage": 42,
+     "title": "Jan 24",
+     "group": "days",
+     "from": "2027-01-24",
+     "to": "2027-01-24"
+    },
+    {
+     "pdfPage": 43,
+     "title": "Week 5",
+     "group": "weeks",
+     "from": "2027-01-25",
+     "to": "2027-01-31"
+    },
+    {
+     "pdfPage": 44,
+     "title": "Week 5 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 45,
+     "title": "Jan 25",
+     "group": "days",
+     "from": "2027-01-25",
+     "to": "2027-01-25"
+    },
+    {
+     "pdfPage": 46,
+     "title": "Jan 26",
+     "group": "days",
+     "from": "2027-01-26",
+     "to": "2027-01-26"
+    },
+    {
+     "pdfPage": 47,
+     "title": "Jan 27",
+     "group": "days",
+     "from": "2027-01-27",
+     "to": "2027-01-27"
+    },
+    {
+     "pdfPage": 48,
+     "title": "Jan 28",
+     "group": "days",
+     "from": "2027-01-28",
+     "to": "2027-01-28"
+    },
+    {
+     "pdfPage": 49,
+     "title": "Jan 29",
+     "group": "days",
+     "from": "2027-01-29",
+     "to": "2027-01-29"
+    },
+    {
+     "pdfPage": 50,
+     "title": "Jan 30",
+     "group": "days",
+     "from": "2027-01-30",
+     "to": "2027-01-30"
+    },
+    {
+     "pdfPage": 51,
+     "title": "Jan 31",
+     "group": "days",
+     "from": "2027-01-31",
+     "to": "2027-01-31"
+    }
+   ]
+  },
+  {
+   "title": "February",
+   "pages": [
+    {
+     "pdfPage": 52,
+     "title": "February",
+     "from": "2027-02-01",
+     "to": "2027-02-28"
+    },
+    {
+     "pdfPage": 53,
+     "title": "Feb content",
+     "group": "content"
+    },
+    {
+     "pdfPage": 54,
+     "title": "Feb money",
+     "group": "money"
+    },
+    {
+     "pdfPage": 55,
+     "title": "Feb review",
+     "group": "month_review"
+    },
+    {
+     "pdfPage": 56,
+     "title": "Week 6",
+     "group": "weeks",
+     "from": "2027-02-01",
+     "to": "2027-02-07"
+    },
+    {
+     "pdfPage": 57,
+     "title": "Week 6 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 58,
+     "title": "Feb 1",
+     "group": "days",
+     "from": "2027-02-01",
+     "to": "2027-02-01"
+    },
+    {
+     "pdfPage": 59,
+     "title": "Feb 2",
+     "group": "days",
+     "from": "2027-02-02",
+     "to": "2027-02-02"
+    },
+    {
+     "pdfPage": 60,
+     "title": "Feb 3",
+     "group": "days",
+     "from": "2027-02-03",
+     "to": "2027-02-03"
+    },
+    {
+     "pdfPage": 61,
+     "title": "Feb 4",
+     "group": "days",
+     "from": "2027-02-04",
+     "to": "2027-02-04"
+    },
+    {
+     "pdfPage": 62,
+     "title": "Feb 5",
+     "group": "days",
+     "from": "2027-02-05",
+     "to": "2027-02-05"
+    },
+    {
+     "pdfPage": 63,
+     "title": "Feb 6",
+     "group": "days",
+     "from": "2027-02-06",
+     "to": "2027-02-06"
+    },
+    {
+     "pdfPage": 64,
+     "title": "Feb 7",
+     "group": "days",
+     "from": "2027-02-07",
+     "to": "2027-02-07"
+    },
+    {
+     "pdfPage": 65,
+     "title": "Week 7",
+     "group": "weeks",
+     "from": "2027-02-08",
+     "to": "2027-02-14"
+    },
+    {
+     "pdfPage": 66,
+     "title": "Week 7 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 67,
+     "title": "Feb 8",
+     "group": "days",
+     "from": "2027-02-08",
+     "to": "2027-02-08"
+    },
+    {
+     "pdfPage": 68,
+     "title": "Feb 9",
+     "group": "days",
+     "from": "2027-02-09",
+     "to": "2027-02-09"
+    },
+    {
+     "pdfPage": 69,
+     "title": "Feb 10",
+     "group": "days",
+     "from": "2027-02-10",
+     "to": "2027-02-10"
+    },
+    {
+     "pdfPage": 70,
+     "title": "Feb 11",
+     "group": "days",
+     "from": "2027-02-11",
+     "to": "2027-02-11"
+    },
+    {
+     "pdfPage": 71,
+     "title": "Feb 12",
+     "group": "days",
+     "from": "2027-02-12",
+     "to": "2027-02-12"
+    },
+    {
+     "pdfPage": 72,
+     "title": "Feb 13",
+     "group": "days",
+     "from": "2027-02-13",
+     "to": "2027-02-13"
+    },
+    {
+     "pdfPage": 73,
+     "title": "Feb 14",
+     "group": "days",
+     "from": "2027-02-14",
+     "to": "2027-02-14"
+    },
+    {
+     "pdfPage": 74,
+     "title": "Week 8",
+     "group": "weeks",
+     "from": "2027-02-15",
+     "to": "2027-02-21"
+    },
+    {
+     "pdfPage": 75,
+     "title": "Week 8 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 76,
+     "title": "Feb 15",
+     "group": "days",
+     "from": "2027-02-15",
+     "to": "2027-02-15"
+    },
+    {
+     "pdfPage": 77,
+     "title": "Feb 16",
+     "group": "days",
+     "from": "2027-02-16",
+     "to": "2027-02-16"
+    },
+    {
+     "pdfPage": 78,
+     "title": "Feb 17",
+     "group": "days",
+     "from": "2027-02-17",
+     "to": "2027-02-17"
+    },
+    {
+     "pdfPage": 79,
+     "title": "Feb 18",
+     "group": "days",
+     "from": "2027-02-18",
+     "to": "2027-02-18"
+    },
+    {
+     "pdfPage": 80,
+     "title": "Feb 19",
+     "group": "days",
+     "from": "2027-02-19",
+     "to": "2027-02-19"
+    },
+    {
+     "pdfPage": 81,
+     "title": "Feb 20",
+     "group": "days",
+     "from": "2027-02-20",
+     "to": "2027-02-20"
+    },
+    {
+     "pdfPage": 82,
+     "title": "Feb 21",
+     "group": "days",
+     "from": "2027-02-21",
+     "to": "2027-02-21"
+    },
+    {
+     "pdfPage": 83,
+     "title": "Week 9",
+     "group": "weeks",
+     "from": "2027-02-22",
+     "to": "2027-02-28"
+    },
+    {
+     "pdfPage": 84,
+     "title": "Week 9 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 85,
+     "title": "Feb 22",
+     "group": "days",
+     "from": "2027-02-22",
+     "to": "2027-02-22"
+    },
+    {
+     "pdfPage": 86,
+     "title": "Feb 23",
+     "group": "days",
+     "from": "2027-02-23",
+     "to": "2027-02-23"
+    },
+    {
+     "pdfPage": 87,
+     "title": "Feb 24",
+     "group": "days",
+     "from": "2027-02-24",
+     "to": "2027-02-24"
+    },
+    {
+     "pdfPage": 88,
+     "title": "Feb 25",
+     "group": "days",
+     "from": "2027-02-25",
+     "to": "2027-02-25"
+    },
+    {
+     "pdfPage": 89,
+     "title": "Feb 26",
+     "group": "days",
+     "from": "2027-02-26",
+     "to": "2027-02-26"
+    },
+    {
+     "pdfPage": 90,
+     "title": "Feb 27",
+     "group": "days",
+     "from": "2027-02-27",
+     "to": "2027-02-27"
+    },
+    {
+     "pdfPage": 91,
+     "title": "Feb 28",
+     "group": "days",
+     "from": "2027-02-28",
+     "to": "2027-02-28"
+    }
+   ]
+  },
+  {
+   "title": "March",
+   "pages": [
+    {
+     "pdfPage": 92,
+     "title": "March",
+     "from": "2027-03-01",
+     "to": "2027-03-31"
+    },
+    {
+     "pdfPage": 93,
+     "title": "Mar content",
+     "group": "content"
+    },
+    {
+     "pdfPage": 94,
+     "title": "Mar money",
+     "group": "money"
+    },
+    {
+     "pdfPage": 95,
+     "title": "Mar review",
+     "group": "month_review"
+    },
+    {
+     "pdfPage": 96,
+     "title": "Week 10",
+     "group": "weeks",
+     "from": "2027-03-01",
+     "to": "2027-03-07"
+    },
+    {
+     "pdfPage": 97,
+     "title": "Week 10 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 98,
+     "title": "Mar 1",
+     "group": "days",
+     "from": "2027-03-01",
+     "to": "2027-03-01"
+    },
+    {
+     "pdfPage": 99,
+     "title": "Mar 2",
+     "group": "days",
+     "from": "2027-03-02",
+     "to": "2027-03-02"
+    },
+    {
+     "pdfPage": 100,
+     "title": "Mar 3",
+     "group": "days",
+     "from": "2027-03-03",
+     "to": "2027-03-03"
+    },
+    {
+     "pdfPage": 101,
+     "title": "Mar 4",
+     "group": "days",
+     "from": "2027-03-04",
+     "to": "2027-03-04"
+    },
+    {
+     "pdfPage": 102,
+     "title": "Mar 5",
+     "group": "days",
+     "from": "2027-03-05",
+     "to": "2027-03-05"
+    },
+    {
+     "pdfPage": 103,
+     "title": "Mar 6",
+     "group": "days",
+     "from": "2027-03-06",
+     "to": "2027-03-06"
+    },
+    {
+     "pdfPage": 104,
+     "title": "Mar 7",
+     "group": "days",
+     "from": "2027-03-07",
+     "to": "2027-03-07"
+    },
+    {
+     "pdfPage": 105,
+     "title": "Week 11",
+     "group": "weeks",
+     "from": "2027-03-08",
+     "to": "2027-03-14"
+    },
+    {
+     "pdfPage": 106,
+     "title": "Week 11 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 107,
+     "title": "Mar 8",
+     "group": "days",
+     "from": "2027-03-08",
+     "to": "2027-03-08"
+    },
+    {
+     "pdfPage": 108,
+     "title": "Mar 9",
+     "group": "days",
+     "from": "2027-03-09",
+     "to": "2027-03-09"
+    },
+    {
+     "pdfPage": 109,
+     "title": "Mar 10",
+     "group": "days",
+     "from": "2027-03-10",
+     "to": "2027-03-10"
+    },
+    {
+     "pdfPage": 110,
+     "title": "Mar 11",
+     "group": "days",
+     "from": "2027-03-11",
+     "to": "2027-03-11"
+    },
+    {
+     "pdfPage": 111,
+     "title": "Mar 12",
+     "group": "days",
+     "from": "2027-03-12",
+     "to": "2027-03-12"
+    },
+    {
+     "pdfPage": 112,
+     "title": "Mar 13",
+     "group": "days",
+     "from": "2027-03-13",
+     "to": "2027-03-13"
+    },
+    {
+     "pdfPage": 113,
+     "title": "Mar 14",
+     "group": "days",
+     "from": "2027-03-14",
+     "to": "2027-03-14"
+    },
+    {
+     "pdfPage": 114,
+     "title": "Week 12",
+     "group": "weeks",
+     "from": "2027-03-15",
+     "to": "2027-03-21"
+    },
+    {
+     "pdfPage": 115,
+     "title": "Week 12 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 116,
+     "title": "Mar 15",
+     "group": "days",
+     "from": "2027-03-15",
+     "to": "2027-03-15"
+    },
+    {
+     "pdfPage": 117,
+     "title": "Mar 16",
+     "group": "days",
+     "from": "2027-03-16",
+     "to": "2027-03-16"
+    },
+    {
+     "pdfPage": 118,
+     "title": "Mar 17",
+     "group": "days",
+     "from": "2027-03-17",
+     "to": "2027-03-17"
+    },
+    {
+     "pdfPage": 119,
+     "title": "Mar 18",
+     "group": "days",
+     "from": "2027-03-18",
+     "to": "2027-03-18"
+    },
+    {
+     "pdfPage": 120,
+     "title": "Mar 19",
+     "group": "days",
+     "from": "2027-03-19",
+     "to": "2027-03-19"
+    },
+    {
+     "pdfPage": 121,
+     "title": "Mar 20",
+     "group": "days",
+     "from": "2027-03-20",
+     "to": "2027-03-20"
+    },
+    {
+     "pdfPage": 122,
+     "title": "Mar 21",
+     "group": "days",
+     "from": "2027-03-21",
+     "to": "2027-03-21"
+    },
+    {
+     "pdfPage": 123,
+     "title": "Week 13",
+     "group": "weeks",
+     "from": "2027-03-22",
+     "to": "2027-03-28"
+    },
+    {
+     "pdfPage": 124,
+     "title": "Week 13 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 125,
+     "title": "Mar 22",
+     "group": "days",
+     "from": "2027-03-22",
+     "to": "2027-03-22"
+    },
+    {
+     "pdfPage": 126,
+     "title": "Mar 23",
+     "group": "days",
+     "from": "2027-03-23",
+     "to": "2027-03-23"
+    },
+    {
+     "pdfPage": 127,
+     "title": "Mar 24",
+     "group": "days",
+     "from": "2027-03-24",
+     "to": "2027-03-24"
+    },
+    {
+     "pdfPage": 128,
+     "title": "Mar 25",
+     "group": "days",
+     "from": "2027-03-25",
+     "to": "2027-03-25"
+    },
+    {
+     "pdfPage": 129,
+     "title": "Mar 26",
+     "group": "days",
+     "from": "2027-03-26",
+     "to": "2027-03-26"
+    },
+    {
+     "pdfPage": 130,
+     "title": "Mar 27",
+     "group": "days",
+     "from": "2027-03-27",
+     "to": "2027-03-27"
+    },
+    {
+     "pdfPage": 131,
+     "title": "Mar 28",
+     "group": "days",
+     "from": "2027-03-28",
+     "to": "2027-03-28"
+    },
+    {
+     "pdfPage": 132,
+     "title": "Week 14",
+     "group": "weeks",
+     "from": "2027-03-29",
+     "to": "2027-04-04"
+    },
+    {
+     "pdfPage": 133,
+     "title": "Week 14 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 134,
+     "title": "Mar 29",
+     "group": "days",
+     "from": "2027-03-29",
+     "to": "2027-03-29"
+    },
+    {
+     "pdfPage": 135,
+     "title": "Mar 30",
+     "group": "days",
+     "from": "2027-03-30",
+     "to": "2027-03-30"
+    },
+    {
+     "pdfPage": 136,
+     "title": "Mar 31",
+     "group": "days",
+     "from": "2027-03-31",
+     "to": "2027-03-31"
+    }
+   ]
+  },
+  {
+   "title": "April",
+   "pages": [
+    {
+     "pdfPage": 137,
+     "title": "April",
+     "from": "2027-04-01",
+     "to": "2027-04-30"
+    },
+    {
+     "pdfPage": 138,
+     "title": "Apr content",
+     "group": "content"
+    },
+    {
+     "pdfPage": 139,
+     "title": "Apr money",
+     "group": "money"
+    },
+    {
+     "pdfPage": 140,
+     "title": "Apr review",
+     "group": "month_review"
+    },
+    {
+     "pdfPage": 141,
+     "title": "Apr 1",
+     "group": "days",
+     "from": "2027-04-01",
+     "to": "2027-04-01"
+    },
+    {
+     "pdfPage": 142,
+     "title": "Apr 2",
+     "group": "days",
+     "from": "2027-04-02",
+     "to": "2027-04-02"
+    },
+    {
+     "pdfPage": 143,
+     "title": "Apr 3",
+     "group": "days",
+     "from": "2027-04-03",
+     "to": "2027-04-03"
+    },
+    {
+     "pdfPage": 144,
+     "title": "Apr 4",
+     "group": "days",
+     "from": "2027-04-04",
+     "to": "2027-04-04"
+    },
+    {
+     "pdfPage": 145,
+     "title": "Week 15",
+     "group": "weeks",
+     "from": "2027-04-05",
+     "to": "2027-04-11"
+    },
+    {
+     "pdfPage": 146,
+     "title": "Week 15 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 147,
+     "title": "Apr 5",
+     "group": "days",
+     "from": "2027-04-05",
+     "to": "2027-04-05"
+    },
+    {
+     "pdfPage": 148,
+     "title": "Apr 6",
+     "group": "days",
+     "from": "2027-04-06",
+     "to": "2027-04-06"
+    },
+    {
+     "pdfPage": 149,
+     "title": "Apr 7",
+     "group": "days",
+     "from": "2027-04-07",
+     "to": "2027-04-07"
+    },
+    {
+     "pdfPage": 150,
+     "title": "Apr 8",
+     "group": "days",
+     "from": "2027-04-08",
+     "to": "2027-04-08"
+    },
+    {
+     "pdfPage": 151,
+     "title": "Apr 9",
+     "group": "days",
+     "from": "2027-04-09",
+     "to": "2027-04-09"
+    },
+    {
+     "pdfPage": 152,
+     "title": "Apr 10",
+     "group": "days",
+     "from": "2027-04-10",
+     "to": "2027-04-10"
+    },
+    {
+     "pdfPage": 153,
+     "title": "Apr 11",
+     "group": "days",
+     "from": "2027-04-11",
+     "to": "2027-04-11"
+    },
+    {
+     "pdfPage": 154,
+     "title": "Week 16",
+     "group": "weeks",
+     "from": "2027-04-12",
+     "to": "2027-04-18"
+    },
+    {
+     "pdfPage": 155,
+     "title": "Week 16 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 156,
+     "title": "Apr 12",
+     "group": "days",
+     "from": "2027-04-12",
+     "to": "2027-04-12"
+    },
+    {
+     "pdfPage": 157,
+     "title": "Apr 13",
+     "group": "days",
+     "from": "2027-04-13",
+     "to": "2027-04-13"
+    },
+    {
+     "pdfPage": 158,
+     "title": "Apr 14",
+     "group": "days",
+     "from": "2027-04-14",
+     "to": "2027-04-14"
+    },
+    {
+     "pdfPage": 159,
+     "title": "Apr 15",
+     "group": "days",
+     "from": "2027-04-15",
+     "to": "2027-04-15"
+    },
+    {
+     "pdfPage": 160,
+     "title": "Apr 16",
+     "group": "days",
+     "from": "2027-04-16",
+     "to": "2027-04-16"
+    },
+    {
+     "pdfPage": 161,
+     "title": "Apr 17",
+     "group": "days",
+     "from": "2027-04-17",
+     "to": "2027-04-17"
+    },
+    {
+     "pdfPage": 162,
+     "title": "Apr 18",
+     "group": "days",
+     "from": "2027-04-18",
+     "to": "2027-04-18"
+    },
+    {
+     "pdfPage": 163,
+     "title": "Week 17",
+     "group": "weeks",
+     "from": "2027-04-19",
+     "to": "2027-04-25"
+    },
+    {
+     "pdfPage": 164,
+     "title": "Week 17 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 165,
+     "title": "Apr 19",
+     "group": "days",
+     "from": "2027-04-19",
+     "to": "2027-04-19"
+    },
+    {
+     "pdfPage": 166,
+     "title": "Apr 20",
+     "group": "days",
+     "from": "2027-04-20",
+     "to": "2027-04-20"
+    },
+    {
+     "pdfPage": 167,
+     "title": "Apr 21",
+     "group": "days",
+     "from": "2027-04-21",
+     "to": "2027-04-21"
+    },
+    {
+     "pdfPage": 168,
+     "title": "Apr 22",
+     "group": "days",
+     "from": "2027-04-22",
+     "to": "2027-04-22"
+    },
+    {
+     "pdfPage": 169,
+     "title": "Apr 23",
+     "group": "days",
+     "from": "2027-04-23",
+     "to": "2027-04-23"
+    },
+    {
+     "pdfPage": 170,
+     "title": "Apr 24",
+     "group": "days",
+     "from": "2027-04-24",
+     "to": "2027-04-24"
+    },
+    {
+     "pdfPage": 171,
+     "title": "Apr 25",
+     "group": "days",
+     "from": "2027-04-25",
+     "to": "2027-04-25"
+    },
+    {
+     "pdfPage": 172,
+     "title": "Week 18",
+     "group": "weeks",
+     "from": "2027-04-26",
+     "to": "2027-05-02"
+    },
+    {
+     "pdfPage": 173,
+     "title": "Week 18 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 174,
+     "title": "Apr 26",
+     "group": "days",
+     "from": "2027-04-26",
+     "to": "2027-04-26"
+    },
+    {
+     "pdfPage": 175,
+     "title": "Apr 27",
+     "group": "days",
+     "from": "2027-04-27",
+     "to": "2027-04-27"
+    },
+    {
+     "pdfPage": 176,
+     "title": "Apr 28",
+     "group": "days",
+     "from": "2027-04-28",
+     "to": "2027-04-28"
+    },
+    {
+     "pdfPage": 177,
+     "title": "Apr 29",
+     "group": "days",
+     "from": "2027-04-29",
+     "to": "2027-04-29"
+    },
+    {
+     "pdfPage": 178,
+     "title": "Apr 30",
+     "group": "days",
+     "from": "2027-04-30",
+     "to": "2027-04-30"
+    }
+   ]
+  },
+  {
+   "title": "May",
+   "pages": [
+    {
+     "pdfPage": 179,
+     "title": "May",
+     "from": "2027-05-01",
+     "to": "2027-05-31"
+    },
+    {
+     "pdfPage": 180,
+     "title": "May content",
+     "group": "content"
+    },
+    {
+     "pdfPage": 181,
+     "title": "May money",
+     "group": "money"
+    },
+    {
+     "pdfPage": 182,
+     "title": "May review",
+     "group": "month_review"
+    },
+    {
+     "pdfPage": 183,
+     "title": "May 1",
+     "group": "days",
+     "from": "2027-05-01",
+     "to": "2027-05-01"
+    },
+    {
+     "pdfPage": 184,
+     "title": "May 2",
+     "group": "days",
+     "from": "2027-05-02",
+     "to": "2027-05-02"
+    },
+    {
+     "pdfPage": 185,
+     "title": "Week 19",
+     "group": "weeks",
+     "from": "2027-05-03",
+     "to": "2027-05-09"
+    },
+    {
+     "pdfPage": 186,
+     "title": "Week 19 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 187,
+     "title": "May 3",
+     "group": "days",
+     "from": "2027-05-03",
+     "to": "2027-05-03"
+    },
+    {
+     "pdfPage": 188,
+     "title": "May 4",
+     "group": "days",
+     "from": "2027-05-04",
+     "to": "2027-05-04"
+    },
+    {
+     "pdfPage": 189,
+     "title": "May 5",
+     "group": "days",
+     "from": "2027-05-05",
+     "to": "2027-05-05"
+    },
+    {
+     "pdfPage": 190,
+     "title": "May 6",
+     "group": "days",
+     "from": "2027-05-06",
+     "to": "2027-05-06"
+    },
+    {
+     "pdfPage": 191,
+     "title": "May 7",
+     "group": "days",
+     "from": "2027-05-07",
+     "to": "2027-05-07"
+    },
+    {
+     "pdfPage": 192,
+     "title": "May 8",
+     "group": "days",
+     "from": "2027-05-08",
+     "to": "2027-05-08"
+    },
+    {
+     "pdfPage": 193,
+     "title": "May 9",
+     "group": "days",
+     "from": "2027-05-09",
+     "to": "2027-05-09"
+    },
+    {
+     "pdfPage": 194,
+     "title": "Week 20",
+     "group": "weeks",
+     "from": "2027-05-10",
+     "to": "2027-05-16"
+    },
+    {
+     "pdfPage": 195,
+     "title": "Week 20 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 196,
+     "title": "May 10",
+     "group": "days",
+     "from": "2027-05-10",
+     "to": "2027-05-10"
+    },
+    {
+     "pdfPage": 197,
+     "title": "May 11",
+     "group": "days",
+     "from": "2027-05-11",
+     "to": "2027-05-11"
+    },
+    {
+     "pdfPage": 198,
+     "title": "May 12",
+     "group": "days",
+     "from": "2027-05-12",
+     "to": "2027-05-12"
+    },
+    {
+     "pdfPage": 199,
+     "title": "May 13",
+     "group": "days",
+     "from": "2027-05-13",
+     "to": "2027-05-13"
+    },
+    {
+     "pdfPage": 200,
+     "title": "May 14",
+     "group": "days",
+     "from": "2027-05-14",
+     "to": "2027-05-14"
+    },
+    {
+     "pdfPage": 201,
+     "title": "May 15",
+     "group": "days",
+     "from": "2027-05-15",
+     "to": "2027-05-15"
+    },
+    {
+     "pdfPage": 202,
+     "title": "May 16",
+     "group": "days",
+     "from": "2027-05-16",
+     "to": "2027-05-16"
+    },
+    {
+     "pdfPage": 203,
+     "title": "Week 21",
+     "group": "weeks",
+     "from": "2027-05-17",
+     "to": "2027-05-23"
+    },
+    {
+     "pdfPage": 204,
+     "title": "Week 21 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 205,
+     "title": "May 17",
+     "group": "days",
+     "from": "2027-05-17",
+     "to": "2027-05-17"
+    },
+    {
+     "pdfPage": 206,
+     "title": "May 18",
+     "group": "days",
+     "from": "2027-05-18",
+     "to": "2027-05-18"
+    },
+    {
+     "pdfPage": 207,
+     "title": "May 19",
+     "group": "days",
+     "from": "2027-05-19",
+     "to": "2027-05-19"
+    },
+    {
+     "pdfPage": 208,
+     "title": "May 20",
+     "group": "days",
+     "from": "2027-05-20",
+     "to": "2027-05-20"
+    },
+    {
+     "pdfPage": 209,
+     "title": "May 21",
+     "group": "days",
+     "from": "2027-05-21",
+     "to": "2027-05-21"
+    },
+    {
+     "pdfPage": 210,
+     "title": "May 22",
+     "group": "days",
+     "from": "2027-05-22",
+     "to": "2027-05-22"
+    },
+    {
+     "pdfPage": 211,
+     "title": "May 23",
+     "group": "days",
+     "from": "2027-05-23",
+     "to": "2027-05-23"
+    },
+    {
+     "pdfPage": 212,
+     "title": "Week 22",
+     "group": "weeks",
+     "from": "2027-05-24",
+     "to": "2027-05-30"
+    },
+    {
+     "pdfPage": 213,
+     "title": "Week 22 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 214,
+     "title": "May 24",
+     "group": "days",
+     "from": "2027-05-24",
+     "to": "2027-05-24"
+    },
+    {
+     "pdfPage": 215,
+     "title": "May 25",
+     "group": "days",
+     "from": "2027-05-25",
+     "to": "2027-05-25"
+    },
+    {
+     "pdfPage": 216,
+     "title": "May 26",
+     "group": "days",
+     "from": "2027-05-26",
+     "to": "2027-05-26"
+    },
+    {
+     "pdfPage": 217,
+     "title": "May 27",
+     "group": "days",
+     "from": "2027-05-27",
+     "to": "2027-05-27"
+    },
+    {
+     "pdfPage": 218,
+     "title": "May 28",
+     "group": "days",
+     "from": "2027-05-28",
+     "to": "2027-05-28"
+    },
+    {
+     "pdfPage": 219,
+     "title": "May 29",
+     "group": "days",
+     "from": "2027-05-29",
+     "to": "2027-05-29"
+    },
+    {
+     "pdfPage": 220,
+     "title": "May 30",
+     "group": "days",
+     "from": "2027-05-30",
+     "to": "2027-05-30"
+    },
+    {
+     "pdfPage": 221,
+     "title": "Week 23",
+     "group": "weeks",
+     "from": "2027-05-31",
+     "to": "2027-06-06"
+    },
+    {
+     "pdfPage": 222,
+     "title": "Week 23 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 223,
+     "title": "May 31",
+     "group": "days",
+     "from": "2027-05-31",
+     "to": "2027-05-31"
+    }
+   ]
+  },
+  {
+   "title": "June",
+   "pages": [
+    {
+     "pdfPage": 224,
+     "title": "June",
+     "from": "2027-06-01",
+     "to": "2027-06-30"
+    },
+    {
+     "pdfPage": 225,
+     "title": "Jun content",
+     "group": "content"
+    },
+    {
+     "pdfPage": 226,
+     "title": "Jun money",
+     "group": "money"
+    },
+    {
+     "pdfPage": 227,
+     "title": "Jun review",
+     "group": "month_review"
+    },
+    {
+     "pdfPage": 228,
+     "title": "Jun 1",
+     "group": "days",
+     "from": "2027-06-01",
+     "to": "2027-06-01"
+    },
+    {
+     "pdfPage": 229,
+     "title": "Jun 2",
+     "group": "days",
+     "from": "2027-06-02",
+     "to": "2027-06-02"
+    },
+    {
+     "pdfPage": 230,
+     "title": "Jun 3",
+     "group": "days",
+     "from": "2027-06-03",
+     "to": "2027-06-03"
+    },
+    {
+     "pdfPage": 231,
+     "title": "Jun 4",
+     "group": "days",
+     "from": "2027-06-04",
+     "to": "2027-06-04"
+    },
+    {
+     "pdfPage": 232,
+     "title": "Jun 5",
+     "group": "days",
+     "from": "2027-06-05",
+     "to": "2027-06-05"
+    },
+    {
+     "pdfPage": 233,
+     "title": "Jun 6",
+     "group": "days",
+     "from": "2027-06-06",
+     "to": "2027-06-06"
+    },
+    {
+     "pdfPage": 234,
+     "title": "Week 24",
+     "group": "weeks",
+     "from": "2027-06-07",
+     "to": "2027-06-13"
+    },
+    {
+     "pdfPage": 235,
+     "title": "Week 24 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 236,
+     "title": "Jun 7",
+     "group": "days",
+     "from": "2027-06-07",
+     "to": "2027-06-07"
+    },
+    {
+     "pdfPage": 237,
+     "title": "Jun 8",
+     "group": "days",
+     "from": "2027-06-08",
+     "to": "2027-06-08"
+    },
+    {
+     "pdfPage": 238,
+     "title": "Jun 9",
+     "group": "days",
+     "from": "2027-06-09",
+     "to": "2027-06-09"
+    },
+    {
+     "pdfPage": 239,
+     "title": "Jun 10",
+     "group": "days",
+     "from": "2027-06-10",
+     "to": "2027-06-10"
+    },
+    {
+     "pdfPage": 240,
+     "title": "Jun 11",
+     "group": "days",
+     "from": "2027-06-11",
+     "to": "2027-06-11"
+    },
+    {
+     "pdfPage": 241,
+     "title": "Jun 12",
+     "group": "days",
+     "from": "2027-06-12",
+     "to": "2027-06-12"
+    },
+    {
+     "pdfPage": 242,
+     "title": "Jun 13",
+     "group": "days",
+     "from": "2027-06-13",
+     "to": "2027-06-13"
+    },
+    {
+     "pdfPage": 243,
+     "title": "Week 25",
+     "group": "weeks",
+     "from": "2027-06-14",
+     "to": "2027-06-20"
+    },
+    {
+     "pdfPage": 244,
+     "title": "Week 25 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 245,
+     "title": "Jun 14",
+     "group": "days",
+     "from": "2027-06-14",
+     "to": "2027-06-14"
+    },
+    {
+     "pdfPage": 246,
+     "title": "Jun 15",
+     "group": "days",
+     "from": "2027-06-15",
+     "to": "2027-06-15"
+    },
+    {
+     "pdfPage": 247,
+     "title": "Jun 16",
+     "group": "days",
+     "from": "2027-06-16",
+     "to": "2027-06-16"
+    },
+    {
+     "pdfPage": 248,
+     "title": "Jun 17",
+     "group": "days",
+     "from": "2027-06-17",
+     "to": "2027-06-17"
+    },
+    {
+     "pdfPage": 249,
+     "title": "Jun 18",
+     "group": "days",
+     "from": "2027-06-18",
+     "to": "2027-06-18"
+    },
+    {
+     "pdfPage": 250,
+     "title": "Jun 19",
+     "group": "days",
+     "from": "2027-06-19",
+     "to": "2027-06-19"
+    },
+    {
+     "pdfPage": 251,
+     "title": "Jun 20",
+     "group": "days",
+     "from": "2027-06-20",
+     "to": "2027-06-20"
+    },
+    {
+     "pdfPage": 252,
+     "title": "Week 26",
+     "group": "weeks",
+     "from": "2027-06-21",
+     "to": "2027-06-27"
+    },
+    {
+     "pdfPage": 253,
+     "title": "Week 26 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 254,
+     "title": "Jun 21",
+     "group": "days",
+     "from": "2027-06-21",
+     "to": "2027-06-21"
+    },
+    {
+     "pdfPage": 255,
+     "title": "Jun 22",
+     "group": "days",
+     "from": "2027-06-22",
+     "to": "2027-06-22"
+    },
+    {
+     "pdfPage": 256,
+     "title": "Jun 23",
+     "group": "days",
+     "from": "2027-06-23",
+     "to": "2027-06-23"
+    },
+    {
+     "pdfPage": 257,
+     "title": "Jun 24",
+     "group": "days",
+     "from": "2027-06-24",
+     "to": "2027-06-24"
+    },
+    {
+     "pdfPage": 258,
+     "title": "Jun 25",
+     "group": "days",
+     "from": "2027-06-25",
+     "to": "2027-06-25"
+    },
+    {
+     "pdfPage": 259,
+     "title": "Jun 26",
+     "group": "days",
+     "from": "2027-06-26",
+     "to": "2027-06-26"
+    },
+    {
+     "pdfPage": 260,
+     "title": "Jun 27",
+     "group": "days",
+     "from": "2027-06-27",
+     "to": "2027-06-27"
+    },
+    {
+     "pdfPage": 261,
+     "title": "Week 27",
+     "group": "weeks",
+     "from": "2027-06-28",
+     "to": "2027-07-04"
+    },
+    {
+     "pdfPage": 262,
+     "title": "Week 27 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 263,
+     "title": "Jun 28",
+     "group": "days",
+     "from": "2027-06-28",
+     "to": "2027-06-28"
+    },
+    {
+     "pdfPage": 264,
+     "title": "Jun 29",
+     "group": "days",
+     "from": "2027-06-29",
+     "to": "2027-06-29"
+    },
+    {
+     "pdfPage": 265,
+     "title": "Jun 30",
+     "group": "days",
+     "from": "2027-06-30",
+     "to": "2027-06-30"
+    }
+   ]
+  },
+  {
+   "title": "July",
+   "pages": [
+    {
+     "pdfPage": 266,
+     "title": "July",
+     "from": "2027-07-01",
+     "to": "2027-07-31"
+    },
+    {
+     "pdfPage": 267,
+     "title": "Jul content",
+     "group": "content"
+    },
+    {
+     "pdfPage": 268,
+     "title": "Jul money",
+     "group": "money"
+    },
+    {
+     "pdfPage": 269,
+     "title": "Jul review",
+     "group": "month_review"
+    },
+    {
+     "pdfPage": 270,
+     "title": "Jul 1",
+     "group": "days",
+     "from": "2027-07-01",
+     "to": "2027-07-01"
+    },
+    {
+     "pdfPage": 271,
+     "title": "Jul 2",
+     "group": "days",
+     "from": "2027-07-02",
+     "to": "2027-07-02"
+    },
+    {
+     "pdfPage": 272,
+     "title": "Jul 3",
+     "group": "days",
+     "from": "2027-07-03",
+     "to": "2027-07-03"
+    },
+    {
+     "pdfPage": 273,
+     "title": "Jul 4",
+     "group": "days",
+     "from": "2027-07-04",
+     "to": "2027-07-04"
+    },
+    {
+     "pdfPage": 274,
+     "title": "Week 28",
+     "group": "weeks",
+     "from": "2027-07-05",
+     "to": "2027-07-11"
+    },
+    {
+     "pdfPage": 275,
+     "title": "Week 28 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 276,
+     "title": "Jul 5",
+     "group": "days",
+     "from": "2027-07-05",
+     "to": "2027-07-05"
+    },
+    {
+     "pdfPage": 277,
+     "title": "Jul 6",
+     "group": "days",
+     "from": "2027-07-06",
+     "to": "2027-07-06"
+    },
+    {
+     "pdfPage": 278,
+     "title": "Jul 7",
+     "group": "days",
+     "from": "2027-07-07",
+     "to": "2027-07-07"
+    },
+    {
+     "pdfPage": 279,
+     "title": "Jul 8",
+     "group": "days",
+     "from": "2027-07-08",
+     "to": "2027-07-08"
+    },
+    {
+     "pdfPage": 280,
+     "title": "Jul 9",
+     "group": "days",
+     "from": "2027-07-09",
+     "to": "2027-07-09"
+    },
+    {
+     "pdfPage": 281,
+     "title": "Jul 10",
+     "group": "days",
+     "from": "2027-07-10",
+     "to": "2027-07-10"
+    },
+    {
+     "pdfPage": 282,
+     "title": "Jul 11",
+     "group": "days",
+     "from": "2027-07-11",
+     "to": "2027-07-11"
+    },
+    {
+     "pdfPage": 283,
+     "title": "Week 29",
+     "group": "weeks",
+     "from": "2027-07-12",
+     "to": "2027-07-18"
+    },
+    {
+     "pdfPage": 284,
+     "title": "Week 29 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 285,
+     "title": "Jul 12",
+     "group": "days",
+     "from": "2027-07-12",
+     "to": "2027-07-12"
+    },
+    {
+     "pdfPage": 286,
+     "title": "Jul 13",
+     "group": "days",
+     "from": "2027-07-13",
+     "to": "2027-07-13"
+    },
+    {
+     "pdfPage": 287,
+     "title": "Jul 14",
+     "group": "days",
+     "from": "2027-07-14",
+     "to": "2027-07-14"
+    },
+    {
+     "pdfPage": 288,
+     "title": "Jul 15",
+     "group": "days",
+     "from": "2027-07-15",
+     "to": "2027-07-15"
+    },
+    {
+     "pdfPage": 289,
+     "title": "Jul 16",
+     "group": "days",
+     "from": "2027-07-16",
+     "to": "2027-07-16"
+    },
+    {
+     "pdfPage": 290,
+     "title": "Jul 17",
+     "group": "days",
+     "from": "2027-07-17",
+     "to": "2027-07-17"
+    },
+    {
+     "pdfPage": 291,
+     "title": "Jul 18",
+     "group": "days",
+     "from": "2027-07-18",
+     "to": "2027-07-18"
+    },
+    {
+     "pdfPage": 292,
+     "title": "Week 30",
+     "group": "weeks",
+     "from": "2027-07-19",
+     "to": "2027-07-25"
+    },
+    {
+     "pdfPage": 293,
+     "title": "Week 30 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 294,
+     "title": "Jul 19",
+     "group": "days",
+     "from": "2027-07-19",
+     "to": "2027-07-19"
+    },
+    {
+     "pdfPage": 295,
+     "title": "Jul 20",
+     "group": "days",
+     "from": "2027-07-20",
+     "to": "2027-07-20"
+    },
+    {
+     "pdfPage": 296,
+     "title": "Jul 21",
+     "group": "days",
+     "from": "2027-07-21",
+     "to": "2027-07-21"
+    },
+    {
+     "pdfPage": 297,
+     "title": "Jul 22",
+     "group": "days",
+     "from": "2027-07-22",
+     "to": "2027-07-22"
+    },
+    {
+     "pdfPage": 298,
+     "title": "Jul 23",
+     "group": "days",
+     "from": "2027-07-23",
+     "to": "2027-07-23"
+    },
+    {
+     "pdfPage": 299,
+     "title": "Jul 24",
+     "group": "days",
+     "from": "2027-07-24",
+     "to": "2027-07-24"
+    },
+    {
+     "pdfPage": 300,
+     "title": "Jul 25",
+     "group": "days",
+     "from": "2027-07-25",
+     "to": "2027-07-25"
+    },
+    {
+     "pdfPage": 301,
+     "title": "Week 31",
+     "group": "weeks",
+     "from": "2027-07-26",
+     "to": "2027-08-01"
+    },
+    {
+     "pdfPage": 302,
+     "title": "Week 31 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 303,
+     "title": "Jul 26",
+     "group": "days",
+     "from": "2027-07-26",
+     "to": "2027-07-26"
+    },
+    {
+     "pdfPage": 304,
+     "title": "Jul 27",
+     "group": "days",
+     "from": "2027-07-27",
+     "to": "2027-07-27"
+    },
+    {
+     "pdfPage": 305,
+     "title": "Jul 28",
+     "group": "days",
+     "from": "2027-07-28",
+     "to": "2027-07-28"
+    },
+    {
+     "pdfPage": 306,
+     "title": "Jul 29",
+     "group": "days",
+     "from": "2027-07-29",
+     "to": "2027-07-29"
+    },
+    {
+     "pdfPage": 307,
+     "title": "Jul 30",
+     "group": "days",
+     "from": "2027-07-30",
+     "to": "2027-07-30"
+    },
+    {
+     "pdfPage": 308,
+     "title": "Jul 31",
+     "group": "days",
+     "from": "2027-07-31",
+     "to": "2027-07-31"
+    }
+   ]
+  },
+  {
+   "title": "August",
+   "pages": [
+    {
+     "pdfPage": 309,
+     "title": "August",
+     "from": "2027-08-01",
+     "to": "2027-08-31"
+    },
+    {
+     "pdfPage": 310,
+     "title": "Aug content",
+     "group": "content"
+    },
+    {
+     "pdfPage": 311,
+     "title": "Aug money",
+     "group": "money"
+    },
+    {
+     "pdfPage": 312,
+     "title": "Aug review",
+     "group": "month_review"
+    },
+    {
+     "pdfPage": 313,
+     "title": "Aug 1",
+     "group": "days",
+     "from": "2027-08-01",
+     "to": "2027-08-01"
+    },
+    {
+     "pdfPage": 314,
+     "title": "Week 32",
+     "group": "weeks",
+     "from": "2027-08-02",
+     "to": "2027-08-08"
+    },
+    {
+     "pdfPage": 315,
+     "title": "Week 32 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 316,
+     "title": "Aug 2",
+     "group": "days",
+     "from": "2027-08-02",
+     "to": "2027-08-02"
+    },
+    {
+     "pdfPage": 317,
+     "title": "Aug 3",
+     "group": "days",
+     "from": "2027-08-03",
+     "to": "2027-08-03"
+    },
+    {
+     "pdfPage": 318,
+     "title": "Aug 4",
+     "group": "days",
+     "from": "2027-08-04",
+     "to": "2027-08-04"
+    },
+    {
+     "pdfPage": 319,
+     "title": "Aug 5",
+     "group": "days",
+     "from": "2027-08-05",
+     "to": "2027-08-05"
+    },
+    {
+     "pdfPage": 320,
+     "title": "Aug 6",
+     "group": "days",
+     "from": "2027-08-06",
+     "to": "2027-08-06"
+    },
+    {
+     "pdfPage": 321,
+     "title": "Aug 7",
+     "group": "days",
+     "from": "2027-08-07",
+     "to": "2027-08-07"
+    },
+    {
+     "pdfPage": 322,
+     "title": "Aug 8",
+     "group": "days",
+     "from": "2027-08-08",
+     "to": "2027-08-08"
+    },
+    {
+     "pdfPage": 323,
+     "title": "Week 33",
+     "group": "weeks",
+     "from": "2027-08-09",
+     "to": "2027-08-15"
+    },
+    {
+     "pdfPage": 324,
+     "title": "Week 33 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 325,
+     "title": "Aug 9",
+     "group": "days",
+     "from": "2027-08-09",
+     "to": "2027-08-09"
+    },
+    {
+     "pdfPage": 326,
+     "title": "Aug 10",
+     "group": "days",
+     "from": "2027-08-10",
+     "to": "2027-08-10"
+    },
+    {
+     "pdfPage": 327,
+     "title": "Aug 11",
+     "group": "days",
+     "from": "2027-08-11",
+     "to": "2027-08-11"
+    },
+    {
+     "pdfPage": 328,
+     "title": "Aug 12",
+     "group": "days",
+     "from": "2027-08-12",
+     "to": "2027-08-12"
+    },
+    {
+     "pdfPage": 329,
+     "title": "Aug 13",
+     "group": "days",
+     "from": "2027-08-13",
+     "to": "2027-08-13"
+    },
+    {
+     "pdfPage": 330,
+     "title": "Aug 14",
+     "group": "days",
+     "from": "2027-08-14",
+     "to": "2027-08-14"
+    },
+    {
+     "pdfPage": 331,
+     "title": "Aug 15",
+     "group": "days",
+     "from": "2027-08-15",
+     "to": "2027-08-15"
+    },
+    {
+     "pdfPage": 332,
+     "title": "Week 34",
+     "group": "weeks",
+     "from": "2027-08-16",
+     "to": "2027-08-22"
+    },
+    {
+     "pdfPage": 333,
+     "title": "Week 34 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 334,
+     "title": "Aug 16",
+     "group": "days",
+     "from": "2027-08-16",
+     "to": "2027-08-16"
+    },
+    {
+     "pdfPage": 335,
+     "title": "Aug 17",
+     "group": "days",
+     "from": "2027-08-17",
+     "to": "2027-08-17"
+    },
+    {
+     "pdfPage": 336,
+     "title": "Aug 18",
+     "group": "days",
+     "from": "2027-08-18",
+     "to": "2027-08-18"
+    },
+    {
+     "pdfPage": 337,
+     "title": "Aug 19",
+     "group": "days",
+     "from": "2027-08-19",
+     "to": "2027-08-19"
+    },
+    {
+     "pdfPage": 338,
+     "title": "Aug 20",
+     "group": "days",
+     "from": "2027-08-20",
+     "to": "2027-08-20"
+    },
+    {
+     "pdfPage": 339,
+     "title": "Aug 21",
+     "group": "days",
+     "from": "2027-08-21",
+     "to": "2027-08-21"
+    },
+    {
+     "pdfPage": 340,
+     "title": "Aug 22",
+     "group": "days",
+     "from": "2027-08-22",
+     "to": "2027-08-22"
+    },
+    {
+     "pdfPage": 341,
+     "title": "Week 35",
+     "group": "weeks",
+     "from": "2027-08-23",
+     "to": "2027-08-29"
+    },
+    {
+     "pdfPage": 342,
+     "title": "Week 35 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 343,
+     "title": "Aug 23",
+     "group": "days",
+     "from": "2027-08-23",
+     "to": "2027-08-23"
+    },
+    {
+     "pdfPage": 344,
+     "title": "Aug 24",
+     "group": "days",
+     "from": "2027-08-24",
+     "to": "2027-08-24"
+    },
+    {
+     "pdfPage": 345,
+     "title": "Aug 25",
+     "group": "days",
+     "from": "2027-08-25",
+     "to": "2027-08-25"
+    },
+    {
+     "pdfPage": 346,
+     "title": "Aug 26",
+     "group": "days",
+     "from": "2027-08-26",
+     "to": "2027-08-26"
+    },
+    {
+     "pdfPage": 347,
+     "title": "Aug 27",
+     "group": "days",
+     "from": "2027-08-27",
+     "to": "2027-08-27"
+    },
+    {
+     "pdfPage": 348,
+     "title": "Aug 28",
+     "group": "days",
+     "from": "2027-08-28",
+     "to": "2027-08-28"
+    },
+    {
+     "pdfPage": 349,
+     "title": "Aug 29",
+     "group": "days",
+     "from": "2027-08-29",
+     "to": "2027-08-29"
+    },
+    {
+     "pdfPage": 350,
+     "title": "Week 36",
+     "group": "weeks",
+     "from": "2027-08-30",
+     "to": "2027-09-05"
+    },
+    {
+     "pdfPage": 351,
+     "title": "Week 36 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 352,
+     "title": "Aug 30",
+     "group": "days",
+     "from": "2027-08-30",
+     "to": "2027-08-30"
+    },
+    {
+     "pdfPage": 353,
+     "title": "Aug 31",
+     "group": "days",
+     "from": "2027-08-31",
+     "to": "2027-08-31"
+    }
+   ]
+  },
+  {
+   "title": "September",
+   "pages": [
+    {
+     "pdfPage": 354,
+     "title": "September",
+     "from": "2027-09-01",
+     "to": "2027-09-30"
+    },
+    {
+     "pdfPage": 355,
+     "title": "Sep content",
+     "group": "content"
+    },
+    {
+     "pdfPage": 356,
+     "title": "Sep money",
+     "group": "money"
+    },
+    {
+     "pdfPage": 357,
+     "title": "Sep review",
+     "group": "month_review"
+    },
+    {
+     "pdfPage": 358,
+     "title": "Sep 1",
+     "group": "days",
+     "from": "2027-09-01",
+     "to": "2027-09-01"
+    },
+    {
+     "pdfPage": 359,
+     "title": "Sep 2",
+     "group": "days",
+     "from": "2027-09-02",
+     "to": "2027-09-02"
+    },
+    {
+     "pdfPage": 360,
+     "title": "Sep 3",
+     "group": "days",
+     "from": "2027-09-03",
+     "to": "2027-09-03"
+    },
+    {
+     "pdfPage": 361,
+     "title": "Sep 4",
+     "group": "days",
+     "from": "2027-09-04",
+     "to": "2027-09-04"
+    },
+    {
+     "pdfPage": 362,
+     "title": "Sep 5",
+     "group": "days",
+     "from": "2027-09-05",
+     "to": "2027-09-05"
+    },
+    {
+     "pdfPage": 363,
+     "title": "Week 37",
+     "group": "weeks",
+     "from": "2027-09-06",
+     "to": "2027-09-12"
+    },
+    {
+     "pdfPage": 364,
+     "title": "Week 37 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 365,
+     "title": "Sep 6",
+     "group": "days",
+     "from": "2027-09-06",
+     "to": "2027-09-06"
+    },
+    {
+     "pdfPage": 366,
+     "title": "Sep 7",
+     "group": "days",
+     "from": "2027-09-07",
+     "to": "2027-09-07"
+    },
+    {
+     "pdfPage": 367,
+     "title": "Sep 8",
+     "group": "days",
+     "from": "2027-09-08",
+     "to": "2027-09-08"
+    },
+    {
+     "pdfPage": 368,
+     "title": "Sep 9",
+     "group": "days",
+     "from": "2027-09-09",
+     "to": "2027-09-09"
+    },
+    {
+     "pdfPage": 369,
+     "title": "Sep 10",
+     "group": "days",
+     "from": "2027-09-10",
+     "to": "2027-09-10"
+    },
+    {
+     "pdfPage": 370,
+     "title": "Sep 11",
+     "group": "days",
+     "from": "2027-09-11",
+     "to": "2027-09-11"
+    },
+    {
+     "pdfPage": 371,
+     "title": "Sep 12",
+     "group": "days",
+     "from": "2027-09-12",
+     "to": "2027-09-12"
+    },
+    {
+     "pdfPage": 372,
+     "title": "Week 38",
+     "group": "weeks",
+     "from": "2027-09-13",
+     "to": "2027-09-19"
+    },
+    {
+     "pdfPage": 373,
+     "title": "Week 38 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 374,
+     "title": "Sep 13",
+     "group": "days",
+     "from": "2027-09-13",
+     "to": "2027-09-13"
+    },
+    {
+     "pdfPage": 375,
+     "title": "Sep 14",
+     "group": "days",
+     "from": "2027-09-14",
+     "to": "2027-09-14"
+    },
+    {
+     "pdfPage": 376,
+     "title": "Sep 15",
+     "group": "days",
+     "from": "2027-09-15",
+     "to": "2027-09-15"
+    },
+    {
+     "pdfPage": 377,
+     "title": "Sep 16",
+     "group": "days",
+     "from": "2027-09-16",
+     "to": "2027-09-16"
+    },
+    {
+     "pdfPage": 378,
+     "title": "Sep 17",
+     "group": "days",
+     "from": "2027-09-17",
+     "to": "2027-09-17"
+    },
+    {
+     "pdfPage": 379,
+     "title": "Sep 18",
+     "group": "days",
+     "from": "2027-09-18",
+     "to": "2027-09-18"
+    },
+    {
+     "pdfPage": 380,
+     "title": "Sep 19",
+     "group": "days",
+     "from": "2027-09-19",
+     "to": "2027-09-19"
+    },
+    {
+     "pdfPage": 381,
+     "title": "Week 39",
+     "group": "weeks",
+     "from": "2027-09-20",
+     "to": "2027-09-26"
+    },
+    {
+     "pdfPage": 382,
+     "title": "Week 39 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 383,
+     "title": "Sep 20",
+     "group": "days",
+     "from": "2027-09-20",
+     "to": "2027-09-20"
+    },
+    {
+     "pdfPage": 384,
+     "title": "Sep 21",
+     "group": "days",
+     "from": "2027-09-21",
+     "to": "2027-09-21"
+    },
+    {
+     "pdfPage": 385,
+     "title": "Sep 22",
+     "group": "days",
+     "from": "2027-09-22",
+     "to": "2027-09-22"
+    },
+    {
+     "pdfPage": 386,
+     "title": "Sep 23",
+     "group": "days",
+     "from": "2027-09-23",
+     "to": "2027-09-23"
+    },
+    {
+     "pdfPage": 387,
+     "title": "Sep 24",
+     "group": "days",
+     "from": "2027-09-24",
+     "to": "2027-09-24"
+    },
+    {
+     "pdfPage": 388,
+     "title": "Sep 25",
+     "group": "days",
+     "from": "2027-09-25",
+     "to": "2027-09-25"
+    },
+    {
+     "pdfPage": 389,
+     "title": "Sep 26",
+     "group": "days",
+     "from": "2027-09-26",
+     "to": "2027-09-26"
+    },
+    {
+     "pdfPage": 390,
+     "title": "Week 40",
+     "group": "weeks",
+     "from": "2027-09-27",
+     "to": "2027-10-03"
+    },
+    {
+     "pdfPage": 391,
+     "title": "Week 40 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 392,
+     "title": "Sep 27",
+     "group": "days",
+     "from": "2027-09-27",
+     "to": "2027-09-27"
+    },
+    {
+     "pdfPage": 393,
+     "title": "Sep 28",
+     "group": "days",
+     "from": "2027-09-28",
+     "to": "2027-09-28"
+    },
+    {
+     "pdfPage": 394,
+     "title": "Sep 29",
+     "group": "days",
+     "from": "2027-09-29",
+     "to": "2027-09-29"
+    },
+    {
+     "pdfPage": 395,
+     "title": "Sep 30",
+     "group": "days",
+     "from": "2027-09-30",
+     "to": "2027-09-30"
+    }
+   ]
+  },
+  {
+   "title": "October",
+   "pages": [
+    {
+     "pdfPage": 396,
+     "title": "October",
+     "from": "2027-10-01",
+     "to": "2027-10-31"
+    },
+    {
+     "pdfPage": 397,
+     "title": "Oct content",
+     "group": "content"
+    },
+    {
+     "pdfPage": 398,
+     "title": "Oct money",
+     "group": "money"
+    },
+    {
+     "pdfPage": 399,
+     "title": "Oct review",
+     "group": "month_review"
+    },
+    {
+     "pdfPage": 400,
+     "title": "Oct 1",
+     "group": "days",
+     "from": "2027-10-01",
+     "to": "2027-10-01"
+    },
+    {
+     "pdfPage": 401,
+     "title": "Oct 2",
+     "group": "days",
+     "from": "2027-10-02",
+     "to": "2027-10-02"
+    },
+    {
+     "pdfPage": 402,
+     "title": "Oct 3",
+     "group": "days",
+     "from": "2027-10-03",
+     "to": "2027-10-03"
+    },
+    {
+     "pdfPage": 403,
+     "title": "Week 41",
+     "group": "weeks",
+     "from": "2027-10-04",
+     "to": "2027-10-10"
+    },
+    {
+     "pdfPage": 404,
+     "title": "Week 41 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 405,
+     "title": "Oct 4",
+     "group": "days",
+     "from": "2027-10-04",
+     "to": "2027-10-04"
+    },
+    {
+     "pdfPage": 406,
+     "title": "Oct 5",
+     "group": "days",
+     "from": "2027-10-05",
+     "to": "2027-10-05"
+    },
+    {
+     "pdfPage": 407,
+     "title": "Oct 6",
+     "group": "days",
+     "from": "2027-10-06",
+     "to": "2027-10-06"
+    },
+    {
+     "pdfPage": 408,
+     "title": "Oct 7",
+     "group": "days",
+     "from": "2027-10-07",
+     "to": "2027-10-07"
+    },
+    {
+     "pdfPage": 409,
+     "title": "Oct 8",
+     "group": "days",
+     "from": "2027-10-08",
+     "to": "2027-10-08"
+    },
+    {
+     "pdfPage": 410,
+     "title": "Oct 9",
+     "group": "days",
+     "from": "2027-10-09",
+     "to": "2027-10-09"
+    },
+    {
+     "pdfPage": 411,
+     "title": "Oct 10",
+     "group": "days",
+     "from": "2027-10-10",
+     "to": "2027-10-10"
+    },
+    {
+     "pdfPage": 412,
+     "title": "Week 42",
+     "group": "weeks",
+     "from": "2027-10-11",
+     "to": "2027-10-17"
+    },
+    {
+     "pdfPage": 413,
+     "title": "Week 42 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 414,
+     "title": "Oct 11",
+     "group": "days",
+     "from": "2027-10-11",
+     "to": "2027-10-11"
+    },
+    {
+     "pdfPage": 415,
+     "title": "Oct 12",
+     "group": "days",
+     "from": "2027-10-12",
+     "to": "2027-10-12"
+    },
+    {
+     "pdfPage": 416,
+     "title": "Oct 13",
+     "group": "days",
+     "from": "2027-10-13",
+     "to": "2027-10-13"
+    },
+    {
+     "pdfPage": 417,
+     "title": "Oct 14",
+     "group": "days",
+     "from": "2027-10-14",
+     "to": "2027-10-14"
+    },
+    {
+     "pdfPage": 418,
+     "title": "Oct 15",
+     "group": "days",
+     "from": "2027-10-15",
+     "to": "2027-10-15"
+    },
+    {
+     "pdfPage": 419,
+     "title": "Oct 16",
+     "group": "days",
+     "from": "2027-10-16",
+     "to": "2027-10-16"
+    },
+    {
+     "pdfPage": 420,
+     "title": "Oct 17",
+     "group": "days",
+     "from": "2027-10-17",
+     "to": "2027-10-17"
+    },
+    {
+     "pdfPage": 421,
+     "title": "Week 43",
+     "group": "weeks",
+     "from": "2027-10-18",
+     "to": "2027-10-24"
+    },
+    {
+     "pdfPage": 422,
+     "title": "Week 43 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 423,
+     "title": "Oct 18",
+     "group": "days",
+     "from": "2027-10-18",
+     "to": "2027-10-18"
+    },
+    {
+     "pdfPage": 424,
+     "title": "Oct 19",
+     "group": "days",
+     "from": "2027-10-19",
+     "to": "2027-10-19"
+    },
+    {
+     "pdfPage": 425,
+     "title": "Oct 20",
+     "group": "days",
+     "from": "2027-10-20",
+     "to": "2027-10-20"
+    },
+    {
+     "pdfPage": 426,
+     "title": "Oct 21",
+     "group": "days",
+     "from": "2027-10-21",
+     "to": "2027-10-21"
+    },
+    {
+     "pdfPage": 427,
+     "title": "Oct 22",
+     "group": "days",
+     "from": "2027-10-22",
+     "to": "2027-10-22"
+    },
+    {
+     "pdfPage": 428,
+     "title": "Oct 23",
+     "group": "days",
+     "from": "2027-10-23",
+     "to": "2027-10-23"
+    },
+    {
+     "pdfPage": 429,
+     "title": "Oct 24",
+     "group": "days",
+     "from": "2027-10-24",
+     "to": "2027-10-24"
+    },
+    {
+     "pdfPage": 430,
+     "title": "Week 44",
+     "group": "weeks",
+     "from": "2027-10-25",
+     "to": "2027-10-31"
+    },
+    {
+     "pdfPage": 431,
+     "title": "Week 44 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 432,
+     "title": "Oct 25",
+     "group": "days",
+     "from": "2027-10-25",
+     "to": "2027-10-25"
+    },
+    {
+     "pdfPage": 433,
+     "title": "Oct 26",
+     "group": "days",
+     "from": "2027-10-26",
+     "to": "2027-10-26"
+    },
+    {
+     "pdfPage": 434,
+     "title": "Oct 27",
+     "group": "days",
+     "from": "2027-10-27",
+     "to": "2027-10-27"
+    },
+    {
+     "pdfPage": 435,
+     "title": "Oct 28",
+     "group": "days",
+     "from": "2027-10-28",
+     "to": "2027-10-28"
+    },
+    {
+     "pdfPage": 436,
+     "title": "Oct 29",
+     "group": "days",
+     "from": "2027-10-29",
+     "to": "2027-10-29"
+    },
+    {
+     "pdfPage": 437,
+     "title": "Oct 30",
+     "group": "days",
+     "from": "2027-10-30",
+     "to": "2027-10-30"
+    },
+    {
+     "pdfPage": 438,
+     "title": "Oct 31",
+     "group": "days",
+     "from": "2027-10-31",
+     "to": "2027-10-31"
+    }
+   ]
+  },
+  {
+   "title": "November",
+   "pages": [
+    {
+     "pdfPage": 439,
+     "title": "November",
+     "from": "2027-11-01",
+     "to": "2027-11-30"
+    },
+    {
+     "pdfPage": 440,
+     "title": "Nov content",
+     "group": "content"
+    },
+    {
+     "pdfPage": 441,
+     "title": "Nov money",
+     "group": "money"
+    },
+    {
+     "pdfPage": 442,
+     "title": "Nov review",
+     "group": "month_review"
+    },
+    {
+     "pdfPage": 443,
+     "title": "Week 45",
+     "group": "weeks",
+     "from": "2027-11-01",
+     "to": "2027-11-07"
+    },
+    {
+     "pdfPage": 444,
+     "title": "Week 45 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 445,
+     "title": "Nov 1",
+     "group": "days",
+     "from": "2027-11-01",
+     "to": "2027-11-01"
+    },
+    {
+     "pdfPage": 446,
+     "title": "Nov 2",
+     "group": "days",
+     "from": "2027-11-02",
+     "to": "2027-11-02"
+    },
+    {
+     "pdfPage": 447,
+     "title": "Nov 3",
+     "group": "days",
+     "from": "2027-11-03",
+     "to": "2027-11-03"
+    },
+    {
+     "pdfPage": 448,
+     "title": "Nov 4",
+     "group": "days",
+     "from": "2027-11-04",
+     "to": "2027-11-04"
+    },
+    {
+     "pdfPage": 449,
+     "title": "Nov 5",
+     "group": "days",
+     "from": "2027-11-05",
+     "to": "2027-11-05"
+    },
+    {
+     "pdfPage": 450,
+     "title": "Nov 6",
+     "group": "days",
+     "from": "2027-11-06",
+     "to": "2027-11-06"
+    },
+    {
+     "pdfPage": 451,
+     "title": "Nov 7",
+     "group": "days",
+     "from": "2027-11-07",
+     "to": "2027-11-07"
+    },
+    {
+     "pdfPage": 452,
+     "title": "Week 46",
+     "group": "weeks",
+     "from": "2027-11-08",
+     "to": "2027-11-14"
+    },
+    {
+     "pdfPage": 453,
+     "title": "Week 46 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 454,
+     "title": "Nov 8",
+     "group": "days",
+     "from": "2027-11-08",
+     "to": "2027-11-08"
+    },
+    {
+     "pdfPage": 455,
+     "title": "Nov 9",
+     "group": "days",
+     "from": "2027-11-09",
+     "to": "2027-11-09"
+    },
+    {
+     "pdfPage": 456,
+     "title": "Nov 10",
+     "group": "days",
+     "from": "2027-11-10",
+     "to": "2027-11-10"
+    },
+    {
+     "pdfPage": 457,
+     "title": "Nov 11",
+     "group": "days",
+     "from": "2027-11-11",
+     "to": "2027-11-11"
+    },
+    {
+     "pdfPage": 458,
+     "title": "Nov 12",
+     "group": "days",
+     "from": "2027-11-12",
+     "to": "2027-11-12"
+    },
+    {
+     "pdfPage": 459,
+     "title": "Nov 13",
+     "group": "days",
+     "from": "2027-11-13",
+     "to": "2027-11-13"
+    },
+    {
+     "pdfPage": 460,
+     "title": "Nov 14",
+     "group": "days",
+     "from": "2027-11-14",
+     "to": "2027-11-14"
+    },
+    {
+     "pdfPage": 461,
+     "title": "Week 47",
+     "group": "weeks",
+     "from": "2027-11-15",
+     "to": "2027-11-21"
+    },
+    {
+     "pdfPage": 462,
+     "title": "Week 47 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 463,
+     "title": "Nov 15",
+     "group": "days",
+     "from": "2027-11-15",
+     "to": "2027-11-15"
+    },
+    {
+     "pdfPage": 464,
+     "title": "Nov 16",
+     "group": "days",
+     "from": "2027-11-16",
+     "to": "2027-11-16"
+    },
+    {
+     "pdfPage": 465,
+     "title": "Nov 17",
+     "group": "days",
+     "from": "2027-11-17",
+     "to": "2027-11-17"
+    },
+    {
+     "pdfPage": 466,
+     "title": "Nov 18",
+     "group": "days",
+     "from": "2027-11-18",
+     "to": "2027-11-18"
+    },
+    {
+     "pdfPage": 467,
+     "title": "Nov 19",
+     "group": "days",
+     "from": "2027-11-19",
+     "to": "2027-11-19"
+    },
+    {
+     "pdfPage": 468,
+     "title": "Nov 20",
+     "group": "days",
+     "from": "2027-11-20",
+     "to": "2027-11-20"
+    },
+    {
+     "pdfPage": 469,
+     "title": "Nov 21",
+     "group": "days",
+     "from": "2027-11-21",
+     "to": "2027-11-21"
+    },
+    {
+     "pdfPage": 470,
+     "title": "Week 48",
+     "group": "weeks",
+     "from": "2027-11-22",
+     "to": "2027-11-28"
+    },
+    {
+     "pdfPage": 471,
+     "title": "Week 48 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 472,
+     "title": "Nov 22",
+     "group": "days",
+     "from": "2027-11-22",
+     "to": "2027-11-22"
+    },
+    {
+     "pdfPage": 473,
+     "title": "Nov 23",
+     "group": "days",
+     "from": "2027-11-23",
+     "to": "2027-11-23"
+    },
+    {
+     "pdfPage": 474,
+     "title": "Nov 24",
+     "group": "days",
+     "from": "2027-11-24",
+     "to": "2027-11-24"
+    },
+    {
+     "pdfPage": 475,
+     "title": "Nov 25",
+     "group": "days",
+     "from": "2027-11-25",
+     "to": "2027-11-25"
+    },
+    {
+     "pdfPage": 476,
+     "title": "Nov 26",
+     "group": "days",
+     "from": "2027-11-26",
+     "to": "2027-11-26"
+    },
+    {
+     "pdfPage": 477,
+     "title": "Nov 27",
+     "group": "days",
+     "from": "2027-11-27",
+     "to": "2027-11-27"
+    },
+    {
+     "pdfPage": 478,
+     "title": "Nov 28",
+     "group": "days",
+     "from": "2027-11-28",
+     "to": "2027-11-28"
+    },
+    {
+     "pdfPage": 479,
+     "title": "Week 49",
+     "group": "weeks",
+     "from": "2027-11-29",
+     "to": "2027-12-05"
+    },
+    {
+     "pdfPage": 480,
+     "title": "Week 49 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 481,
+     "title": "Nov 29",
+     "group": "days",
+     "from": "2027-11-29",
+     "to": "2027-11-29"
+    },
+    {
+     "pdfPage": 482,
+     "title": "Nov 30",
+     "group": "days",
+     "from": "2027-11-30",
+     "to": "2027-11-30"
+    }
+   ]
+  },
+  {
+   "title": "December",
+   "pages": [
+    {
+     "pdfPage": 483,
+     "title": "December",
+     "from": "2027-12-01",
+     "to": "2027-12-31"
+    },
+    {
+     "pdfPage": 484,
+     "title": "Dec content",
+     "group": "content"
+    },
+    {
+     "pdfPage": 485,
+     "title": "Dec money",
+     "group": "money"
+    },
+    {
+     "pdfPage": 486,
+     "title": "Dec review",
+     "group": "month_review"
+    },
+    {
+     "pdfPage": 487,
+     "title": "Dec 1",
+     "group": "days",
+     "from": "2027-12-01",
+     "to": "2027-12-01"
+    },
+    {
+     "pdfPage": 488,
+     "title": "Dec 2",
+     "group": "days",
+     "from": "2027-12-02",
+     "to": "2027-12-02"
+    },
+    {
+     "pdfPage": 489,
+     "title": "Dec 3",
+     "group": "days",
+     "from": "2027-12-03",
+     "to": "2027-12-03"
+    },
+    {
+     "pdfPage": 490,
+     "title": "Dec 4",
+     "group": "days",
+     "from": "2027-12-04",
+     "to": "2027-12-04"
+    },
+    {
+     "pdfPage": 491,
+     "title": "Dec 5",
+     "group": "days",
+     "from": "2027-12-05",
+     "to": "2027-12-05"
+    },
+    {
+     "pdfPage": 492,
+     "title": "Week 50",
+     "group": "weeks",
+     "from": "2027-12-06",
+     "to": "2027-12-12"
+    },
+    {
+     "pdfPage": 493,
+     "title": "Week 50 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 494,
+     "title": "Dec 6",
+     "group": "days",
+     "from": "2027-12-06",
+     "to": "2027-12-06"
+    },
+    {
+     "pdfPage": 495,
+     "title": "Dec 7",
+     "group": "days",
+     "from": "2027-12-07",
+     "to": "2027-12-07"
+    },
+    {
+     "pdfPage": 496,
+     "title": "Dec 8",
+     "group": "days",
+     "from": "2027-12-08",
+     "to": "2027-12-08"
+    },
+    {
+     "pdfPage": 497,
+     "title": "Dec 9",
+     "group": "days",
+     "from": "2027-12-09",
+     "to": "2027-12-09"
+    },
+    {
+     "pdfPage": 498,
+     "title": "Dec 10",
+     "group": "days",
+     "from": "2027-12-10",
+     "to": "2027-12-10"
+    },
+    {
+     "pdfPage": 499,
+     "title": "Dec 11",
+     "group": "days",
+     "from": "2027-12-11",
+     "to": "2027-12-11"
+    },
+    {
+     "pdfPage": 500,
+     "title": "Dec 12",
+     "group": "days",
+     "from": "2027-12-12",
+     "to": "2027-12-12"
+    },
+    {
+     "pdfPage": 501,
+     "title": "Week 51",
+     "group": "weeks",
+     "from": "2027-12-13",
+     "to": "2027-12-19"
+    },
+    {
+     "pdfPage": 502,
+     "title": "Week 51 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 503,
+     "title": "Dec 13",
+     "group": "days",
+     "from": "2027-12-13",
+     "to": "2027-12-13"
+    },
+    {
+     "pdfPage": 504,
+     "title": "Dec 14",
+     "group": "days",
+     "from": "2027-12-14",
+     "to": "2027-12-14"
+    },
+    {
+     "pdfPage": 505,
+     "title": "Dec 15",
+     "group": "days",
+     "from": "2027-12-15",
+     "to": "2027-12-15"
+    },
+    {
+     "pdfPage": 506,
+     "title": "Dec 16",
+     "group": "days",
+     "from": "2027-12-16",
+     "to": "2027-12-16"
+    },
+    {
+     "pdfPage": 507,
+     "title": "Dec 17",
+     "group": "days",
+     "from": "2027-12-17",
+     "to": "2027-12-17"
+    },
+    {
+     "pdfPage": 508,
+     "title": "Dec 18",
+     "group": "days",
+     "from": "2027-12-18",
+     "to": "2027-12-18"
+    },
+    {
+     "pdfPage": 509,
+     "title": "Dec 19",
+     "group": "days",
+     "from": "2027-12-19",
+     "to": "2027-12-19"
+    },
+    {
+     "pdfPage": 510,
+     "title": "Week 52",
+     "group": "weeks",
+     "from": "2027-12-20",
+     "to": "2027-12-26"
+    },
+    {
+     "pdfPage": 511,
+     "title": "Week 52 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 512,
+     "title": "Dec 20",
+     "group": "days",
+     "from": "2027-12-20",
+     "to": "2027-12-20"
+    },
+    {
+     "pdfPage": 513,
+     "title": "Dec 21",
+     "group": "days",
+     "from": "2027-12-21",
+     "to": "2027-12-21"
+    },
+    {
+     "pdfPage": 514,
+     "title": "Dec 22",
+     "group": "days",
+     "from": "2027-12-22",
+     "to": "2027-12-22"
+    },
+    {
+     "pdfPage": 515,
+     "title": "Dec 23",
+     "group": "days",
+     "from": "2027-12-23",
+     "to": "2027-12-23"
+    },
+    {
+     "pdfPage": 516,
+     "title": "Dec 24",
+     "group": "days",
+     "from": "2027-12-24",
+     "to": "2027-12-24"
+    },
+    {
+     "pdfPage": 517,
+     "title": "Dec 25",
+     "group": "days",
+     "from": "2027-12-25",
+     "to": "2027-12-25"
+    },
+    {
+     "pdfPage": 518,
+     "title": "Dec 26",
+     "group": "days",
+     "from": "2027-12-26",
+     "to": "2027-12-26"
+    },
+    {
+     "pdfPage": 519,
+     "title": "Week 53",
+     "group": "weeks",
+     "from": "2027-12-27",
+     "to": "2028-01-02"
+    },
+    {
+     "pdfPage": 520,
+     "title": "Week 53 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 521,
+     "title": "Dec 27",
+     "group": "days",
+     "from": "2027-12-27",
+     "to": "2027-12-27"
+    },
+    {
+     "pdfPage": 522,
+     "title": "Dec 28",
+     "group": "days",
+     "from": "2027-12-28",
+     "to": "2027-12-28"
+    },
+    {
+     "pdfPage": 523,
+     "title": "Dec 29",
+     "group": "days",
+     "from": "2027-12-29",
+     "to": "2027-12-29"
+    },
+    {
+     "pdfPage": 524,
+     "title": "Dec 30",
+     "group": "days",
+     "from": "2027-12-30",
+     "to": "2027-12-30"
+    },
+    {
+     "pdfPage": 525,
+     "title": "Dec 31",
+     "group": "days",
+     "from": "2027-12-31",
+     "to": "2027-12-31"
+    }
+   ]
+  },
+  {
+   "title": "Clients",
+   "pages": [
+    {
+     "pdfPage": 526,
+     "title": "Clients",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 527,
+     "title": "Client 1",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 528,
+     "title": "Client 2",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 529,
+     "title": "Client 3",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 530,
+     "title": "Client 4",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 531,
+     "title": "Client 5",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 532,
+     "title": "Client 6",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 533,
+     "title": "Client 7",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 534,
+     "title": "Client 8",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 535,
+     "title": "Client 9",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 536,
+     "title": "Client 10",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 537,
+     "title": "Client 11",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 538,
+     "title": "Client 12",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 539,
+     "title": "Client 13",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 540,
+     "title": "Client 14",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 541,
+     "title": "Client 15",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 542,
+     "title": "Client 16",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 543,
+     "title": "Client 17",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 544,
+     "title": "Client 18",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 545,
+     "title": "Client 19",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 546,
+     "title": "Client 20",
+     "group": "clients"
+    }
+   ]
+  },
+  {
+   "title": "Projects",
+   "pages": [
+    {
+     "pdfPage": 547,
+     "title": "Projects",
+     "group": "projects"
+    },
+    {
+     "pdfPage": 548,
+     "title": "Project 1",
+     "group": "projects"
+    },
+    {
+     "pdfPage": 549,
+     "title": "Project 2",
+     "group": "projects"
+    },
+    {
+     "pdfPage": 550,
+     "title": "Project 3",
+     "group": "projects"
+    },
+    {
+     "pdfPage": 551,
+     "title": "Project 4",
+     "group": "projects"
+    },
+    {
+     "pdfPage": 552,
+     "title": "Project 5",
+     "group": "projects"
+    },
+    {
+     "pdfPage": 553,
+     "title": "Project 6",
+     "group": "projects"
+    },
+    {
+     "pdfPage": 554,
+     "title": "Project 7",
+     "group": "projects"
+    },
+    {
+     "pdfPage": 555,
+     "title": "Project 8",
+     "group": "projects"
+    },
+    {
+     "pdfPage": 556,
+     "title": "Project 9",
+     "group": "projects"
+    },
+    {
+     "pdfPage": 557,
+     "title": "Project 10",
+     "group": "projects"
+    },
+    {
+     "pdfPage": 558,
+     "title": "Project 11",
+     "group": "projects"
+    },
+    {
+     "pdfPage": 559,
+     "title": "Project 12",
+     "group": "projects"
+    }
+   ]
+  },
+  {
+   "title": "Finance",
+   "pages": [
+    {
+     "pdfPage": 560,
+     "title": "Finance",
+     "group": "finance"
+    },
+    {
+     "pdfPage": 561,
+     "title": "Year overview",
+     "group": "finance"
+    },
+    {
+     "pdfPage": 562,
+     "title": "Subscriptions",
+     "group": "finance"
+    },
+    {
+     "pdfPage": 563,
+     "title": "Savings goals",
+     "group": "finance"
+    }
+   ]
+  },
+  {
+   "title": "Notes",
+   "pages": [
+    {
+     "pdfPage": 564,
+     "title": "Notes",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 565,
+     "title": "Note 1",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 566,
+     "title": "Note 2",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 567,
+     "title": "Note 3",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 568,
+     "title": "Note 4",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 569,
+     "title": "Note 5",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 570,
+     "title": "Note 6",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 571,
+     "title": "Note 7",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 572,
+     "title": "Note 8",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 573,
+     "title": "Note 9",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 574,
+     "title": "Note 10",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 575,
+     "title": "Note 11",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 576,
+     "title": "Note 12",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 577,
+     "title": "Note 13",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 578,
+     "title": "Note 14",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 579,
+     "title": "Note 15",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 580,
+     "title": "Note 16",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 581,
+     "title": "Note 17",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 582,
+     "title": "Note 18",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 583,
+     "title": "Note 19",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 584,
+     "title": "Note 20",
+     "group": "notes"
+    }
+   ]
+  }
+ ]
+}

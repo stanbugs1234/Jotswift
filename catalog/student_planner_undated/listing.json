@@ -1,0 +1,24 @@
+{
+  "kind": "template",
+  "name": "Student Planner (undated)",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "planner_student_planner_undated"
+    ]
+  },
+  "category": "planners",
+  "tags": [
+    "student",
+    "academic",
+    "school",
+    "college",
+    "study",
+    "assignments",
+    "linked",
+    "undated",
+    "landscape",
+    "portrait"
+  ]
+}

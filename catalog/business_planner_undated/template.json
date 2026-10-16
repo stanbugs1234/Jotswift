@@ -1,0 +1,3226 @@
+{
+ "mode": "notebook",
+ "sections": [
+  {
+   "title": "Start",
+   "pages": [
+    {
+     "pdfPage": 1,
+     "title": "Home"
+    },
+    {
+     "pdfPage": 2,
+     "title": "Year"
+    },
+    {
+     "pdfPage": 3,
+     "title": "Year review"
+    },
+    {
+     "pdfPage": 4,
+     "title": "Strategy"
+    },
+    {
+     "pdfPage": 5,
+     "title": "Marketing plan"
+    },
+    {
+     "pdfPage": 6,
+     "title": "Year goals"
+    }
+   ]
+  },
+  {
+   "title": "Month 1",
+   "pages": [
+    {
+     "pdfPage": 7,
+     "title": "Month 1"
+    },
+    {
+     "pdfPage": 8,
+     "title": "M1 content",
+     "group": "content"
+    },
+    {
+     "pdfPage": 9,
+     "title": "M1 money",
+     "group": "money"
+    },
+    {
+     "pdfPage": 10,
+     "title": "M1 review",
+     "group": "month_review"
+    },
+    {
+     "pdfPage": 11,
+     "title": "Week 1",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 12,
+     "title": "Week 1 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 13,
+     "title": "M1 day 1",
+     "group": "days"
+    },
+    {
+     "pdfPage": 14,
+     "title": "M1 day 2",
+     "group": "days"
+    },
+    {
+     "pdfPage": 15,
+     "title": "M1 day 3",
+     "group": "days"
+    },
+    {
+     "pdfPage": 16,
+     "title": "M1 day 4",
+     "group": "days"
+    },
+    {
+     "pdfPage": 17,
+     "title": "M1 day 5",
+     "group": "days"
+    },
+    {
+     "pdfPage": 18,
+     "title": "M1 day 6",
+     "group": "days"
+    },
+    {
+     "pdfPage": 19,
+     "title": "M1 day 7",
+     "group": "days"
+    },
+    {
+     "pdfPage": 20,
+     "title": "Week 2",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 21,
+     "title": "Week 2 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 22,
+     "title": "M1 day 8",
+     "group": "days"
+    },
+    {
+     "pdfPage": 23,
+     "title": "M1 day 9",
+     "group": "days"
+    },
+    {
+     "pdfPage": 24,
+     "title": "M1 day 10",
+     "group": "days"
+    },
+    {
+     "pdfPage": 25,
+     "title": "M1 day 11",
+     "group": "days"
+    },
+    {
+     "pdfPage": 26,
+     "title": "M1 day 12",
+     "group": "days"
+    },
+    {
+     "pdfPage": 27,
+     "title": "M1 day 13",
+     "group": "days"
+    },
+    {
+     "pdfPage": 28,
+     "title": "M1 day 14",
+     "group": "days"
+    },
+    {
+     "pdfPage": 29,
+     "title": "Week 3",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 30,
+     "title": "Week 3 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 31,
+     "title": "M1 day 15",
+     "group": "days"
+    },
+    {
+     "pdfPage": 32,
+     "title": "M1 day 16",
+     "group": "days"
+    },
+    {
+     "pdfPage": 33,
+     "title": "M1 day 17",
+     "group": "days"
+    },
+    {
+     "pdfPage": 34,
+     "title": "M1 day 18",
+     "group": "days"
+    },
+    {
+     "pdfPage": 35,
+     "title": "M1 day 19",
+     "group": "days"
+    },
+    {
+     "pdfPage": 36,
+     "title": "M1 day 20",
+     "group": "days"
+    },
+    {
+     "pdfPage": 37,
+     "title": "M1 day 21",
+     "group": "days"
+    },
+    {
+     "pdfPage": 38,
+     "title": "Week 4",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 39,
+     "title": "Week 4 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 40,
+     "title": "M1 day 22",
+     "group": "days"
+    },
+    {
+     "pdfPage": 41,
+     "title": "M1 day 23",
+     "group": "days"
+    },
+    {
+     "pdfPage": 42,
+     "title": "M1 day 24",
+     "group": "days"
+    },
+    {
+     "pdfPage": 43,
+     "title": "M1 day 25",
+     "group": "days"
+    },
+    {
+     "pdfPage": 44,
+     "title": "M1 day 26",
+     "group": "days"
+    },
+    {
+     "pdfPage": 45,
+     "title": "M1 day 27",
+     "group": "days"
+    },
+    {
+     "pdfPage": 46,
+     "title": "M1 day 28",
+     "group": "days"
+    },
+    {
+     "pdfPage": 47,
+     "title": "Week 5",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 48,
+     "title": "Week 5 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 49,
+     "title": "M1 day 29",
+     "group": "days"
+    },
+    {
+     "pdfPage": 50,
+     "title": "M1 day 30",
+     "group": "days"
+    },
+    {
+     "pdfPage": 51,
+     "title": "M1 day 31",
+     "group": "days"
+    }
+   ]
+  },
+  {
+   "title": "Month 2",
+   "pages": [
+    {
+     "pdfPage": 52,
+     "title": "Month 2"
+    },
+    {
+     "pdfPage": 53,
+     "title": "M2 content",
+     "group": "content"
+    },
+    {
+     "pdfPage": 54,
+     "title": "M2 money",
+     "group": "money"
+    },
+    {
+     "pdfPage": 55,
+     "title": "M2 review",
+     "group": "month_review"
+    },
+    {
+     "pdfPage": 56,
+     "title": "Week 6",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 57,
+     "title": "Week 6 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 58,
+     "title": "M2 day 1",
+     "group": "days"
+    },
+    {
+     "pdfPage": 59,
+     "title": "M2 day 2",
+     "group": "days"
+    },
+    {
+     "pdfPage": 60,
+     "title": "M2 day 3",
+     "group": "days"
+    },
+    {
+     "pdfPage": 61,
+     "title": "M2 day 4",
+     "group": "days"
+    },
+    {
+     "pdfPage": 62,
+     "title": "M2 day 5",
+     "group": "days"
+    },
+    {
+     "pdfPage": 63,
+     "title": "M2 day 6",
+     "group": "days"
+    },
+    {
+     "pdfPage": 64,
+     "title": "M2 day 7",
+     "group": "days"
+    },
+    {
+     "pdfPage": 65,
+     "title": "Week 7",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 66,
+     "title": "Week 7 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 67,
+     "title": "M2 day 8",
+     "group": "days"
+    },
+    {
+     "pdfPage": 68,
+     "title": "M2 day 9",
+     "group": "days"
+    },
+    {
+     "pdfPage": 69,
+     "title": "M2 day 10",
+     "group": "days"
+    },
+    {
+     "pdfPage": 70,
+     "title": "M2 day 11",
+     "group": "days"
+    },
+    {
+     "pdfPage": 71,
+     "title": "M2 day 12",
+     "group": "days"
+    },
+    {
+     "pdfPage": 72,
+     "title": "M2 day 13",
+     "group": "days"
+    },
+    {
+     "pdfPage": 73,
+     "title": "M2 day 14",
+     "group": "days"
+    },
+    {
+     "pdfPage": 74,
+     "title": "Week 8",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 75,
+     "title": "Week 8 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 76,
+     "title": "M2 day 15",
+     "group": "days"
+    },
+    {
+     "pdfPage": 77,
+     "title": "M2 day 16",
+     "group": "days"
+    },
+    {
+     "pdfPage": 78,
+     "title": "M2 day 17",
+     "group": "days"
+    },
+    {
+     "pdfPage": 79,
+     "title": "M2 day 18",
+     "group": "days"
+    },
+    {
+     "pdfPage": 80,
+     "title": "M2 day 19",
+     "group": "days"
+    },
+    {
+     "pdfPage": 81,
+     "title": "M2 day 20",
+     "group": "days"
+    },
+    {
+     "pdfPage": 82,
+     "title": "M2 day 21",
+     "group": "days"
+    },
+    {
+     "pdfPage": 83,
+     "title": "Week 9",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 84,
+     "title": "Week 9 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 85,
+     "title": "M2 day 22",
+     "group": "days"
+    },
+    {
+     "pdfPage": 86,
+     "title": "M2 day 23",
+     "group": "days"
+    },
+    {
+     "pdfPage": 87,
+     "title": "M2 day 24",
+     "group": "days"
+    },
+    {
+     "pdfPage": 88,
+     "title": "M2 day 25",
+     "group": "days"
+    },
+    {
+     "pdfPage": 89,
+     "title": "M2 day 26",
+     "group": "days"
+    },
+    {
+     "pdfPage": 90,
+     "title": "M2 day 27",
+     "group": "days"
+    },
+    {
+     "pdfPage": 91,
+     "title": "M2 day 28",
+     "group": "days"
+    },
+    {
+     "pdfPage": 92,
+     "title": "Week 10",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 93,
+     "title": "Week 10 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 94,
+     "title": "M2 day 29",
+     "group": "days"
+    },
+    {
+     "pdfPage": 95,
+     "title": "M2 day 30",
+     "group": "days"
+    },
+    {
+     "pdfPage": 96,
+     "title": "M2 day 31",
+     "group": "days"
+    }
+   ]
+  },
+  {
+   "title": "Month 3",
+   "pages": [
+    {
+     "pdfPage": 97,
+     "title": "Month 3"
+    },
+    {
+     "pdfPage": 98,
+     "title": "M3 content",
+     "group": "content"
+    },
+    {
+     "pdfPage": 99,
+     "title": "M3 money",
+     "group": "money"
+    },
+    {
+     "pdfPage": 100,
+     "title": "M3 review",
+     "group": "month_review"
+    },
+    {
+     "pdfPage": 101,
+     "title": "Week 11",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 102,
+     "title": "Week 11 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 103,
+     "title": "M3 day 1",
+     "group": "days"
+    },
+    {
+     "pdfPage": 104,
+     "title": "M3 day 2",
+     "group": "days"
+    },
+    {
+     "pdfPage": 105,
+     "title": "M3 day 3",
+     "group": "days"
+    },
+    {
+     "pdfPage": 106,
+     "title": "M3 day 4",
+     "group": "days"
+    },
+    {
+     "pdfPage": 107,
+     "title": "M3 day 5",
+     "group": "days"
+    },
+    {
+     "pdfPage": 108,
+     "title": "M3 day 6",
+     "group": "days"
+    },
+    {
+     "pdfPage": 109,
+     "title": "M3 day 7",
+     "group": "days"
+    },
+    {
+     "pdfPage": 110,
+     "title": "Week 12",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 111,
+     "title": "Week 12 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 112,
+     "title": "M3 day 8",
+     "group": "days"
+    },
+    {
+     "pdfPage": 113,
+     "title": "M3 day 9",
+     "group": "days"
+    },
+    {
+     "pdfPage": 114,
+     "title": "M3 day 10",
+     "group": "days"
+    },
+    {
+     "pdfPage": 115,
+     "title": "M3 day 11",
+     "group": "days"
+    },
+    {
+     "pdfPage": 116,
+     "title": "M3 day 12",
+     "group": "days"
+    },
+    {
+     "pdfPage": 117,
+     "title": "M3 day 13",
+     "group": "days"
+    },
+    {
+     "pdfPage": 118,
+     "title": "M3 day 14",
+     "group": "days"
+    },
+    {
+     "pdfPage": 119,
+     "title": "Week 13",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 120,
+     "title": "Week 13 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 121,
+     "title": "M3 day 15",
+     "group": "days"
+    },
+    {
+     "pdfPage": 122,
+     "title": "M3 day 16",
+     "group": "days"
+    },
+    {
+     "pdfPage": 123,
+     "title": "M3 day 17",
+     "group": "days"
+    },
+    {
+     "pdfPage": 124,
+     "title": "M3 day 18",
+     "group": "days"
+    },
+    {
+     "pdfPage": 125,
+     "title": "M3 day 19",
+     "group": "days"
+    },
+    {
+     "pdfPage": 126,
+     "title": "M3 day 20",
+     "group": "days"
+    },
+    {
+     "pdfPage": 127,
+     "title": "M3 day 21",
+     "group": "days"
+    },
+    {
+     "pdfPage": 128,
+     "title": "Week 14",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 129,
+     "title": "Week 14 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 130,
+     "title": "M3 day 22",
+     "group": "days"
+    },
+    {
+     "pdfPage": 131,
+     "title": "M3 day 23",
+     "group": "days"
+    },
+    {
+     "pdfPage": 132,
+     "title": "M3 day 24",
+     "group": "days"
+    },
+    {
+     "pdfPage": 133,
+     "title": "M3 day 25",
+     "group": "days"
+    },
+    {
+     "pdfPage": 134,
+     "title": "M3 day 26",
+     "group": "days"
+    },
+    {
+     "pdfPage": 135,
+     "title": "M3 day 27",
+     "group": "days"
+    },
+    {
+     "pdfPage": 136,
+     "title": "M3 day 28",
+     "group": "days"
+    },
+    {
+     "pdfPage": 137,
+     "title": "Week 15",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 138,
+     "title": "Week 15 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 139,
+     "title": "M3 day 29",
+     "group": "days"
+    },
+    {
+     "pdfPage": 140,
+     "title": "M3 day 30",
+     "group": "days"
+    },
+    {
+     "pdfPage": 141,
+     "title": "M3 day 31",
+     "group": "days"
+    }
+   ]
+  },
+  {
+   "title": "Month 4",
+   "pages": [
+    {
+     "pdfPage": 142,
+     "title": "Month 4"
+    },
+    {
+     "pdfPage": 143,
+     "title": "M4 content",
+     "group": "content"
+    },
+    {
+     "pdfPage": 144,
+     "title": "M4 money",
+     "group": "money"
+    },
+    {
+     "pdfPage": 145,
+     "title": "M4 review",
+     "group": "month_review"
+    },
+    {
+     "pdfPage": 146,
+     "title": "Week 16",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 147,
+     "title": "Week 16 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 148,
+     "title": "M4 day 1",
+     "group": "days"
+    },
+    {
+     "pdfPage": 149,
+     "title": "M4 day 2",
+     "group": "days"
+    },
+    {
+     "pdfPage": 150,
+     "title": "M4 day 3",
+     "group": "days"
+    },
+    {
+     "pdfPage": 151,
+     "title": "M4 day 4",
+     "group": "days"
+    },
+    {
+     "pdfPage": 152,
+     "title": "M4 day 5",
+     "group": "days"
+    },
+    {
+     "pdfPage": 153,
+     "title": "M4 day 6",
+     "group": "days"
+    },
+    {
+     "pdfPage": 154,
+     "title": "M4 day 7",
+     "group": "days"
+    },
+    {
+     "pdfPage": 155,
+     "title": "Week 17",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 156,
+     "title": "Week 17 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 157,
+     "title": "M4 day 8",
+     "group": "days"
+    },
+    {
+     "pdfPage": 158,
+     "title": "M4 day 9",
+     "group": "days"
+    },
+    {
+     "pdfPage": 159,
+     "title": "M4 day 10",
+     "group": "days"
+    },
+    {
+     "pdfPage": 160,
+     "title": "M4 day 11",
+     "group": "days"
+    },
+    {
+     "pdfPage": 161,
+     "title": "M4 day 12",
+     "group": "days"
+    },
+    {
+     "pdfPage": 162,
+     "title": "M4 day 13",
+     "group": "days"
+    },
+    {
+     "pdfPage": 163,
+     "title": "M4 day 14",
+     "group": "days"
+    },
+    {
+     "pdfPage": 164,
+     "title": "Week 18",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 165,
+     "title": "Week 18 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 166,
+     "title": "M4 day 15",
+     "group": "days"
+    },
+    {
+     "pdfPage": 167,
+     "title": "M4 day 16",
+     "group": "days"
+    },
+    {
+     "pdfPage": 168,
+     "title": "M4 day 17",
+     "group": "days"
+    },
+    {
+     "pdfPage": 169,
+     "title": "M4 day 18",
+     "group": "days"
+    },
+    {
+     "pdfPage": 170,
+     "title": "M4 day 19",
+     "group": "days"
+    },
+    {
+     "pdfPage": 171,
+     "title": "M4 day 20",
+     "group": "days"
+    },
+    {
+     "pdfPage": 172,
+     "title": "M4 day 21",
+     "group": "days"
+    },
+    {
+     "pdfPage": 173,
+     "title": "Week 19",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 174,
+     "title": "Week 19 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 175,
+     "title": "M4 day 22",
+     "group": "days"
+    },
+    {
+     "pdfPage": 176,
+     "title": "M4 day 23",
+     "group": "days"
+    },
+    {
+     "pdfPage": 177,
+     "title": "M4 day 24",
+     "group": "days"
+    },
+    {
+     "pdfPage": 178,
+     "title": "M4 day 25",
+     "group": "days"
+    },
+    {
+     "pdfPage": 179,
+     "title": "M4 day 26",
+     "group": "days"
+    },
+    {
+     "pdfPage": 180,
+     "title": "M4 day 27",
+     "group": "days"
+    },
+    {
+     "pdfPage": 181,
+     "title": "M4 day 28",
+     "group": "days"
+    },
+    {
+     "pdfPage": 182,
+     "title": "Week 20",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 183,
+     "title": "Week 20 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 184,
+     "title": "M4 day 29",
+     "group": "days"
+    },
+    {
+     "pdfPage": 185,
+     "title": "M4 day 30",
+     "group": "days"
+    },
+    {
+     "pdfPage": 186,
+     "title": "M4 day 31",
+     "group": "days"
+    }
+   ]
+  },
+  {
+   "title": "Month 5",
+   "pages": [
+    {
+     "pdfPage": 187,
+     "title": "Month 5"
+    },
+    {
+     "pdfPage": 188,
+     "title": "M5 content",
+     "group": "content"
+    },
+    {
+     "pdfPage": 189,
+     "title": "M5 money",
+     "group": "money"
+    },
+    {
+     "pdfPage": 190,
+     "title": "M5 review",
+     "group": "month_review"
+    },
+    {
+     "pdfPage": 191,
+     "title": "Week 21",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 192,
+     "title": "Week 21 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 193,
+     "title": "M5 day 1",
+     "group": "days"
+    },
+    {
+     "pdfPage": 194,
+     "title": "M5 day 2",
+     "group": "days"
+    },
+    {
+     "pdfPage": 195,
+     "title": "M5 day 3",
+     "group": "days"
+    },
+    {
+     "pdfPage": 196,
+     "title": "M5 day 4",
+     "group": "days"
+    },
+    {
+     "pdfPage": 197,
+     "title": "M5 day 5",
+     "group": "days"
+    },
+    {
+     "pdfPage": 198,
+     "title": "M5 day 6",
+     "group": "days"
+    },
+    {
+     "pdfPage": 199,
+     "title": "M5 day 7",
+     "group": "days"
+    },
+    {
+     "pdfPage": 200,
+     "title": "Week 22",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 201,
+     "title": "Week 22 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 202,
+     "title": "M5 day 8",
+     "group": "days"
+    },
+    {
+     "pdfPage": 203,
+     "title": "M5 day 9",
+     "group": "days"
+    },
+    {
+     "pdfPage": 204,
+     "title": "M5 day 10",
+     "group": "days"
+    },
+    {
+     "pdfPage": 205,
+     "title": "M5 day 11",
+     "group": "days"
+    },
+    {
+     "pdfPage": 206,
+     "title": "M5 day 12",
+     "group": "days"
+    },
+    {
+     "pdfPage": 207,
+     "title": "M5 day 13",
+     "group": "days"
+    },
+    {
+     "pdfPage": 208,
+     "title": "M5 day 14",
+     "group": "days"
+    },
+    {
+     "pdfPage": 209,
+     "title": "Week 23",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 210,
+     "title": "Week 23 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 211,
+     "title": "M5 day 15",
+     "group": "days"
+    },
+    {
+     "pdfPage": 212,
+     "title": "M5 day 16",
+     "group": "days"
+    },
+    {
+     "pdfPage": 213,
+     "title": "M5 day 17",
+     "group": "days"
+    },
+    {
+     "pdfPage": 214,
+     "title": "M5 day 18",
+     "group": "days"
+    },
+    {
+     "pdfPage": 215,
+     "title": "M5 day 19",
+     "group": "days"
+    },
+    {
+     "pdfPage": 216,
+     "title": "M5 day 20",
+     "group": "days"
+    },
+    {
+     "pdfPage": 217,
+     "title": "M5 day 21",
+     "group": "days"
+    },
+    {
+     "pdfPage": 218,
+     "title": "Week 24",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 219,
+     "title": "Week 24 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 220,
+     "title": "M5 day 22",
+     "group": "days"
+    },
+    {
+     "pdfPage": 221,
+     "title": "M5 day 23",
+     "group": "days"
+    },
+    {
+     "pdfPage": 222,
+     "title": "M5 day 24",
+     "group": "days"
+    },
+    {
+     "pdfPage": 223,
+     "title": "M5 day 25",
+     "group": "days"
+    },
+    {
+     "pdfPage": 224,
+     "title": "M5 day 26",
+     "group": "days"
+    },
+    {
+     "pdfPage": 225,
+     "title": "M5 day 27",
+     "group": "days"
+    },
+    {
+     "pdfPage": 226,
+     "title": "M5 day 28",
+     "group": "days"
+    },
+    {
+     "pdfPage": 227,
+     "title": "Week 25",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 228,
+     "title": "Week 25 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 229,
+     "title": "M5 day 29",
+     "group": "days"
+    },
+    {
+     "pdfPage": 230,
+     "title": "M5 day 30",
+     "group": "days"
+    },
+    {
+     "pdfPage": 231,
+     "title": "M5 day 31",
+     "group": "days"
+    }
+   ]
+  },
+  {
+   "title": "Month 6",
+   "pages": [
+    {
+     "pdfPage": 232,
+     "title": "Month 6"
+    },
+    {
+     "pdfPage": 233,
+     "title": "M6 content",
+     "group": "content"
+    },
+    {
+     "pdfPage": 234,
+     "title": "M6 money",
+     "group": "money"
+    },
+    {
+     "pdfPage": 235,
+     "title": "M6 review",
+     "group": "month_review"
+    },
+    {
+     "pdfPage": 236,
+     "title": "Week 26",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 237,
+     "title": "Week 26 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 238,
+     "title": "M6 day 1",
+     "group": "days"
+    },
+    {
+     "pdfPage": 239,
+     "title": "M6 day 2",
+     "group": "days"
+    },
+    {
+     "pdfPage": 240,
+     "title": "M6 day 3",
+     "group": "days"
+    },
+    {
+     "pdfPage": 241,
+     "title": "M6 day 4",
+     "group": "days"
+    },
+    {
+     "pdfPage": 242,
+     "title": "M6 day 5",
+     "group": "days"
+    },
+    {
+     "pdfPage": 243,
+     "title": "M6 day 6",
+     "group": "days"
+    },
+    {
+     "pdfPage": 244,
+     "title": "M6 day 7",
+     "group": "days"
+    },
+    {
+     "pdfPage": 245,
+     "title": "Week 27",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 246,
+     "title": "Week 27 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 247,
+     "title": "M6 day 8",
+     "group": "days"
+    },
+    {
+     "pdfPage": 248,
+     "title": "M6 day 9",
+     "group": "days"
+    },
+    {
+     "pdfPage": 249,
+     "title": "M6 day 10",
+     "group": "days"
+    },
+    {
+     "pdfPage": 250,
+     "title": "M6 day 11",
+     "group": "days"
+    },
+    {
+     "pdfPage": 251,
+     "title": "M6 day 12",
+     "group": "days"
+    },
+    {
+     "pdfPage": 252,
+     "title": "M6 day 13",
+     "group": "days"
+    },
+    {
+     "pdfPage": 253,
+     "title": "M6 day 14",
+     "group": "days"
+    },
+    {
+     "pdfPage": 254,
+     "title": "Week 28",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 255,
+     "title": "Week 28 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 256,
+     "title": "M6 day 15",
+     "group": "days"
+    },
+    {
+     "pdfPage": 257,
+     "title": "M6 day 16",
+     "group": "days"
+    },
+    {
+     "pdfPage": 258,
+     "title": "M6 day 17",
+     "group": "days"
+    },
+    {
+     "pdfPage": 259,
+     "title": "M6 day 18",
+     "group": "days"
+    },
+    {
+     "pdfPage": 260,
+     "title": "M6 day 19",
+     "group": "days"
+    },
+    {
+     "pdfPage": 261,
+     "title": "M6 day 20",
+     "group": "days"
+    },
+    {
+     "pdfPage": 262,
+     "title": "M6 day 21",
+     "group": "days"
+    },
+    {
+     "pdfPage": 263,
+     "title": "Week 29",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 264,
+     "title": "Week 29 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 265,
+     "title": "M6 day 22",
+     "group": "days"
+    },
+    {
+     "pdfPage": 266,
+     "title": "M6 day 23",
+     "group": "days"
+    },
+    {
+     "pdfPage": 267,
+     "title": "M6 day 24",
+     "group": "days"
+    },
+    {
+     "pdfPage": 268,
+     "title": "M6 day 25",
+     "group": "days"
+    },
+    {
+     "pdfPage": 269,
+     "title": "M6 day 26",
+     "group": "days"
+    },
+    {
+     "pdfPage": 270,
+     "title": "M6 day 27",
+     "group": "days"
+    },
+    {
+     "pdfPage": 271,
+     "title": "M6 day 28",
+     "group": "days"
+    },
+    {
+     "pdfPage": 272,
+     "title": "Week 30",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 273,
+     "title": "Week 30 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 274,
+     "title": "M6 day 29",
+     "group": "days"
+    },
+    {
+     "pdfPage": 275,
+     "title": "M6 day 30",
+     "group": "days"
+    },
+    {
+     "pdfPage": 276,
+     "title": "M6 day 31",
+     "group": "days"
+    }
+   ]
+  },
+  {
+   "title": "Month 7",
+   "pages": [
+    {
+     "pdfPage": 277,
+     "title": "Month 7"
+    },
+    {
+     "pdfPage": 278,
+     "title": "M7 content",
+     "group": "content"
+    },
+    {
+     "pdfPage": 279,
+     "title": "M7 money",
+     "group": "money"
+    },
+    {
+     "pdfPage": 280,
+     "title": "M7 review",
+     "group": "month_review"
+    },
+    {
+     "pdfPage": 281,
+     "title": "Week 31",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 282,
+     "title": "Week 31 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 283,
+     "title": "M7 day 1",
+     "group": "days"
+    },
+    {
+     "pdfPage": 284,
+     "title": "M7 day 2",
+     "group": "days"
+    },
+    {
+     "pdfPage": 285,
+     "title": "M7 day 3",
+     "group": "days"
+    },
+    {
+     "pdfPage": 286,
+     "title": "M7 day 4",
+     "group": "days"
+    },
+    {
+     "pdfPage": 287,
+     "title": "M7 day 5",
+     "group": "days"
+    },
+    {
+     "pdfPage": 288,
+     "title": "M7 day 6",
+     "group": "days"
+    },
+    {
+     "pdfPage": 289,
+     "title": "M7 day 7",
+     "group": "days"
+    },
+    {
+     "pdfPage": 290,
+     "title": "Week 32",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 291,
+     "title": "Week 32 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 292,
+     "title": "M7 day 8",
+     "group": "days"
+    },
+    {
+     "pdfPage": 293,
+     "title": "M7 day 9",
+     "group": "days"
+    },
+    {
+     "pdfPage": 294,
+     "title": "M7 day 10",
+     "group": "days"
+    },
+    {
+     "pdfPage": 295,
+     "title": "M7 day 11",
+     "group": "days"
+    },
+    {
+     "pdfPage": 296,
+     "title": "M7 day 12",
+     "group": "days"
+    },
+    {
+     "pdfPage": 297,
+     "title": "M7 day 13",
+     "group": "days"
+    },
+    {
+     "pdfPage": 298,
+     "title": "M7 day 14",
+     "group": "days"
+    },
+    {
+     "pdfPage": 299,
+     "title": "Week 33",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 300,
+     "title": "Week 33 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 301,
+     "title": "M7 day 15",
+     "group": "days"
+    },
+    {
+     "pdfPage": 302,
+     "title": "M7 day 16",
+     "group": "days"
+    },
+    {
+     "pdfPage": 303,
+     "title": "M7 day 17",
+     "group": "days"
+    },
+    {
+     "pdfPage": 304,
+     "title": "M7 day 18",
+     "group": "days"
+    },
+    {
+     "pdfPage": 305,
+     "title": "M7 day 19",
+     "group": "days"
+    },
+    {
+     "pdfPage": 306,
+     "title": "M7 day 20",
+     "group": "days"
+    },
+    {
+     "pdfPage": 307,
+     "title": "M7 day 21",
+     "group": "days"
+    },
+    {
+     "pdfPage": 308,
+     "title": "Week 34",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 309,
+     "title": "Week 34 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 310,
+     "title": "M7 day 22",
+     "group": "days"
+    },
+    {
+     "pdfPage": 311,
+     "title": "M7 day 23",
+     "group": "days"
+    },
+    {
+     "pdfPage": 312,
+     "title": "M7 day 24",
+     "group": "days"
+    },
+    {
+     "pdfPage": 313,
+     "title": "M7 day 25",
+     "group": "days"
+    },
+    {
+     "pdfPage": 314,
+     "title": "M7 day 26",
+     "group": "days"
+    },
+    {
+     "pdfPage": 315,
+     "title": "M7 day 27",
+     "group": "days"
+    },
+    {
+     "pdfPage": 316,
+     "title": "M7 day 28",
+     "group": "days"
+    },
+    {
+     "pdfPage": 317,
+     "title": "Week 35",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 318,
+     "title": "Week 35 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 319,
+     "title": "M7 day 29",
+     "group": "days"
+    },
+    {
+     "pdfPage": 320,
+     "title": "M7 day 30",
+     "group": "days"
+    },
+    {
+     "pdfPage": 321,
+     "title": "M7 day 31",
+     "group": "days"
+    }
+   ]
+  },
+  {
+   "title": "Month 8",
+   "pages": [
+    {
+     "pdfPage": 322,
+     "title": "Month 8"
+    },
+    {
+     "pdfPage": 323,
+     "title": "M8 content",
+     "group": "content"
+    },
+    {
+     "pdfPage": 324,
+     "title": "M8 money",
+     "group": "money"
+    },
+    {
+     "pdfPage": 325,
+     "title": "M8 review",
+     "group": "month_review"
+    },
+    {
+     "pdfPage": 326,
+     "title": "Week 36",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 327,
+     "title": "Week 36 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 328,
+     "title": "M8 day 1",
+     "group": "days"
+    },
+    {
+     "pdfPage": 329,
+     "title": "M8 day 2",
+     "group": "days"
+    },
+    {
+     "pdfPage": 330,
+     "title": "M8 day 3",
+     "group": "days"
+    },
+    {
+     "pdfPage": 331,
+     "title": "M8 day 4",
+     "group": "days"
+    },
+    {
+     "pdfPage": 332,
+     "title": "M8 day 5",
+     "group": "days"
+    },
+    {
+     "pdfPage": 333,
+     "title": "M8 day 6",
+     "group": "days"
+    },
+    {
+     "pdfPage": 334,
+     "title": "M8 day 7",
+     "group": "days"
+    },
+    {
+     "pdfPage": 335,
+     "title": "Week 37",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 336,
+     "title": "Week 37 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 337,
+     "title": "M8 day 8",
+     "group": "days"
+    },
+    {
+     "pdfPage": 338,
+     "title": "M8 day 9",
+     "group": "days"
+    },
+    {
+     "pdfPage": 339,
+     "title": "M8 day 10",
+     "group": "days"
+    },
+    {
+     "pdfPage": 340,
+     "title": "M8 day 11",
+     "group": "days"
+    },
+    {
+     "pdfPage": 341,
+     "title": "M8 day 12",
+     "group": "days"
+    },
+    {
+     "pdfPage": 342,
+     "title": "M8 day 13",
+     "group": "days"
+    },
+    {
+     "pdfPage": 343,
+     "title": "M8 day 14",
+     "group": "days"
+    },
+    {
+     "pdfPage": 344,
+     "title": "Week 38",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 345,
+     "title": "Week 38 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 346,
+     "title": "M8 day 15",
+     "group": "days"
+    },
+    {
+     "pdfPage": 347,
+     "title": "M8 day 16",
+     "group": "days"
+    },
+    {
+     "pdfPage": 348,
+     "title": "M8 day 17",
+     "group": "days"
+    },
+    {
+     "pdfPage": 349,
+     "title": "M8 day 18",
+     "group": "days"
+    },
+    {
+     "pdfPage": 350,
+     "title": "M8 day 19",
+     "group": "days"
+    },
+    {
+     "pdfPage": 351,
+     "title": "M8 day 20",
+     "group": "days"
+    },
+    {
+     "pdfPage": 352,
+     "title": "M8 day 21",
+     "group": "days"
+    },
+    {
+     "pdfPage": 353,
+     "title": "Week 39",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 354,
+     "title": "Week 39 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 355,
+     "title": "M8 day 22",
+     "group": "days"
+    },
+    {
+     "pdfPage": 356,
+     "title": "M8 day 23",
+     "group": "days"
+    },
+    {
+     "pdfPage": 357,
+     "title": "M8 day 24",
+     "group": "days"
+    },
+    {
+     "pdfPage": 358,
+     "title": "M8 day 25",
+     "group": "days"
+    },
+    {
+     "pdfPage": 359,
+     "title": "M8 day 26",
+     "group": "days"
+    },
+    {
+     "pdfPage": 360,
+     "title": "M8 day 27",
+     "group": "days"
+    },
+    {
+     "pdfPage": 361,
+     "title": "M8 day 28",
+     "group": "days"
+    },
+    {
+     "pdfPage": 362,
+     "title": "Week 40",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 363,
+     "title": "Week 40 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 364,
+     "title": "M8 day 29",
+     "group": "days"
+    },
+    {
+     "pdfPage": 365,
+     "title": "M8 day 30",
+     "group": "days"
+    },
+    {
+     "pdfPage": 366,
+     "title": "M8 day 31",
+     "group": "days"
+    }
+   ]
+  },
+  {
+   "title": "Month 9",
+   "pages": [
+    {
+     "pdfPage": 367,
+     "title": "Month 9"
+    },
+    {
+     "pdfPage": 368,
+     "title": "M9 content",
+     "group": "content"
+    },
+    {
+     "pdfPage": 369,
+     "title": "M9 money",
+     "group": "money"
+    },
+    {
+     "pdfPage": 370,
+     "title": "M9 review",
+     "group": "month_review"
+    },
+    {
+     "pdfPage": 371,
+     "title": "Week 41",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 372,
+     "title": "Week 41 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 373,
+     "title": "M9 day 1",
+     "group": "days"
+    },
+    {
+     "pdfPage": 374,
+     "title": "M9 day 2",
+     "group": "days"
+    },
+    {
+     "pdfPage": 375,
+     "title": "M9 day 3",
+     "group": "days"
+    },
+    {
+     "pdfPage": 376,
+     "title": "M9 day 4",
+     "group": "days"
+    },
+    {
+     "pdfPage": 377,
+     "title": "M9 day 5",
+     "group": "days"
+    },
+    {
+     "pdfPage": 378,
+     "title": "M9 day 6",
+     "group": "days"
+    },
+    {
+     "pdfPage": 379,
+     "title": "M9 day 7",
+     "group": "days"
+    },
+    {
+     "pdfPage": 380,
+     "title": "Week 42",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 381,
+     "title": "Week 42 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 382,
+     "title": "M9 day 8",
+     "group": "days"
+    },
+    {
+     "pdfPage": 383,
+     "title": "M9 day 9",
+     "group": "days"
+    },
+    {
+     "pdfPage": 384,
+     "title": "M9 day 10",
+     "group": "days"
+    },
+    {
+     "pdfPage": 385,
+     "title": "M9 day 11",
+     "group": "days"
+    },
+    {
+     "pdfPage": 386,
+     "title": "M9 day 12",
+     "group": "days"
+    },
+    {
+     "pdfPage": 387,
+     "title": "M9 day 13",
+     "group": "days"
+    },
+    {
+     "pdfPage": 388,
+     "title": "M9 day 14",
+     "group": "days"
+    },
+    {
+     "pdfPage": 389,
+     "title": "Week 43",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 390,
+     "title": "Week 43 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 391,
+     "title": "M9 day 15",
+     "group": "days"
+    },
+    {
+     "pdfPage": 392,
+     "title": "M9 day 16",
+     "group": "days"
+    },
+    {
+     "pdfPage": 393,
+     "title": "M9 day 17",
+     "group": "days"
+    },
+    {
+     "pdfPage": 394,
+     "title": "M9 day 18",
+     "group": "days"
+    },
+    {
+     "pdfPage": 395,
+     "title": "M9 day 19",
+     "group": "days"
+    },
+    {
+     "pdfPage": 396,
+     "title": "M9 day 20",
+     "group": "days"
+    },
+    {
+     "pdfPage": 397,
+     "title": "M9 day 21",
+     "group": "days"
+    },
+    {
+     "pdfPage": 398,
+     "title": "Week 44",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 399,
+     "title": "Week 44 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 400,
+     "title": "M9 day 22",
+     "group": "days"
+    },
+    {
+     "pdfPage": 401,
+     "title": "M9 day 23",
+     "group": "days"
+    },
+    {
+     "pdfPage": 402,
+     "title": "M9 day 24",
+     "group": "days"
+    },
+    {
+     "pdfPage": 403,
+     "title": "M9 day 25",
+     "group": "days"
+    },
+    {
+     "pdfPage": 404,
+     "title": "M9 day 26",
+     "group": "days"
+    },
+    {
+     "pdfPage": 405,
+     "title": "M9 day 27",
+     "group": "days"
+    },
+    {
+     "pdfPage": 406,
+     "title": "M9 day 28",
+     "group": "days"
+    },
+    {
+     "pdfPage": 407,
+     "title": "Week 45",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 408,
+     "title": "Week 45 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 409,
+     "title": "M9 day 29",
+     "group": "days"
+    },
+    {
+     "pdfPage": 410,
+     "title": "M9 day 30",
+     "group": "days"
+    },
+    {
+     "pdfPage": 411,
+     "title": "M9 day 31",
+     "group": "days"
+    }
+   ]
+  },
+  {
+   "title": "Month 10",
+   "pages": [
+    {
+     "pdfPage": 412,
+     "title": "Month 10"
+    },
+    {
+     "pdfPage": 413,
+     "title": "M10 content",
+     "group": "content"
+    },
+    {
+     "pdfPage": 414,
+     "title": "M10 money",
+     "group": "money"
+    },
+    {
+     "pdfPage": 415,
+     "title": "M10 review",
+     "group": "month_review"
+    },
+    {
+     "pdfPage": 416,
+     "title": "Week 46",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 417,
+     "title": "Week 46 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 418,
+     "title": "M10 day 1",
+     "group": "days"
+    },
+    {
+     "pdfPage": 419,
+     "title": "M10 day 2",
+     "group": "days"
+    },
+    {
+     "pdfPage": 420,
+     "title": "M10 day 3",
+     "group": "days"
+    },
+    {
+     "pdfPage": 421,
+     "title": "M10 day 4",
+     "group": "days"
+    },
+    {
+     "pdfPage": 422,
+     "title": "M10 day 5",
+     "group": "days"
+    },
+    {
+     "pdfPage": 423,
+     "title": "M10 day 6",
+     "group": "days"
+    },
+    {
+     "pdfPage": 424,
+     "title": "M10 day 7",
+     "group": "days"
+    },
+    {
+     "pdfPage": 425,
+     "title": "Week 47",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 426,
+     "title": "Week 47 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 427,
+     "title": "M10 day 8",
+     "group": "days"
+    },
+    {
+     "pdfPage": 428,
+     "title": "M10 day 9",
+     "group": "days"
+    },
+    {
+     "pdfPage": 429,
+     "title": "M10 day 10",
+     "group": "days"
+    },
+    {
+     "pdfPage": 430,
+     "title": "M10 day 11",
+     "group": "days"
+    },
+    {
+     "pdfPage": 431,
+     "title": "M10 day 12",
+     "group": "days"
+    },
+    {
+     "pdfPage": 432,
+     "title": "M10 day 13",
+     "group": "days"
+    },
+    {
+     "pdfPage": 433,
+     "title": "M10 day 14",
+     "group": "days"
+    },
+    {
+     "pdfPage": 434,
+     "title": "Week 48",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 435,
+     "title": "Week 48 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 436,
+     "title": "M10 day 15",
+     "group": "days"
+    },
+    {
+     "pdfPage": 437,
+     "title": "M10 day 16",
+     "group": "days"
+    },
+    {
+     "pdfPage": 438,
+     "title": "M10 day 17",
+     "group": "days"
+    },
+    {
+     "pdfPage": 439,
+     "title": "M10 day 18",
+     "group": "days"
+    },
+    {
+     "pdfPage": 440,
+     "title": "M10 day 19",
+     "group": "days"
+    },
+    {
+     "pdfPage": 441,
+     "title": "M10 day 20",
+     "group": "days"
+    },
+    {
+     "pdfPage": 442,
+     "title": "M10 day 21",
+     "group": "days"
+    },
+    {
+     "pdfPage": 443,
+     "title": "Week 49",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 444,
+     "title": "Week 49 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 445,
+     "title": "M10 day 22",
+     "group": "days"
+    },
+    {
+     "pdfPage": 446,
+     "title": "M10 day 23",
+     "group": "days"
+    },
+    {
+     "pdfPage": 447,
+     "title": "M10 day 24",
+     "group": "days"
+    },
+    {
+     "pdfPage": 448,
+     "title": "M10 day 25",
+     "group": "days"
+    },
+    {
+     "pdfPage": 449,
+     "title": "M10 day 26",
+     "group": "days"
+    },
+    {
+     "pdfPage": 450,
+     "title": "M10 day 27",
+     "group": "days"
+    },
+    {
+     "pdfPage": 451,
+     "title": "M10 day 28",
+     "group": "days"
+    },
+    {
+     "pdfPage": 452,
+     "title": "Week 50",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 453,
+     "title": "Week 50 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 454,
+     "title": "M10 day 29",
+     "group": "days"
+    },
+    {
+     "pdfPage": 455,
+     "title": "M10 day 30",
+     "group": "days"
+    },
+    {
+     "pdfPage": 456,
+     "title": "M10 day 31",
+     "group": "days"
+    }
+   ]
+  },
+  {
+   "title": "Month 11",
+   "pages": [
+    {
+     "pdfPage": 457,
+     "title": "Month 11"
+    },
+    {
+     "pdfPage": 458,
+     "title": "M11 content",
+     "group": "content"
+    },
+    {
+     "pdfPage": 459,
+     "title": "M11 money",
+     "group": "money"
+    },
+    {
+     "pdfPage": 460,
+     "title": "M11 review",
+     "group": "month_review"
+    },
+    {
+     "pdfPage": 461,
+     "title": "Week 51",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 462,
+     "title": "Week 51 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 463,
+     "title": "M11 day 1",
+     "group": "days"
+    },
+    {
+     "pdfPage": 464,
+     "title": "M11 day 2",
+     "group": "days"
+    },
+    {
+     "pdfPage": 465,
+     "title": "M11 day 3",
+     "group": "days"
+    },
+    {
+     "pdfPage": 466,
+     "title": "M11 day 4",
+     "group": "days"
+    },
+    {
+     "pdfPage": 467,
+     "title": "M11 day 5",
+     "group": "days"
+    },
+    {
+     "pdfPage": 468,
+     "title": "M11 day 6",
+     "group": "days"
+    },
+    {
+     "pdfPage": 469,
+     "title": "M11 day 7",
+     "group": "days"
+    },
+    {
+     "pdfPage": 470,
+     "title": "Week 52",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 471,
+     "title": "Week 52 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 472,
+     "title": "M11 day 8",
+     "group": "days"
+    },
+    {
+     "pdfPage": 473,
+     "title": "M11 day 9",
+     "group": "days"
+    },
+    {
+     "pdfPage": 474,
+     "title": "M11 day 10",
+     "group": "days"
+    },
+    {
+     "pdfPage": 475,
+     "title": "M11 day 11",
+     "group": "days"
+    },
+    {
+     "pdfPage": 476,
+     "title": "M11 day 12",
+     "group": "days"
+    },
+    {
+     "pdfPage": 477,
+     "title": "M11 day 13",
+     "group": "days"
+    },
+    {
+     "pdfPage": 478,
+     "title": "M11 day 14",
+     "group": "days"
+    },
+    {
+     "pdfPage": 479,
+     "title": "Week 53",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 480,
+     "title": "Week 53 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 481,
+     "title": "M11 day 15",
+     "group": "days"
+    },
+    {
+     "pdfPage": 482,
+     "title": "M11 day 16",
+     "group": "days"
+    },
+    {
+     "pdfPage": 483,
+     "title": "M11 day 17",
+     "group": "days"
+    },
+    {
+     "pdfPage": 484,
+     "title": "M11 day 18",
+     "group": "days"
+    },
+    {
+     "pdfPage": 485,
+     "title": "M11 day 19",
+     "group": "days"
+    },
+    {
+     "pdfPage": 486,
+     "title": "M11 day 20",
+     "group": "days"
+    },
+    {
+     "pdfPage": 487,
+     "title": "M11 day 21",
+     "group": "days"
+    },
+    {
+     "pdfPage": 488,
+     "title": "Week 54",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 489,
+     "title": "Week 54 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 490,
+     "title": "M11 day 22",
+     "group": "days"
+    },
+    {
+     "pdfPage": 491,
+     "title": "M11 day 23",
+     "group": "days"
+    },
+    {
+     "pdfPage": 492,
+     "title": "M11 day 24",
+     "group": "days"
+    },
+    {
+     "pdfPage": 493,
+     "title": "M11 day 25",
+     "group": "days"
+    },
+    {
+     "pdfPage": 494,
+     "title": "M11 day 26",
+     "group": "days"
+    },
+    {
+     "pdfPage": 495,
+     "title": "M11 day 27",
+     "group": "days"
+    },
+    {
+     "pdfPage": 496,
+     "title": "M11 day 28",
+     "group": "days"
+    },
+    {
+     "pdfPage": 497,
+     "title": "Week 55",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 498,
+     "title": "Week 55 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 499,
+     "title": "M11 day 29",
+     "group": "days"
+    },
+    {
+     "pdfPage": 500,
+     "title": "M11 day 30",
+     "group": "days"
+    },
+    {
+     "pdfPage": 501,
+     "title": "M11 day 31",
+     "group": "days"
+    }
+   ]
+  },
+  {
+   "title": "Month 12",
+   "pages": [
+    {
+     "pdfPage": 502,
+     "title": "Month 12"
+    },
+    {
+     "pdfPage": 503,
+     "title": "M12 content",
+     "group": "content"
+    },
+    {
+     "pdfPage": 504,
+     "title": "M12 money",
+     "group": "money"
+    },
+    {
+     "pdfPage": 505,
+     "title": "M12 review",
+     "group": "month_review"
+    },
+    {
+     "pdfPage": 506,
+     "title": "Week 56",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 507,
+     "title": "Week 56 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 508,
+     "title": "M12 day 1",
+     "group": "days"
+    },
+    {
+     "pdfPage": 509,
+     "title": "M12 day 2",
+     "group": "days"
+    },
+    {
+     "pdfPage": 510,
+     "title": "M12 day 3",
+     "group": "days"
+    },
+    {
+     "pdfPage": 511,
+     "title": "M12 day 4",
+     "group": "days"
+    },
+    {
+     "pdfPage": 512,
+     "title": "M12 day 5",
+     "group": "days"
+    },
+    {
+     "pdfPage": 513,
+     "title": "M12 day 6",
+     "group": "days"
+    },
+    {
+     "pdfPage": 514,
+     "title": "M12 day 7",
+     "group": "days"
+    },
+    {
+     "pdfPage": 515,
+     "title": "Week 57",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 516,
+     "title": "Week 57 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 517,
+     "title": "M12 day 8",
+     "group": "days"
+    },
+    {
+     "pdfPage": 518,
+     "title": "M12 day 9",
+     "group": "days"
+    },
+    {
+     "pdfPage": 519,
+     "title": "M12 day 10",
+     "group": "days"
+    },
+    {
+     "pdfPage": 520,
+     "title": "M12 day 11",
+     "group": "days"
+    },
+    {
+     "pdfPage": 521,
+     "title": "M12 day 12",
+     "group": "days"
+    },
+    {
+     "pdfPage": 522,
+     "title": "M12 day 13",
+     "group": "days"
+    },
+    {
+     "pdfPage": 523,
+     "title": "M12 day 14",
+     "group": "days"
+    },
+    {
+     "pdfPage": 524,
+     "title": "Week 58",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 525,
+     "title": "Week 58 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 526,
+     "title": "M12 day 15",
+     "group": "days"
+    },
+    {
+     "pdfPage": 527,
+     "title": "M12 day 16",
+     "group": "days"
+    },
+    {
+     "pdfPage": 528,
+     "title": "M12 day 17",
+     "group": "days"
+    },
+    {
+     "pdfPage": 529,
+     "title": "M12 day 18",
+     "group": "days"
+    },
+    {
+     "pdfPage": 530,
+     "title": "M12 day 19",
+     "group": "days"
+    },
+    {
+     "pdfPage": 531,
+     "title": "M12 day 20",
+     "group": "days"
+    },
+    {
+     "pdfPage": 532,
+     "title": "M12 day 21",
+     "group": "days"
+    },
+    {
+     "pdfPage": 533,
+     "title": "Week 59",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 534,
+     "title": "Week 59 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 535,
+     "title": "M12 day 22",
+     "group": "days"
+    },
+    {
+     "pdfPage": 536,
+     "title": "M12 day 23",
+     "group": "days"
+    },
+    {
+     "pdfPage": 537,
+     "title": "M12 day 24",
+     "group": "days"
+    },
+    {
+     "pdfPage": 538,
+     "title": "M12 day 25",
+     "group": "days"
+    },
+    {
+     "pdfPage": 539,
+     "title": "M12 day 26",
+     "group": "days"
+    },
+    {
+     "pdfPage": 540,
+     "title": "M12 day 27",
+     "group": "days"
+    },
+    {
+     "pdfPage": 541,
+     "title": "M12 day 28",
+     "group": "days"
+    },
+    {
+     "pdfPage": 542,
+     "title": "Week 60",
+     "group": "weeks"
+    },
+    {
+     "pdfPage": 543,
+     "title": "Week 60 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 544,
+     "title": "M12 day 29",
+     "group": "days"
+    },
+    {
+     "pdfPage": 545,
+     "title": "M12 day 30",
+     "group": "days"
+    },
+    {
+     "pdfPage": 546,
+     "title": "M12 day 31",
+     "group": "days"
+    }
+   ]
+  },
+  {
+   "title": "Clients",
+   "pages": [
+    {
+     "pdfPage": 547,
+     "title": "Clients",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 548,
+     "title": "Client 1",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 549,
+     "title": "Client 2",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 550,
+     "title": "Client 3",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 551,
+     "title": "Client 4",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 552,
+     "title": "Client 5",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 553,
+     "title": "Client 6",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 554,
+     "title": "Client 7",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 555,
+     "title": "Client 8",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 556,
+     "title": "Client 9",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 557,
+     "title": "Client 10",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 558,
+     "title": "Client 11",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 559,
+     "title": "Client 12",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 560,
+     "title": "Client 13",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 561,
+     "title": "Client 14",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 562,
+     "title": "Client 15",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 563,
+     "title": "Client 16",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 564,
+     "title": "Client 17",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 565,
+     "title": "Client 18",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 566,
+     "title": "Client 19",
+     "group": "clients"
+    },
+    {
+     "pdfPage": 567,
+     "title": "Client 20",
+     "group": "clients"
+    }
+   ]
+  },
+  {
+   "title": "Projects",
+   "pages": [
+    {
+     "pdfPage": 568,
+     "title": "Projects",
+     "group": "projects"
+    },
+    {
+     "pdfPage": 569,
+     "title": "Project 1",
+     "group": "projects"
+    },
+    {
+     "pdfPage": 570,
+     "title": "Project 2",
+     "group": "projects"
+    },
+    {
+     "pdfPage": 571,
+     "title": "Project 3",
+     "group": "projects"
+    },
+    {
+     "pdfPage": 572,
+     "title": "Project 4",
+     "group": "projects"
+    },
+    {
+     "pdfPage": 573,
+     "title": "Project 5",
+     "group": "projects"
+    },
+    {
+     "pdfPage": 574,
+     "title": "Project 6",
+     "group": "projects"
+    },
+    {
+     "pdfPage": 575,
+     "title": "Project 7",
+     "group": "projects"
+    },
+    {
+     "pdfPage": 576,
+     "title": "Project 8",
+     "group": "projects"
+    },
+    {
+     "pdfPage": 577,
+     "title": "Project 9",
+     "group": "projects"
+    },
+    {
+     "pdfPage": 578,
+     "title": "Project 10",
+     "group": "projects"
+    },
+    {
+     "pdfPage": 579,
+     "title": "Project 11",
+     "group": "projects"
+    },
+    {
+     "pdfPage": 580,
+     "title": "Project 12",
+     "group": "projects"
+    }
+   ]
+  },
+  {
+   "title": "Finance",
+   "pages": [
+    {
+     "pdfPage": 581,
+     "title": "Finance",
+     "group": "finance"
+    },
+    {
+     "pdfPage": 582,
+     "title": "Year overview",
+     "group": "finance"
+    },
+    {
+     "pdfPage": 583,
+     "title": "Subscriptions",
+     "group": "finance"
+    },
+    {
+     "pdfPage": 584,
+     "title": "Savings goals",
+     "group": "finance"
+    }
+   ]
+  },
+  {
+   "title": "Notes",
+   "pages": [
+    {
+     "pdfPage": 585,
+     "title": "Notes",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 586,
+     "title": "Note 1",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 587,
+     "title": "Note 2",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 588,
+     "title": "Note 3",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 589,
+     "title": "Note 4",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 590,
+     "title": "Note 5",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 591,
+     "title": "Note 6",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 592,
+     "title": "Note 7",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 593,
+     "title": "Note 8",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 594,
+     "title": "Note 9",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 595,
+     "title": "Note 10",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 596,
+     "title": "Note 11",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 597,
+     "title": "Note 12",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 598,
+     "title": "Note 13",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 599,
+     "title": "Note 14",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 600,
+     "title": "Note 15",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 601,
+     "title": "Note 16",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 602,
+     "title": "Note 17",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 603,
+     "title": "Note 18",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 604,
+     "title": "Note 19",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 605,
+     "title": "Note 20",
+     "group": "notes"
+    }
+   ]
+  }
+ ],
+ "options": [
+  {
+   "id": "layout",
+   "title": "Layout",
+   "choices": [
+    {
+     "id": "landscape",
+     "name": "Landscape"
+    },
+    {
+     "id": "portrait",
+     "name": "Portrait"
+    }
+   ]
+  },
+  {
+   "id": "weekStart",
+   "title": "Week starts",
+   "choices": [
+    {
+     "id": "monday",
+     "name": "Monday"
+    },
+    {
+     "id": "sunday",
+     "name": "Sunday"
+    }
+   ]
+  }
+ ],
+ "groups": [
+  {
+   "id": "weeks",
+   "title": "Week pages",
+   "optional": true,
+   "on": true
+  },
+  {
+   "id": "week_review",
+   "title": "Weekly reviews",
+   "optional": true,
+   "on": true
+  },
+  {
+   "id": "days",
+   "title": "Daily pages",
+   "optional": true,
+   "on": true
+  },
+  {
+   "id": "content",
+   "title": "Content calendars",
+   "optional": true,
+   "on": true
+  },
+  {
+   "id": "money",
+   "title": "Monthly income & expenses",
+   "optional": true,
+   "on": true
+  },
+  {
+   "id": "month_review",
+   "title": "Monthly reviews",
+   "optional": true,
+   "on": true
+  },
+  {
+   "id": "clients",
+   "title": "Client pages",
+   "optional": true,
+   "on": true
+  },
+  {
+   "id": "projects",
+   "title": "Project dashboards",
+   "optional": true,
+   "on": true
+  },
+  {
+   "id": "finance",
+   "title": "Finance",
+   "optional": true,
+   "on": true
+  },
+  {
+   "id": "notes",
+   "title": "Notes",
+   "optional": true,
+   "on": true
+  }
+ ],
+ "variants": [
+  {
+   "name": "Landscape \u00b7 Monday",
+   "file": "template.pdf",
+   "options": {
+    "layout": "landscape",
+    "weekStart": "monday"
+   }
+  },
+  {
+   "name": "Landscape \u00b7 Sunday",
+   "file": "template_sunday.pdf",
+   "options": {
+    "layout": "landscape",
+    "weekStart": "sunday"
+   },
+   "spec": "template_sunday.json"
+  },
+  {
+   "name": "Portrait \u00b7 Monday",
+   "file": "template_portrait.pdf",
+   "options": {
+    "layout": "portrait",
+    "weekStart": "monday"
+   },
+   "spec": "template_portrait.json"
+  },
+  {
+   "name": "Portrait \u00b7 Sunday",
+   "file": "template_portrait_sunday.pdf",
+   "options": {
+    "layout": "portrait",
+    "weekStart": "sunday"
+   },
+   "spec": "template_portrait_sunday.json"
+  }
+ ]
+}

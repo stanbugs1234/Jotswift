@@ -679,19 +679,22 @@ class Book:
         if sub:
             p.text(LEFT, mp.H - 98, sub, 10, rgb=S().soft)
 
-    def chips(self, p, names, pages, current):
+    def chips(self, p, names, pages, current, title=""):
         """Linked chips at the top right, for the pages of one month, week
-        or day."""
+        or day; smaller when they'd run into the page's [title]."""
         if len(names) < 2:
             return
-        gap = 4
-        widths = [max(46, text_width(n, 8.5) + 18) for n in names]
-        x = self.right - sum(widths) - gap * (len(names) - 1)
+        after = LEFT + text_width(title, 24) + 14
+        for size, pad, least, gap in ((8.5, 18, 46, 4), (7.5, 12, 36, 3), (6.5, 8, 28, 2)):
+            widths = [max(least, text_width(n, size) + pad) for n in names]
+            x = self.right - sum(widths) - gap * (len(names) - 1)
+            if x >= after:
+                break
         y = mp.H - 88
         for k, (name, page, w) in enumerate(zip(names, pages, widths)):
             on = k == current
             rrect(p, x, y, w, 22, 11, fill=S().accent if on else S().tab)
-            p.text(x + w / 2, y + 7.5, name, 8.5, rgb=S().on_accent if on else S().accent, bold=True,
+            p.text(x + w / 2, y + 7.5, name, size, rgb=S().on_accent if on else S().accent, bold=True,
                    center=True)
             if not on:
                 p.link(x, y, w, 22, page)
@@ -845,7 +848,7 @@ class Book:
         kind = self.month_kinds[s]
         title = self.month_title(m) if s == 0 else f"{self.month_name(m)} {kind.name.lower()}"
         self.heading(p, title)
-        self.chips(p, [k.name for k in self.month_kinds], self.month_page[m], s)
+        self.chips(p, [k.name for k in self.month_kinds], self.month_page[m], s, title)
         shared(p, lambda: kind.draw(self.ctx(p, m=m)))
         crumbs = self.crumbs_month(m)
         if s:

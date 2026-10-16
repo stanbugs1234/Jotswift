@@ -1,0 +1,24 @@
+{
+  "kind": "template",
+  "name": "Business Planner (undated)",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "planner_business_planner_undated"
+    ]
+  },
+  "category": "planners",
+  "tags": [
+    "business",
+    "work",
+    "clients",
+    "marketing",
+    "finance",
+    "content",
+    "linked",
+    "undated",
+    "landscape",
+    "portrait"
+  ]
+}
