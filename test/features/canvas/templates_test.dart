@@ -479,6 +479,34 @@ void main() {
       );
     });
 
+    testWidgets('a planner can be looked inside before choosing it', (
+      tester,
+    ) async {
+      final planner = template(downloader, 'planner', plannerJson);
+      final auth = await pumpApp(
+        tester,
+        skins,
+        size: const Size(900, 1600),
+        overrides: overrides([planner]),
+      );
+      uid = auth.currentUser!.uid;
+
+      await tester.tap(find.text('New notebook').last);
+      await settle(tester);
+      await tester.tap(find.text('Look inside'));
+      await settle(tester);
+      expect(find.text('Months · 2 pages'), findsOneWidget);
+      expect(find.text('February'), findsOneWidget);
+      await tester.tap(find.text('Use this'));
+      await settle(tester);
+      await tester.tap(find.text('Create'));
+      await settle(tester);
+
+      final repo = backend.notebooks(uid);
+      final nb = (await repo.watchNotebooks().first).single;
+      expect(nb.title, '2027 Weekly Planner');
+    });
+
     testWidgets('pages keep the template version they were made with', (
       tester,
     ) async {

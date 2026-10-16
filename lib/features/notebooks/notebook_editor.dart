@@ -10,10 +10,10 @@ import '../../core/skins/skin_providers.dart';
 import '../../core/skins/widgets/paper.dart';
 import '../canvas/templates.dart';
 import '../shelf/cover_view.dart';
-import '../store/store_item.dart';
 import 'cover_picker.dart';
 import 'domain/notebook_models.dart';
 import 'paper_picker.dart';
+import 'template_gallery.dart';
 
 /// Makes a new notebook, or (with [editing]) changes one: title, cover,
 /// paper and style. Returns the choices, or null if cancelled.
@@ -242,22 +242,19 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
                           selected: template == null,
                           onSelected: (_) => setState(() => _template = null),
                         ),
-                        for (final t in planners)
-                          ChoiceChip(
-                            avatar: Icon(
-                              t.linked ? Icons.link : Icons.event_note,
-                              size: 18,
-                            ),
-                            tooltip: t.linked ? LinkedPagesBadge.tooltip : null,
-                            label: Text(t.name),
-                            selected: t.id == template?.id,
-                            onSelected: (_) => setState(() {
-                              _template = t;
-                              _variant = PageTemplate.defaultFile;
-                            }),
-                          ),
                       ],
                     ),
+                    if (planners.isNotEmpty) ...[
+                      const SizedBox(height: 12),
+                      TemplateGallery(
+                        templates: planners,
+                        selected: template,
+                        onSelected: (t) => setState(() {
+                          _template = t;
+                          _variant = PageTemplate.defaultFile;
+                        }),
+                      ),
+                    ],
                     if (template != null)
                       _ColourwayPicker(
                         template: template,
