@@ -25,6 +25,10 @@ enum InkToolKind {
   lasso,
 }
 
+/// What the eraser takes: whole strokes it touches, or only the ink under
+/// it.
+enum EraserMode { stroke, partial }
+
 /// The selected drawing tool and pen. Shared by all pages, so it sticks
 /// when the user moves between pages, and remembered on the device.
 @immutable
@@ -38,6 +42,9 @@ class InkToolState {
     this.penWidth,
     this.highlighterWidth,
     this.penStyle = PenStyle.fountain,
+    this.eraserMode = EraserMode.stroke,
+    this.eraseHighlighterOnly = false,
+    this.eraserReturns = false,
   });
 
   factory InkToolState.fromJson(Map<String, dynamic> json) {
@@ -55,6 +62,11 @@ class InkToolState {
       highlighterWidth: width(json['highlighterWidth']),
       penStyle:
           PenStyle.values.asNameMap()[json['penStyle']] ?? PenStyle.fountain,
+      eraserMode:
+          EraserMode.values.asNameMap()[json['eraserMode']] ??
+          EraserMode.stroke,
+      eraseHighlighterOnly: json['eraseHighlighterOnly'] == true,
+      eraserReturns: json['eraserReturns'] == true,
     );
   }
 
@@ -66,6 +78,9 @@ class InkToolState {
     'penWidth': ?penWidth,
     'highlighterWidth': ?highlighterWidth,
     'penStyle': penStyle.name,
+    'eraserMode': eraserMode.name,
+    'eraseHighlighterOnly': eraseHighlighterOnly,
+    'eraserReturns': eraserReturns,
   };
 
   final InkToolKind kind;
@@ -86,6 +101,14 @@ class InkToolState {
 
   /// How the pen draws.
   final PenStyle penStyle;
+
+  final EraserMode eraserMode;
+
+  /// The eraser leaves pen strokes alone.
+  final bool eraseHighlighterOnly;
+
+  /// After each erase, go back to the tool used before the eraser.
+  final bool eraserReturns;
 
   /// When false ("hand" mode), one finger scrolls instead of drawing. A
   /// stylus always draws.
@@ -124,6 +147,9 @@ class InkToolState {
     Object? penWidth = _keep,
     Object? highlighterWidth = _keep,
     PenStyle? penStyle,
+    EraserMode? eraserMode,
+    bool? eraseHighlighterOnly,
+    bool? eraserReturns,
   }) => InkToolState(
     kind: kind ?? this.kind,
     colorIndex: colorIndex ?? this.colorIndex,
@@ -135,6 +161,9 @@ class InkToolState {
         ? this.highlighterWidth
         : highlighterWidth as double?,
     penStyle: penStyle ?? this.penStyle,
+    eraserMode: eraserMode ?? this.eraserMode,
+    eraseHighlighterOnly: eraseHighlighterOnly ?? this.eraseHighlighterOnly,
+    eraserReturns: eraserReturns ?? this.eraserReturns,
   );
 
   static const _keep = Object();
@@ -161,8 +190,33 @@ class InkToolController extends Notifier<InkToolState> {
         .setString(_prefsKey, jsonEncode(next.toJson()));
   }
 
-  void selectTool(InkToolKind kind) =>
-      _set(state.copyWith(kind: kind, drawMode: true));
+  /// The tool before the eraser, to go back to (see
+  /// [InkToolState.eraserReturns]).
+  InkToolKind? _beforeEraser;
+
+  void selectTool(InkToolKind kind) {
+    if (kind == InkToolKind.eraser && state.kind != InkToolKind.eraser) {
+      _beforeEraser = state.kind;
+    }
+    _set(state.copyWith(kind: kind, drawMode: true));
+  }
+
+  /// An erase finished: go back to the previous tool if the user asked.
+  void erased() {
+    final back = _beforeEraser;
+    if (!state.eraserReturns ||
+        state.kind != InkToolKind.eraser ||
+        back == null) {
+      return;
+    }
+    _set(state.copyWith(kind: back));
+  }
+
+  void setEraserMode(EraserMode mode) => _set(state.copyWith(eraserMode: mode));
+  void setEraseHighlighterOnly(bool only) =>
+      _set(state.copyWith(eraseHighlighterOnly: only));
+  void setEraserReturns(bool returns) =>
+      _set(state.copyWith(eraserReturns: returns));
   void selectColor(int index) =>
       _set(state.copyWith(colorIndex: index, customColor: null));
   void selectCustomColor(Color color) =>

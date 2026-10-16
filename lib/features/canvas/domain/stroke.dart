@@ -172,3 +172,68 @@ class Stroke {
     return (p - (a + ab * t)).distance;
   }
 }
+
+/// What's left of [stroke] after erasing a circle at [center] with
+/// [radius]: the pieces either side, as new strokes, or null when the
+/// circle doesn't touch it. Each piece keeps the stroke's look and its
+/// place in the drawing order.
+List<Stroke>? eraseFromStroke(
+  Stroke stroke,
+  Offset center,
+  double radius,
+  String Function() newId,
+) {
+  final reach = radius + stroke.width / 2;
+  if (!stroke.bounds.inflate(reach).contains(center)) return null;
+  // Fill in long gaps between points so a cut lands where the eraser is.
+  final step = math.max(reach / 2, 0.5);
+  final points = <InkPoint>[];
+  for (var i = 0; i < stroke.points.length; i++) {
+    final a = stroke.points[i];
+    points.add(a);
+    if (i + 1 == stroke.points.length) break;
+    final b = stroke.points[i + 1];
+    final n = ((b.offset - a.offset).distance / step).ceil();
+    for (var k = 1; k < n; k++) {
+      final t = k / n;
+      points.add(
+        InkPoint(
+          a.x + (b.x - a.x) * t,
+          a.y + (b.y - a.y) * t,
+          a.pressure + (b.pressure - a.pressure) * t,
+        ),
+      );
+    }
+  }
+  final kept = [for (final p in points) (p.offset - center).distance > reach];
+  if (!kept.contains(false)) return null;
+  final pieces = <Stroke>[];
+  var run = <InkPoint>[];
+  void flush() {
+    if (run.length >= 2) {
+      pieces.add(
+        Stroke(
+          id: newId(),
+          tool: stroke.tool,
+          color: stroke.color,
+          width: stroke.width,
+          points: run,
+          createdAt: stroke.createdAt,
+          pressureSensitive: stroke.pressureSensitive,
+          style: stroke.style,
+        ),
+      );
+    }
+    run = [];
+  }
+
+  for (var i = 0; i < points.length; i++) {
+    if (kept[i]) {
+      run.add(points[i]);
+    } else {
+      flush();
+    }
+  }
+  flush();
+  return pieces;
+}

@@ -99,4 +99,42 @@ void main() {
     await favorites.remove(pens.first);
     expect(container.read(penFavoritesProvider), hasLength(11));
   });
+
+  group('eraseFromStroke', () {
+    var n = 0;
+    String id() => 'piece${n++}';
+    final line = Stroke(
+      id: 'line',
+      tool: InkTool.pen,
+      color: 0xFF000000,
+      width: 4,
+      // Sparse points: the cut must still land where the eraser is.
+      points: const [InkPoint(0, 0), InkPoint(100, 0), InkPoint(200, 0)],
+      createdAt: 3,
+      style: PenStyle.brush,
+    );
+
+    test('a cut in the middle leaves two pieces like the original', () {
+      final pieces = eraseFromStroke(line, const Offset(50, 0), 10, id)!;
+      expect(pieces, hasLength(2));
+      expect(pieces.first.bounds.right, lessThan(40));
+      expect(pieces.last.bounds.left, greaterThan(60));
+      for (final p in pieces) {
+        expect(p.createdAt, 3);
+        expect(p.style, PenStyle.brush);
+        expect(p.id, startsWith('piece'));
+      }
+    });
+
+    test('a cut at the end leaves one piece', () {
+      final pieces = eraseFromStroke(line, const Offset(200, 0), 10, id)!;
+      expect(pieces, hasLength(1));
+      expect(pieces.single.bounds.right, lessThan(190));
+    });
+
+    test('a miss is null; covering all of it leaves nothing', () {
+      expect(eraseFromStroke(line, const Offset(50, 40), 10, id), isNull);
+      expect(eraseFromStroke(line, const Offset(100, 0), 150, id), isEmpty);
+    });
+  });
 }

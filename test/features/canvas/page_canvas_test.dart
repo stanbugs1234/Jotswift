@@ -682,6 +682,83 @@ void main() {
     });
   });
 
+  group('eraser options', () {
+    Future<void> eraserOption(WidgetTester tester, String label) async {
+      await tester.tap(find.byTooltip('Eraser'));
+      await tester.pump();
+      await tester.tap(find.byTooltip('Pen options'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(label));
+      await tester.pumpAndSettle();
+    }
+
+    Future<void> crossFirstLine(WidgetTester tester) => drag(
+      tester,
+      PointerDeviceKind.stylus,
+      from: const Offset(75, -40),
+      by: const Offset(0, 80),
+    );
+
+    testWidgets('partial erasing cuts a stroke in two, in one undo', (
+      tester,
+    ) async {
+      final page = await pumpPage(tester);
+      await drag(tester, PointerDeviceKind.stylus, by: const Offset(150, 0));
+      final original = (await page.visibleStrokes()).single;
+      await eraserOption(tester, 'Partial');
+
+      await crossFirstLine(tester);
+
+      final pieces = await page.visibleStrokes();
+      expect(pieces, hasLength(2));
+      expect(pieces.map((p) => p.color).toSet(), {original.color});
+      final gapStart = pieces
+          .map((p) => p.bounds.right)
+          .reduce((a, b) => a < b ? a : b);
+      final gapEnd = pieces
+          .map((p) => p.bounds.left)
+          .reduce((a, b) => a > b ? a : b);
+      expect(gapEnd, greaterThan(gapStart));
+
+      await tester.ensureVisible(find.byTooltip('Undo'));
+      await tester.tap(find.byTooltip('Undo'));
+      await tester.pumpAndSettle();
+      expect((await page.visibleStrokes()).single.id, original.id);
+    });
+
+    testWidgets('highlighter only leaves the pen alone', (tester) async {
+      final page = await pumpPage(tester);
+      await drag(tester, PointerDeviceKind.stylus, by: const Offset(150, 0));
+      await tester.tap(find.byTooltip('Highlighter'));
+      await tester.pump();
+      await drag(
+        tester,
+        PointerDeviceKind.stylus,
+        from: const Offset(0, 10),
+        by: const Offset(150, 0),
+      );
+      await eraserOption(tester, 'Highlighter only');
+
+      await crossFirstLine(tester);
+
+      expect((await page.visibleStrokes()).single.tool, InkTool.pen);
+    });
+
+    testWidgets('the eraser can go back to the pen after erasing', (
+      tester,
+    ) async {
+      final page = await pumpPage(tester);
+      await drag(tester, PointerDeviceKind.stylus, by: const Offset(150, 0));
+      await eraserOption(tester, 'Back to the pen after erasing');
+
+      await crossFirstLine(tester);
+      expect(await page.visibleStrokes(), isEmpty);
+
+      await drag(tester, PointerDeviceKind.stylus, from: const Offset(0, 200));
+      expect(await page.visibleStrokes(), hasLength(1));
+    });
+  });
+
   testWidgets('view-only pages have no tools and ignore drawing', (
     tester,
   ) async {

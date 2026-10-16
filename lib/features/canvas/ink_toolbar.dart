@@ -402,8 +402,39 @@ class _PenPanel extends ConsumerWidget {
                 onSelectionChanged: (s) => tools.selectPenStyle(s.single),
               ),
             ],
-            heading('Color'),
-            const _Palette(wrap: true),
+            if (tool.kind == InkToolKind.eraser) ...[
+              heading('Eraser'),
+              SegmentedButton<EraserMode>(
+                showSelectedIcon: false,
+                segments: const [
+                  ButtonSegment(
+                    value: EraserMode.stroke,
+                    label: Text('Whole strokes'),
+                  ),
+                  ButtonSegment(
+                    value: EraserMode.partial,
+                    label: Text('Partial'),
+                  ),
+                ],
+                selected: {tool.eraserMode},
+                onSelectionChanged: (s) => tools.setEraserMode(s.single),
+              ),
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: const Text('Highlighter only'),
+                value: tool.eraseHighlighterOnly,
+                onChanged: tools.setEraseHighlighterOnly,
+              ),
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: const Text('Back to the pen after erasing'),
+                value: tool.eraserReturns,
+                onChanged: tools.setEraserReturns,
+              ),
+            ] else ...[
+              heading('Color'),
+              const _Palette(wrap: true),
+            ],
             if (withSizes) ...[heading('Size'), const _SizePresets()],
             if (width != null) ...[
               heading('Width  ${width.toStringAsFixed(1)}'),
@@ -415,34 +446,35 @@ class _PenPanel extends ConsumerWidget {
                 onChanged: tools.setWidth,
               ),
             ],
-            heading('Saved pens'),
-            Wrap(
-              spacing: 6,
-              runSpacing: 6,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                for (final (i, pen) in favorites.indexed)
-                  InputChip(
-                    avatar: _PenSwatch(pen: pen, size: 18),
-                    label: Text(_penName(pen)),
-                    tooltip: 'Use saved pen ${i + 1}',
-                    onPressed: () => tools.useFavorite(pen),
-                    onDeleted: () => ref
-                        .read(penFavoritesSettingProvider.notifier)
-                        .remove(pen),
-                    deleteButtonTooltipMessage: 'Remove saved pen',
-                  ),
-                if (tool.kind != InkToolKind.eraser &&
-                    !favorites.contains(current))
-                  ActionChip(
-                    avatar: const Icon(Icons.star_outline, size: 18),
-                    label: const Text('Save this pen'),
-                    onPressed: () => ref
-                        .read(penFavoritesSettingProvider.notifier)
-                        .add(current),
-                  ),
-              ],
-            ),
+            if (tool.kind != InkToolKind.eraser) heading('Saved pens'),
+            if (tool.kind != InkToolKind.eraser)
+              Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  for (final (i, pen) in favorites.indexed)
+                    InputChip(
+                      avatar: _PenSwatch(pen: pen, size: 18),
+                      label: Text(_penName(pen)),
+                      tooltip: 'Use saved pen ${i + 1}',
+                      onPressed: () => tools.useFavorite(pen),
+                      onDeleted: () => ref
+                          .read(penFavoritesSettingProvider.notifier)
+                          .remove(pen),
+                      deleteButtonTooltipMessage: 'Remove saved pen',
+                    ),
+                  if (tool.kind != InkToolKind.eraser &&
+                      !favorites.contains(current))
+                    ActionChip(
+                      avatar: const Icon(Icons.star_outline, size: 18),
+                      label: const Text('Save this pen'),
+                      onPressed: () => ref
+                          .read(penFavoritesSettingProvider.notifier)
+                          .add(current),
+                    ),
+                ],
+              ),
           ],
         ),
       ),

@@ -88,6 +88,14 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
   final _live = ValueNotifier<Stroke?>(null);
   final _pendingErase = <String>{};
 
+  /// Partial erasing: saved strokes cut so far, and the pieces left (kept
+  /// in [_pendingAdd] until saved).
+  final _cutStrokes = <String>{};
+  final _cutPieces = <String>{};
+
+  /// Whole strokes the eraser has touched in this gesture.
+  final _erased = <String>{};
+
   /// When the current stroke began, to tell a palm that landed just before
   /// the Pencil from a real finger stroke.
   Duration? _drawStartedAt;
@@ -731,33 +739,86 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     _drawPointer = null;
     _stopWaitingForHold();
     _live.value = null;
-    if (_pendingErase.isNotEmpty) setState(_pendingErase.clear);
+    final undo = {..._erased, ..._cutStrokes, ..._cutPieces};
+    if (undo.isEmpty) return;
+    setState(() {
+      _pendingErase.removeAll(undo);
+      _cutPieces.forEach(_pendingAdd.remove);
+      _cutPieces.clear();
+      _cutStrokes.clear();
+      _erased.clear();
+    });
   }
 
   // Erasing
 
   void _eraseAt(Offset screen) {
-    final strokes = ref.read(strokesProvider(widget.pageId)).value ?? [];
+    final tool = ref.read(inkToolProvider);
     final point = _toPage(screen);
-    final radius = ref.read(inkToolProvider).kind == InkToolKind.eraser
-        ? ref.read(inkToolProvider).size / _scale
+    final radius = tool.kind == InkToolKind.eraser
+        ? tool.size / _scale
         : InkToolState.eraserSizes[1] / _scale;
+    bool erasable(Stroke s) =>
+        !tool.eraseHighlighterOnly || s.tool == InkTool.highlighter;
+    if (tool.eraserMode == EraserMode.partial) {
+      return _cutAt(point, radius, erasable);
+    }
     final hits = [
-      for (final s in strokes)
-        if (!s.deleted &&
-            !_pendingErase.contains(s.id) &&
-            s.hitTest(point, radius))
-          s.id,
+      for (final s in _currentStrokes())
+        if (erasable(s) && s.hitTest(point, radius)) s.id,
     ];
-    if (hits.isNotEmpty) setState(() => _pendingErase.addAll(hits));
+    if (hits.isNotEmpty) {
+      setState(() {
+        _pendingErase.addAll(hits);
+        _erased.addAll(hits);
+      });
+    }
+  }
+
+  /// Partial erasing: cuts the ink under the eraser out of every stroke it
+  /// touches, showing the pieces at once.
+  void _cutAt(Offset point, double radius, bool Function(Stroke) erasable) {
+    final repo = ref.read(strokeRepositoryProvider);
+    var changed = false;
+    for (final s in _currentStrokes()) {
+      if (!erasable(s)) continue;
+      final pieces = eraseFromStroke(s, point, radius, repo.newStrokeId);
+      if (pieces == null) continue;
+      changed = true;
+      _pendingErase.add(s.id);
+      if (_cutPieces.remove(s.id)) {
+        _pendingAdd.remove(s.id);
+      } else {
+        _cutStrokes.add(s.id);
+      }
+      for (final piece in pieces) {
+        _pendingAdd[piece.id] = piece;
+        _cutPieces.add(piece.id);
+      }
+    }
+    if (changed) setState(() {});
   }
 
   void _finishErasing() {
     _drawPointer = null;
-    if (_pendingErase.isEmpty) return;
-    final ids = _pendingErase.toList();
-    // They stay hidden until the saved copies arrive as deleted (see build).
-    ref.read(inkHistoryProvider(widget.pageId).notifier).erase(ids);
+    if (_cutStrokes.isNotEmpty) {
+      final pieces = [for (final id in _cutPieces) ?_pendingAdd[id]];
+      ref
+          .read(inkHistoryProvider(widget.pageId).notifier)
+          .lassoEdit(removeStrokes: _cutStrokes.toList(), addStrokes: pieces);
+      _cutStrokes.clear();
+      _cutPieces.clear();
+    } else if (_erased.isNotEmpty) {
+      // They stay hidden until the saved copies arrive as deleted (see
+      // build).
+      ref
+          .read(inkHistoryProvider(widget.pageId).notifier)
+          .erase(_erased.toList());
+      _erased.clear();
+    }
+    if (_drawKind != PointerDeviceKind.invertedStylus) {
+      ref.read(inkToolProvider.notifier).erased();
+    }
   }
 
   // Lasso
