@@ -196,6 +196,24 @@ const classicCalendar = CalendarTemplate(
   onAccent: Color(0xFFFFFFFF),
 );
 
+/// Classic in dark mode: the same template (same id), in the app's dark
+/// colours, so the default Calendar follows light and dark like the rest of
+/// the app. Other templates keep their own look.
+const classicDarkCalendar = CalendarTemplate(
+  id: 'classic',
+  name: 'Classic',
+  description: 'Clean lines and filled event chips.',
+  animation: PeriodAnimation.slide,
+  dark: true,
+  background: Color(0xFF141619),
+  cell: Color(0xFF1D2025),
+  text: Color(0xFFE6E8EC),
+  muted: Color(0xFF8A90A0),
+  grid: Color(0xFF2E3239),
+  accent: Color(0xFF8FB0E8),
+  onAccent: Color(0xFF10213D),
+);
+
 /// Every template, free first.
 const calendarTemplates = [
   classicCalendar,

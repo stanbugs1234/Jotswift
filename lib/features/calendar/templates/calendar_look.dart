@@ -58,10 +58,18 @@ class CalendarLook extends ConsumerWidget {
       classicCalendar;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => Theme(
-    data: template.theme(Theme.of(context), ref.watch(fontResolverProvider)),
-    child: _LookScope(template: template, child: child),
-  );
+  Widget build(BuildContext context, WidgetRef ref) {
+    final base = Theme.of(context);
+    final look =
+        identical(template, classicCalendar) &&
+            base.brightness == Brightness.dark
+        ? classicDarkCalendar
+        : template;
+    return Theme(
+      data: look.theme(base, ref.watch(fontResolverProvider)),
+      child: _LookScope(template: look, child: child),
+    );
+  }
 }
 
 class _LookScope extends InheritedWidget {

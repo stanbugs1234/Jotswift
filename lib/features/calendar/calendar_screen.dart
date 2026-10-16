@@ -1,3 +1,6 @@
+import '../../shared/ui/tab_title.dart';
+import '../../shared/ui/tokens.dart';
+
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -119,15 +122,29 @@ class CalendarScreen extends ConsumerWidget {
     final day = state.day;
     return Scaffold(
       appBar: AppBar(
-        // Back out to the month, then the year.
+        // Back out to the month, then the year, like a back button named
+        // after where it goes ("‹ 2026", "‹ Oct").
+        leadingWidth: zoomLevel(state.mode) > 0 ? 96 : null,
         leading: zoomLevel(state.mode) > 0
-            ? IconButton(
-                tooltip: 'Zoom out',
-                icon: const Icon(Icons.zoom_out),
-                onPressed: controller.zoomOut,
+            ? Tooltip(
+                message: 'Zoom out',
+                child: TextButton.icon(
+                  onPressed: controller.zoomOut,
+                  icon: const Icon(Icons.chevron_left),
+                  label: Text(
+                    zoomLevel(state.mode) == 1
+                        ? '${day.year}'
+                        : _shortMonths[day.month - 1],
+                  ),
+                ),
               )
             : null,
-        title: Text(title),
+        centerTitle: false,
+        titleSpacing: zoomLevel(state.mode) > 0 ? 0 : gutterOf(context),
+        // A template with its own heading font keeps it.
+        title: CalendarLook.of(context).headingFont == null
+            ? TabTitle(title)
+            : Text(title),
         actions: [
           if (state.mode == CalendarMode.day && !narrow)
             IconButton(
@@ -396,3 +413,18 @@ class _PeriodSwitcher extends ConsumerWidget {
     );
   }
 }
+
+const _shortMonths = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+];

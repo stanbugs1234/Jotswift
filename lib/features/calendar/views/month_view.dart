@@ -1,3 +1,6 @@
+import '../../../shared/ui/empty_state.dart';
+import '../../../shared/ui/tokens.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -302,7 +305,14 @@ class _Agenda extends ConsumerWidget {
           ),
         ),
         if (occurrences.isEmpty)
-          const Padding(padding: EdgeInsets.all(16), child: Text('No events.')),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: Insets.lg),
+            child: EmptyState(
+              compact: true,
+              icon: Icons.event_available_outlined,
+              title: 'No events.',
+            ),
+          ),
         for (final o in occurrences)
           ListTile(
             leading: Container(
