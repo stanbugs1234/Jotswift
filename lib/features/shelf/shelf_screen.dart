@@ -270,7 +270,11 @@ class _QuickActions extends ConsumerWidget {
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
       child: LayoutBuilder(
         builder: (context, constraints) {
-          final stacked = constraints.maxWidth < 480;
+          // Side by side only while each card fits its icon and label.
+          final perCard =
+              (constraints.maxWidth - 12 * (actions.length - 1)) /
+              actions.length;
+          final stacked = perCard < 172;
           return Row(
             children: [
               for (final (i, a) in actions.indexed) ...[
@@ -324,8 +328,9 @@ class _QuickActionCard extends StatelessWidget {
     );
     final text = Text(
       label,
-      maxLines: 1,
+      maxLines: stacked ? 2 : 1,
       overflow: TextOverflow.ellipsis,
+      textAlign: stacked ? TextAlign.center : TextAlign.start,
       style: theme.textTheme.labelLarge,
     );
     return Material(
@@ -335,7 +340,10 @@ class _QuickActionCard extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          padding: EdgeInsets.symmetric(
+            horizontal: stacked ? 8 : 14,
+            vertical: 12,
+          ),
           child: stacked
               ? Column(children: [badge, const SizedBox(height: 6), text])
               : Row(
@@ -463,10 +471,12 @@ class _CategoryChips extends ConsumerWidget implements PreferredSizeWidget {
 
     return SizedBox(
       height: preferredSize.height,
+      // Full width, so the chips start under the title instead of centered.
+      width: double.infinity,
       // Not lazy: there are only a few, and all of them stay reachable.
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+        padding: const EdgeInsets.fromLTRB(20, 4, 20, 8),
         child: Row(
           children: [
             chip('Home', const AllNotebooks()),
