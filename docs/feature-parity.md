@@ -53,11 +53,13 @@ Each phase ships as its own TestFlight build. Sizes are rough: S is days, M is a
 
 ### 2. Documents in and out (before launch)
 
+**Done** in build 0.1.0+9 (October 2026).
+
 | Feature | Size |
 |---|---|
 | Import a PDF or images as a new notebook, or insert pages into a notebook; files picker and share-sheet "Open in Jotswift" | L |
 | Export a page, section or notebook as PDF or PNG; share and print | M |
-| Page manager: thumbnail grid, drag to reorder, duplicate, move or copy to another notebook (bookmarks are done) | M |
+| Page manager: thumbnail grid, drag to reorder, duplicate, move or copy to another notebook; bookmarks | M |
 | Vertical scrolling as an option beside page-by-page | M |
 | Your own links and outline entries within a notebook | S |
 
