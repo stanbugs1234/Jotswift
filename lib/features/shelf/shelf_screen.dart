@@ -11,6 +11,10 @@ import 'shelf_actions.dart';
 import 'shelf_prefs.dart';
 import 'shelf_view.dart';
 import '../imports/open_in.dart';
+import '../../shared/ui/empty_state.dart';
+import '../../shared/ui/skeleton.dart';
+import '../../shared/ui/tab_title.dart';
+import '../../shared/ui/tokens.dart';
 
 /// The shelf, laid out like Noteshelf's home: a big title, quick actions,
 /// then notebooks shown by their covers with groups as stacks. Shows Home
@@ -94,19 +98,35 @@ class _ShelfScreenState extends ConsumerState<ShelfScreen> {
       content = [
         SliverFillRemaining(
           hasScrollBody: false,
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Text('Could not load notebooks.\n$error'),
-            ),
+          child: EmptyState(
+            icon: Icons.cloud_off_outlined,
+            title: 'Could not load notebooks',
+            message: '$error',
           ),
         ),
       ];
     } else if (!notebooks.hasValue || !groups.hasValue) {
-      content = const [
-        SliverFillRemaining(
-          hasScrollBody: false,
-          child: Center(child: CircularProgressIndicator()),
+      // Covers stand in until the notebooks arrive.
+      content = [
+        SliverPadding(
+          padding: EdgeInsets.symmetric(horizontal: gutterOf(context)),
+          sliver: SliverGrid.builder(
+            itemCount: 6,
+            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: 136,
+              mainAxisSpacing: 20,
+              crossAxisSpacing: 20,
+              childAspectRatio: 0.46,
+            ),
+            itemBuilder: (context, _) => const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AspectRatio(aspectRatio: 0.72, child: Skeleton()),
+                SizedBox(height: Insets.sm),
+                Skeleton(width: 80, height: 12),
+              ],
+            ),
+          ),
         ),
       ];
     } else {
@@ -118,7 +138,11 @@ class _ShelfScreenState extends ConsumerState<ShelfScreen> {
               SliverFillRemaining(
                 hasScrollBody: false,
                 child: searching
-                    ? Center(child: Text('No notebooks match "$query".'))
+                    ? EmptyState(
+                        icon: Icons.search_off,
+                        title: 'No notebooks match "$query"',
+                        message: 'Try a different word.',
+                      )
                     : _EmptyShelf(
                         location: location,
                         isFirstNotebook: shelf.notebookCount == 0,
@@ -153,8 +177,10 @@ class _ShelfScreenState extends ConsumerState<ShelfScreen> {
                 onPressed: () => context.go(shelf.parentOf(location).path),
               )
             : null,
+        centerTitle: false,
+        titleSpacing: location is InGroup ? 0 : gutterOf(context),
         title: query == null
-            ? null
+            ? TabTitle(title, textKey: const Key('shelf-title'))
             : TextField(
                 controller: _search,
                 autofocus: true,
@@ -197,29 +223,19 @@ class _ShelfScreenState extends ConsumerState<ShelfScreen> {
           : null,
       body: CustomScrollView(
         slivers: [
-          if (!searching)
+          const SliverToBoxAdapter(child: SizedBox(height: Insets.sm)),
+          if (location is TrashedNotebooks && !searching)
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      key: const Key('shelf-title'),
-                      style: titleSerif(
-                        ref,
-                        Theme.of(context).textTheme.headlineLarge,
-                      ),
-                    ),
-                    if (location is TrashedNotebooks) ...[
-                      const SizedBox(height: 4),
-                      Text(
-                        'Restore a notebook, or delete it for good.',
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                    ],
-                  ],
+                padding: EdgeInsets.fromLTRB(
+                  gutterOf(context),
+                  0,
+                  gutterOf(context),
+                  Insets.lg,
+                ),
+                child: Text(
+                  'Restore a notebook, or delete it for good.',
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ),
             ),
@@ -267,7 +283,12 @@ class _QuickActions extends ConsumerWidget {
       ),
     ];
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      padding: EdgeInsets.fromLTRB(
+        gutterOf(context),
+        0,
+        gutterOf(context),
+        Insets.xl,
+      ),
       child: LayoutBuilder(
         builder: (context, constraints) {
           // Side by side only while each card fits its icon and label.
@@ -423,7 +444,12 @@ class _DiscoverBanner extends StatelessWidget {
     return SafeArea(
       top: false,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
+        padding: EdgeInsets.fromLTRB(
+          gutterOf(context),
+          Insets.xs,
+          gutterOf(context),
+          Insets.md,
+        ),
         child: Material(
           color: theme.colorScheme.surfaceContainer,
           borderRadius: BorderRadius.circular(12),
@@ -476,7 +502,12 @@ class _CategoryChips extends ConsumerWidget implements PreferredSizeWidget {
       // Not lazy: there are only a few, and all of them stay reachable.
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.fromLTRB(20, 4, 20, 8),
+        padding: EdgeInsets.fromLTRB(
+          gutterOf(context),
+          Insets.xs,
+          gutterOf(context),
+          Insets.sm,
+        ),
         child: Row(
           children: [
             chip('Home', const AllNotebooks()),
@@ -678,7 +709,8 @@ class _ShelfItems extends ConsumerWidget {
           ),
     ];
 
-    const padding = EdgeInsets.fromLTRB(16, 4, 16, 32);
+    final gutter = gutterOf(context);
+    final padding = EdgeInsets.fromLTRB(gutter, 0, gutter, Insets.xxl);
     if (list) {
       return SliverPadding(
         padding: padding,
@@ -1068,52 +1100,44 @@ class _EmptyShelf extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
-    final (title, message) = switch (location) {
+    final (icon, title, message) = switch (location) {
       RecentNotebooks() => (
+        Icons.history,
         'Nothing opened yet',
         'Notebooks you open show up here.',
       ),
       StarredNotebooks() => (
+        Icons.star_outline,
         'No starred notebooks',
         'Star a notebook from its ⋯ menu to find it here.',
       ),
       TrashedNotebooks() => (
+        Icons.delete_outline,
         'The Trash is empty',
         'Notebooks you delete wait here, so you can restore them.',
       ),
       _ when isFirstNotebook => (
+        Icons.menu_book_outlined,
         'No notebooks yet',
         'Create a notebook to start writing.',
       ),
-      _ => ('Nothing here yet', 'Create a notebook, or move one here.'),
-    };
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.menu_book_outlined,
-              size: 64,
-              color: theme.colorScheme.primary,
-            ),
-            const SizedBox(height: 16),
-            Text(title, style: theme.textTheme.titleLarge),
-            const SizedBox(height: 8),
-            Text(message, textAlign: TextAlign.center),
-            if (location.canCreate) ...[
-              const SizedBox(height: 16),
-              FilledButton.icon(
-                onPressed: () => createNotebookAt(context, ref, location),
-                icon: const Icon(Icons.add),
-                label: const Text('Create a notebook'),
-              ),
-            ],
-          ],
-        ),
+      _ => (
+        Icons.folder_open_outlined,
+        'Nothing here yet',
+        'Create a notebook, or move one here.',
       ),
+    };
+    return EmptyState(
+      icon: icon,
+      title: title,
+      message: message,
+      action: location.canCreate
+          ? FilledButton.icon(
+              onPressed: () => createNotebookAt(context, ref, location),
+              icon: const Icon(Icons.add),
+              label: const Text('Create a notebook'),
+            )
+          : null,
     );
   }
 }
