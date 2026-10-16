@@ -109,6 +109,7 @@ class LassoTransform {
     createdAt: createdAt ?? stroke.createdAt,
     pressureSensitive: stroke.pressureSensitive,
     style: stroke.style,
+    followsPen: stroke.followsPen,
   );
 
   ElementFrame applyToFrame(ElementFrame frame) => frame.copyWith(

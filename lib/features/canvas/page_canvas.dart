@@ -22,6 +22,7 @@ import 'domain/stroke.dart';
 import 'ink_tools.dart';
 import 'lasso.dart';
 import 'page_items.dart';
+import 'pen_prediction.dart';
 import 'ruler.dart';
 import 'shapes.dart';
 import 'stickers.dart';
@@ -104,6 +105,16 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
   bool _erasing = false;
   final _live = ValueNotifier<Stroke?>(null);
   final _pendingErase = <String>{};
+
+  /// A guess at where the pen is by the time the frame shows, drawn just
+  /// past the live stroke to hide the screen's delay (as the predicted
+  /// touches in other note apps do). Never saved.
+  final _predicted = ValueNotifier<List<InkPoint>>(const []);
+
+  /// The pen's last few positions (time, page point), to make that guess.
+  final _penTrail = <(Duration, Offset)>[];
+  Timer? _predictionTimer;
+  static const _predictAhead = Duration(milliseconds: 12);
 
   /// Partial erasing: saved strokes cut so far, and the pieces left (kept
   /// in [_pendingAdd] until saved).
@@ -235,6 +246,8 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
   @override
   void dispose() {
     _live.dispose();
+    _predicted.dispose();
+    _predictionTimer?.cancel();
     _lassoPoints.dispose();
     _laser.dispose();
     _laserFade.dispose();
@@ -717,7 +730,12 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
       style: tool.kind == InkToolKind.highlighter
           ? PenStyle.fountain
           : tool.penStyle,
+      followsPen: e.kind == PointerDeviceKind.stylus,
     );
+    _clearPrediction();
+    _penTrail
+      ..clear()
+      ..add((e.timeStamp, _live.value!.points.first.offset));
     _snapped = null;
     final ruler = _ruler;
     final first = _live.value!.points.first;
@@ -757,6 +775,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     final shape = recognizeShape([for (final p in stroke.points) p.offset]);
     if (shape == null) return;
     HapticFeedback.mediumImpact();
+    _clearPrediction();
     _snapped = shape.kind;
     _live.value = _shapeStroke(stroke, shape.outline);
   }
@@ -771,6 +790,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     createdAt: stroke.createdAt,
     pressureSensitive: true,
     style: stroke.style,
+    followsPen: stroke.followsPen,
   );
 
   /// [p] moved onto the ruler edge the stroke follows.
@@ -783,6 +803,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     final stroke = _live.value;
     if (stroke == null) return;
     if (_rulerSide != null && _ruler != null) {
+      _clearPrediction();
       _live.value = stroke.withPoints([
         ...stroke.points,
         _guided(_inkPoint(e)),
@@ -802,16 +823,44 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
       default:
         return;
     }
-    _live.value = Stroke(
-      id: stroke.id,
-      tool: stroke.tool,
-      color: stroke.color,
-      width: stroke.width,
-      points: [...stroke.points, _inkPoint(e)],
-      createdAt: stroke.createdAt,
-      pressureSensitive: stroke.pressureSensitive,
-      style: stroke.style,
+    final point = _inkPoint(e);
+    _predict(e, point);
+    _live.value = stroke.withPoints([...stroke.points, point]);
+  }
+
+  /// Guesses where the pen is heading from its last ~30 ms, and draws the
+  /// live stroke up to [_predictAhead] past [at]: never more than a few
+  /// points on screen, and gone once the pen stops or lifts.
+  void _predict(PointerMoveEvent e, InkPoint at) {
+    _predictionTimer?.cancel();
+    if (e.kind != PointerDeviceKind.stylus) return;
+    _penTrail.add((e.timeStamp, at.offset));
+    while (_penTrail.length > 2 &&
+        e.timeStamp - _penTrail.first.$1 > const Duration(milliseconds: 30)) {
+      _penTrail.removeAt(0);
+    }
+    final tip = predictPen(
+      _penTrail,
+      ahead: _predictAhead,
+      most: 16 / _scale,
+      least: 0.5 / _scale,
     );
+    if (tip == null) {
+      if (_predicted.value.isNotEmpty) _predicted.value = const [];
+      return;
+    }
+    _predicted.value = [InkPoint(tip.dx, tip.dy, at.pressure)];
+    // No news from the pen: it has stopped, so the guess is wrong.
+    _predictionTimer = Timer(
+      const Duration(milliseconds: 40),
+      _clearPrediction,
+    );
+  }
+
+  void _clearPrediction() {
+    _predictionTimer?.cancel();
+    _predictionTimer = null;
+    if (_predicted.value.isNotEmpty) _predicted.value = const [];
   }
 
   void _finishStroke() {
@@ -821,6 +870,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     widget.onWriting?.call(false);
     _rulerSide = null;
     _stopWaitingForHold();
+    _clearPrediction();
     if (stroke == null) return;
     // A quick finger or mouse tap on a template link follows the link
     // instead of leaving a dot. (A stylus always writes.)
@@ -844,6 +894,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     widget.onWriting?.call(false);
     _rulerSide = null;
     _stopWaitingForHold();
+    _clearPrediction();
     _live.value = null;
     final undo = {..._erased, ..._cutStrokes, ..._cutPieces};
     if (undo.isEmpty) return;
@@ -1810,6 +1861,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
                                 handleScale: _handleSize / _scale,
                                 strokes: visible,
                                 live: _live,
+                                predicted: _predicted,
                                 overlays: [
                                   if (lasso != null)
                                     IgnorePointer(
@@ -1909,6 +1961,7 @@ class _PageSurface extends StatelessWidget {
     required this.handleScale,
     required this.strokes,
     required this.live,
+    required this.predicted,
     this.overlays = const [],
   });
 
@@ -1933,6 +1986,7 @@ class _PageSurface extends StatelessWidget {
   final double handleScale;
   final List<Stroke> strokes;
   final ValueNotifier<Stroke?> live;
+  final ValueNotifier<List<InkPoint>> predicted;
 
   /// Drawn over everything else (the lasso).
   final List<Widget> overlays;
@@ -1984,7 +2038,10 @@ class _PageSurface extends StatelessWidget {
               ),
             ),
           RepaintBoundary(child: CustomPaint(painter: StrokesPainter(strokes))),
-          CustomPaint(painter: LiveStrokePainter(live)),
+          // Its own layer: the pen repaints only the ink it's drawing.
+          RepaintBoundary(
+            child: CustomPaint(painter: LiveStrokePainter(live, predicted)),
+          ),
           if (selected case final frame?)
             IgnorePointer(
               child: CustomPaint(

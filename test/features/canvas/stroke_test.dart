@@ -33,6 +33,16 @@ void main() {
     ]);
   });
 
+  test('remembers strokes that follow the pen; older ones did not', () {
+    final drawn = Stroke.fromMap('s1', {...line().toMap(), 'followsPen': true});
+    expect(drawn.followsPen, isTrue);
+    expect(Stroke.fromMap('s1', drawn.toMap()).followsPen, isTrue);
+    expect(drawn.copyWith(deleted: true).followsPen, isTrue);
+    expect(drawn.withPoints(drawn.points).followsPen, isTrue);
+    expect(Stroke.fromMap('s1', line().toMap()).followsPen, isFalse);
+    expect(line().toMap(), isNot(contains('followsPen')));
+  });
+
   test('packs points flat and rounds them to keep documents small', () {
     final stroke = line(points: const [InkPoint(1.23456, 7.891011, 0.123456)]);
 

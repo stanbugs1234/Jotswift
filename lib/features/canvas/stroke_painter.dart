@@ -14,6 +14,10 @@ abstract final class StrokeRenderer {
   static Path pathFor(Stroke stroke) =>
       _cache[stroke] ??= buildPath(stroke, complete: true);
 
+  /// [complete] is false while the stroke is being drawn. A stroke that
+  /// [Stroke.followsPen] then looks just as it will once saved, ending
+  /// right at the pen, so nothing moves when the pen lifts. Only a brush's
+  /// tapered end waits for the lift.
   static Path buildPath(Stroke stroke, {required bool complete}) {
     final points = [
       for (final p in stroke.points)
@@ -36,7 +40,14 @@ abstract final class StrokeRenderer {
           PenStyle.pencil => real ? 0.35 : 0.1,
         },
         smoothing: 0.5,
-        streamline: highlighter ? 0.6 : 0.4,
+        // Streamline evens out shaky input but trails behind it. A stylus
+        // is already steady, so its ink keeps up with the tip.
+        streamline: switch ((highlighter, stroke.followsPen)) {
+          (true, false) => 0.6,
+          (true, true) => 0.3,
+          (false, false) => 0.4,
+          (false, true) => 0.1,
+        },
         simulatePressure: !highlighter && !real,
         start: style == PenStyle.brush
             ? StrokeEndOptions.start(
@@ -44,13 +55,13 @@ abstract final class StrokeRenderer {
                 customTaper: stroke.width * 3,
               )
             : StrokeEndOptions.start(),
-        end: style == PenStyle.brush
+        end: style == PenStyle.brush && complete
             ? StrokeEndOptions.end(
                 taperEnabled: true,
                 customTaper: stroke.width * 3,
               )
             : StrokeEndOptions.end(),
-        isComplete: complete,
+        isComplete: complete || stroke.followsPen,
       ),
     );
     if (outline.length < 3) {
@@ -142,17 +153,22 @@ class StrokesPainter extends CustomPainter {
   bool shouldRepaint(StrokesPainter old) => !identical(old.strokes, strokes);
 }
 
-/// The stroke being drawn right now. Repaints on every pointer move without
-/// rebuilding any widgets.
+/// The stroke being drawn right now, plus where the pen is [predicted] to
+/// be. Repaints on every pointer move without rebuilding any widgets.
 class LiveStrokePainter extends CustomPainter {
-  LiveStrokePainter(this.live) : super(repaint: live);
+  LiveStrokePainter(this.live, this.predicted)
+    : super(repaint: Listenable.merge([live, predicted]));
 
   final ValueNotifier<Stroke?> live;
+  final ValueNotifier<List<InkPoint>> predicted;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final stroke = live.value;
+    var stroke = live.value;
     if (stroke == null || stroke.points.isEmpty) return;
+    if (predicted.value.isNotEmpty) {
+      stroke = stroke.withPoints([...stroke.points, ...predicted.value]);
+    }
     canvas.drawPath(
       StrokeRenderer.buildPath(stroke, complete: false),
       StrokeRenderer.paintFor(stroke),
@@ -160,5 +176,6 @@ class LiveStrokePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(LiveStrokePainter old) => old.live != live;
+  bool shouldRepaint(LiveStrokePainter old) =>
+      old.live != live || old.predicted != predicted;
 }

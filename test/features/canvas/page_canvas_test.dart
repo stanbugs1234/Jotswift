@@ -16,6 +16,7 @@ import 'package:notely/features/canvas/domain/stroke.dart';
 import 'package:notely/features/canvas/ink_toolbar.dart';
 import 'package:notely/features/canvas/ink_tools.dart';
 import 'package:notely/features/canvas/page_canvas.dart';
+import 'package:notely/features/canvas/stroke_painter.dart';
 import 'package:notely/features/notebooks/data/in_memory_notes_backend.dart';
 import 'package:notely/features/notebooks/domain/notebook_models.dart';
 import 'package:notely/features/notebooks/notes_providers.dart';
@@ -124,6 +125,50 @@ void main() {
     expect(strokes.single.points.length, greaterThan(3));
     // Saved in page units: the 120px drag is wider on the full-size page.
     expect(strokes.single.bounds.width, greaterThan(120));
+  });
+
+  testWidgets('pen ink runs a little ahead of the pen, but only the real '
+      'points are saved', (tester) async {
+    final page = await pumpPage(tester);
+    LiveStrokePainter live() => tester
+        .widgetList<CustomPaint>(find.byType(CustomPaint))
+        .map((c) => c.painter)
+        .whereType<LiveStrokePainter>()
+        .single;
+
+    final start = canvasCenter(tester);
+    const ms = Duration(milliseconds: 1);
+    final gesture = await tester.startGesture(
+      start,
+      kind: PointerDeviceKind.stylus,
+    );
+    for (var i = 1; i <= 6; i++) {
+      await gesture.moveTo(
+        start + Offset(20.0 * i, 0),
+        timeStamp: ms * (8 * i),
+      );
+    }
+    await tester.pump();
+    final tip = live().predicted.value.single;
+    final drawn = live().live.value!.points.last;
+    expect(tip.x, greaterThan(drawn.x));
+    expect(tip.y, closeTo(drawn.y, 0.01));
+
+    await gesture.up(timeStamp: ms * 56);
+    await tester.pumpAndSettle();
+    expect(live().predicted.value, isEmpty);
+    final saved = (await page.strokes()).single;
+    expect(saved.points, hasLength(7));
+    expect(saved.points.last.x, drawn.x);
+    expect(saved.followsPen, isTrue);
+  });
+
+  testWidgets('finger ink keeps its smoothing and has no guessed tip', (
+    tester,
+  ) async {
+    final page = await pumpPage(tester);
+    await drag(tester, PointerDeviceKind.touch);
+    expect((await page.strokes()).single.followsPen, isFalse);
   });
 
   testWidgets('without a stylus, a finger draws', (tester) async {

@@ -54,6 +54,7 @@ class Stroke {
     this.pressureSensitive = false,
     this.deleted = false,
     this.style = PenStyle.fountain,
+    this.followsPen = false,
   });
 
   factory Stroke.fromMap(String id, Map<String, dynamic> map) {
@@ -76,6 +77,7 @@ class Stroke {
       pressureSensitive: map['pressure'] as bool? ?? false,
       deleted: map['deleted'] as bool? ?? false,
       style: PenStyle.values.asNameMap()[map['style']] ?? PenStyle.fountain,
+      followsPen: map['followsPen'] as bool? ?? false,
     );
   }
 
@@ -97,6 +99,10 @@ class Stroke {
   /// How the pen draws (only pen strokes; highlighters ignore it).
   final PenStyle style;
 
+  /// Drawn with a stylus, so lightly smoothed: the ink stays right at the
+  /// tip. Older strokes and finger strokes are smoothed more.
+  final bool followsPen;
+
   /// Points are packed as a flat [x, y, pressure, ...] list, rounded to keep
   /// documents small.
   Map<String, dynamic> toMap() => {
@@ -114,6 +120,7 @@ class Stroke {
     'pressure': pressureSensitive,
     'deleted': deleted,
     if (style != PenStyle.fountain) 'style': style.name,
+    if (followsPen) 'followsPen': true,
   };
 
   static double _round(double v, int scale) => (v * scale).round() / scale;
@@ -128,6 +135,7 @@ class Stroke {
     pressureSensitive: pressureSensitive,
     deleted: deleted ?? this.deleted,
     style: style,
+    followsPen: followsPen,
   );
 
   /// The same stroke with other [points] (while it's being drawn).
@@ -141,6 +149,7 @@ class Stroke {
     pressureSensitive: pressureSensitive,
     deleted: deleted,
     style: style,
+    followsPen: followsPen,
   );
 
   late final Rect bounds = _computeBounds();
@@ -234,6 +243,7 @@ List<Stroke>? eraseFromStroke(
           createdAt: stroke.createdAt,
           pressureSensitive: stroke.pressureSensitive,
           style: stroke.style,
+          followsPen: stroke.followsPen,
         ),
       );
     }
