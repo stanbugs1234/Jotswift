@@ -1,7 +1,7 @@
 {
   "kind": "template",
   "name": "Monthly Budget Planner",
-  "version": 1,
+  "version": 2,
   "unlock": {},
   "collectionId": "budget",
   "category": "planners",

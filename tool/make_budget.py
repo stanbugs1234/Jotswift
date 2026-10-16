@@ -286,7 +286,7 @@ def planner():
         "mode": "notebook",
         "sections": [
             {"title": "Year", "pages": [{"pdfPage": YEAR + 1, "title": "Year at a glance"}]},
-            {"title": "Months", "pages": [{"pdfPage": MONTH[m] + 1, "title": MONTHS[m]} for m in range(12)]},
+            {"title": "Months", "pages": [{"pdfPage": MONTH[m] + 1, "title": MONTHS[m], "month": m + 1} for m in range(12)]},
             {"title": "Trackers", "pages": [
                 {"pdfPage": BILLS + 1, "title": "Bills"},
                 {"pdfPage": SAVINGS + 1, "title": "Savings goals"},

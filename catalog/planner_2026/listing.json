@@ -1,0 +1,14 @@
+{
+  "kind": "template",
+  "name": "2026 Weekly Planner",
+  "version": 1,
+  "unlock": {
+    "free": true
+  },
+  "category": "planners",
+  "tags": [
+    "dated",
+    "weekly",
+    "2026"
+  ]
+}

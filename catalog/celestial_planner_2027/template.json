@@ -6,7 +6,9 @@
       "pages": [
         {
           "pdfPage": 1,
-          "title": "2027"
+          "title": "2027",
+          "from": "2027-01-01",
+          "to": "2027-12-31"
         }
       ]
     },
@@ -15,51 +17,75 @@
       "pages": [
         {
           "pdfPage": 2,
-          "title": "January"
+          "title": "January",
+          "from": "2027-01-01",
+          "to": "2027-01-31"
         },
         {
           "pdfPage": 3,
-          "title": "February"
+          "title": "February",
+          "from": "2027-02-01",
+          "to": "2027-02-28"
         },
         {
           "pdfPage": 4,
-          "title": "March"
+          "title": "March",
+          "from": "2027-03-01",
+          "to": "2027-03-31"
         },
         {
           "pdfPage": 5,
-          "title": "April"
+          "title": "April",
+          "from": "2027-04-01",
+          "to": "2027-04-30"
         },
         {
           "pdfPage": 6,
-          "title": "May"
+          "title": "May",
+          "from": "2027-05-01",
+          "to": "2027-05-31"
         },
         {
           "pdfPage": 7,
-          "title": "June"
+          "title": "June",
+          "from": "2027-06-01",
+          "to": "2027-06-30"
         },
         {
           "pdfPage": 8,
-          "title": "July"
+          "title": "July",
+          "from": "2027-07-01",
+          "to": "2027-07-31"
         },
         {
           "pdfPage": 9,
-          "title": "August"
+          "title": "August",
+          "from": "2027-08-01",
+          "to": "2027-08-31"
         },
         {
           "pdfPage": 10,
-          "title": "September"
+          "title": "September",
+          "from": "2027-09-01",
+          "to": "2027-09-30"
         },
         {
           "pdfPage": 11,
-          "title": "October"
+          "title": "October",
+          "from": "2027-10-01",
+          "to": "2027-10-31"
         },
         {
           "pdfPage": 12,
-          "title": "November"
+          "title": "November",
+          "from": "2027-11-01",
+          "to": "2027-11-30"
         },
         {
           "pdfPage": 13,
-          "title": "December"
+          "title": "December",
+          "from": "2027-12-01",
+          "to": "2027-12-31"
         }
       ]
     },
@@ -68,215 +94,321 @@
       "pages": [
         {
           "pdfPage": 14,
-          "title": "Week 1"
+          "title": "Week 1",
+          "from": "2026-12-28",
+          "to": "2027-01-03"
         },
         {
           "pdfPage": 15,
-          "title": "Week 2"
+          "title": "Week 2",
+          "from": "2027-01-04",
+          "to": "2027-01-10"
         },
         {
           "pdfPage": 16,
-          "title": "Week 3"
+          "title": "Week 3",
+          "from": "2027-01-11",
+          "to": "2027-01-17"
         },
         {
           "pdfPage": 17,
-          "title": "Week 4"
+          "title": "Week 4",
+          "from": "2027-01-18",
+          "to": "2027-01-24"
         },
         {
           "pdfPage": 18,
-          "title": "Week 5"
+          "title": "Week 5",
+          "from": "2027-01-25",
+          "to": "2027-01-31"
         },
         {
           "pdfPage": 19,
-          "title": "Week 6"
+          "title": "Week 6",
+          "from": "2027-02-01",
+          "to": "2027-02-07"
         },
         {
           "pdfPage": 20,
-          "title": "Week 7"
+          "title": "Week 7",
+          "from": "2027-02-08",
+          "to": "2027-02-14"
         },
         {
           "pdfPage": 21,
-          "title": "Week 8"
+          "title": "Week 8",
+          "from": "2027-02-15",
+          "to": "2027-02-21"
         },
         {
           "pdfPage": 22,
-          "title": "Week 9"
+          "title": "Week 9",
+          "from": "2027-02-22",
+          "to": "2027-02-28"
         },
         {
           "pdfPage": 23,
-          "title": "Week 10"
+          "title": "Week 10",
+          "from": "2027-03-01",
+          "to": "2027-03-07"
         },
         {
           "pdfPage": 24,
-          "title": "Week 11"
+          "title": "Week 11",
+          "from": "2027-03-08",
+          "to": "2027-03-14"
         },
         {
           "pdfPage": 25,
-          "title": "Week 12"
+          "title": "Week 12",
+          "from": "2027-03-15",
+          "to": "2027-03-21"
         },
         {
           "pdfPage": 26,
-          "title": "Week 13"
+          "title": "Week 13",
+          "from": "2027-03-22",
+          "to": "2027-03-28"
         },
         {
           "pdfPage": 27,
-          "title": "Week 14"
+          "title": "Week 14",
+          "from": "2027-03-29",
+          "to": "2027-04-04"
         },
         {
           "pdfPage": 28,
-          "title": "Week 15"
+          "title": "Week 15",
+          "from": "2027-04-05",
+          "to": "2027-04-11"
         },
         {
           "pdfPage": 29,
-          "title": "Week 16"
+          "title": "Week 16",
+          "from": "2027-04-12",
+          "to": "2027-04-18"
         },
         {
           "pdfPage": 30,
-          "title": "Week 17"
+          "title": "Week 17",
+          "from": "2027-04-19",
+          "to": "2027-04-25"
         },
         {
           "pdfPage": 31,
-          "title": "Week 18"
+          "title": "Week 18",
+          "from": "2027-04-26",
+          "to": "2027-05-02"
         },
         {
           "pdfPage": 32,
-          "title": "Week 19"
+          "title": "Week 19",
+          "from": "2027-05-03",
+          "to": "2027-05-09"
         },
         {
           "pdfPage": 33,
-          "title": "Week 20"
+          "title": "Week 20",
+          "from": "2027-05-10",
+          "to": "2027-05-16"
         },
         {
           "pdfPage": 34,
-          "title": "Week 21"
+          "title": "Week 21",
+          "from": "2027-05-17",
+          "to": "2027-05-23"
         },
         {
           "pdfPage": 35,
-          "title": "Week 22"
+          "title": "Week 22",
+          "from": "2027-05-24",
+          "to": "2027-05-30"
         },
         {
           "pdfPage": 36,
-          "title": "Week 23"
+          "title": "Week 23",
+          "from": "2027-05-31",
+          "to": "2027-06-06"
         },
         {
           "pdfPage": 37,
-          "title": "Week 24"
+          "title": "Week 24",
+          "from": "2027-06-07",
+          "to": "2027-06-13"
         },
         {
           "pdfPage": 38,
-          "title": "Week 25"
+          "title": "Week 25",
+          "from": "2027-06-14",
+          "to": "2027-06-20"
         },
         {
           "pdfPage": 39,
-          "title": "Week 26"
+          "title": "Week 26",
+          "from": "2027-06-21",
+          "to": "2027-06-27"
         },
         {
           "pdfPage": 40,
-          "title": "Week 27"
+          "title": "Week 27",
+          "from": "2027-06-28",
+          "to": "2027-07-04"
         },
         {
           "pdfPage": 41,
-          "title": "Week 28"
+          "title": "Week 28",
+          "from": "2027-07-05",
+          "to": "2027-07-11"
         },
         {
           "pdfPage": 42,
-          "title": "Week 29"
+          "title": "Week 29",
+          "from": "2027-07-12",
+          "to": "2027-07-18"
         },
         {
           "pdfPage": 43,
-          "title": "Week 30"
+          "title": "Week 30",
+          "from": "2027-07-19",
+          "to": "2027-07-25"
         },
         {
           "pdfPage": 44,
-          "title": "Week 31"
+          "title": "Week 31",
+          "from": "2027-07-26",
+          "to": "2027-08-01"
         },
         {
           "pdfPage": 45,
-          "title": "Week 32"
+          "title": "Week 32",
+          "from": "2027-08-02",
+          "to": "2027-08-08"
         },
         {
           "pdfPage": 46,
-          "title": "Week 33"
+          "title": "Week 33",
+          "from": "2027-08-09",
+          "to": "2027-08-15"
         },
         {
           "pdfPage": 47,
-          "title": "Week 34"
+          "title": "Week 34",
+          "from": "2027-08-16",
+          "to": "2027-08-22"
         },
         {
           "pdfPage": 48,
-          "title": "Week 35"
+          "title": "Week 35",
+          "from": "2027-08-23",
+          "to": "2027-08-29"
         },
         {
           "pdfPage": 49,
-          "title": "Week 36"
+          "title": "Week 36",
+          "from": "2027-08-30",
+          "to": "2027-09-05"
         },
         {
           "pdfPage": 50,
-          "title": "Week 37"
+          "title": "Week 37",
+          "from": "2027-09-06",
+          "to": "2027-09-12"
         },
         {
           "pdfPage": 51,
-          "title": "Week 38"
+          "title": "Week 38",
+          "from": "2027-09-13",
+          "to": "2027-09-19"
         },
         {
           "pdfPage": 52,
-          "title": "Week 39"
+          "title": "Week 39",
+          "from": "2027-09-20",
+          "to": "2027-09-26"
         },
         {
           "pdfPage": 53,
-          "title": "Week 40"
+          "title": "Week 40",
+          "from": "2027-09-27",
+          "to": "2027-10-03"
         },
         {
           "pdfPage": 54,
-          "title": "Week 41"
+          "title": "Week 41",
+          "from": "2027-10-04",
+          "to": "2027-10-10"
         },
         {
           "pdfPage": 55,
-          "title": "Week 42"
+          "title": "Week 42",
+          "from": "2027-10-11",
+          "to": "2027-10-17"
         },
         {
           "pdfPage": 56,
-          "title": "Week 43"
+          "title": "Week 43",
+          "from": "2027-10-18",
+          "to": "2027-10-24"
         },
         {
           "pdfPage": 57,
-          "title": "Week 44"
+          "title": "Week 44",
+          "from": "2027-10-25",
+          "to": "2027-10-31"
         },
         {
           "pdfPage": 58,
-          "title": "Week 45"
+          "title": "Week 45",
+          "from": "2027-11-01",
+          "to": "2027-11-07"
         },
         {
           "pdfPage": 59,
-          "title": "Week 46"
+          "title": "Week 46",
+          "from": "2027-11-08",
+          "to": "2027-11-14"
         },
         {
           "pdfPage": 60,
-          "title": "Week 47"
+          "title": "Week 47",
+          "from": "2027-11-15",
+          "to": "2027-11-21"
         },
         {
           "pdfPage": 61,
-          "title": "Week 48"
+          "title": "Week 48",
+          "from": "2027-11-22",
+          "to": "2027-11-28"
         },
         {
           "pdfPage": 62,
-          "title": "Week 49"
+          "title": "Week 49",
+          "from": "2027-11-29",
+          "to": "2027-12-05"
         },
         {
           "pdfPage": 63,
-          "title": "Week 50"
+          "title": "Week 50",
+          "from": "2027-12-06",
+          "to": "2027-12-12"
         },
         {
           "pdfPage": 64,
-          "title": "Week 51"
+          "title": "Week 51",
+          "from": "2027-12-13",
+          "to": "2027-12-19"
         },
         {
           "pdfPage": 65,
-          "title": "Week 52"
+          "title": "Week 52",
+          "from": "2027-12-20",
+          "to": "2027-12-26"
         },
         {
           "pdfPage": 66,
-          "title": "Week 53"
+          "title": "Week 53",
+          "from": "2027-12-27",
+          "to": "2028-01-02"
         }
       ]
     }

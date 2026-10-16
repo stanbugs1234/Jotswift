@@ -1,13 +1,16 @@
 """Makes a whole collection's catalog items from its style in
 tool/collections.json, all drawn in code:
 
-  python3 tool/make_collection.py botanical      # one collection
-  python3 tool/make_collection.py all            # every collection
+  python3 tool/make_collection.py botanical               # one collection
+  python3 tool/make_collection.py all                     # every collection
+  python3 tool/make_collection.py all --year 2026         # planners only, for 2026
 
 For a collection <id> it writes these catalog folders:
 
   <id>/                  the collection itself (listing + preview)
-  <id>_planner_2027/     a dated weekly planner in the collection's style
+  <id>_planner_<year>/   a dated weekly planner in the collection's style
+                         (2027 unless --year is given; with --year, only
+                         the planner is written)
   <id>_pages/            the page pack: every layout in tool/page_layouts.py
   <id>_cover_1..3/       covers: pattern, label plate, two-tone band
   <id>_paper_<pattern>/  papers, from the style's "papers"
@@ -304,21 +307,29 @@ def write_template(folder, pages, spec_json):
     mp.write_preview(folder / "template.pdf", folder / "preview.webp")
 
 
-def write_templates(cid, spec):
+def write_planner(cid, spec, year):
     mp.use_style(style_of(spec))
     try:
-        pages, tspec = mp.planner(YEAR)
-        folder = CATALOG / f"{cid}_planner_{YEAR}"
+        pages, tspec = mp.planner(year)
+        folder = CATALOG / f"{cid}_planner_{year}"
         write_template(folder, pages, tspec)
         write_listing(folder, {
             "kind": "template",
-            "name": f"{spec['name']} {YEAR} Planner",
+            "name": f"{spec['name']} {year} Planner",
             "version": 1,
             "unlock": {},
             "collectionId": cid,
             "category": "planners",
-            "tags": spec["tags"] + ["dated", "weekly", str(YEAR)],
+            "tags": spec["tags"] + ["dated", "weekly", str(year)],
         })
+    finally:
+        mp.use_style(mp.DEFAULT)
+
+
+def write_templates(cid, spec):
+    write_planner(cid, spec, YEAR)
+    mp.use_style(style_of(spec))
+    try:
 
         pages, tspec = page_layouts.pack()
         folder = CATALOG / f"{cid}_pages"
@@ -373,10 +384,18 @@ def make(cid, spec):
 
 def main():
     specs = json.loads(SPECS.read_text())["collections"]
-    if len(sys.argv) != 2 or (sys.argv[1] != "all" and sys.argv[1] not in specs):
+    args = sys.argv[1:]
+    year = None
+    if len(args) == 3 and args[1] == "--year" and args[2].isdigit():
+        year, args = int(args[2]), args[:1]
+    if len(args) != 1 or (args[0] != "all" and args[0] not in specs):
         sys.exit(__doc__ + f"\nCollections: {', '.join(specs)}")
-    for cid in specs if sys.argv[1] == "all" else [sys.argv[1]]:
-        make(cid, specs[cid])
+    for cid in specs if args[0] == "all" else [args[0]]:
+        if year is None:
+            make(cid, specs[cid])
+        else:
+            write_planner(cid, specs[cid], year)
+            print(f"{cid}: {year} planner")
 
 
 if __name__ == "__main__":

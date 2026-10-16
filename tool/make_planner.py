@@ -436,12 +436,24 @@ def planner(year):
                 p.line(x + 10, y + bh - 26 - k * 22, x + bw - 10, y + bh - 26 - k * 22)
         tabs(p, month if monday.year == year else None)
 
+    # Each page says which dates it covers, so the app can open today's.
+    def span(first, last):
+        return {"from": first.isoformat(), "to": last.isoformat()}
+
+    def month_span(m):
+        return span(dt.date(year, m + 1, 1),
+                    dt.date(year, m + 1, calendar.monthrange(year, m + 1)[1]))
+
     spec = {
         "mode": "notebook",
         "sections": [
-            {"title": str(year), "pages": [{"pdfPage": 1, "title": str(year)}]},
-            {"title": "Months", "pages": [{"pdfPage": month_page[m] + 1, "title": months[m]} for m in range(12)]},
-            {"title": "Weeks", "pages": [{"pdfPage": week_page[i] + 1, "title": f"Week {i + 1}"} for i in range(len(weeks))]},
+            {"title": str(year), "pages": [
+                {"pdfPage": 1, "title": str(year), **span(dt.date(year, 1, 1), dt.date(year, 12, 31))}]},
+            {"title": "Months", "pages": [
+                {"pdfPage": month_page[m] + 1, "title": months[m], **month_span(m)} for m in range(12)]},
+            {"title": "Weeks", "pages": [
+                {"pdfPage": week_page[i] + 1, "title": f"Week {i + 1}",
+                 **span(weeks[i], weeks[i] + dt.timedelta(days=6))} for i in range(len(weeks))]},
         ],
     }
     return pages, spec

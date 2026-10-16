@@ -191,6 +191,12 @@ python3 tool/make_covers.py all     # 3 packs of 12: textures, patterns, seasons
   // Single pages, added with "New page from template".
   { "mode": "pages", "pages": [ { "pdfPage": 1, "title": "To-do list" } ] }
   ```
+- **Dates:** a planner's pages can say which days they cover, so a notebook opens on today's page (on a new day) and the page has a Today button. Use `"from"` and `"to"` (`YYYY-MM-DD`) for dated pages, or `"month"` (1-12) for undated monthly pages that fit any year. The narrowest page wins: a week over its month, a month over the year.
+  ```jsonc
+  { "pdfPage": 45, "title": "Week 42", "from": "2027-10-11", "to": "2027-10-17" }
+  { "pdfPage": 11, "title": "October", "month": 10 }
+  ```
+  `make_planner.py`, `make_collection.py` and `make_budget.py` write these. Older pages without dates open where the user left off.
 - **Links:** links between pages are ordinary PDF links. Tapping one opens that page.
 - **Page size:** a notebook made from a template gets the page size closest to the PDF's.
 - **Versions:** pages keep the version they were made with, so a new version never moves writing on a filled page.
@@ -200,6 +206,7 @@ python3 tool/make_covers.py all     # 3 packs of 12: textures, patterns, seasons
 - **Making a whole collection in code:** add its style to `tool/collections.json` (colors, page color, border, header style, motif, font, cover colors, papers), then:
   ```sh
   python3 tool/make_collection.py botanical   # or: all
+  python3 tool/make_collection.py all --year 2026   # only the dated planners, for another year
   ```
   This writes the collection and its items: a dated planner (`<id>_planner_2027`), a page pack with every layout in `tool/page_layouts.py` (`<id>_pages`, 23 pages: planning, to-do, trackers, study), three covers, papers and a sticker pack. Each item gets `"collectionId"`, so buying the collection unlocks it all. A new layout added to `page_layouts.py` appears in every collection the next time it's made.
   - Re-running keeps each item's `version`; raise it by hand when the files change, before publishing again.

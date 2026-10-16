@@ -15,51 +15,63 @@
       "pages": [
         {
           "pdfPage": 2,
-          "title": "January"
+          "title": "January",
+          "month": 1
         },
         {
           "pdfPage": 3,
-          "title": "February"
+          "title": "February",
+          "month": 2
         },
         {
           "pdfPage": 4,
-          "title": "March"
+          "title": "March",
+          "month": 3
         },
         {
           "pdfPage": 5,
-          "title": "April"
+          "title": "April",
+          "month": 4
         },
         {
           "pdfPage": 6,
-          "title": "May"
+          "title": "May",
+          "month": 5
         },
         {
           "pdfPage": 7,
-          "title": "June"
+          "title": "June",
+          "month": 6
         },
         {
           "pdfPage": 8,
-          "title": "July"
+          "title": "July",
+          "month": 7
         },
         {
           "pdfPage": 9,
-          "title": "August"
+          "title": "August",
+          "month": 8
         },
         {
           "pdfPage": 10,
-          "title": "September"
+          "title": "September",
+          "month": 9
         },
         {
           "pdfPage": 11,
-          "title": "October"
+          "title": "October",
+          "month": 10
         },
         {
           "pdfPage": 12,
-          "title": "November"
+          "title": "November",
+          "month": 11
         },
         {
           "pdfPage": 13,
-          "title": "December"
+          "title": "December",
+          "month": 12
         }
       ]
     },
