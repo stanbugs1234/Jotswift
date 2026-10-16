@@ -153,16 +153,12 @@ class _NewPageSheetState extends ConsumerState<_NewPageSheet> {
                               ),
                             ),
                             _Tile(
-                              label: 'Other paper…',
+                              label: 'More papers',
                               onTap: () => Navigator.pop(
                                 context,
                                 const OtherPaperChoice(),
                               ),
-                              child: Icon(
-                                Icons.palette_outlined,
-                                size: 36,
-                                color: theme.colorScheme.onSurfaceVariant,
-                              ),
+                              child: _PaperSampler(paper: paper),
                             ),
                           ],
                         ),
@@ -400,6 +396,59 @@ class _TemplatePageTile extends ConsumerWidget {
       child: image == null
           ? const Center(child: CircularProgressIndicator())
           : RawImage(image: image, fit: BoxFit.contain),
+    );
+  }
+}
+
+/// A fan of papers in the notebook's colors (dots, grid, lined): a peek
+/// at what More papers offers.
+class _PaperSampler extends StatelessWidget {
+  const _PaperSampler({required this.paper});
+
+  final PaperStyle paper;
+
+  @override
+  Widget build(BuildContext context) {
+    final edge = Theme.of(context).colorScheme.outline;
+    Widget card(PaperPattern pattern, double turn, Offset shift) => Center(
+      child: Transform.translate(
+        offset: shift,
+        child: Transform.rotate(
+          angle: turn,
+          child: Container(
+            width: 64,
+            height: 84,
+            decoration: BoxDecoration(
+              border: Border.all(color: edge, width: 0.8),
+              boxShadow: const [
+                BoxShadow(
+                  color: Color(0x22000000),
+                  blurRadius: 3,
+                  offset: Offset(0, 1),
+                ),
+              ],
+            ),
+            child: CustomPaint(
+              painter: PaperPainter(
+                paper.copyWith(pattern: pattern, color: paper.color),
+                scale: 0.3,
+              ),
+              child: const SizedBox.expand(),
+            ),
+          ),
+        ),
+      ),
+    );
+    return ColoredBox(
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          card(PaperPattern.dot, -0.16, const Offset(-14, -6)),
+          card(PaperPattern.grid, 0.12, const Offset(14, -2)),
+          card(PaperPattern.lined, 0, const Offset(0, 8)),
+        ],
+      ),
     );
   }
 }
