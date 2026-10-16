@@ -284,11 +284,10 @@ class _Sidebar extends ConsumerWidget {
                               const SizedBox(width: 10),
                               Expanded(
                                 child: tile(
-                                  'Starred',
-                                  Icons.star_outline,
-                                  _TileColors.starred,
-                                  const StarredNotebooks(),
-                                  count: counts.starredCount,
+                                  'Recent',
+                                  Icons.schedule,
+                                  _TileColors.recent,
+                                  const RecentNotebooks(),
                                 ),
                               ),
                             ],
@@ -298,13 +297,27 @@ class _Sidebar extends ConsumerWidget {
                             children: [
                               Expanded(
                                 child: tile(
+                                  'Starred',
+                                  Icons.star_outline,
+                                  _TileColors.starred,
+                                  const StarredNotebooks(),
+                                  count: counts.starredCount,
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: tile(
                                   'Unfiled',
                                   Icons.inbox_outlined,
                                   _TileColors.unfiled,
                                   const UnfiledNotebooks(),
                                 ),
                               ),
-                              const SizedBox(width: 10),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          Row(
+                            children: [
                               Expanded(
                                 child: tile(
                                   'Trash',
@@ -314,16 +327,17 @@ class _Sidebar extends ConsumerWidget {
                                   count: counts.trashCount,
                                 ),
                               ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: _SidebarTile(
+                                  label: 'Templates',
+                                  icon: Icons.storefront_outlined,
+                                  color: _TileColors.templates,
+                                  selected: false,
+                                  onTap: () => context.push(storePath),
+                                ),
+                              ),
                             ],
-                          ),
-                          const SizedBox(height: 10),
-                          _SidebarTile(
-                            label: 'Templates',
-                            icon: Icons.storefront_outlined,
-                            color: _TileColors.templates,
-                            badge: 'New',
-                            selected: false,
-                            onTap: () => context.push(storePath),
                           ),
                         ],
                       ),
@@ -332,12 +346,6 @@ class _Sidebar extends ConsumerWidget {
                     _SidebarSection(
                       title: 'Categories',
                       children: [
-                        item(
-                          'Recent',
-                          Icons.schedule,
-                          selected: isOpen(const RecentNotebooks()),
-                          onTap: () => context.go(const RecentNotebooks().path),
-                        ),
                         for (final c in categories)
                           item(
                             c.title,
@@ -400,14 +408,15 @@ class _Sidebar extends ConsumerWidget {
   }
 }
 
-/// The sidebar tiles' colors, as in Noteshelf: the same in every skin so
-/// each place is easy to spot.
+/// The sidebar tiles' icon colors: the same in every skin so each place is
+/// easy to spot, muted so they sit quietly beside the app's own colors.
 abstract final class _TileColors {
-  static const home = Color(0xFFE0533F);
-  static const starred = Color(0xFFC79A2E);
-  static const unfiled = Color(0xFF4C8BC9);
-  static const trash = Color(0xFF8C8C8C);
-  static const templates = Color(0xFF3E9A6B);
+  static const home = Color(0xFFC8553D);
+  static const recent = Color(0xFF7B68A6);
+  static const starred = Color(0xFFB8892E);
+  static const unfiled = Color(0xFF4C7FB0);
+  static const trash = Color(0xFF808690);
+  static const templates = Color(0xFF3E8A64);
 }
 
 /// A rounded, tinted tile; filled with its color when [selected].
@@ -419,7 +428,6 @@ class _SidebarTile extends StatelessWidget {
     required this.selected,
     required this.onTap,
     this.count,
-    this.badge,
   });
 
   final String label;
@@ -431,21 +439,30 @@ class _SidebarTile extends StatelessWidget {
   /// Shown at the top right, unless zero.
   final int? count;
 
-  /// A small label at the top right, like "New".
-  final String? badge;
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final dark = theme.brightness == Brightness.dark;
-    final foreground = selected ? Colors.white : theme.colorScheme.onSurface;
+    final scheme = theme.colorScheme;
+    final foreground = selected ? scheme.primary : scheme.onSurface;
     final count = this.count;
+    // Neutral tiles with a colored icon; the open place is tinted with the
+    // app's primary color, so the sidebar reads calm, not like a palette.
     return Semantics(
       selected: selected,
       button: true,
       child: Material(
-        color: selected ? color : color.withValues(alpha: dark ? 0.24 : 0.14),
-        borderRadius: BorderRadius.circular(12),
+        color: selected
+            ? scheme.primary.withValues(alpha: dark ? 0.24 : 0.12)
+            : scheme.surfaceContainerHighest.withValues(alpha: 0.7),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: BorderSide(
+            color: selected
+                ? scheme.primary.withValues(alpha: 0.6)
+                : Colors.transparent,
+          ),
+        ),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: onTap,
@@ -456,11 +473,7 @@ class _SidebarTile extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Icon(
-                      icon,
-                      size: 20,
-                      color: selected ? Colors.white : color,
-                    ),
+                    Icon(icon, size: 20, color: color),
                     const Spacer(),
                     if (count != null && count > 0)
                       Text(
@@ -468,23 +481,6 @@ class _SidebarTile extends StatelessWidget {
                         style: theme.textTheme.labelMedium?.copyWith(
                           color: foreground,
                           fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    if (badge case final badge?)
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 7,
-                          vertical: 2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: color,
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Text(
-                          badge,
-                          style: theme.textTheme.labelSmall?.copyWith(
-                            color: Colors.white,
-                          ),
                         ),
                       ),
                   ],
