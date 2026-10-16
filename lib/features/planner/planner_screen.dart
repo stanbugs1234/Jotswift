@@ -97,7 +97,12 @@ class PlannerScreen extends ConsumerWidget {
         onPressed: () => context.push('/settings'),
       ),
     ];
-    final title = TabTitle(local.formatFullDate(day.toDateTime()));
+    // The full date where it fits; "Fri, Oct 16" on phones.
+    final title = TabTitle(
+      MediaQuery.sizeOf(context).width < 600
+          ? local.formatMediumDate(day.toDateTime())
+          : local.formatFullDate(day.toDateTime()),
+    );
 
     return LayoutBuilder(
       builder: (context, constraints) {

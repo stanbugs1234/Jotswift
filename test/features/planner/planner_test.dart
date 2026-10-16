@@ -113,14 +113,14 @@ void main() {
 
     testWidgets('shows the day\'s schedule and tasks', (tester) async {
       await openPlanner(tester);
-      expect(find.text('Wednesday, October 14, 2026'), findsOneWidget);
+      expect(find.text('Wed, Oct 14'), findsOneWidget);
       expect(find.text('Standup'), findsOneWidget);
       expect(find.text('Send invoice'), findsOneWidget);
       expect(find.text('Buy flowers'), findsNothing);
 
       await tester.tap(find.byTooltip('Next day'));
       await tester.pumpAndSettle();
-      expect(find.text('Thursday, October 15, 2026'), findsOneWidget);
+      expect(find.text('Thu, Oct 15'), findsOneWidget);
       expect(find.text('Buy flowers'), findsOneWidget);
       expect(find.text('Nothing scheduled.'), findsOneWidget);
 
@@ -230,7 +230,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.widgetWithText(TextButton, 'Planner'));
       await tester.pumpAndSettle();
-      expect(find.text('Tuesday, October 20, 2026'), findsOneWidget);
+      expect(find.text('Tue, Oct 20'), findsOneWidget);
     });
   });
 }

@@ -22,6 +22,12 @@ class TabTitle extends ConsumerWidget {
     key: textKey,
     maxLines: 1,
     overflow: TextOverflow.ellipsis,
-    style: titleSerif(ref, Theme.of(context).textTheme.headlineSmall),
+    // A step smaller on phones, where the bar also holds several buttons.
+    style: titleSerif(
+      ref,
+      MediaQuery.sizeOf(context).width < 600
+          ? Theme.of(context).textTheme.titleLarge
+          : Theme.of(context).textTheme.headlineSmall,
+    ),
   );
 }

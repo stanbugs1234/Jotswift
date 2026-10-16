@@ -275,7 +275,7 @@ void main() {
       );
       fake.tapController.add(const Day(2026, 10, 20));
       await tester.pumpAndSettle();
-      expect(find.text('Tuesday, October 20, 2026'), findsOneWidget);
+      expect(find.text('Tue, Oct 20'), findsOneWidget);
       await tester.pump(const Duration(seconds: 1));
     });
   });
