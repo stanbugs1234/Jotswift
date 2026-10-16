@@ -1,7 +1,8 @@
 rules_version = '2';
 
 // Notely Cloud Storage rules. Each person can only reach their own files
-// under users/{uid}: cover photos and photos on pages, images under 5 MB.
+// under users/{uid}: cover photos and photos on pages, images under 5 MB;
+// and imported PDFs, kept as zips under 100 MB.
 service firebase.storage {
   match /b/{bucket}/o {
 
@@ -15,6 +16,16 @@ service firebase.storage {
         && folder in ['covers', 'images']
         && request.resource.size < 5 * 1024 * 1024
         && request.resource.contentType.matches('image/.*');
+    }
+
+    match /users/{uid}/documents/{file} {
+      allow read, delete: if isOwner(uid);
+      // Never replaced: pages point at a document by its checksum.
+      allow create: if isOwner(uid)
+        && resource == null
+        && file.matches('[A-Za-z0-9]+[.]zip')
+        && request.resource.size < 100 * 1024 * 1024
+        && request.resource.contentType == 'application/zip';
     }
 
     // Catalog files, published with tool/catalog.py. Previews are open to

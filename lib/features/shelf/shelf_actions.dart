@@ -9,6 +9,8 @@ import '../../core/skins/skin_providers.dart';
 import '../../shared/dialogs.dart';
 import '../notebooks/domain/notebook_models.dart';
 import '../canvas/templates.dart';
+import '../imports/document_import.dart';
+import '../imports/import_actions.dart';
 import '../notebooks/notebook_editor.dart';
 import '../notebooks/notes_providers.dart';
 import '../store/paywall.dart';
@@ -57,6 +59,39 @@ Future<void> createNotebookAt(
           planner,
           file: result.variant,
         );
+  if (context.mounted) await context.push('/notebooks/${notebook.id}');
+}
+
+/// Asks for PDFs or images (unless given [files], sent from another app)
+/// and makes a notebook of them at [location], named after the first file,
+/// then opens it.
+Future<void> importNotebookAt(
+  BuildContext context,
+  WidgetRef ref,
+  ShelfLocation location, {
+  List<ImportFile>? files,
+}) async {
+  if (!await _mayCreate(context, ref) || !context.mounted) return;
+  files ??= await chooseImportFiles(context, ref);
+  if (files == null || !context.mounted) return;
+  final documents = await importWithProgress(context, ref, files);
+  if (documents == null || !context.mounted) return;
+  final repo = ref.read(notebookRepositoryProvider);
+  final count = ref.read(notebooksProvider).value?.length ?? 0;
+  final (size, orientation) = closestPaperSize(documents.first.firstPageSize);
+  final title = documents.first.title;
+  final notebook = await repo.createNotebook(
+    NewNotebook(
+      title: title.isEmpty ? 'Imported' : title,
+      cover: NotebookCover.color(notebookColors[count % notebookColors.length]),
+      paperSize: size,
+      orientation: orientation,
+      collectionId: ref.read(activeSkinProvider).id,
+      place: location.place,
+    ),
+  );
+  final section = (await repo.watchSections(notebook.id).first).first;
+  await repo.createPages(notebook.id, section.id, importedPages(documents));
   if (context.mounted) await context.push('/notebooks/${notebook.id}');
 }
 

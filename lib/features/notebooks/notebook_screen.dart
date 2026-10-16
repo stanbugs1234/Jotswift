@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/paper/paper_style.dart';
 import '../../shared/dialogs.dart';
 import '../canvas/templates.dart';
+import '../imports/import_actions.dart';
 import '../shelf/shelf_actions.dart';
 import 'domain/notebook_models.dart';
 import 'notes_providers.dart';
@@ -114,6 +115,16 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
     if (mounted) _openPage(page.id);
   }
 
+  Future<void> _importPages(String sectionId) async {
+    final pageId = await importIntoSection(
+      context,
+      ref,
+      widget.notebookId,
+      sectionId,
+    );
+    if (pageId != null && mounted) _openPage(pageId);
+  }
+
   Future<void> _newPageWithPaper(String sectionId) async {
     final choice = await showPagePaperSheet(
       context,
@@ -156,6 +167,7 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
                 'template' when current != null => _newPageFromTemplate(
                   current.id,
                 ),
+                'import' when current != null => _importPages(current.id),
                 _ when current != null => _newPageWithPaper(current.id),
                 _ => null,
               },
@@ -171,6 +183,10 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
                 PopupMenuItem(
                   value: 'template',
                   child: Text('New page from template'),
+                ),
+                PopupMenuItem(
+                  value: 'import',
+                  child: Text('Import PDF or images'),
                 ),
               ],
             ),

@@ -10,6 +10,7 @@ import 'cover_view.dart';
 import 'shelf_actions.dart';
 import 'shelf_prefs.dart';
 import 'shelf_view.dart';
+import '../imports/open_in.dart';
 
 /// The shelf, laid out like Noteshelf's home: a big title, quick actions,
 /// then notebooks shown by their covers with groups as stacks. Shows Home
@@ -30,9 +31,23 @@ class _ShelfScreenState extends ConsumerState<ShelfScreen> {
   final _search = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _importIncoming());
+  }
+
+  @override
   void dispose() {
     _search.dispose();
     super.dispose();
+  }
+
+  /// Makes a notebook of files sent from another app, if any are waiting.
+  void _importIncoming() {
+    if (!mounted || widget.location is! AllNotebooks) return;
+    final files = ref.read(incomingFilesProvider.notifier).take();
+    if (files.isEmpty) return;
+    importNotebookAt(context, ref, widget.location, files: files);
   }
 
   void _toggleSearch() => setState(() {
@@ -42,6 +57,9 @@ class _ShelfScreenState extends ConsumerState<ShelfScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(incomingFilesProvider, (_, files) {
+      if (files.isNotEmpty) Future.microtask(_importIncoming);
+    });
     final location = widget.location;
     final notebooks = ref.watch(notebooksProvider);
     final groups = ref.watch(groupsProvider);
@@ -236,6 +254,12 @@ class _QuickActions extends ConsumerWidget {
         onTap: () => createNotebookAt(context, ref, location),
       ),
       (
+        label: 'Import',
+        icon: Icons.file_open_outlined,
+        color: const Color(0xFF7B4FA0),
+        onTap: () => importNotebookAt(context, ref, location),
+      ),
+      (
         label: 'Templates',
         icon: Icons.storefront_outlined,
         color: const Color(0xFF4C8BC9),
@@ -352,6 +376,13 @@ class _AddMenu extends ConsumerWidget {
           child: const ListTile(
             leading: Icon(Icons.menu_book_outlined),
             title: Text('Notebook'),
+          ),
+        ),
+        PopupMenuItem(
+          value: () => importNotebookAt(context, ref, location),
+          child: const ListTile(
+            leading: Icon(Icons.file_open_outlined),
+            title: Text('Import PDF or images'),
           ),
         ),
         PopupMenuItem(

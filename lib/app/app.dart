@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/motion/motion.dart';
 import '../core/settings/appearance.dart';
 import '../core/skins/skin_providers.dart';
+import '../features/imports/open_in.dart';
 import 'router.dart';
 
 class NotelyApp extends ConsumerWidget {
@@ -11,6 +12,7 @@ class NotelyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(openInListenerProvider);
     final animations = ref.watch(animationLevelProvider);
     return MaterialApp.router(
       title: 'Jotswift',

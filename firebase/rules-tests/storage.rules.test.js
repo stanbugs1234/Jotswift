@@ -82,6 +82,39 @@ describe('users/{uid}/covers', () => {
   });
 });
 
+describe('users/{uid}/documents', () => {
+  const zipFile = new Uint8Array([0x50, 0x4b, 0x05, 0x06]);
+  const asZip = { contentType: 'application/zip' };
+
+  test('people can upload, read and delete their imported documents', async () => {
+    const file = ref(sam(), 'users/sam/documents/abc123.zip');
+    await assertSucceeds(uploadBytes(file, zipFile, asZip));
+    await assertSucceeds(getBytes(file));
+    await assertSucceeds(deleteObject(file));
+  });
+
+  test('nobody else can read or write them', async () => {
+    await uploadBytes(ref(sam(), 'users/sam/documents/abc.zip'), zipFile, asZip);
+    await assertFails(getBytes(ref(alex(), 'users/sam/documents/abc.zip')));
+    await assertFails(uploadBytes(ref(alex(), 'users/sam/documents/x.zip'), zipFile, asZip));
+    await assertFails(getBytes(ref(guest(), 'users/sam/documents/abc.zip')));
+  });
+
+  test("only zips under 100 MB", async () => {
+    await assertFails(uploadBytes(ref(sam(), 'users/sam/documents/a.pdf'), zipFile, asZip));
+    await assertFails(
+      uploadBytes(ref(sam(), 'users/sam/documents/a.zip'), zipFile, asJpeg),
+    );
+    const big = new Uint8Array(100 * 1024 * 1024);
+    await assertFails(uploadBytes(ref(sam(), 'users/sam/documents/big.zip'), big, asZip));
+  });
+
+  test('never replaced', async () => {
+    await uploadBytes(ref(sam(), 'users/sam/documents/b.zip'), zipFile, asZip);
+    await assertFails(uploadBytes(ref(sam(), 'users/sam/documents/b.zip'), zipFile, asZip));
+  });
+});
+
 /** Writes as tool/catalog.py would: past the rules. */
 const seedDoc = (path, data) =>
   env.withSecurityRulesDisabled((ctx) => setDoc(doc(ctx.firestore(), path), data));

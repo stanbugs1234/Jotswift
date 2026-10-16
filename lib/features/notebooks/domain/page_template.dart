@@ -1,9 +1,12 @@
 import 'package:flutter/foundation.dart';
 
-/// A page drawn from a page of a catalog template's PDF.
+/// A page drawn from a page of a catalog template's PDF, or of a PDF the
+/// user imported.
 ///
 /// It keeps the exact version (and its pack) the page was made with, so a
 /// later version of the template never shifts writing on a filled page.
+/// Imported PDFs are kept the same way, as one-file packs in the user's
+/// own storage (see [importPrefix]).
 @immutable
 class PageTemplate {
   const PageTemplate({
@@ -18,6 +21,11 @@ class PageTemplate {
 
   /// The PDF in the pack most templates have; colourways add others.
   static const defaultFile = 'template.pdf';
+
+  /// Imported documents have ids starting with this, and keep their PDF as
+  /// [importFile].
+  static const importPrefix = 'import-';
+  static const importFile = 'document.pdf';
 
   static PageTemplate? fromMap(Object? map) {
     if (map is! Map) return null;
@@ -56,6 +64,9 @@ class PageTemplate {
 
   /// Which PDF in the pack: a colourway's, or [defaultFile].
   final String file;
+
+  /// From a PDF or images the user imported, not the catalog.
+  bool get isImported => itemId.startsWith(importPrefix);
 
   Map<String, Object?> toMap() => {
     'itemId': itemId,

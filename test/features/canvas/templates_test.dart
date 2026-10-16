@@ -56,6 +56,9 @@ class FakePdfFile implements PdfFile {
     );
     return recorder.endRecording().toImage(20, 26);
   }
+
+  @override
+  Future<void> dispose() async {}
 }
 
 class FakePdfRenderer implements PdfRenderer {

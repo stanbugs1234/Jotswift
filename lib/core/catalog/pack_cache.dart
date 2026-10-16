@@ -49,6 +49,9 @@ class PackCache {
 
   /// Packs larger than this are refused (templates are the biggest).
   static const maxPackBytes = 25 * 1024 * 1024;
+
+  /// Imported PDFs (packs with ids starting `import-`) may be larger.
+  static const maxImportBytes = 100 * 1024 * 1024;
   static const maxPreviewBytes = 1024 * 1024;
 
   /// The unpacked files of [item]: from memory, else from the device, else
@@ -71,10 +74,11 @@ class PackCache {
 
     final info = item.files;
     if (info == null) throw PackException(item.id, 'has no files');
-    if (info.bytes > maxPackBytes) {
+    final limit = maxBytesFor(item.id);
+    if (info.bytes > limit) {
       throw PackException(item.id, 'is too large (${info.bytes} bytes)');
     }
-    final zip = await _download.download(info.pack, maxBytes: maxPackBytes);
+    final zip = await _download.download(info.pack, maxBytes: limit);
     if (sha256.convert(zip).toString() != info.sha256) {
       throw PackException(item.id, "doesn't match its checksum");
     }
@@ -89,6 +93,17 @@ class PackCache {
       unawaited(_disk.removeOtherVersions(item.id, item.version));
     }
     return _memory[key] = files;
+  }
+
+  /// The largest pack [id] may have.
+  static int maxBytesFor(String id) =>
+      id.startsWith('import-') ? maxImportBytes : maxPackBytes;
+
+  /// Keeps [files] as [item]'s, as if just downloaded: for a pack this
+  /// device made itself (an import), so it's never downloaded again here.
+  Future<void> put(CatalogItem item, Map<String, Uint8List> files) async {
+    _memory[(item.id, item.version)] = files;
+    await _disk.write(item.id, item.version, files);
   }
 
   /// Rejects names that could escape the pack's folder.

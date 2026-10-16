@@ -22,6 +22,7 @@ import 'core/settings/user_settings_repository.dart';
 import 'core/skins/skin_providers.dart';
 import 'core/skins/skin_repository.dart';
 import 'core/sync/sync_status.dart';
+import 'features/imports/document_import.dart';
 import 'features/auth/auth_repository.dart';
 import 'features/auth/firebase_auth_repository.dart';
 import 'features/calendar/calendar_providers.dart';
@@ -108,6 +109,9 @@ Future<List<Override>> _backendOverrides() async {
       FirestoreCatalogRepository(firestore),
     ),
     purchasesClientProvider.overrideWithValue(createPurchasesClient()),
+    documentStoreProvider.overrideWithValue(
+      FirebaseDocumentStore(FirebaseStorage.instance),
+    ),
     packCacheProvider.overrideWithValue(
       PackCache(
         FirebasePackDownloader(FirebaseStorage.instance),

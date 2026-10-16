@@ -18,6 +18,9 @@ import UserNotifications
     if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "NotelyPencil") {
       PencilChannel.register(with: registrar.messenger())
     }
+    if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "NotelyOpenIn") {
+      OpenIn.shared.register(with: registrar.messenger())
+    }
   }
 }
 
@@ -103,5 +106,51 @@ final class PencilTaps: NSObject, UIPencilInteractionDelegate {
   ) {
     guard squeeze.phase == .ended else { return }
     send("squeeze", UIPencilInteraction.preferredSqueezeAction)
+  }
+}
+
+/// Passes PDFs and images that other apps send ("Open in Jotswift", from the
+/// share sheet or Files) to Dart, as "open" with a list of {name, data}.
+/// Files that arrive before Dart listens wait until it asks with
+/// "takePending".
+final class OpenIn {
+  static let shared = OpenIn()
+
+  private var channel: FlutterMethodChannel?
+  private var pending: [[String: Any]] = []
+  private var listening = false
+
+  func register(with messenger: FlutterBinaryMessenger) {
+    let channel = FlutterMethodChannel(name: "notely/open", binaryMessenger: messenger)
+    self.channel = channel
+    channel.setMethodCallHandler { [weak self] call, result in
+      guard let self, call.method == "takePending" else {
+        result(FlutterMethodNotImplemented)
+        return
+      }
+      self.listening = true
+      result(self.pending)
+      self.pending = []
+    }
+  }
+
+  func receive(_ urls: [URL]) {
+    let files: [[String: Any]] = urls.compactMap { url in
+      guard url.isFileURL else { return nil }
+      let scoped = url.startAccessingSecurityScopedResource()
+      defer {
+        if scoped { url.stopAccessingSecurityScopedResource() }
+      }
+      guard let data = try? Data(contentsOf: url) else { return nil }
+      // Copies iOS made for us (in Documents/Inbox) aren't needed after.
+      if url.path.contains("/Inbox/") { try? FileManager.default.removeItem(at: url) }
+      return ["name": url.lastPathComponent, "data": FlutterStandardTypedData(bytes: data)]
+    }
+    if files.isEmpty { return }
+    if listening, let channel {
+      channel.invokeMethod("open", arguments: files)
+    } else {
+      pending += files
+    }
   }
 }

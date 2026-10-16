@@ -28,6 +28,9 @@ abstract interface class PdfFile {
 
   /// Draws [page] [width] pixels wide (height follows its shape).
   Future<ui.Image> render(int page, {required int width});
+
+  /// Frees the PDF; nothing may be asked of it afterwards.
+  Future<void> dispose();
 }
 
 /// Opens PDFs. Behind an interface so tests don't need the PDF engine.
@@ -93,6 +96,9 @@ class _PdfrxFile implements PdfFile {
       image.dispose();
     }
   }
+
+  @override
+  Future<void> dispose() => _doc.dispose();
 }
 
 final pdfRendererProvider = Provider<PdfRenderer>((ref) => PdfrxRenderer());
