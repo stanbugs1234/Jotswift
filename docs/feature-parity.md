@@ -41,6 +41,8 @@ Each phase ships as its own TestFlight build. Sizes are rough: S is days, M is a
 
 ### 1. Writing that feels right (before launch)
 
+**Done** in build 0.1.0+8 (October 2026).
+
 | Feature | Size |
 |---|---|
 | Lasso for handwriting: move, resize, rotate, recolour, copy/cut/paste, duplicate, delete | L |
