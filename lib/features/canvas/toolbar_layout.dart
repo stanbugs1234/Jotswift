@@ -84,6 +84,7 @@ class ToolbarLayout {
   const ToolbarLayout({
     this.order = ToolbarTool.values,
     this.hidden = const {},
+    this.savedPens = false,
   });
 
   factory ToolbarLayout.fromJson(Map<String, dynamic> json) {
@@ -102,11 +103,16 @@ class ToolbarLayout {
         for (final n in json['hidden'] as List? ?? const [])
           if (names[n] case final t? when !t.required) t,
       },
+      savedPens: json['savedPens'] == true,
     );
   }
 
   final List<ToolbarTool> order;
   final Set<ToolbarTool> hidden;
+
+  /// Saved pens get buttons of their own after the pen, and act as tools:
+  /// changing one in hand changes it.
+  final bool savedPens;
 
   /// The tools shown, in order.
   List<ToolbarTool> get shown => [
@@ -117,6 +123,7 @@ class ToolbarLayout {
   Map<String, Object> toJson() => {
     'order': [for (final t in order) t.name],
     'hidden': [for (final t in hidden) t.name],
+    'savedPens': savedPens,
   };
 }
 
@@ -146,7 +153,13 @@ class ToolbarLayoutController extends Notifier<ToolbarLayout> {
     final order = [...state.order];
     final tool = order.removeAt(from);
     order.insert(to, tool);
-    _save(ToolbarLayout(order: order, hidden: state.hidden));
+    _save(
+      ToolbarLayout(
+        order: order,
+        hidden: state.hidden,
+        savedPens: state.savedPens,
+      ),
+    );
   }
 
   void setShown(ToolbarTool tool, bool shown) {
@@ -157,9 +170,14 @@ class ToolbarLayoutController extends Notifier<ToolbarLayout> {
         hidden: shown
             ? ({...state.hidden}..remove(tool))
             : {...state.hidden, tool},
+        savedPens: state.savedPens,
       ),
     );
   }
+
+  void setSavedPens(bool on) => _save(
+    ToolbarLayout(order: state.order, hidden: state.hidden, savedPens: on),
+  );
 
   void reset() => _save(const ToolbarLayout());
 }
@@ -217,6 +235,17 @@ class _ToolbarEditor extends ConsumerWidget {
                 ),
               ),
             ),
+            SwitchListTile(
+              contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+              title: const Text('Saved pens as tools'),
+              subtitle: const Text(
+                'Each saved pen gets its own button after the pen. Change '
+                'one while it\'s in hand and it stays changed.',
+              ),
+              value: layout.savedPens,
+              onChanged: edit.setSavedPens,
+            ),
+            const Divider(height: 1),
             Flexible(
               child: ReorderableListView.builder(
                 shrinkWrap: true,

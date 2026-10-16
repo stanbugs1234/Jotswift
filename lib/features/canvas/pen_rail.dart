@@ -734,14 +734,7 @@ class _SavedPens extends ConsumerWidget {
     final scheme = Theme.of(context).colorScheme;
     final tool = ref.watch(inkToolProvider);
     final inkColors = NotelySkin.of(context).inkColors;
-    final highlighter = tool.kind == InkToolKind.highlighter;
-    final current = PenFavorite(
-      tool: highlighter ? InkTool.highlighter : InkTool.pen,
-      style: highlighter ? PenStyle.fountain : tool.penStyle,
-      color: tool.colorFrom(inkColors).toARGB32(),
-      width: tool.size,
-      opacity: highlighter ? 1 : tool.penOpacity,
-    );
+    final current = PenFavorite.of(tool, inkColors);
     final favorites = ref.watch(penFavoritesProvider);
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -760,7 +753,7 @@ class _SavedPens extends ConsumerWidget {
             ),
             icon: PenSwatch(pen: pen, size: 26),
             onPressed: () =>
-                ref.read(inkToolProvider.notifier).useFavorite(pen),
+                ref.read(inkToolProvider.notifier).useFavorite(pen, index: i),
           ),
         if (!favorites.contains(current))
           IconButton(

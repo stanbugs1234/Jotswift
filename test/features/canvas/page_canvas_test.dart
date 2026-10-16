@@ -64,6 +64,7 @@ void main() {
     bool inkEnabled = true,
     String penPanel = 'toolbar',
     List<Override> overrides = const [],
+    Map<String, Object> prefs = const {},
   }) async {
     tester.view
       ..physicalSize = const Size(800, 1000)
@@ -83,7 +84,7 @@ void main() {
 
     final container = await makeContainer(
       skins,
-      prefs: {'penPanelSide': penPanel},
+      prefs: {'penPanelSide': penPanel, ...prefs},
       overrides: [
         authRepositoryProvider.overrideWithValue(auth),
         notesBackendProvider.overrideWithValue(backend),
@@ -1231,6 +1232,56 @@ void main() {
 
       expect(find.byTooltip('Laser pointer'), findsNothing);
       expect(find.byTooltip('Lasso'), findsOneWidget);
+    });
+  });
+
+  group('saved pens as tools', () {
+    testWidgets('a saved pen in hand keeps what changes; the pen does not', (
+      tester,
+    ) async {
+      await pumpPage(tester, prefs: {'toolbarLayout': '{"savedPens":true}'});
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(PageCanvas)),
+      );
+      Future<void> penOptions() async {
+        await tester.ensureVisible(find.byTooltip('Pen options'));
+        await tester.tap(find.byTooltip('Pen options'));
+        await tester.pumpAndSettle();
+      }
+
+      await penOptions();
+      await tester.tap(find.bySemanticsLabel('Ink color 3'));
+      await tester.pump();
+      await tester.tap(find.text('Save this pen'));
+      await tester.pumpAndSettle();
+      await tester.tapAt(const Offset(400, 900)); // Close the options.
+      await tester.pumpAndSettle();
+      // Its own button, after the pen.
+      expect(find.byTooltip('Saved pen 1: Fountain'), findsOneWidget);
+
+      await tester.tap(find.byTooltip('Saved pen 1: Fountain'));
+      await tester.pump();
+      await penOptions();
+      await tester.drag(find.byType(Slider).first, const Offset(400, 0));
+      await tester.pumpAndSettle();
+      expect(
+        container.read(penFavoritesProvider).single.width,
+        InkToolState.penRange.max,
+      );
+
+      // With the plain pen, changes leave the saved pen alone.
+      await tester.tapAt(const Offset(400, 900));
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.byTooltip('Pen'));
+      await tester.tap(find.byTooltip('Pen'));
+      await tester.pump();
+      await penOptions();
+      await tester.tap(find.bySemanticsLabel('Ink color 1'));
+      await tester.pumpAndSettle();
+      expect(
+        container.read(penFavoritesProvider).single.color,
+        skinById(skins, 'classic').inkColors[2].toARGB32(),
+      );
     });
   });
 

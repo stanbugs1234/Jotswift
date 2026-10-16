@@ -301,6 +301,7 @@ class InkToolController extends Notifier<InkToolState> {
   InkToolKind? _previous;
 
   void selectTool(InkToolKind kind) {
+    ref.read(activeSavedPenProvider.notifier).set(null);
     if (kind == InkToolKind.eraser && state.kind != InkToolKind.eraser) {
       _beforeEraser = state.kind;
     }
@@ -401,8 +402,14 @@ class InkToolController extends Notifier<InkToolState> {
 
   void setDrawMode(bool drawMode) => state = state.copyWith(drawMode: drawMode);
 
-  /// Picks up a saved pen.
-  void useFavorite(PenFavorite pen) => _set(
+  /// Picks up a saved pen: the [index]th, as a tool of its own (see
+  /// [activeSavedPenProvider]).
+  void useFavorite(PenFavorite pen, {int? index}) {
+    ref.read(activeSavedPenProvider.notifier).set(index);
+    _useFavorite(pen);
+  }
+
+  void _useFavorite(PenFavorite pen) => _set(
     pen.tool == InkTool.highlighter
         ? state.copyWith(
             kind: InkToolKind.highlighter,
@@ -435,6 +442,20 @@ class PenFavorite {
     required this.width,
     this.opacity = 1,
   });
+
+  /// The pen (or highlighter) [tool] holds, with its color from [palette].
+  factory PenFavorite.of(InkToolState tool, List<Color> palette) {
+    final highlighter = tool.kind == InkToolKind.highlighter;
+    return PenFavorite(
+      tool: highlighter ? InkTool.highlighter : InkTool.pen,
+      style: highlighter ? PenStyle.fountain : tool.penStyle,
+      color: tool.colorFrom(palette).toARGB32(),
+      width: tool.kind == InkToolKind.eraser
+          ? InkToolState.penSizes[1]
+          : tool.size,
+      opacity: highlighter ? 1 : tool.penOpacity,
+    );
+  }
 
   static PenFavorite? fromJson(Object? json) {
     if (json is! Map) return null;
@@ -502,6 +523,16 @@ class PenFavoritesController extends SyncedSetting {
     final pens = _parse(state);
     if (pens.contains(pen)) return Future.value();
     return _save([...pens, pen].reversed.take(max).toList().reversed.toList());
+  }
+
+  /// Puts [pen] in place of the [index]th saved pen (a saved pen that was
+  /// changed while in hand).
+  Future<void> replaceAt(int index, PenFavorite pen) {
+    final pens = _parse(state);
+    if (index < 0 || index >= pens.length || pens[index] == pen) {
+      return Future.value();
+    }
+    return _save([...pens]..[index] = pen);
   }
 
   Future<void> remove(PenFavorite pen) => _save([
@@ -827,4 +858,18 @@ class ScribbleEraseController extends Notifier<bool> {
 
 final scribbleEraseProvider = NotifierProvider<ScribbleEraseController, bool>(
   ScribbleEraseController.new,
+);
+
+/// Which saved pen is in hand as a tool of its own, if one is: changes to
+/// the pen then change that saved pen (when saved pens are toolbar tools,
+/// see `ToolbarLayout.savedPens`).
+class ActiveSavedPenController extends Notifier<int?> {
+  @override
+  int? build() => null;
+
+  void set(int? index) => state = index;
+}
+
+final activeSavedPenProvider = NotifierProvider<ActiveSavedPenController, int?>(
+  ActiveSavedPenController.new,
 );

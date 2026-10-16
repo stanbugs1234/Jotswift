@@ -44,6 +44,22 @@ class InkToolbar extends ConsumerWidget {
     final scheme = Theme.of(context).colorScheme;
     final canPaste = ref.watch(inkClipboardProvider) != null;
     if (inkEnabled) ref.watch(pencilGesturesProvider);
+    final layout = ref.watch(toolbarLayoutProvider);
+    // A saved pen in hand, as a tool of its own, keeps what's changed.
+    ref.listen(inkToolProvider, (_, next) {
+      final index = ref.read(activeSavedPenProvider);
+      if (index == null || !ref.read(toolbarLayoutProvider).savedPens) return;
+      final favorites = ref.read(penFavoritesProvider);
+      if (index >= favorites.length) return;
+      final pen = PenFavorite.of(next, NotelySkin.of(context).inkColors);
+      final writing =
+          next.kind == InkToolKind.pen || next.kind == InkToolKind.highlighter;
+      if (!writing || pen.tool != favorites[index].tool) {
+        ref.read(activeSavedPenProvider.notifier).set(null);
+        return;
+      }
+      ref.read(penFavoritesSettingProvider.notifier).replaceAt(index, pen);
+    });
 
     Widget button(ToolbarTool t) => _ToolButton(
       tooltip: t.label,
@@ -85,8 +101,16 @@ class InkToolbar extends ConsumerWidget {
                         FingerToggle(compact: constraints.maxWidth < 1000),
                         const _Divider(),
                       ],
-                      for (final t in ref.watch(toolbarLayoutProvider).shown)
-                        if (inkEnabled || !t.needsInk) button(t),
+                      for (final t in layout.shown)
+                        if (inkEnabled || !t.needsInk) ...[
+                          button(t),
+                          if (t == ToolbarTool.pen &&
+                              inkEnabled &&
+                              layout.savedPens)
+                            for (final (i, pen)
+                                in ref.watch(penFavoritesProvider).indexed)
+                              _FavoriteDot(pen: pen, index: i),
+                        ],
                       if (inkEnabled && canPaste)
                         _ToolButton(
                           tooltip: 'Paste',
@@ -278,7 +302,8 @@ class _PenOptions extends ConsumerWidget {
             onPressed: onPressed,
           ),
         ),
-        if (favorites.isNotEmpty) ...[
+        if (favorites.isNotEmpty &&
+            !ref.watch(toolbarLayoutProvider.select((l) => l.savedPens))) ...[
           const _Divider(),
           for (final (i, pen) in favorites.indexed)
             _FavoriteDot(pen: pen, index: i),
@@ -398,15 +423,7 @@ class PenPanel extends ConsumerWidget {
     final width = tool.kind == InkToolKind.eraser
         ? null
         : tool.size.clamp(range.min, range.max);
-    final current = PenFavorite(
-      tool: highlighter ? InkTool.highlighter : InkTool.pen,
-      style: highlighter ? PenStyle.fountain : tool.penStyle,
-      color: tool.colorFrom(skin.inkColors).toARGB32(),
-      width: tool.kind == InkToolKind.eraser
-          ? InkToolState.penSizes[1]
-          : tool.size,
-      opacity: highlighter ? 1 : tool.penOpacity,
-    );
+    final current = PenFavorite.of(tool, skin.inkColors);
 
     Widget heading(String label) => Padding(
       padding: const EdgeInsets.fromLTRB(4, 10, 4, 4),
@@ -581,7 +598,7 @@ class PenPanel extends ConsumerWidget {
                       avatar: PenSwatch(pen: pen, size: 18),
                       label: Text(penName(pen)),
                       tooltip: 'Use saved pen ${i + 1}',
-                      onPressed: () => tools.useFavorite(pen),
+                      onPressed: () => tools.useFavorite(pen, index: i),
                       onDeleted: () => ref
                           .read(penFavoritesSettingProvider.notifier)
                           .remove(pen),
@@ -665,14 +682,15 @@ class _FavoriteDot extends ConsumerWidget {
     final tool = ref.watch(inkToolProvider);
     final skin = NotelySkin.of(context);
     final active =
+        ref.watch(activeSavedPenProvider) == index ||
         (tool.kind == InkToolKind.highlighter) ==
-            (pen.tool == InkTool.highlighter) &&
-        tool.kind != InkToolKind.eraser &&
-        tool.colorFrom(skin.inkColors).toARGB32() == pen.color &&
-        (tool.size - pen.width).abs() < 0.05 &&
-        (pen.tool == InkTool.highlighter ||
-            (tool.penOpacity - pen.opacity).abs() < 0.005) &&
-        (pen.tool == InkTool.highlighter || tool.penStyle == pen.style);
+                (pen.tool == InkTool.highlighter) &&
+            tool.kind != InkToolKind.eraser &&
+            tool.colorFrom(skin.inkColors).toARGB32() == pen.color &&
+            (tool.size - pen.width).abs() < 0.05 &&
+            (pen.tool == InkTool.highlighter ||
+                (tool.penOpacity - pen.opacity).abs() < 0.005) &&
+            (pen.tool == InkTool.highlighter || tool.penStyle == pen.style);
     final scheme = Theme.of(context).colorScheme;
     return IconButton(
       tooltip: 'Saved pen ${index + 1}: ${penName(pen)}',
@@ -682,7 +700,8 @@ class _FavoriteDot extends ConsumerWidget {
         backgroundColor: active ? scheme.primary.withValues(alpha: 0.15) : null,
       ),
       icon: PenSwatch(pen: pen, size: 24),
-      onPressed: () => ref.read(inkToolProvider.notifier).useFavorite(pen),
+      onPressed: () =>
+          ref.read(inkToolProvider.notifier).useFavorite(pen, index: index),
     );
   }
 }
