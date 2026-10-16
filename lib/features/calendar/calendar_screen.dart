@@ -120,6 +120,23 @@ class CalendarScreen extends ConsumerWidget {
     final state = ref.watch(calendarProvider);
     final controller = ref.read(calendarProvider.notifier);
     final day = state.day;
+    // On phones the title and its arrows get a row of their own under the
+    // bar, which hasn't room for them beside the other buttons.
+    final phone = MediaQuery.sizeOf(context).width < 600;
+    // A template with its own heading font keeps it.
+    final titleText = CalendarLook.of(context).headingFont == null
+        ? TabTitle(title)
+        : Text(title, maxLines: 1, overflow: TextOverflow.ellipsis);
+    final previous = IconButton(
+      tooltip: 'Previous',
+      icon: const Icon(Icons.chevron_left),
+      onPressed: () => controller.move(-1),
+    );
+    final next = IconButton(
+      tooltip: 'Next',
+      icon: const Icon(Icons.chevron_right),
+      onPressed: () => controller.move(1),
+    );
     return Scaffold(
       appBar: AppBar(
         // Back out to the month, then the year, like a back button named
@@ -141,10 +158,7 @@ class CalendarScreen extends ConsumerWidget {
             : null,
         centerTitle: false,
         titleSpacing: zoomLevel(state.mode) > 0 ? 0 : gutterOf(context),
-        // A template with its own heading font keeps it.
-        title: CalendarLook.of(context).headingFont == null
-            ? TabTitle(title)
-            : Text(title),
+        title: phone ? null : titleText,
         actions: [
           if (state.mode == CalendarMode.day && !narrow)
             IconButton(
@@ -174,19 +188,9 @@ class CalendarScreen extends ConsumerWidget {
               onPressed: () => showCalendarsSheet(context),
             ),
           // The agenda scrolls instead.
-          if (state.mode != CalendarMode.agenda)
-            IconButton(
-              tooltip: 'Previous',
-              icon: const Icon(Icons.chevron_left),
-              onPressed: () => controller.move(-1),
-            ),
+          if (state.mode != CalendarMode.agenda && !phone) previous,
           TextButton(onPressed: controller.today, child: const Text('Today')),
-          if (state.mode != CalendarMode.agenda)
-            IconButton(
-              tooltip: 'Next',
-              icon: const Icon(Icons.chevron_right),
-              onPressed: () => controller.move(1),
-            ),
+          if (state.mode != CalendarMode.agenda && !phone) next,
           if (narrow)
             PopupMenuButton<String>(
               tooltip: 'More',
@@ -227,7 +231,23 @@ class CalendarScreen extends ConsumerWidget {
           ],
         ],
         // Phones choose the view from a menu (see actions).
-        bottom: narrow
+        bottom: phone
+            ? PreferredSize(
+                preferredSize: const Size.fromHeight(48),
+                child: Padding(
+                  padding: EdgeInsets.only(left: gutterOf(context), right: 4),
+                  child: Row(
+                    children: [
+                      Expanded(child: titleText),
+                      if (state.mode != CalendarMode.agenda) ...[
+                        previous,
+                        next,
+                      ],
+                    ],
+                  ),
+                ),
+              )
+            : narrow
             ? null
             : PreferredSize(
                 preferredSize: const Size.fromHeight(52),
