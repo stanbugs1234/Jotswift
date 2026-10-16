@@ -162,14 +162,19 @@ Future<Notebook> createNotebookFromTemplate(
         ? first.id
         : (await repo.createSection(created.id, section.title)).id;
     if (i == 0) await repo.renameSection(created.id, sectionId, section.title);
-    await repo.createPages(created.id, sectionId, [
-      for (final p in section.pages)
-        (
-          title: p.title,
-          paper: null,
-          template: templatePage(item, p.pdfPage, file: file),
-        ),
-    ]);
+    await repo.createPages(
+      created.id,
+      sectionId,
+      [
+        for (final p in section.pages)
+          (
+            title: p.title,
+            paper: null,
+            template: templatePage(item, p.pdfPage, file: file),
+          ),
+      ],
+      periods: [for (final p in section.pages) p.period],
+    );
   }
   return created;
 }

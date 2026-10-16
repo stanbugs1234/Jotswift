@@ -756,11 +756,15 @@ class _NotebookTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final date = subtitle == ShelfSort.lastOpened
-        ? (notebook.lastOpenedAt == null
-              ? 'Not opened yet'
-              : shortDateTime(notebook.lastOpenedAt!))
-        : shortDateTime(notebook.updatedAt);
+    final date = switch (notebook.lastPageTitle) {
+      // Where it will open.
+      final page? => 'Continue · $page',
+      null when subtitle == ShelfSort.lastOpened =>
+        notebook.lastOpenedAt == null
+            ? 'Not opened yet'
+            : shortDateTime(notebook.lastOpenedAt!),
+      null => shortDateTime(notebook.updatedAt),
+    };
     final menu = PopupMenuButton<NotebookAction>(
       tooltip: 'Notebook options',
       onSelected: (a) => onNotebookAction(context, ref, notebook, a),
@@ -797,7 +801,7 @@ class _NotebookTile extends ConsumerWidget {
       menu: menu,
       list: list,
       highlight: highlight,
-      onTap: () => context.push('/notebooks/${notebook.id}'),
+      onTap: () => openNotebook(context, ref, notebook),
     );
   }
 }

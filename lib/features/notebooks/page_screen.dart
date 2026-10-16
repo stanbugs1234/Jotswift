@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../app/shell.dart' show Breakpoints;
 import '../../core/motion/page_turn.dart';
 import '../../core/skins/skin_providers.dart';
 import '../../core/sync/sync_indicator.dart';
@@ -10,7 +11,12 @@ import '../../core/skins/widgets/page_style.dart';
 import '../../shared/dialogs.dart';
 import '../canvas/ink_toolbar.dart';
 import '../canvas/page_canvas.dart';
+import '../exports/export_sheet.dart';
+import '../tasks/task_providers.dart' show todayProvider;
+import 'domain/notebook_models.dart';
 import 'notes_providers.dart';
+import 'open_page.dart';
+import 'page_jumper.dart';
 import 'page_order.dart';
 import 'paper_picker.dart';
 
@@ -65,7 +71,73 @@ class PageScreen extends ConsumerWidget {
         ? const <String>[]
         : ref.watch(notebookPageOrderProvider(notebookId));
     final adjacent = adjacentPages(order, pageId);
-    void openPage(String id) => context.go('/notebooks/$notebookId/pages/$id');
+    final pages = notebookId == null
+        ? const <NotePage>[]
+        : ref.watch(orderedPagesProvider(notebookId));
+    final dated = pages.any((p) => p.period != null);
+    final bookmarked = page.value?.bookmarked ?? false;
+    // Replaces this page, so Back still goes where it went before (the
+    // shelf, when the notebook was opened from there).
+    void openPage(String id) {
+      if (id == pageId) return;
+      context.replace(
+        '/notebooks/$notebookId/pages/$id',
+        extra: GoRouterState.of(context).extra,
+      );
+    }
+
+    void openToday() {
+      final now = ref.read(todayProvider).toDateTime();
+      final today = todaysPage(pages, now);
+      if (today != null) return openPage(today.id);
+      final nearest = nearestDatedPage(pages, now);
+      if (nearest == null) return;
+      final start = nearest.period!.from;
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            content: Text(
+              start != null && start.isAfter(now)
+                  ? 'This planner starts in ${_monthYear(start)}.'
+                  : 'This planner has no page for today.',
+            ),
+          ),
+        );
+      openPage(nearest.id);
+    }
+
+    final wide = MediaQuery.sizeOf(context).width >= Breakpoints.medium;
+    Future<void> choosePaper() async {
+      final p = page.value!;
+      final choice = await showPagePaperSheet(
+        context,
+        current: p.paper ?? notebookPaper(ref, p.notebookId),
+        offerNotebookPaper: true,
+      );
+      if (choice != null) {
+        await ref
+            .read(notebookRepositoryProvider)
+            .setPagePaper(pageId, choice.paper);
+      }
+    }
+
+    Future<void> jump() async {
+      if (notebookId == null) return;
+      final to = await showPageJumper(
+        context,
+        notebookId: notebookId,
+        currentPageId: pageId,
+      );
+      if (!context.mounted) return;
+      switch (to) {
+        case JumpToPage(:final pageId):
+          openPage(pageId);
+        case JumpToAllPages():
+          context.go('/notebooks/$notebookId');
+        case null:
+      }
+    }
 
     return PageStyle(
       style: ref.watch(pageStyleProvider(pageId)),
@@ -77,6 +149,28 @@ class PageScreen extends ConsumerWidget {
           ),
           actions: [
             const SyncIndicator(),
+            if (notebookId != null)
+              ExportButton(notebookId: notebookId, pageId: pageId),
+            if (dated)
+              IconButton(
+                tooltip: 'Today',
+                icon: const Icon(Icons.today),
+                onPressed: openToday,
+              ),
+            IconButton(
+              tooltip: 'Go to page',
+              icon: const Icon(Icons.auto_stories_outlined),
+              onPressed: jump,
+            ),
+            if (wide && !readOnly && page.value != null)
+              IconButton(
+                tooltip: bookmarked ? 'Remove bookmark' : 'Bookmark page',
+                isSelected: bookmarked,
+                icon: Icon(bookmarked ? Icons.bookmark : Icons.bookmark_border),
+                onPressed: () => ref
+                    .read(notebookRepositoryProvider)
+                    .setPageBookmarked(pageId, !bookmarked),
+              ),
             IconButton(
               tooltip: 'Previous page',
               icon: const Icon(Icons.chevron_left),
@@ -91,33 +185,60 @@ class PageScreen extends ConsumerWidget {
                   ? null
                   : () => openPage(adjacent.next!),
             ),
-            if (!readOnly && page.value != null)
+            if (wide) ...[
+              if (!readOnly && page.value != null)
+                IconButton(
+                  tooltip: 'Page paper',
+                  icon: const Icon(Icons.texture),
+                  onPressed: choosePaper,
+                ),
               IconButton(
-                tooltip: 'Page paper',
-                icon: const Icon(Icons.texture),
-                onPressed: () async {
-                  final p = page.value!;
-                  final choice = await showPagePaperSheet(
-                    context,
-                    current: p.paper ?? notebookPaper(ref, p.notebookId),
-                    offerNotebookPaper: true,
-                  );
-                  if (choice != null) {
-                    await ref
-                        .read(notebookRepositoryProvider)
-                        .setPagePaper(pageId, choice.paper);
-                  }
-                },
+                tooltip: 'Rename page',
+                icon: const Icon(Icons.edit_note),
+                onPressed: () => _rename(context, ref, title),
               ),
-            IconButton(
-              tooltip: 'Rename page',
-              icon: const Icon(Icons.edit_note),
-              onPressed: () => _rename(context, ref, title),
-            ),
+            ] else
+              // Phones have room for fewer buttons.
+              PopupMenuButton<VoidCallback>(
+                tooltip: 'More',
+                onSelected: (action) => action(),
+                itemBuilder: (context) => [
+                  if (!readOnly && page.value != null)
+                    PopupMenuItem(
+                      value: () => ref
+                          .read(notebookRepositoryProvider)
+                          .setPageBookmarked(pageId, !bookmarked),
+                      child: ListTile(
+                        leading: Icon(
+                          bookmarked ? Icons.bookmark : Icons.bookmark_border,
+                        ),
+                        title: Text(
+                          bookmarked ? 'Remove bookmark' : 'Bookmark page',
+                        ),
+                      ),
+                    ),
+                  if (!readOnly && page.value != null)
+                    PopupMenuItem(
+                      value: choosePaper,
+                      child: const ListTile(
+                        leading: Icon(Icons.texture),
+                        title: Text('Page paper'),
+                      ),
+                    ),
+                  PopupMenuItem(
+                    value: () => _rename(context, ref, title),
+                    child: const ListTile(
+                      leading: Icon(Icons.edit_note),
+                      title: Text('Rename page'),
+                    ),
+                  ),
+                ],
+              ),
           ],
         ),
         body: Column(
           children: [
+            _MarkOpened(pageId: pageId),
             if (!inkEnabled) const _ViewOnlyBanner(),
             if (!readOnly) InkToolbar(pageId: pageId, inkEnabled: inkEnabled),
             const Divider(height: 1),
@@ -141,6 +262,42 @@ class PageScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+}
+
+const _monthNames = [
+  'January', 'February', 'March', 'April', 'May', 'June', 'July', //
+  'August', 'September', 'October', 'November', 'December',
+];
+
+String _monthYear(DateTime d) => '${_monthNames[d.month - 1]} ${d.year}';
+
+/// Records each page shown, so its notebook opens there next time.
+class _MarkOpened extends ConsumerStatefulWidget {
+  const _MarkOpened({required this.pageId});
+
+  final String pageId;
+
+  @override
+  ConsumerState<_MarkOpened> createState() => _MarkOpenedState();
+}
+
+class _MarkOpenedState extends ConsumerState<_MarkOpened> {
+  String? _marked;
+
+  @override
+  Widget build(BuildContext context) {
+    final page = ref.watch(pageProvider(widget.pageId)).value;
+    if (page != null && _marked != page.id) {
+      _marked = page.id;
+      // After the frame: not while building.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          ref.read(notebookRepositoryProvider).markPageOpened(page);
+        }
+      });
+    }
+    return const SizedBox.shrink();
   }
 }
 

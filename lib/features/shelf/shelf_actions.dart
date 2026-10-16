@@ -13,6 +13,8 @@ import '../imports/document_import.dart';
 import '../imports/import_actions.dart';
 import '../notebooks/notebook_editor.dart';
 import '../notebooks/notes_providers.dart';
+import '../notebooks/open_page.dart';
+import '../notebooks/page_order.dart';
 import '../store/paywall.dart';
 import 'shelf_view.dart';
 
@@ -59,7 +61,7 @@ Future<void> createNotebookAt(
           planner,
           file: result.variant,
         );
-  if (context.mounted) await context.push('/notebooks/${notebook.id}');
+  if (context.mounted) await openNotebook(context, ref, notebook);
 }
 
 /// Asks for PDFs or images (unless given [files], sent from another app)
@@ -92,7 +94,33 @@ Future<void> importNotebookAt(
   );
   final section = (await repo.watchSections(notebook.id).first).first;
   await repo.createPages(notebook.id, section.id, importedPages(documents));
-  if (context.mounted) await context.push('/notebooks/${notebook.id}');
+  if (context.mounted) await openNotebook(context, ref, notebook);
+}
+
+/// Opens [notebook] on the page it should open to (see [pageToOpen]):
+/// today's page in a planner on a new day, otherwise where the user left
+/// off. Back from it returns here. A notebook with no pages opens on its
+/// page list.
+Future<void> openNotebook(
+  BuildContext context,
+  WidgetRef ref,
+  Notebook notebook,
+) async {
+  final repo = ref.read(notebookRepositoryProvider);
+  final (sections, pages) = await (
+    repo.watchSections(notebook.id).first,
+    repo.watchNotebookPages(notebook.id).first,
+  ).wait;
+  if (!context.mounted) return;
+  final page = pageToOpen(notebook, sortPages(sections, pages), DateTime.now());
+  if (page == null) {
+    await context.push('/notebooks/${notebook.id}');
+  } else {
+    await context.push(
+      '/notebooks/${notebook.id}/pages/${page.id}',
+      extra: openedFromShelf,
+    );
+  }
 }
 
 /// Free accounts at the notebook limit see the Pro paywall. True when a
@@ -129,7 +157,10 @@ Future<void> createQuickNote(
   final sections = await repo.watchSections(notebook.id).first;
   final page = await repo.createPage(notebook.id, sections.first.id);
   if (context.mounted) {
-    context.go('/notebooks/${notebook.id}/pages/${page.id}');
+    await context.push(
+      '/notebooks/${notebook.id}/pages/${page.id}',
+      extra: openedFromShelf,
+    );
   }
 }
 

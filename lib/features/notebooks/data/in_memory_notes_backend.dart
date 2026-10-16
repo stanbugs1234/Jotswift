@@ -118,6 +118,26 @@ class _InMemoryUserData
   }
 
   @override
+  Future<void> markPageOpened(NotePage page) async {
+    final now = nowMillis();
+    _updateNotebook(
+      page.notebookId,
+      (n) => n.copyWith(
+        lastOpenedAt: now,
+        lastPage: (id: page.id, title: page.displayTitle, at: now),
+      ),
+    );
+  }
+
+  @override
+  Future<void> setPageBookmarked(String pageId, bool bookmarked) async {
+    final p = _pages[pageId];
+    if (p == null) return;
+    _pages[pageId] = p.copyWith(bookmarked: bookmarked);
+    _changed();
+  }
+
+  @override
   Future<void> markNotebookOpened(String notebookId) async =>
       _updateNotebook(notebookId, (n) => n.copyWith(lastOpenedAt: nowMillis()));
 
@@ -390,13 +410,14 @@ class _InMemoryUserData
   Future<void> createPages(
     String notebookId,
     String sectionId,
-    List<NewPage> pages,
-  ) async {
+    List<NewPage> pages, {
+    List<PagePeriod?> periods = const [],
+  }) async {
     var last = _pages.values
         .where((p) => p.sectionId == sectionId)
         .fold<double>(0, (m, p) => max(m, p.order));
     final now = nowMillis();
-    for (final spec in pages) {
+    for (final (i, spec) in pages.indexed) {
       final page = NotePage(
         id: _id(),
         notebookId: notebookId,
@@ -407,6 +428,7 @@ class _InMemoryUserData
         updatedAt: now,
         paper: spec.paper,
         template: spec.template,
+        period: i < periods.length ? periods[i] : null,
       );
       _pages[page.id] = page;
     }

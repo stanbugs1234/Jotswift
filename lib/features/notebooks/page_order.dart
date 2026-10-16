@@ -9,20 +9,34 @@ final notebookPageOrderProvider = Provider.family<List<String>, String>((
   ref,
   notebookId,
 ) {
-  final sections = ref.watch(sectionsProvider(notebookId)).value ?? const [];
-  final pages =
-      ref.watch(_notebookPagesProvider(notebookId)).value ?? const <NotePage>[];
-  return orderPages(sections, pages);
+  return [for (final p in ref.watch(orderedPagesProvider(notebookId))) p.id];
 });
 
-final _notebookPagesProvider = StreamProvider.family<List<NotePage>, String>(
+/// Every page in a notebook, in reading order.
+final orderedPagesProvider = Provider.family<List<NotePage>, String>((
+  ref,
+  notebookId,
+) {
+  final sections = ref.watch(sectionsProvider(notebookId)).value ?? const [];
+  final pages =
+      ref.watch(notebookPagesProvider(notebookId)).value ?? const <NotePage>[];
+  return sortPages(sections, pages);
+});
+
+/// Every page in a notebook, in no particular order.
+final notebookPagesProvider = StreamProvider.family<List<NotePage>, String>(
   (ref, notebookId) =>
       ref.watch(notebookRepositoryProvider).watchNotebookPages(notebookId),
 );
 
 /// Page ids by section order, then page order. Pages in sections that no
 /// longer exist go last.
-List<String> orderPages(List<Section> sections, List<NotePage> pages) {
+List<String> orderPages(List<Section> sections, List<NotePage> pages) => [
+  for (final p in sortPages(sections, pages)) p.id,
+];
+
+/// [pages] by section order, then page order.
+List<NotePage> sortPages(List<Section> sections, List<NotePage> pages) {
   final sectionRank = {for (final (i, s) in sections.indexed) s.id: i};
   final sorted = [...pages]
     ..sort((a, b) {
@@ -33,7 +47,7 @@ List<String> orderPages(List<Section> sections, List<NotePage> pages) {
       final byOrder = a.order.compareTo(b.order);
       return byOrder != 0 ? byOrder : a.createdAt.compareTo(b.createdAt);
     });
-  return [for (final p in sorted) p.id];
+  return sorted;
 }
 
 /// The pages before and after [pageId] in its notebook (null at either end).

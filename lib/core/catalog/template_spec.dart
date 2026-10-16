@@ -2,12 +2,15 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
+import '../../features/notebooks/domain/page_period.dart';
+
 /// How a template is used: as a whole notebook (a planner), or as pages to
 /// add one at a time.
 enum TemplateMode { notebook, pages }
 
-/// One PDF page offered by a template, with its title.
-typedef TemplatePage = ({int pdfPage, String title});
+/// One PDF page offered by a template, with its title, and for planners
+/// the dates it covers.
+typedef TemplatePage = ({int pdfPage, String title, PagePeriod? period});
 
 /// A colourway of a template: the same pages in another PDF of its pack.
 typedef TemplateVariant = ({String name, String file, int? color});
@@ -17,7 +20,8 @@ typedef TemplateVariant = ({String name, String file, int? color});
 /// ```jsonc
 /// // A planner: every PDF page becomes a notebook page, in sections.
 /// {"mode": "notebook", "sections": [
-///   {"title": "Months", "pages": [{"pdfPage": 2, "title": "January"}]}]}
+///   {"title": "Months", "pages": [{"pdfPage": 2, "title": "January",
+///     "from": "2027-01-01", "to": "2027-01-31"}]}]}
 /// // Single pages to add to any notebook.
 /// {"mode": "pages", "pages": [{"pdfPage": 1, "title": "To-do list"}]}
 /// ```
@@ -31,7 +35,11 @@ class TemplateSpec {
     List<TemplatePage> pages(Object? list) => [
       for (final p in (list as List? ?? const []).whereType<Map>())
         if (p['pdfPage'] case final int n)
-          (pdfPage: n, title: p['title'] as String? ?? ''),
+          (
+            pdfPage: n,
+            title: p['title'] as String? ?? '',
+            period: PagePeriod.fromMap(p),
+          ),
     ];
     final variants = <TemplateVariant>[
       for (final v in (json['variants'] as List? ?? const []).whereType<Map>())

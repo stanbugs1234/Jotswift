@@ -8,6 +8,7 @@ import '../features/auth/sign_in_screen.dart';
 import '../features/calendar/calendar_screen.dart';
 import '../features/notebooks/notebook_screen.dart';
 import '../features/notebooks/notes_providers.dart';
+import '../features/notebooks/open_page.dart';
 import '../features/notebooks/page_screen.dart';
 import '../features/planner/planner_screen.dart';
 import '../features/settings/settings_screen.dart';
@@ -98,14 +99,23 @@ final routerProvider = Provider<GoRouter>((ref) {
                         // One key per notebook, not per page: moving to
                         // another page updates this screen in place, so it
                         // can turn the page instead of replacing the screen.
-                        pageBuilder: (context, state) => MaterialPage(
-                          key: ValueKey(
-                            'pages-of-${state.pathParameters['notebookId']}',
-                          ),
-                          child: PageScreen(
+                        // Opened straight from the shelf, it opens like a
+                        // book; moves between pages keep that page type.
+                        pageBuilder: (context, state) {
+                          final id = state.pathParameters['notebookId']!;
+                          final key = ValueKey('pages-of-$id');
+                          final screen = PageScreen(
                             pageId: state.pathParameters['pageId']!,
-                          ),
-                        ),
+                          );
+                          return state.extra == openedFromShelf
+                              ? bookOpenPage(
+                                  context: context,
+                                  key: key,
+                                  cover: _NotebookCoverFor(id),
+                                  child: screen,
+                                )
+                              : MaterialPage(key: key, child: screen);
+                        },
                       ),
                     ],
                   ),

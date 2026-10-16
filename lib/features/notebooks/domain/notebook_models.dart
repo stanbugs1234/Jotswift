@@ -2,10 +2,12 @@ import 'package:flutter/foundation.dart';
 
 import '../../../core/paper/paper_style.dart';
 import 'notebook_cover.dart';
+import 'page_period.dart';
 import 'page_template.dart';
 import 'shelf_models.dart';
 
 export 'notebook_cover.dart';
+export 'page_period.dart';
 export 'page_template.dart';
 export 'shelf_models.dart';
 
@@ -26,6 +28,9 @@ class Notebook {
     this.groupId,
     this.order,
     this.lastOpenedAt,
+    this.lastPageId,
+    this.lastPageTitle,
+    this.lastPageAt,
     this.starred = false,
     this.trashedAt,
   });
@@ -53,6 +58,9 @@ class Notebook {
     groupId: map['groupId'] as String?,
     order: (map['order'] as num?)?.toDouble(),
     lastOpenedAt: map['lastOpenedAt'] as int?,
+    lastPageId: map['lastPageId'] as String?,
+    lastPageTitle: map['lastPageTitle'] as String?,
+    lastPageAt: map['lastPageAt'] as int?,
     starred: map['starred'] as bool? ?? false,
     trashedAt: map['trashedAt'] as int?,
     createdAt: map['createdAt'] as int? ?? 0,
@@ -89,6 +97,15 @@ class Notebook {
   final int updatedAt;
   final int? lastOpenedAt;
 
+  /// The page open most recently, to open the notebook there again.
+  final String? lastPageId;
+
+  /// Its title, for "Continue · Week 42" on the shelf.
+  final String? lastPageTitle;
+
+  /// When that page was opened (milliseconds since epoch).
+  final int? lastPageAt;
+
   /// Shown under Starred on the shelf.
   final bool starred;
 
@@ -113,6 +130,9 @@ class Notebook {
     'groupId': ?groupId,
     'order': ?order,
     'lastOpenedAt': ?lastOpenedAt,
+    'lastPageId': ?lastPageId,
+    'lastPageTitle': ?lastPageTitle,
+    'lastPageAt': ?lastPageAt,
     if (starred) 'starred': true,
     'trashedAt': ?trashedAt,
     'createdAt': createdAt,
@@ -127,6 +147,7 @@ class Notebook {
     ShelfPlace? place,
     double? order,
     int? lastOpenedAt,
+    ({String id, String title, int at})? lastPage,
     int? updatedAt,
     bool? starred,
     int? trashedAt,
@@ -145,6 +166,9 @@ class Notebook {
     groupId: place == null ? groupId : place.groupId,
     order: order ?? this.order,
     lastOpenedAt: lastOpenedAt ?? this.lastOpenedAt,
+    lastPageId: lastPage?.id ?? lastPageId,
+    lastPageTitle: lastPage?.title ?? lastPageTitle,
+    lastPageAt: lastPage?.at ?? lastPageAt,
     starred: starred ?? this.starred,
     trashedAt: restore ? null : trashedAt ?? this.trashedAt,
     createdAt: createdAt,
@@ -263,6 +287,8 @@ class NotePage {
     required this.updatedAt,
     this.paper,
     this.template,
+    this.period,
+    this.bookmarked = false,
   });
 
   factory NotePage.fromMap(String id, Map<String, dynamic> map) => NotePage(
@@ -275,6 +301,8 @@ class NotePage {
     updatedAt: map['updatedAt'] as int? ?? 0,
     paper: PaperStyle.fromMap(map['paper']),
     template: PageTemplate.fromMap(map['template']),
+    period: PagePeriod.fromMap(map['period']),
+    bookmarked: map['bookmarked'] as bool? ?? false,
   );
 
   final String id;
@@ -293,6 +321,12 @@ class NotePage {
   /// The template page it's drawn on, instead of paper.
   final PageTemplate? template;
 
+  /// The days a planner page covers, if it's for a date.
+  final PagePeriod? period;
+
+  /// Listed under Bookmarks in the page jumper.
+  final bool bookmarked;
+
   String get displayTitle => title.trim().isEmpty ? 'Untitled page' : title;
 
   Map<String, dynamic> toMap() => {
@@ -304,12 +338,15 @@ class NotePage {
     'updatedAt': updatedAt,
     'paper': ?paper?.toMap(),
     'template': ?template?.toMap(),
+    'period': ?period?.toMap(),
+    if (bookmarked) 'bookmarked': true,
   };
 
   NotePage copyWith({
     String? title,
     PaperStyle? Function()? paper,
     int? updatedAt,
+    bool? bookmarked,
   }) => NotePage(
     id: id,
     notebookId: notebookId,
@@ -320,5 +357,7 @@ class NotePage {
     updatedAt: updatedAt ?? this.updatedAt,
     paper: paper == null ? this.paper : paper(),
     template: template,
+    period: period,
+    bookmarked: bookmarked ?? this.bookmarked,
   );
 }

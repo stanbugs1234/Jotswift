@@ -139,6 +139,23 @@ class _FirestoreUserNotes
   }
 
   @override
+  Future<void> markPageOpened(NotePage page) async {
+    final now = nowMillis();
+    _notebooks.doc(page.notebookId).update({
+      'lastOpenedAt': now,
+      'lastPageId': page.id,
+      'lastPageTitle': page.displayTitle,
+      'lastPageAt': now,
+    }).ignore();
+  }
+
+  @override
+  Future<void> setPageBookmarked(String pageId, bool bookmarked) async => _pages
+      .doc(pageId)
+      .update({'bookmarked': bookmarked ? true : FieldValue.delete()})
+      .ignore();
+
+  @override
   Future<void> markNotebookOpened(String notebookId) async =>
       _notebooks.doc(notebookId).update({'lastOpenedAt': nowMillis()}).ignore();
 
@@ -433,8 +450,9 @@ class _FirestoreUserNotes
   Future<void> createPages(
     String notebookId,
     String sectionId,
-    List<NewPage> pages,
-  ) async {
+    List<NewPage> pages, {
+    List<PagePeriod?> periods = const [],
+  }) async {
     final existing = await _pages
         .where('notebookId', isEqualTo: notebookId)
         .where('sectionId', isEqualTo: sectionId)
@@ -445,8 +463,9 @@ class _FirestoreUserNotes
     final now = nowMillis();
     for (var i = 0; i < pages.length; i += _batchLimit) {
       final batch = _user.firestore.batch();
-      for (final spec in pages.skip(i).take(_batchLimit)) {
+      for (final (j, spec) in pages.skip(i).take(_batchLimit).indexed) {
         final ref = _pages.doc();
+        final n = i + j;
         batch.set(
           ref,
           NotePage(
@@ -459,6 +478,7 @@ class _FirestoreUserNotes
             updatedAt: now,
             paper: spec.paper,
             template: spec.template,
+            period: n < periods.length ? periods[n] : null,
           ).toMap(),
         );
       }

@@ -24,6 +24,10 @@ abstract interface class NotebookRepository {
   /// Records that the notebook was just opened (for "Recent" and sorting).
   Future<void> markNotebookOpened(String notebookId);
 
+  /// Records that [page] was just opened, so the notebook opens there next
+  /// time (and for "Recent").
+  Future<void> markPageOpened(NotePage page);
+
   /// Records that the notebook's pages just changed (for sorting by
   /// modified).
   Future<void> touchNotebook(String notebookId);
@@ -55,12 +59,17 @@ abstract interface class NotebookRepository {
   });
 
   /// Adds [pages] to the end of a section, in order (e.g. a planner's
-  /// hundreds of pages at once).
+  /// hundreds of pages at once). [periods] gives the dates each page covers,
+  /// by position, for planners.
   Future<void> createPages(
     String notebookId,
     String sectionId,
-    List<NewPage> pages,
-  );
+    List<NewPage> pages, {
+    List<PagePeriod?> periods,
+  });
+
+  /// Adds or removes a page from the notebook's bookmarks.
+  Future<void> setPageBookmarked(String pageId, bool bookmarked);
 
   /// Every page of a notebook, in every section (to follow links).
   Stream<List<NotePage>> watchNotebookPages(String notebookId);

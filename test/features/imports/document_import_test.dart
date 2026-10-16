@@ -232,8 +232,7 @@ void main() {
       expect(pages.map((p) => p.template!.pdfPage), [1, 2, 3]);
       expect(pages.first.template!.isImported, isTrue);
       expect(store.documents, hasLength(1));
-      // The notebook opened.
-      expect(find.text('Biology notes'), findsWidgets);
+      // The notebook opened on its first page.
       expect(find.text('Page 1'), findsOneWidget);
     });
 

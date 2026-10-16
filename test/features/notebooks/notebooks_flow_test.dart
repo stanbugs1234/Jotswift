@@ -199,10 +199,10 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(PageScreen), findsOneWidget);
+    // Back goes straight to Home.
     await tester.pageBack();
     await tester.pumpAndSettle();
-    await tester.pageBack();
-    await tester.pumpAndSettle();
+    expect(find.byType(PageScreen), findsNothing);
     expect(find.text('Quick note'), findsWidgets);
     expect(find.byType(CoverView), findsOneWidget);
   });

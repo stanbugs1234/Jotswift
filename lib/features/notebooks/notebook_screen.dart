@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/paper/paper_style.dart';
 import '../../shared/dialogs.dart';
 import '../canvas/templates.dart';
+import '../exports/export_sheet.dart';
 import '../imports/import_actions.dart';
 import '../shelf/shelf_actions.dart';
 import 'domain/notebook_models.dart';
@@ -159,6 +160,7 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
       appBar: AppBar(
         title: Text(notebook.value?.title ?? ''),
         actions: [
+          ExportButton(notebookId: widget.notebookId, sectionId: current?.id),
           if (notebook.value case final nb?)
             PopupMenuButton<String>(
               tooltip: 'Notebook options',
