@@ -261,15 +261,16 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     _offset = Offset((viewport.width - _pageSize.width * _scale) / 2, _margin);
   }
 
-  /// Keeps at least part of the page on screen.
+  /// Lets the page move freely, but keeps at least a quarter of the
+  /// screen's worth of it in view (or all of it, when it's smaller).
   void _clampOffset() {
     final viewport = _viewport;
     if (viewport == null || widget.embedded) return;
     final w = _pageSize.width * _scale;
     final h = _pageSize.height * _scale;
     double clampAxis(double value, double content, double view) {
-      if (content + 2 * _margin <= view) return (view - content) / 2;
-      return value.clamp(view - content - _margin, _margin);
+      final keep = math.min(content, view / 4);
+      return value.clamp(keep - content, view - keep);
     }
 
     _offset = Offset(

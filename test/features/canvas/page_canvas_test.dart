@@ -145,6 +145,23 @@ void main() {
     expect(await page.visibleStrokes(), hasLength(1));
   });
 
+  testWidgets('a finger moves the page freely, even sideways when it fits', (
+    tester,
+  ) async {
+    final page = await pumpPage(tester);
+    await drag(tester, PointerDeviceKind.stylus, by: const Offset(40, 0));
+
+    // Far past the edges: the page goes, but some of it stays in view.
+    await drag(tester, PointerDeviceKind.touch, by: const Offset(250, 300));
+    await drag(tester, PointerDeviceKind.stylus, by: const Offset(40, 0));
+
+    final strokes = await page.visibleStrokes();
+    expect(strokes, hasLength(2));
+    final moved = strokes[0].bounds.topLeft - strokes[1].bounds.topLeft;
+    expect(moved.dx, greaterThan(200));
+    expect(moved.dy, greaterThan(200));
+  });
+
   testWidgets('with the finger toggle off, a finger scrolls but a stylus '
       'still draws', (tester) async {
     final page = await pumpPage(tester);
