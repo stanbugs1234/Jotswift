@@ -158,8 +158,15 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
   Offset? _snapAnchor;
 
   /// What the stroke snapped to, if it did. A snapped line keeps following
-  /// the pen to place its end.
+  /// the pen to place its end; a snapped shape grows and shrinks around its
+  /// middle as the pen moves away from it or back.
   ShapeKind? _snapped;
+
+  /// A snapped shape as it snapped, its middle, and how far the pen was
+  /// from that middle (page units), to resize it from.
+  List<Offset>? _snapOutline;
+  Offset _snapCenter = Offset.zero;
+  double _snapReach = 0;
 
   // Scrolling and zooming: screen positions of the non-drawing pointers.
   final _navPointers = <int, Offset>{};
@@ -1294,6 +1301,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
       ..clear()
       ..add((e.timeStamp, _live.value!.points.first.offset));
     _snapped = null;
+    _snapOutline = null;
     final ruler = _ruler;
     final first = _live.value!.points.first;
     _rulerSide = ruler?.edgeNear(first.offset);
@@ -1340,6 +1348,25 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     _clearPrediction();
     _snapped = shape.kind;
     _live.value = _filled(_shapeStroke(stroke, shape.outline), shape.kind);
+    if (shape.kind != ShapeKind.line) {
+      final box = _boundsOf(shape.outline);
+      _snapOutline = shape.outline;
+      _snapCenter = box.center;
+      // From where the pen is, but never as if it were right at the middle
+      // (a tiny move there would make it huge).
+      _snapReach = math.max(
+        (_toPage(_drawPosition) - box.center).distance,
+        box.shortestSide / 4,
+      );
+    }
+  }
+
+  static Rect _boundsOf(List<Offset> points) {
+    var r = Rect.fromPoints(points.first, points.first);
+    for (final p in points) {
+      r = r.expandToInclude(Rect.fromPoints(p, p));
+    }
+    return r;
   }
 
   /// [stroke] with the shape tool's fill, when it's a closed shape drawn
@@ -1416,7 +1443,18 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
           snapLine(start, _toPage(e.localPosition)),
         ]);
         return;
-      default:
+      case final kind:
+        // Held on: the shape follows the pen in and out, keeping its shape.
+        final outline = _snapOutline;
+        if (outline == null || _snapReach <= 0) return;
+        final reach = (_toPage(e.localPosition) - _snapCenter).distance;
+        final scale = (reach / _snapReach).clamp(0.1, 20.0);
+        _live.value = _filled(
+          _shapeStroke(stroke, [
+            for (final p in outline) _snapCenter + (p - _snapCenter) * scale,
+          ]),
+          kind,
+        );
         return;
     }
     final point = _inkPoint(e);

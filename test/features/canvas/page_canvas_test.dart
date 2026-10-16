@@ -785,6 +785,50 @@ void main() {
       expect(stroke.points.first.x, isNot(stroke.points.last.x));
     });
 
+    for (final (name, factor) in [('larger', 2.0), ('smaller', 0.5)]) {
+      testWidgets('held on after it snaps, a box is made $name', (
+        tester,
+      ) async {
+        final page = await pumpPage(tester);
+        // The pen stops at the box's corner; moving it out from the middle
+        // grows the box, back in shrinks it, keeping its middle.
+        await draw(
+          tester,
+          box,
+          hold: const Duration(milliseconds: 700),
+          after: box.last * factor,
+        );
+
+        final b = (await page.visibleStrokes()).single.bounds;
+        final scale = (800 - 32) / pageSize.width;
+        expect(b.width * scale, closeTo(200 * factor, 200 * factor * 0.1));
+        expect(b.height * scale, closeTo(120 * factor, 120 * factor * 0.1));
+        expect(b.center.dx * scale, closeTo(pageSize.width / 2 * scale, 6));
+      });
+    }
+
+    testWidgets('a snapped circle stays a circle as it grows', (tester) async {
+      final page = await pumpPage(tester);
+      final ring = [
+        for (var i = 0; i <= 24; i++)
+          Offset(
+            70 * math.cos(i * math.pi / 12),
+            70 * math.sin(i * math.pi / 12),
+          ),
+      ];
+      await draw(
+        tester,
+        ring,
+        hold: const Duration(milliseconds: 700),
+        after: const Offset(150, 0),
+      );
+
+      final b = (await page.visibleStrokes()).single.bounds;
+      final scale = (800 - 32) / pageSize.width;
+      expect(b.width * scale, closeTo(300, 30));
+      expect(b.height, closeTo(b.width, b.width * 0.03));
+    });
+
     testWidgets('after a line snaps, the pen moves its end', (tester) async {
       final page = await pumpPage(tester);
 
