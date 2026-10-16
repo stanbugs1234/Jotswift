@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/input/finger_drawing.dart';
+import '../../core/input/pencil_samples.dart';
 import '../../core/motion/page_turn.dart';
 import '../../core/motion/pop_in.dart';
 import '../../core/settings/synced_setting.dart';
@@ -286,6 +287,46 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => _maybeShowHint());
+    if (!widget.readOnly && widget.inkEnabled) {
+      _samples = ref.read(pencilSamplesProvider).listen(_onSamples);
+    }
+  }
+
+  // Every Pencil sample, from the device (see pencilSamplesProvider). Once
+  // they arrive for a stroke, they are its points, and Flutter's own move
+  // events, which carry only the latest sample per frame, just draw the
+  // tip until the next batch comes.
+  StreamSubscription<List<PencilSample>>? _samples;
+  bool _native = false;
+
+  void _onSamples(List<PencilSample> batch) {
+    final stroke = _live.value;
+    if (stroke == null ||
+        _drawPointer == null ||
+        _drawKind != PointerDeviceKind.stylus ||
+        _erasing ||
+        _snapped != null) {
+      return;
+    }
+    final box = context.findRenderObject() as RenderBox?;
+    if (box == null || !box.attached) return;
+    final added = <InkPoint>[];
+    for (final sample in batch) {
+      if (sample.phase != PencilPhase.moved &&
+          sample.phase != PencilPhase.ended) {
+        continue;
+      }
+      final page = _toPage(box.globalToLocal(sample.position));
+      var point = InkPoint(page.dx, page.dy, sample.pressure);
+      if (_rulerSide != null && _ruler != null) point = _guided(point);
+      added.add(point);
+    }
+    if (added.isEmpty) return;
+    InkStats.instance.samples(added.length);
+    // The first batch takes over from the move events so far.
+    final kept = _native ? stroke.points : stroke.points.take(1);
+    _native = true;
+    _live.value = stroke.withPoints([...kept, ...added]);
   }
 
   /// Kept to read the page's handwriting after it closes.
@@ -377,6 +418,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     _zoomBadgeTimer?.cancel();
     _holdTimer?.cancel();
     _snapTimer?.cancel();
+    _samples?.cancel();
     if (_indexTimer?.isActive ?? false) {
       _indexTimer!.cancel();
       _index();
@@ -896,10 +938,24 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
       if (_erasing) {
         _finishErasing();
       } else {
+        if (_native && _snapped == null) _endAt(e);
         _finishStroke();
       }
     }
     _navPointers.remove(e.pointer);
+  }
+
+  /// The stroke ends where the pen lifted, which the device's last batch
+  /// may not have reached yet.
+  void _endAt(PointerEvent e) {
+    final stroke = _live.value;
+    if (stroke == null || stroke.points.isEmpty) return;
+    var end = _toPage(e.localPosition);
+    final last = stroke.points.last;
+    if ((end - last.offset).distance < 0.5) return;
+    var point = InkPoint(end.dx, end.dy, last.pressure);
+    if (_rulerSide != null && _ruler != null) point = _guided(point);
+    _live.value = stroke.withPoints([...stroke.points, point]);
   }
 
   // Tape
@@ -1303,6 +1359,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
       ..add((e.timeStamp, _live.value!.points.first.offset));
     _snapped = null;
     _snapOutline = null;
+    _native = false;
     final ruler = _ruler;
     final first = _live.value!.points.first;
     _rulerSide = ruler?.edgeNear(first.offset);
@@ -1461,6 +1518,11 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     }
     final point = _inkPoint(e);
     _predict(e, point);
+    if (_native) {
+      // The device's samples are the stroke; this only shows the tip.
+      _predicted.value = [point, ..._predicted.value];
+      return;
+    }
     _live.value = stroke.withPoints([...stroke.points, point]);
   }
 

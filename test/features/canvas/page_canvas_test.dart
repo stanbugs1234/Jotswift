@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
@@ -12,6 +13,7 @@ import 'package:notely/core/paper/paper_style.dart';
 import 'package:notely/core/skins/skin_manifest.dart';
 import 'package:notely/core/skins/widgets/paper.dart';
 import 'package:notely/features/auth/auth_repository.dart';
+import 'package:notely/core/input/pencil_samples.dart';
 import 'package:notely/features/canvas/domain/page_element.dart';
 import 'package:notely/features/canvas/domain/stroke.dart';
 import 'package:notely/features/canvas/ink_toolbar.dart';
@@ -1252,6 +1254,46 @@ void main() {
       expect(after.left, greaterThan(before.left));
       expect(after.top, before.top);
     });
+  });
+
+  testWidgets('every Pencil sample from the device goes into the stroke', (
+    tester,
+  ) async {
+    final device = StreamController<List<PencilSample>>.broadcast();
+    addTearDown(device.close);
+    final page = await pumpPage(
+      tester,
+      overrides: [pencilSamplesProvider.overrideWithValue(device.stream)],
+    );
+    final c = canvasCenter(tester);
+    final pen = await tester.startGesture(c, kind: PointerDeviceKind.stylus);
+    // Two move events from Flutter...
+    await pen.moveTo(c + const Offset(40, 0));
+    await pen.moveTo(c + const Offset(80, 0));
+    // ...while the device reported eight samples, on a curve.
+    device.add([
+      for (var i = 1; i <= 8; i++)
+        PencilSample(
+          phase: PencilPhase.moved,
+          time: Duration(milliseconds: i * 4),
+          position: c + Offset(i * 10.0, i.isEven ? 6 : 0),
+          pressure: 0.3,
+        ),
+    ]);
+    await tester.pump();
+    await pen.moveTo(c + const Offset(90, 0)); // Only the tip, now.
+    await pen.up();
+    await tester.pumpAndSettle();
+
+    final stroke = (await page.strokes()).single;
+    // The down point, the eight samples, and where the pen lifted.
+    expect(stroke.points, hasLength(10));
+    final scale = (800 - 32) / pageSize.width;
+    final ys = {
+      for (final p in stroke.points.skip(1).take(8))
+        ((p.y - stroke.points.first.y) * scale).round(),
+    };
+    expect(ys, {0, 6}, reason: 'the samples, not the straight moves');
   });
 
   testWidgets('a page\'s handwriting is read for search after writing', (

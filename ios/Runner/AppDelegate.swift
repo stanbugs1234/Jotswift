@@ -1,5 +1,6 @@
 import Flutter
 import UIKit
+import UIKit.UIGestureRecognizerSubclass
 import UserNotifications
 import Vision
 
@@ -79,11 +80,99 @@ enum PencilChannel {
         result(UIPencilInteraction.prefersPencilOnlyDrawing)
       case "listenForTaps":
         result(PencilTaps.shared.attach())
+      case "listenForSamples":
+        result(PencilSamples.shared.attach(messenger: messenger))
       default:
         result(FlutterMethodNotImplemented)
       }
     }
   }
+}
+
+/// Passes on every sample the Apple Pencil reports while touching, which
+/// Flutter's own touch events leave out: iOS reports the Pencil up to 240
+/// times a second, but only the latest sample per screen refresh reaches
+/// Flutter, at whole-point precision. This watches the Pencil's touches
+/// (without taking them from Flutter) and sends each event's coalesced
+/// samples, at full precision, on "notely/pencil-samples": six numbers a
+/// sample (phase 0 began, 1 moved, 2 ended, 3 cancelled; time in seconds;
+/// x and y in the Flutter view's points; force; maximum force).
+final class PencilSamples: UIGestureRecognizer, UIGestureRecognizerDelegate {
+  static let shared = PencilSamples()
+
+  private var channel: FlutterBasicMessageChannel?
+  /// The Flutter view, whose points samples are given in.
+  private weak var flutterView: UIView?
+
+  private init() {
+    super.init(target: nil, action: nil)
+    cancelsTouchesInView = false
+    delaysTouchesBegan = false
+    delaysTouchesEnded = false
+    allowedTouchTypes = [NSNumber(value: UITouch.TouchType.pencil.rawValue)]
+    delegate = self
+  }
+
+  /// Starts watching the app's window. Returns whether it is.
+  func attach(messenger: FlutterBinaryMessenger) -> Bool {
+    if channel == nil {
+      channel = FlutterBasicMessageChannel(
+        name: "notely/pencil-samples", binaryMessenger: messenger,
+        codec: FlutterStandardMessageCodec.sharedInstance())
+    }
+    if flutterView != nil { return true }
+    let scenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+    guard let window = scenes.flatMap({ $0.windows }).first(where: { $0.isKeyWindow })
+      ?? scenes.first?.windows.first,
+      let flutterView = window.rootViewController?.view
+    else { return false }
+    window.addGestureRecognizer(self)
+    self.flutterView = flutterView
+    return true
+  }
+
+  private func send(_ touches: Set<UITouch>, _ event: UIEvent?, phase: Double) {
+    guard let channel, let flutterView else { return }
+    var data: [Double] = []
+    for touch in touches where touch.type == .pencil {
+      let samples = event?.coalescedTouches(for: touch) ?? [touch]
+      for sample in samples {
+        let at = sample.preciseLocation(in: flutterView)
+        data += [
+          phase, sample.timestamp, Double(at.x), Double(at.y),
+          Double(sample.force), Double(sample.maximumPossibleForce),
+        ]
+      }
+    }
+    if data.isEmpty { return }
+    channel.sendMessage(FlutterStandardTypedData(float64: data.withUnsafeBufferPointer {
+      Data(buffer: $0)
+    }))
+  }
+
+  override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
+    send(touches, event, phase: 0)
+  }
+
+  override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) {
+    send(touches, event, phase: 1)
+  }
+
+  override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
+    send(touches, event, phase: 2)
+    // Never recognizes anything: done, ready for the next touch.
+    state = .failed
+  }
+
+  override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) {
+    send(touches, event, phase: 3)
+    state = .failed
+  }
+
+  func gestureRecognizer(
+    _ gestureRecognizer: UIGestureRecognizer,
+    shouldRecognizeSimultaneouslyWith other: UIGestureRecognizer
+  ) -> Bool { true }
 }
 
 /// Watches for Apple Pencil double-taps (2nd generation and Pro) and
