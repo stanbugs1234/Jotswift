@@ -7,6 +7,8 @@ import '../notebooks/domain/notebook_models.dart';
 import '../notebooks/notes_providers.dart';
 import '../store/store_screen.dart';
 import 'cover_view.dart';
+import 'handwriting_search.dart';
+import '../canvas/handwriting.dart' show handwritingReaderProvider;
 import 'shelf_actions.dart';
 import 'shelf_prefs.dart';
 import 'shelf_view.dart';
@@ -132,14 +134,46 @@ class _ShelfScreenState extends ConsumerState<ShelfScreen> {
       final contents = searching
           ? ShelfContents(const [], shelf.search(query))
           : shelf.contents(location, prefs.sort);
-      content = contents.isEmpty
+      // Searching also looks in the handwriting that's been read.
+      final hits = searching
+          ? searchHandwriting(
+              ref.watch(handwrittenPagesProvider).value ?? const [],
+              notebooks.value ?? const [],
+              query,
+            )
+          : const <HandwritingHit>[];
+      final catchUp = searching && needsCatchingUp(ref)
+          ? SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: gutterOf(context),
+                  vertical: Insets.lg,
+                ),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: TextButton.icon(
+                    icon: const Icon(Icons.manage_search),
+                    label: const Text(
+                      'Can\'t find it? Read the handwriting on older pages',
+                    ),
+                    onPressed: () async {
+                      await catchUpHandwriting(context, ref);
+                      if (mounted) setState(() {});
+                    },
+                  ),
+                ),
+              ),
+            )
+          : null;
+      content = contents.isEmpty && hits.isEmpty
           ? [
+              ?catchUp,
               SliverFillRemaining(
                 hasScrollBody: false,
                 child: searching
                     ? EmptyState(
                         icon: Icons.search_off,
-                        title: 'No notebooks match "$query"',
+                        title: 'Nothing matches "$query"',
                         message: 'Try a different word.',
                       )
                     : _EmptyShelf(
@@ -149,23 +183,26 @@ class _ShelfScreenState extends ConsumerState<ShelfScreen> {
               ),
             ]
           : [
-              _ShelfItems(
-                shelf: shelf,
-                contents: contents,
-                prefs: prefs,
-                trash: location is TrashedNotebooks && !searching,
-                subtitle: location is RecentNotebooks
-                    ? ShelfSort.lastOpened
-                    : prefs.sort,
-                // Where each notebook is, when the list mixes places.
-                placeOf: switch (location) {
-                  _ when searching => placeOf,
-                  AllNotebooks() ||
-                  RecentNotebooks() ||
-                  StarredNotebooks() => placeOf,
-                  _ => null,
-                },
-              ),
+              if (!contents.isEmpty)
+                _ShelfItems(
+                  shelf: shelf,
+                  contents: contents,
+                  prefs: prefs,
+                  trash: location is TrashedNotebooks && !searching,
+                  subtitle: location is RecentNotebooks
+                      ? ShelfSort.lastOpened
+                      : prefs.sort,
+                  // Where each notebook is, when the list mixes places.
+                  placeOf: switch (location) {
+                    _ when searching => placeOf,
+                    AllNotebooks() ||
+                    RecentNotebooks() ||
+                    StarredNotebooks() => placeOf,
+                    _ => null,
+                  },
+                ),
+              if (hits.isNotEmpty) HandwritingResults(hits: hits),
+              ?catchUp,
             ];
     }
 
@@ -183,8 +220,10 @@ class _ShelfScreenState extends ConsumerState<ShelfScreen> {
             : TextField(
                 controller: _search,
                 autofocus: true,
-                decoration: const InputDecoration(
-                  hintText: 'Search notebooks',
+                decoration: InputDecoration(
+                  hintText: ref.read(handwritingReaderProvider) == null
+                      ? 'Search notebooks'
+                      : 'Search notebooks and handwriting',
                   border: InputBorder.none,
                 ),
                 onChanged: (text) => setState(() => _query = text),

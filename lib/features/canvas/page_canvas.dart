@@ -279,6 +279,56 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     WidgetsBinding.instance.addPostFrameCallback((_) => _maybeShowHint());
   }
 
+  /// Kept to read the page's handwriting after it closes.
+  ProviderContainer? _container;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _container = ProviderScope.containerOf(context, listen: false);
+  }
+
+  // Reading the handwriting, for search: a while after the writing stops,
+  // and when the page closes.
+  Timer? _indexTimer;
+  String? _inkSignature;
+
+  void _watchInk(List<Stroke> strokes) {
+    if (widget.window != null || widget.readOnly || !widget.inkEnabled) {
+      return;
+    }
+    if (ref.read(handwritingReaderProvider) == null) return;
+    final pen = [
+      for (final s in strokes)
+        if (!s.deleted && s.tool == InkTool.pen) s.id,
+    ];
+    final signature = '${pen.length}:${pen.lastOrNull}';
+    if (_inkSignature == null) {
+      // First look: read it now if it never has been.
+      _inkSignature = signature;
+      final page = ref.read(pageProvider(widget.pageId)).value;
+      if (page != null && page.inkText == null && pen.isNotEmpty) {
+        _scheduleIndex();
+      }
+      return;
+    }
+    if (signature == _inkSignature) return;
+    _inkSignature = signature;
+    _scheduleIndex();
+  }
+
+  void _scheduleIndex() {
+    _indexTimer?.cancel();
+    _indexTimer = Timer(const Duration(seconds: 4), _index);
+  }
+
+  void _index() {
+    _indexTimer = null;
+    if (_container case final container?) {
+      unawaited(indexPageInk(container, widget.pageId));
+    }
+  }
+
   static const _hintKey = 'fingerHintShown';
 
   /// Once per device, the first time a page opens with fingers scrolling,
@@ -318,6 +368,10 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     _zoomBadgeTimer?.cancel();
     _holdTimer?.cancel();
     _snapTimer?.cancel();
+    if (_indexTimer?.isActive ?? false) {
+      _indexTimer!.cancel();
+      _index();
+    }
     super.dispose();
   }
 
@@ -2466,7 +2520,9 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
       // Refit once the notebook (and so the page size) has loaded.
       _viewport = null;
     }
-    final strokes = ref.watch(strokesProvider(widget.pageId)).value ?? [];
+    final loaded = ref.watch(strokesProvider(widget.pageId)).value;
+    final strokes = loaded ?? [];
+    if (loaded != null) _watchInk(loaded);
     _reconcile(strokes);
     final liveId = _live.value?.id;
     final lasso = _lasso;

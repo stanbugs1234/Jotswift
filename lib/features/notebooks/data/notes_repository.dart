@@ -75,6 +75,17 @@ abstract interface class NotebookRepository {
   /// removes it.
   Future<void> setPageOutline(String pageId, String? outline);
 
+  /// Saves what the page's handwriting reads (see [NotePage.inkText]).
+  Future<void> setPageInkText(String pageId, String text);
+
+  /// Pages whose handwriting has been read and says something, in every
+  /// notebook (for search).
+  Stream<List<NotePage>> watchHandwrittenPages();
+
+  /// Every page, in every notebook (to read the handwriting of pages that
+  /// haven't been).
+  Future<List<NotePage>> allPages();
+
   /// Every page of a notebook, in every section (to follow links).
   Stream<List<NotePage>> watchNotebookPages(String notebookId);
 

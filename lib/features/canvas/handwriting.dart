@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../notebooks/notes_providers.dart';
 import 'domain/stroke.dart';
 
 /// Reads handwriting in a PNG of dark ink on white: its lines of text, top
@@ -141,4 +142,31 @@ class _ConvertedTextState extends State<_ConvertedText> {
       ),
     ],
   );
+}
+
+/// What the handwriting in [strokes] reads, for search: empty when there's
+/// no writing (highlighting doesn't count).
+Future<String> readInk(HandwritingReader read, List<Stroke> strokes) async {
+  final ink = [
+    for (final s in strokes)
+      if (!s.deleted && s.tool == InkTool.pen) s,
+  ];
+  if (ink.isEmpty) return '';
+  return (await read(await inkToPng(ink))).join('\n');
+}
+
+/// Reads [pageId]'s handwriting and saves it on the page for search, if
+/// it changed. Does nothing where handwriting can't be read.
+Future<void> indexPageInk(ProviderContainer container, String pageId) async {
+  final read = container.read(handwritingReaderProvider);
+  if (read == null) return;
+  final strokes = await container
+      .read(strokeRepositoryProvider)
+      .watchStrokes(pageId)
+      .first;
+  final text = await readInk(read, strokes);
+  final pages = container.read(notebookRepositoryProvider);
+  final page = await pages.watchPage(pageId).first;
+  if (page == null || page.inkText == text) return;
+  await pages.setPageInkText(pageId, text);
 }

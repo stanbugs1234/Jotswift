@@ -303,6 +303,7 @@ class NotePage {
     this.period,
     this.bookmarked = false,
     this.outline,
+    this.inkText,
   });
 
   factory NotePage.fromMap(String id, Map<String, dynamic> map) => NotePage(
@@ -318,6 +319,7 @@ class NotePage {
     period: PagePeriod.fromMap(map['period']),
     bookmarked: map['bookmarked'] as bool? ?? false,
     outline: map['outline'] as String?,
+    inkText: map['inkText'] as String?,
   );
 
   final String id;
@@ -346,6 +348,10 @@ class NotePage {
   /// null when it has none.
   final String? outline;
 
+  /// The page's handwriting, as read on a device that can (for search):
+  /// empty when it has none, null when it hasn't been read.
+  final String? inkText;
+
   String get displayTitle => title.trim().isEmpty ? 'Untitled page' : title;
 
   Map<String, dynamic> toMap() => {
@@ -360,6 +366,7 @@ class NotePage {
     'period': ?period?.toMap(),
     if (bookmarked) 'bookmarked': true,
     'outline': ?outline,
+    'inkText': ?inkText,
   };
 
   NotePage copyWith({
@@ -373,6 +380,7 @@ class NotePage {
     int? updatedAt,
     bool? bookmarked,
     String? Function()? outline,
+    String? Function()? inkText,
   }) => NotePage(
     id: id ?? this.id,
     notebookId: notebookId ?? this.notebookId,
@@ -386,5 +394,6 @@ class NotePage {
     period: period,
     bookmarked: bookmarked ?? this.bookmarked,
     outline: outline == null ? this.outline : outline(),
+    inkText: inkText == null ? this.inkText : inkText(),
   );
 }

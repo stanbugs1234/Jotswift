@@ -154,6 +154,23 @@ class _FirestoreUserNotes
   }
 
   @override
+  Future<void> setPageInkText(String pageId, String text) async =>
+      _pages.doc(pageId).update({'inkText': text}).ignore();
+
+  @override
+  Stream<List<NotePage>> watchHandwrittenPages() => _pages
+      .where('inkText', isGreaterThan: '')
+      .snapshots()
+      .map(
+        (snap) => [for (final d in snap.docs) NotePage.fromMap(d.id, d.data())],
+      );
+
+  @override
+  Future<List<NotePage>> allPages() async => [
+    for (final d in (await _pages.get()).docs) NotePage.fromMap(d.id, d.data()),
+  ];
+
+  @override
   Future<void> setPageOutline(String pageId, String? outline) async => _pages
       .doc(pageId)
       .update({'outline': outline ?? FieldValue.delete()})

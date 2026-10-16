@@ -130,6 +130,25 @@ class _InMemoryUserData
   }
 
   @override
+  Future<void> setPageInkText(String pageId, String text) async {
+    final p = _pages[pageId];
+    if (p == null) return;
+    _pages[pageId] = p.copyWith(inkText: () => text);
+    _changed();
+  }
+
+  @override
+  Stream<List<NotePage>> watchHandwrittenPages() => _watch(
+    () => [
+      for (final p in _pages.values)
+        if (p.inkText?.isNotEmpty ?? false) p,
+    ],
+  );
+
+  @override
+  Future<List<NotePage>> allPages() async => _pages.values.toList();
+
+  @override
   Future<void> setPageOutline(String pageId, String? outline) async {
     final p = _pages[pageId];
     if (p == null) return;

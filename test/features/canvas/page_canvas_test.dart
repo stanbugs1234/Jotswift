@@ -1210,6 +1210,33 @@ void main() {
     });
   });
 
+  testWidgets('a page\'s handwriting is read for search after writing', (
+    tester,
+  ) async {
+    final page = await pumpPage(
+      tester,
+      overrides: [
+        handwritingReaderProvider.overrideWithValue(
+          (_) async => ['call the dentist'],
+        ),
+      ],
+    );
+    await drag(tester, PointerDeviceKind.stylus);
+    // A few seconds after the writing stops.
+    await tester.pump(const Duration(seconds: 5));
+    for (var i = 0; i < 10; i++) {
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 50)),
+      );
+      await tester.pump();
+    }
+    final saved = await page.backend
+        .notebooks(page.uid)
+        .watchPage(page.pageId)
+        .first;
+    expect(saved!.inkText, 'call the dentist');
+  });
+
   group('toolbar', () {
     testWidgets('tools can be hidden and put in another order', (tester) async {
       await pumpPage(tester);
