@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -515,6 +517,95 @@ void main() {
       await tester.tap(find.byTooltip('Pen'));
       await tester.pumpAndSettle();
       expect(find.byTooltip('Delete'), findsNothing);
+    });
+  });
+
+  group('shapes', () {
+    /// Draws through [points] (relative to the canvas middle) with the
+    /// stylus, optionally holding still at the end before going on to
+    /// [after] and lifting.
+    Future<void> draw(
+      WidgetTester tester,
+      List<Offset> points, {
+      Duration hold = Duration.zero,
+      Offset? after,
+    }) async {
+      final c = canvasCenter(tester);
+      final gesture = await tester.startGesture(
+        c + points.first,
+        kind: PointerDeviceKind.stylus,
+      );
+      for (var i = 0; i + 1 < points.length; i++) {
+        for (var k = 1; k <= 6; k++) {
+          await gesture.moveTo(
+            c + Offset.lerp(points[i], points[i + 1], k / 6)!,
+          );
+        }
+      }
+      if (hold > Duration.zero) await tester.pump(hold);
+      if (after != null) {
+        await gesture.moveTo(c + after);
+        await tester.pump();
+      }
+      await gesture.up();
+      await tester.pumpAndSettle();
+    }
+
+    const box = [
+      Offset(-100, -60),
+      Offset(102, -56),
+      Offset(98, 62),
+      Offset(-102, 58),
+      Offset(-98, -58),
+    ];
+
+    testWidgets('holding still at the end snaps a box to a rectangle', (
+      tester,
+    ) async {
+      final page = await pumpPage(tester);
+
+      await draw(tester, box, hold: const Duration(milliseconds: 700));
+
+      final stroke = (await page.visibleStrokes()).single;
+      final xs = stroke.points.map((p) => p.x.round()).toSet();
+      final ys = stroke.points.map((p) => p.y.round()).toSet();
+      // Every point lies on one of the four straight sides.
+      final left = xs.reduce(math.min), right = xs.reduce(math.max);
+      final top = ys.reduce(math.min), bottom = ys.reduce(math.max);
+      for (final p in stroke.points) {
+        final onSide =
+            (p.x - left).abs() < 1.5 ||
+            (p.x - right).abs() < 1.5 ||
+            (p.y - top).abs() < 1.5 ||
+            (p.y - bottom).abs() < 1.5;
+        expect(onSide, isTrue, reason: '${p.x}, ${p.y}');
+      }
+    });
+
+    testWidgets('without holding, the stroke stays as drawn', (tester) async {
+      final page = await pumpPage(tester);
+
+      await draw(tester, box);
+
+      final stroke = (await page.visibleStrokes()).single;
+      expect(stroke.points.first.x, isNot(stroke.points.last.x));
+    });
+
+    testWidgets('after a line snaps, the pen moves its end', (tester) async {
+      final page = await pumpPage(tester);
+
+      await draw(
+        tester,
+        const [Offset(-100, 0), Offset(100, 4)],
+        hold: const Duration(milliseconds: 700),
+        after: const Offset(100, 100),
+      );
+
+      final stroke = (await page.visibleStrokes()).single;
+      final start = stroke.points.first, end = stroke.points.last;
+      final scale = (800 - 32) / pageSize.width;
+      expect((end.x - start.x) * scale, closeTo(200, 2));
+      expect((end.y - start.y) * scale, closeTo(100, 2));
     });
   });
 

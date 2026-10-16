@@ -22,6 +22,7 @@ import 'domain/stroke.dart';
 import 'ink_tools.dart';
 import 'lasso.dart';
 import 'page_items.dart';
+import 'shapes.dart';
 import 'stickers.dart';
 import 'stroke_painter.dart';
 import 'templates.dart';
@@ -94,6 +95,18 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
   /// A finger stroke younger than this when the Pencil touches down is a
   /// palm, and is dropped.
   static const _palmWindow = Duration(milliseconds: 300);
+
+  /// Holding still this long while drawing turns the stroke into the shape
+  /// it looks like (a line, circle, rectangle...).
+  static const _holdToSnap = Duration(milliseconds: 550);
+  Timer? _snapTimer;
+
+  /// Where the pen last stopped, in screen pixels.
+  Offset? _snapAnchor;
+
+  /// What the stroke snapped to, if it did. A snapped line keeps following
+  /// the pen to place its end.
+  ShapeKind? _snapped;
 
   // Scrolling and zooming: screen positions of the non-drawing pointers.
   final _navPointers = <int, Offset>{};
@@ -189,6 +202,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     _zoomBadge.dispose();
     _zoomBadgeTimer?.cancel();
     _holdTimer?.cancel();
+    _snapTimer?.cancel();
     super.dispose();
   }
 
@@ -611,11 +625,69 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
       pressureSensitive:
           e.kind == PointerDeviceKind.stylus && e.pressureMax > e.pressureMin,
     );
+    _snapped = null;
+    _waitForHold(e.localPosition);
   }
+
+  /// (Re)starts the hold-to-snap timer unless the pen has only wobbled.
+  void _waitForHold(Offset screen) {
+    final anchor = _snapAnchor;
+    if (anchor != null &&
+        _snapTimer != null &&
+        (screen - anchor).distance < 4) {
+      return;
+    }
+    _snapAnchor = screen;
+    _snapTimer?.cancel();
+    _snapTimer = Timer(_holdToSnap, _snapToShape);
+  }
+
+  void _stopWaitingForHold() {
+    _snapTimer?.cancel();
+    _snapTimer = null;
+    _snapAnchor = null;
+  }
+
+  /// The pen held still: redraw the stroke as the shape it looks like.
+  void _snapToShape() {
+    _snapTimer = null;
+    final stroke = _live.value;
+    if (!mounted || _drawPointer == null || _erasing || stroke == null) return;
+    if (_snapped != null) return;
+    final shape = recognizeShape([for (final p in stroke.points) p.offset]);
+    if (shape == null) return;
+    HapticFeedback.mediumImpact();
+    _snapped = shape.kind;
+    _live.value = _shapeStroke(stroke, shape.outline);
+  }
+
+  /// [stroke] redrawn along [outline], evenly and at its full width.
+  static Stroke _shapeStroke(Stroke stroke, List<Offset> outline) => Stroke(
+    id: stroke.id,
+    tool: stroke.tool,
+    color: stroke.color,
+    width: stroke.width,
+    points: [for (final p in densify(outline)) InkPoint(p.dx, p.dy)],
+    createdAt: stroke.createdAt,
+    pressureSensitive: true,
+  );
 
   void _extendStroke(PointerMoveEvent e) {
     final stroke = _live.value;
     if (stroke == null) return;
+    switch (_snapped) {
+      case null:
+        _waitForHold(e.localPosition);
+      case ShapeKind.line:
+        final start = stroke.points.first.offset;
+        _live.value = _shapeStroke(stroke, [
+          start,
+          snapLine(start, _toPage(e.localPosition)),
+        ]);
+        return;
+      default:
+        return;
+    }
     _live.value = Stroke(
       id: stroke.id,
       tool: stroke.tool,
@@ -631,6 +703,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     final stroke = _live.value;
     final kind = _drawKind;
     _drawPointer = null;
+    _stopWaitingForHold();
     if (stroke == null) return;
     // A quick finger or mouse tap on a template link follows the link
     // instead of leaving a dot. (A stylus always writes.)
@@ -651,6 +724,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
 
   void _cancelDrawing() {
     _drawPointer = null;
+    _stopWaitingForHold();
     _live.value = null;
     if (_pendingErase.isNotEmpty) setState(_pendingErase.clear);
   }
