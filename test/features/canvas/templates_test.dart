@@ -105,6 +105,8 @@ CatalogItem template(
   Map<String, Object?> spec, {
   int version = 1,
   List<String> extraPdfs = const [],
+  bool free = true,
+  String? name,
 }) {
   final pack = zip({
     'template.pdf': utf8.encode('%PDF-$version'),
@@ -115,10 +117,10 @@ CatalogItem template(
   downloader.files[path] = pack;
   return CatalogItem.fromMap(id, {
     'kind': 'template',
-    'name': id == 'planner' ? '2027 Weekly Planner' : 'Essentials',
+    'name': name ?? (id == 'planner' ? '2027 Weekly Planner' : 'Essentials'),
     'version': version,
     'visibility': 'public',
-    'unlock': {'free': true},
+    'unlock': free ? {'free': true} : {'pro': true},
     'templateMode': spec['mode'],
     'pageCount': 3,
     'files': {
@@ -522,6 +524,81 @@ void main() {
       expect(page.title, 'Meeting notes');
       expect(page.template!.itemId, 'essentials');
       expect(page.template!.pdfPage, 2);
+    });
+
+    Future<String> pumpNewPageSheet(
+      WidgetTester tester,
+      List<CatalogItem> items,
+    ) async {
+      final auth = await pumpApp(
+        tester,
+        skins,
+        size: const Size(900, 1600),
+        overrides: overrides(items),
+      );
+      uid = auth.currentUser!.uid;
+      await tester.tap(find.text('New notebook').last);
+      await settle(tester);
+      await tester.tap(find.text('Blank pages'));
+      await settle(tester);
+      await tester.tap(find.text('Create'));
+      await settle(tester);
+      await tester.tap(find.text('New page'));
+      await settle(tester);
+      final repo = backend.notebooks(uid);
+      return (await repo.watchNotebooks().first).single.id;
+    }
+
+    testWidgets('New page offers a blank page and every template', (
+      tester,
+    ) async {
+      final notebookId = await pumpNewPageSheet(tester, [
+        template(downloader, 'essentials', pagesJson),
+        template(downloader, 'planner', plannerJson),
+        template(
+          downloader,
+          'fancy',
+          pagesJson,
+          free: false,
+          name: 'Fancy pages',
+        ),
+      ]);
+
+      expect(find.bySemanticsLabel('Blank page'), findsOneWidget);
+      expect(find.bySemanticsLabel('Meeting notes template'), findsOneWidget);
+      expect(find.text('2027 Weekly Planner'), findsOneWidget);
+      expect(find.text('More in the store'), findsOneWidget);
+      expect(find.text('Fancy pages'), findsOneWidget);
+
+      await tester.tap(find.bySemanticsLabel('Blank page'));
+      await settle(tester);
+      final pages = await backend
+          .notebooks(uid)
+          .watchNotebookPages(notebookId)
+          .first;
+      expect(pages.single.template, isNull);
+    });
+
+    testWidgets('a planner section opens to pick any of its pages', (
+      tester,
+    ) async {
+      final notebookId = await pumpNewPageSheet(tester, [
+        template(downloader, 'planner', plannerJson),
+      ]);
+
+      await tester.tap(
+        find.bySemanticsLabel('Months pages of 2027 Weekly Planner'),
+      );
+      await settle(tester);
+      await tester.tap(find.bySemanticsLabel('February template'));
+      await settle(tester);
+
+      final page =
+          (await backend.notebooks(uid).watchNotebookPages(notebookId).first)
+              .single;
+      expect(page.title, 'February');
+      expect(page.template!.itemId, 'planner');
+      expect(page.template!.pdfPage, 3);
     });
   });
 }

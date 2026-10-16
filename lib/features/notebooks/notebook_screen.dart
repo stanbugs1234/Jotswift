@@ -4,11 +4,11 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/paper/paper_style.dart';
 import '../../shared/dialogs.dart';
-import '../canvas/templates.dart';
 import '../exports/export_sheet.dart';
 import '../imports/import_actions.dart';
 import '../shelf/shelf_actions.dart';
 import 'domain/notebook_models.dart';
+import 'new_page_sheet.dart';
 import 'notes_providers.dart';
 import 'page_grid.dart';
 import 'paper_picker.dart';
@@ -103,18 +103,31 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
     if (mounted) _openPage(page.id);
   }
 
-  Future<void> _newPageFromTemplate(String sectionId) async {
-    final spec = await showTemplatePageSheet(context);
-    if (spec == null || !mounted) return;
-    final page = await ref
-        .read(notebookRepositoryProvider)
-        .createPage(
-          widget.notebookId,
-          sectionId,
-          template: spec.template,
-          title: spec.title,
-        );
-    if (mounted) _openPage(page.id);
+  /// Asks what to add: a blank page, another paper or a template page.
+  Future<void> _newPageFromSheet(String sectionId) async {
+    final choice = await showNewPageSheet(
+      context,
+      paper: notebookPaper(ref, widget.notebookId),
+    );
+    if (!mounted) return;
+    switch (choice) {
+      case null:
+        return;
+      case BlankPageChoice():
+        await _newPage(sectionId);
+      case OtherPaperChoice():
+        await _newPageWithPaper(sectionId);
+      case TemplatePageChoice(:final page):
+        final created = await ref
+            .read(notebookRepositoryProvider)
+            .createPage(
+              widget.notebookId,
+              sectionId,
+              template: page.template,
+              title: page.title,
+            );
+        if (mounted) _openPage(created.id);
+    }
   }
 
   Future<void> _importPages(String sectionId) async {
@@ -174,7 +187,7 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
               tooltip: 'Notebook options',
               onSelected: (action) => switch (action) {
                 'edit' => editNotebook(context, ref, nb),
-                'template' when current != null => _newPageFromTemplate(
+                'template' when current != null => _newPageFromSheet(
                   current.id,
                 ),
                 'import' when current != null => _importPages(current.id),
@@ -217,7 +230,7 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
       floatingActionButton: current == null
           ? null
           : FloatingActionButton.extended(
-              onPressed: () => _newPage(current.id),
+              onPressed: () => _newPageFromSheet(current.id),
               icon: const Icon(Icons.note_add_outlined),
               label: const Text('New page'),
             ),
@@ -227,7 +240,7 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
               notebookId: widget.notebookId,
               section: current,
               onOpen: _openPage,
-              onCreate: () => _newPage(current.id),
+              onCreate: () => _newPageFromSheet(current.id),
             ),
     );
   }

@@ -57,6 +57,8 @@ void main() {
 
     await tester.tap(find.text('New page'));
     await tester.pumpAndSettle();
+    await tester.tap(find.bySemanticsLabel('Blank page'));
+    await tester.pumpAndSettle();
 
     // The page opens full screen with the drawing tools.
     expect(find.byType(InkToolbar), findsOneWidget);
@@ -78,6 +80,8 @@ void main() {
 
     await tester.tap(find.text('New page'));
     await tester.pumpAndSettle();
+    await tester.tap(find.bySemanticsLabel('Blank page'));
+    await tester.pumpAndSettle();
     await tester.pageBack();
     await tester.pumpAndSettle();
 
@@ -96,6 +100,8 @@ void main() {
     await pumpApp(tester, skins);
     await createNotebook(tester, 'Ideas');
     await tester.tap(find.text('New page'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.bySemanticsLabel('Blank page'));
     await tester.pumpAndSettle();
     await tester.pageBack();
     await tester.pumpAndSettle();

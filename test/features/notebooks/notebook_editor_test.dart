@@ -194,6 +194,8 @@ void main() {
     await pump(tester);
     await createDefault(tester, 'Ideas');
     await tapText(tester, 'New page');
+    await tester.tap(find.bySemanticsLabel('Blank page'));
+    await tester.pumpAndSettle();
 
     Future<NotePage> page() async {
       final nb = await onlyNotebook();
