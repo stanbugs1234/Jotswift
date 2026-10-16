@@ -139,7 +139,7 @@
       "name": "Work & Business Planner (undated)",
       "short": "Work & Business",
       "price": "1.99",
-      "tags": ["work", "business", "clients", "undated", "spreads"],
+      "tags": ["work", "business", "clients", "productivity", "undated", "spreads"],
       "unlock": { "pro": true, "products": ["planner_spread_work"] },
       "sections": [
         {"tab": "Clients", "pages": ["life.clients"]},

@@ -55,7 +55,7 @@ def focus():
     return dict(
         title="Focus Planner", subtitle="An ADHD-friendly planner: one thing at a time.",
         style=style("#2F6F6A", "#E6F0EE", "#FBFBF8"),
-        tags=["adhd", "focus", "time blocking", "brain dump", "wellness", "linked"],
+        tags=["adhd", "focus", "time blocking", "brain dump", "wellness", "productivity", "linked"],
         front=[("Year goals", "target", pg.year_goals, "start"),
                ("Year in pixels", "heart", pg.year_pixels, "start"),
                ("Routines", "sun", pg.routines, "start"),
@@ -174,6 +174,7 @@ def goals():
     return dict(
         title="Goals & Projects", subtitle="From a dream to this week's next step.",
         style=style("#1F3D63", "#E6ECF4"),
+        category="productivity",
         tags=["goals", "projects", "productivity", "dashboard", "quarterly", "linked"],
         front=[("Goal roadmap", "target", pg.goal_roadmap, "start"),
                ("Year goals", "star", pg.year_goals, "start")],
@@ -233,7 +234,7 @@ def business():
     return dict(
         title="Business Planner", subtitle="Strategy, clients and money, in one place.",
         style=style("#2F343B", "#ECEAE4", "#FFFEFB"),
-        tags=["business", "work", "clients", "marketing", "finance", "content", "linked"],
+        tags=["business", "work", "clients", "marketing", "finance", "content", "productivity", "linked"],
         front=[("Year review", "star", pg.year_review, "start"),
                ("Strategy", "target", pg.business_strategy, "start"),
                ("Marketing plan", "chart", pg.marketing_plan, "start"),
@@ -367,7 +368,7 @@ def write_listing(folder, cfg, edition, key):
         "name": listing_name(cfg, edition),
         "version": old.get("version", 1),
         "unlock": {"pro": True, "products": [product_id(key, edition)]},
-        "category": "planners",
+        "category": cfg.get("category", "planners"),
         "tags": [*cfg["tags"], *years, "landscape", "portrait"],
     }
     path.write_text(json.dumps(listing, indent=2) + "\n")
