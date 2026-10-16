@@ -30,6 +30,7 @@ import 'stickers.dart';
 import 'stroke_painter.dart';
 import 'tape.dart';
 import 'templates.dart';
+import 'zoom_window.dart';
 import '../notebooks/page_jumper.dart';
 import '../../core/motion/motion.dart';
 
@@ -56,10 +57,19 @@ class PageCanvas extends ConsumerStatefulWidget {
     this.embedded = false,
     this.onWriting,
     this.onScroll,
+    this.window,
+    this.onStroke,
     super.key,
   });
 
   final String pageId;
+
+  /// Shows just this part of the page (page units), magnified to the
+  /// width, for writing in the zoom window. Fingers don't scroll it.
+  final Rect? window;
+
+  /// Hears each stroke written, by its bounds (to move the zoom window on).
+  final ValueChanged<Rect>? onStroke;
 
   /// One of a scrolling list of pages: always fitted to the width, with no
   /// panning or zooming of its own, so fingers scroll the list.
@@ -222,6 +232,18 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
   /// the size and color of the mark it would make.
   final _hover = ValueNotifier<Offset?>(null);
 
+  /// A finger moving the zoom window's box, and where it last was.
+  int? _boxPointer;
+  Offset? _boxAt;
+
+  /// The zoom window's box is shown on this page (not in the window).
+  bool get _showsZoomBox =>
+      widget.window == null &&
+      !widget.embedded &&
+      !widget.readOnly &&
+      widget.inkEnabled &&
+      ref.read(zoomWindowProvider);
+
   // Tape: the strip being laid (page units), from where, by which pointer;
   // and strips the eraser has touched, hidden until they're removed.
   PageElement? _tapeDraft;
@@ -259,7 +281,12 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
   /// Once per device, the first time a page opens with fingers scrolling,
   /// say so: otherwise a finger that doesn't draw looks broken.
   void _maybeShowHint() {
-    if (!mounted || widget.readOnly || ref.read(fingersDrawProvider)) return;
+    if (!mounted ||
+        widget.readOnly ||
+        widget.window != null ||
+        ref.read(fingersDrawProvider)) {
+      return;
+    }
     final prefs = ref.read(sharedPreferencesProvider);
     if (prefs.getBool(_hintKey) ?? false) return;
     prefs.setBool(_hintKey, true);
@@ -404,6 +431,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     }
 
     if (_pickColorWith(e)) return;
+    if (_zoomBoxWith(e)) return;
     if (_rulerWith(e)) return;
     if (_lassoWith(e)) return;
     if (_selectWith(e)) return;
@@ -531,11 +559,29 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     return true;
   }
 
+  /// A finger (or the mouse) on the zoom window's box moves it. The pen
+  /// writes through it.
+  bool _zoomBoxWith(PointerDownEvent e) {
+    if (!_showsZoomBox || _isStylus(e.kind) || _drawPointer != null) {
+      return false;
+    }
+    if (_navPointers.isNotEmpty) return false;
+    final box = ref.read(zoomBoxProvider(widget.pageId)).rect;
+    if (!box.inflate(8 / _scale).contains(_toPage(e.localPosition))) {
+      return false;
+    }
+    _stopCoasting();
+    _boxPointer = e.pointer;
+    _boxAt = e.localPosition;
+    return true;
+  }
+
   /// Which way a drag starting at [point] would turn the page, if it's at
   /// the screen's edge and the page can be turned.
   TurnDirection? _turnEdgeAt(Offset point) {
     final viewport = _viewport;
     if (widget.embedded ||
+        widget.window != null ||
         viewport == null ||
         PageTurnScope.maybeOf(context) == null) {
       return null;
@@ -593,6 +639,14 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     if (_rulerPointers.containsKey(e.pointer)) return _moveRuler(e);
     if (e.pointer == _laserPointer) return _addLaserPoint(e.localPosition);
     if (e.pointer == _tapePointer) return _stretchTape(e.localPosition);
+    if (e.pointer == _boxPointer) {
+      final last = _boxAt!;
+      _boxAt = e.localPosition;
+      ref
+          .read(zoomBoxProvider(widget.pageId).notifier)
+          .moveBy((e.localPosition - last) / _scale);
+      return;
+    }
     if (e.pointer == _lassoPointer) {
       _lassoPoints.value = [..._lassoPoints.value, _toPage(e.localPosition)];
       return;
@@ -619,6 +673,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     final before = Map.of(_navPointers);
     _navPointers[e.pointer] = e.localPosition;
     _tapTravel += (e.localPosition - before[e.pointer]!).distance;
+    if (widget.window != null) return; // The window holds still.
     // The list of pages scrolls instead.
     if (widget.embedded) {
       if (_navPointers.length == 2 && ref.read(fingersDrawProvider)) {
@@ -634,6 +689,28 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
         _pinch(before, _navPointers);
         _showZoom();
       }
+      _clampOffset();
+    });
+  }
+
+  /// Scrolls just enough to show [rect] (page units), with a margin.
+  void _reveal(Rect rect) {
+    final viewport = _viewport;
+    if (viewport == null) return;
+    final shown = Rect.fromLTWH(
+      rect.left * _scale + _offset.dx,
+      rect.top * _scale + _offset.dy,
+      rect.width * _scale,
+      rect.height * _scale,
+    ).inflate(24);
+    var dx = 0.0, dy = 0.0;
+    if (shown.left < 0) dx = -shown.left;
+    if (shown.right > viewport.width) dx = viewport.width - shown.right;
+    if (shown.top < 0) dy = -shown.top;
+    if (shown.bottom > viewport.height) dy = viewport.height - shown.bottom;
+    if (dx == 0 && dy == 0) return;
+    setState(() {
+      _offset += Offset(dx, dy);
       _clampOffset();
     });
   }
@@ -718,6 +795,10 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
       return;
     }
     if (e.pointer == _tapePointer) return _finishTape(e.localPosition);
+    if (e.pointer == _boxPointer) {
+      _boxPointer = null;
+      return;
+    }
     if (e.pointer == _lassoPointer) return _finishLasso();
     if (e.pointer == _lassoDrag?.pointer) return _finishLassoDrag();
     if (e.pointer == _drag?.pointer) _finishDrag();
@@ -730,7 +811,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
       final start = _navStarts[e.pointer];
       final moved =
           start != null && (e.localPosition - start.$1).distance >= 10;
-      if (moved && !widget.embedded) {
+      if (moved && !widget.embedded && widget.window == null) {
         _startCoast(tracker.getVelocity().pixelsPerSecond);
       }
     }
@@ -1033,6 +1114,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     if (e.pointer == _turnPointer) return _endTurn(0);
     if (_rulerPointers.remove(e.pointer) != null) return;
     if (e.pointer == _laserPointer) _laserPointer = null;
+    if (e.pointer == _boxPointer) _boxPointer = null;
     if (e.pointer == _tapePointer) {
       setState(() {
         _tapePointer = null;
@@ -1332,6 +1414,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     // The live stroke stays on screen until the saved copy arrives (see
     // build), so it doesn't flicker.
     ref.read(inkHistoryProvider(widget.pageId).notifier).addStroke(stroke);
+    widget.onStroke?.call(stroke.bounds);
   }
 
   /// The ink a pen [stroke] scribbles out, if it's a scribble over some.
@@ -2215,6 +2298,16 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
       }
     });
     ref.listen(pasteRequestProvider(widget.pageId), (_, _) => _paste());
+    ref.watch(zoomWindowProvider);
+    final zoomBox = _showsZoomBox
+        ? ref.watch(zoomBoxProvider(widget.pageId)).rect
+        : null;
+    if (_showsZoomBox) {
+      // Keep the box in view as the writing moves it on.
+      ref.listen(zoomBoxProvider(widget.pageId), (_, next) {
+        if (_boxPointer == null) _reveal(next.rect);
+      });
+    }
     final rulerOut = ref.watch(rulerVisibleProvider) && widget.inkEnabled;
     if (!rulerOut) {
       _ruler = null;
@@ -2261,7 +2354,12 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     return LayoutBuilder(
       builder: (context, constraints) {
         final viewport = constraints.biggest;
-        if (_viewport == null || (widget.embedded && _viewport != viewport)) {
+        if (widget.window case final window?) {
+          // The window's part of the page, edge to edge.
+          _scale = viewport.width / window.width;
+          _offset = -window.topLeft * _scale;
+        } else if (_viewport == null ||
+            (widget.embedded && _viewport != viewport)) {
           _fitWidth(viewport);
         }
         _viewport = viewport;
@@ -2353,6 +2451,16 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
                                 live: _live,
                                 predicted: _predicted,
                                 overlays: [
+                                  if (zoomBox != null)
+                                    IgnorePointer(
+                                      child: CustomPaint(
+                                        painter: _ZoomBoxPainter(
+                                          zoomBox,
+                                          Theme.of(context).colorScheme.primary,
+                                          1 / _scale,
+                                        ),
+                                      ),
+                                    ),
                                   if (lasso != null)
                                     IgnorePointer(
                                       child: CustomPaint(
@@ -2865,6 +2973,43 @@ class _LassoDrag {
 
 /// The laser pointer's trail: a red glow with a bright core, fading along
 /// its length as points age.
+/// The zoom window's box on the page, with its margin marked.
+class _ZoomBoxPainter extends CustomPainter {
+  _ZoomBoxPainter(this.box, this.color, this.unit);
+
+  final Rect box;
+  final Color color;
+
+  /// One screen pixel, in page units.
+  final double unit;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final r = RRect.fromRectAndRadius(box, Radius.circular(6 * unit));
+    canvas
+      ..drawRRect(r, Paint()..color = color.withValues(alpha: 0.06))
+      ..drawRRect(
+        r,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2 * unit
+          ..color = color.withValues(alpha: 0.8),
+      );
+    final x = box.left + box.width * ZoomBoxController.advanceAt;
+    canvas.drawLine(
+      Offset(x, box.top),
+      Offset(x, box.bottom),
+      Paint()
+        ..strokeWidth = 1.5 * unit
+        ..color = color.withValues(alpha: 0.35),
+    );
+  }
+
+  @override
+  bool shouldRepaint(_ZoomBoxPainter old) =>
+      old.box != box || old.color != color || old.unit != unit;
+}
+
 /// Under a hovering Pencil: a ring the size of the mark the pen,
 /// highlighter or eraser would make, in the ink's color.
 class _HoverPainter extends CustomPainter {

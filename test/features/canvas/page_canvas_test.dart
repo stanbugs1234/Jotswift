@@ -19,6 +19,7 @@ import 'package:notely/features/canvas/page_canvas.dart';
 import 'package:notely/features/canvas/pen_rail.dart';
 import 'package:notely/features/canvas/stroke_painter.dart';
 import 'package:notely/features/canvas/tape.dart';
+import 'package:notely/features/canvas/zoom_window.dart';
 import 'package:notely/features/notebooks/data/in_memory_notes_backend.dart';
 import 'package:notely/features/notebooks/domain/notebook_models.dart';
 import 'package:notely/features/notebooks/notes_providers.dart';
@@ -222,7 +223,10 @@ void main() {
     final page = await pumpPage(tester);
     await tester.tap(find.byTooltip('Fingers draw · tap so fingers scroll'));
     await tester.pump();
-    expect(find.text('Finger scrolls'), findsOneWidget);
+    expect(
+      find.byTooltip('Fingers scroll · tap to draw with a finger'),
+      findsOneWidget,
+    );
 
     await drag(tester, PointerDeviceKind.touch);
     expect(await page.visibleStrokes(), isEmpty);
@@ -1037,6 +1041,58 @@ void main() {
       final stroke = (await page.strokes()).single;
       expect(stroke.fill, isNull);
       expect(stroke.dash, LineDash.solid);
+    });
+  });
+
+  group('zoom window', () {
+    testWidgets('writing large in it lands small in its box, which moves on', (
+      tester,
+    ) async {
+      final page = await pumpPage(tester);
+      await tester.ensureVisible(find.byTooltip('Zoom window'));
+      await tester.tap(find.byTooltip('Zoom window'));
+      await tester.pumpAndSettle();
+      final window = find.byType(PageCanvas).last;
+      expect(find.byType(PageCanvas), findsNWidgets(2));
+      final container = ProviderScope.containerOf(tester.element(window));
+      final before = container.read(zoomBoxProvider(page.pageId)).rect;
+
+      // A short mark at the start of the window.
+      final start = tester.getTopLeft(window) + const Offset(40, 60);
+      final pen = await tester.startGesture(
+        start,
+        kind: PointerDeviceKind.stylus,
+      );
+      for (var i = 1; i <= 6; i++) {
+        await pen.moveTo(start + Offset(i * 10.0, i * 6.0));
+      }
+      await pen.up();
+      await tester.pumpAndSettle();
+
+      final mark = (await page.strokes()).single;
+      expect(before.contains(mark.bounds.topLeft), isTrue);
+      expect(before.contains(mark.bounds.bottomRight), isTrue);
+      // Magnified: 60 pixels across in the window, much less on the page.
+      final pageScale = (800 - 32) / pageSize.width;
+      expect(mark.bounds.width * pageScale, lessThan(40));
+      expect(container.read(zoomBoxProvider(page.pageId)).rect, before);
+
+      // Writing past the margin moves the box on.
+      final far =
+          tester.getTopLeft(window) +
+          Offset(tester.getSize(window).width * 0.85, 60);
+      final pen2 = await tester.startGesture(
+        far,
+        kind: PointerDeviceKind.stylus,
+      );
+      for (var i = 1; i <= 6; i++) {
+        await pen2.moveTo(far + Offset(i * 4.0, i * 2.0));
+      }
+      await pen2.up();
+      await tester.pumpAndSettle();
+      final after = container.read(zoomBoxProvider(page.pageId)).rect;
+      expect(after.left, greaterThan(before.left));
+      expect(after.top, before.top);
     });
   });
 

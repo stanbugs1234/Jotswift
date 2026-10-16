@@ -165,7 +165,10 @@ void main() {
 
       expect(await visible(pageId), isEmpty);
       expect(pageTopLeft(tester).dy, lessThan(before.dy));
-      expect(find.text('Finger scrolls'), findsOneWidget);
+      expect(
+        find.byTooltip('Fingers scroll · tap to draw with a finger'),
+        findsOneWidget,
+      );
 
       // The Pencil still writes.
       await drag(tester, PointerDeviceKind.stylus, by: const Offset(120, 30));

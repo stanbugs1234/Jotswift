@@ -12,6 +12,7 @@ import '../../shared/dialogs.dart';
 import '../canvas/ink_toolbar.dart';
 import '../canvas/page_canvas.dart';
 import '../canvas/pen_rail.dart';
+import '../canvas/zoom_window.dart';
 import '../canvas/templates.dart' show templateImageProvider;
 import '../exports/export_sheet.dart';
 import '../tasks/task_providers.dart' show todayProvider;
@@ -144,6 +145,10 @@ class PageScreen extends ConsumerWidget {
       ),
     );
 
+    // Writing large below, landing small on the page. Not while the pages
+    // scroll in a list.
+    final zoomWindow =
+        ref.watch(zoomWindowProvider) && !readOnly && inkEnabled && !vertical;
     final pageView = vertical && notebookId != null
         ? VerticalPages(
             notebookId: notebookId,
@@ -363,6 +368,14 @@ class PageScreen extends ConsumerWidget {
                 ],
               ),
             ),
+            if (zoomWindow)
+              SizedBox(
+                height: (MediaQuery.sizeOf(context).height * 0.28).clamp(
+                  160.0,
+                  300.0,
+                ),
+                child: ZoomWindowPanel(key: ValueKey(pageId), pageId: pageId),
+              ),
           ],
         ),
       ),

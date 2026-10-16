@@ -271,6 +271,7 @@ void main() {
 
     /// Opens the tray and places the Star sticker.
     Future<void> placeStar(WidgetTester tester) async {
+      await tester.ensureVisible(find.byTooltip('Stickers'));
       await tester.tap(find.byTooltip('Stickers'));
       await settle(tester);
       await tester.tap(
