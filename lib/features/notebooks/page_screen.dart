@@ -11,6 +11,7 @@ import '../../core/skins/widgets/page_style.dart';
 import '../../shared/dialogs.dart';
 import '../canvas/ink_toolbar.dart';
 import '../canvas/page_canvas.dart';
+import '../canvas/pen_rail.dart';
 import '../canvas/templates.dart' show templateImageProvider;
 import '../exports/export_sheet.dart';
 import '../tasks/task_providers.dart' show todayProvider;
@@ -142,6 +143,23 @@ class PageScreen extends ConsumerWidget {
         ),
       ),
     );
+
+    final pageView = vertical && notebookId != null
+        ? VerticalPages(
+            notebookId: notebookId,
+            order: order,
+            startPageId: this.pageId,
+            readOnly: readOnly,
+            inkEnabled: inkEnabled,
+          )
+        : PageTurnSwitcher(
+            pageKey: pageId,
+            order: order,
+            style: ref.watch(pageTurnStyleProvider),
+            pageBuilder: (id) => turnPage(id as String),
+            onTurned: (id) => openPage(id as String),
+            child: turnPage(pageId),
+          );
 
     final wide = MediaQuery.sizeOf(context).width >= Breakpoints.medium;
     Future<void> choosePaper() async {
@@ -337,22 +355,13 @@ class PageScreen extends ConsumerWidget {
             if (!readOnly) InkToolbar(pageId: pageId, inkEnabled: inkEnabled),
             const Divider(height: 1),
             Expanded(
-              child: vertical && notebookId != null
-                  ? VerticalPages(
-                      notebookId: notebookId,
-                      order: order,
-                      startPageId: this.pageId,
-                      readOnly: readOnly,
-                      inkEnabled: inkEnabled,
-                    )
-                  : PageTurnSwitcher(
-                      pageKey: pageId,
-                      order: order,
-                      style: ref.watch(pageTurnStyleProvider),
-                      pageBuilder: (id) => turnPage(id as String),
-                      onTurned: (id) => openPage(id as String),
-                      child: turnPage(pageId),
-                    ),
+              child: Stack(
+                children: [
+                  Positioned.fill(child: pageView),
+                  if (!readOnly && inkEnabled)
+                    const Positioned.fill(child: PenRail()),
+                ],
+              ),
             ),
           ],
         ),

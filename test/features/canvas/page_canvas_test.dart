@@ -16,6 +16,7 @@ import 'package:notely/features/canvas/domain/stroke.dart';
 import 'package:notely/features/canvas/ink_toolbar.dart';
 import 'package:notely/features/canvas/ink_tools.dart';
 import 'package:notely/features/canvas/page_canvas.dart';
+import 'package:notely/features/canvas/pen_rail.dart';
 import 'package:notely/features/canvas/stroke_painter.dart';
 import 'package:notely/features/notebooks/data/in_memory_notes_backend.dart';
 import 'package:notely/features/notebooks/domain/notebook_models.dart';
@@ -50,6 +51,7 @@ void main() {
     WidgetTester tester, {
     bool readOnly = false,
     bool inkEnabled = true,
+    String penPanel = 'toolbar',
   }) async {
     tester.view
       ..physicalSize = const Size(800, 1000)
@@ -69,6 +71,7 @@ void main() {
 
     final container = await makeContainer(
       skins,
+      prefs: {'penPanelSide': penPanel},
       overrides: [
         authRepositoryProvider.overrideWithValue(auth),
         notesBackendProvider.overrideWithValue(backend),
@@ -743,6 +746,65 @@ void main() {
       expect(stroke.color, inkColors[2].toARGB32());
       expect(stroke.style, PenStyle.pencil);
       expect(stroke.width, InkToolState.penSizes[2]);
+    });
+  });
+
+  group('pen panel', () {
+    testWidgets('a tablet has the pen options at the side of the page', (
+      tester,
+    ) async {
+      final page = await pumpPage(tester, penPanel: 'left');
+      final inkColors = skinById(skins, 'classic').inkColors;
+      expect(find.byType(PenRail), findsOneWidget);
+      expect(find.byTooltip('Pen options'), findsNothing, reason: 'toolbar');
+      expect(
+        tester.getCenter(find.byTooltip('Pencil')).dx,
+        lessThan(100),
+        reason: 'on the left',
+      );
+
+      await tester.tap(find.byTooltip('Brush pen'));
+      await tester.tap(find.bySemanticsLabel('Ink color 3'));
+      await tester.pump();
+      await drag(tester, PointerDeviceKind.stylus);
+
+      final stroke = (await page.strokes()).single;
+      expect(stroke.style, PenStyle.brush);
+      expect(stroke.color, inkColors[2].toARGB32());
+    });
+
+    testWidgets('its slider sets the width, and pens can be saved', (
+      tester,
+    ) async {
+      final page = await pumpPage(tester, penPanel: 'right');
+      expect(
+        tester.getCenter(find.byTooltip('Pencil')).dx,
+        greaterThan(700),
+        reason: 'on the right',
+      );
+      await tester.drag(find.byType(Slider), const Offset(0, -300));
+      await tester.pump();
+      await tester.tap(find.byTooltip('Save this pen'));
+      await tester.pumpAndSettle();
+      expect(find.byTooltip('Save this pen'), findsNothing);
+      expect(find.byTooltip('Saved pen 1: Fountain'), findsOneWidget);
+
+      await drag(tester, PointerDeviceKind.stylus);
+      expect((await page.strokes()).single.width, InkToolState.penRange.max);
+    });
+
+    testWidgets('it steps aside for the lasso, and shows eraser sizes', (
+      tester,
+    ) async {
+      await pumpPage(tester, penPanel: 'left');
+      await tester.tap(find.byTooltip('Lasso'));
+      await tester.pumpAndSettle();
+      expect(find.byTooltip('Pencil'), findsNothing);
+
+      await tester.tap(find.byTooltip('Eraser'));
+      await tester.pumpAndSettle();
+      expect(find.byTooltip('Large eraser'), findsOneWidget);
+      expect(find.byTooltip('More colors'), findsNothing);
     });
   });
 

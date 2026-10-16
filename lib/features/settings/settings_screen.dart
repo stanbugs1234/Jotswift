@@ -16,6 +16,7 @@ import '../auth/auth_repository.dart';
 import '../calendar/calendar_providers.dart' show monthAnimationProvider;
 import '../calendar/templates/calendar_look.dart' show calendarTemplateProvider;
 import '../calendar/templates/calendar_templates_screen.dart';
+import '../canvas/pen_rail.dart';
 import '../canvas/pencil_actions.dart';
 import '../skins/notebook_style_screen.dart';
 import '../store/paywall.dart';
@@ -210,6 +211,31 @@ class SettingsScreen extends ConsumerWidget {
                     ref.watch(fingerDrawingProvider),
                     ref.read(fingerDrawingProvider.notifier).set,
                   ),
+                  // Phones always keep pen options in the toolbar.
+                  if (MediaQuery.sizeOf(context).shortestSide >=
+                      PenRail.minShortestSide) ...[
+                    ListTile(
+                      leading: const Icon(Icons.view_sidebar_outlined),
+                      title: const Text('Pen colors and sizes'),
+                      subtitle: Text(switch (ref.watch(penPanelSideProvider)) {
+                        PenPanelSide.left =>
+                          'In a panel on the left of the page.',
+                        PenPanelSide.right =>
+                          'In a panel on the right of the page.',
+                        PenPanelSide.toolbar =>
+                          'In the toolbar above the page.',
+                      }),
+                    ),
+                    segments(
+                      const [
+                        (PenPanelSide.left, 'Left'),
+                        (PenPanelSide.right, 'Right'),
+                        (PenPanelSide.toolbar, 'Toolbar'),
+                      ],
+                      ref.watch(penPanelSideProvider),
+                      ref.read(penPanelSideProvider.notifier).set,
+                    ),
+                  ],
                   if (!kIsWeb && defaultTargetPlatform == TargetPlatform.iOS)
                     for (final gesture in PencilGesture.values)
                       _PencilGestureTile(gesture: gesture),

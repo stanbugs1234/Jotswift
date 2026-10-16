@@ -6,6 +6,7 @@ import '../../core/skins/notely_skin.dart';
 import 'domain/stroke.dart';
 import 'ink_tools.dart';
 import 'lasso.dart';
+import 'pen_rail.dart';
 import 'pencil_actions.dart';
 import 'ruler.dart';
 import 'page_items.dart';
@@ -13,8 +14,9 @@ import 'stickers.dart';
 
 /// The page tools: a finger toggle, pen, highlighter, eraser, select, lasso,
 /// paste (after copying), text, photos, stickers, colors, sizes, undo and
-/// redo. On narrow screens the
-/// colors and sizes fold into one "Pen options" button.
+/// redo. Colors and sizes are in the side panel on a tablet (see
+/// [PenRail]); otherwise here, folded into one "Pen options" button on
+/// narrow screens.
 class InkToolbar extends ConsumerWidget {
   const InkToolbar({required this.pageId, this.inkEnabled = true, super.key});
 
@@ -113,7 +115,8 @@ class InkToolbar extends ConsumerWidget {
                   selected: false,
                   onPressed: () => showStickerTray(context, pageId),
                 ),
-                if (inkEnabled) ...[
+                // With the pen panel at the side, the toolbar keeps to tools.
+                if (inkEnabled && !showsPenRail(context, ref)) ...[
                   const _Divider(),
                   if (compact)
                     const _PenOptionsButton()
@@ -236,7 +239,7 @@ class _PenOptions extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    if (wrap) return const _PenPanel(withSizes: true);
+    if (wrap) return const PenPanel(withSizes: true);
     final favorites = ref.watch(penFavoritesProvider);
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -244,8 +247,8 @@ class _PenOptions extends ConsumerWidget {
         const _Palette(),
         const _Divider(),
         const _SizePresets(),
-        _PenMenu(
-          menuChildren: const [_PenPanel(withSizes: false)],
+        PenMenu(
+          menuChildren: const [PenPanel(withSizes: false)],
           builder: (context, onPressed) => IconButton(
             tooltip: 'Pen settings',
             constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
@@ -278,14 +281,14 @@ class _Palette extends ConsumerWidget {
     final custom = tool.customColor;
     final children = [
       for (final (i, color) in skin.inkColors.indexed)
-        _ColorDot(
+        InkColorDot(
           color: color,
           selected: custom == null && i == tool.colorIndex,
           onTap: () => tools.selectColor(i),
           label: 'Ink color ${i + 1}',
         ),
       if (custom != null)
-        _ColorDot(
+        InkColorDot(
           color: Color(custom),
           selected: true,
           onTap: () {},
@@ -353,8 +356,8 @@ class _SizePresets extends ConsumerWidget {
 
 /// Pen type, width, colors (with [withSizes], also the presets) and saved
 /// pens.
-class _PenPanel extends ConsumerWidget {
-  const _PenPanel({required this.withSizes});
+class PenPanel extends ConsumerWidget {
+  const PenPanel({required this.withSizes, super.key});
 
   final bool withSizes;
 
@@ -464,8 +467,8 @@ class _PenPanel extends ConsumerWidget {
                 children: [
                   for (final (i, pen) in favorites.indexed)
                     InputChip(
-                      avatar: _PenSwatch(pen: pen, size: 18),
-                      label: Text(_penName(pen)),
+                      avatar: PenSwatch(pen: pen, size: 18),
+                      label: Text(penName(pen)),
                       tooltip: 'Use saved pen ${i + 1}',
                       onPressed: () => tools.useFavorite(pen),
                       onDeleted: () => ref
@@ -491,7 +494,7 @@ class _PenPanel extends ConsumerWidget {
   }
 }
 
-String _penName(PenFavorite pen) => pen.tool == InkTool.highlighter
+String penName(PenFavorite pen) => pen.tool == InkTool.highlighter
     ? 'Highlighter'
     : switch (pen.style) {
         PenStyle.ballpoint => 'Ball',
@@ -501,8 +504,8 @@ String _penName(PenFavorite pen) => pen.tool == InkTool.highlighter
       };
 
 /// A saved pen's color, with its width as the dot's size.
-class _PenSwatch extends StatelessWidget {
-  const _PenSwatch({required this.pen, required this.size});
+class PenSwatch extends StatelessWidget {
+  const PenSwatch({required this.pen, required this.size, super.key});
 
   final PenFavorite pen;
   final double size;
@@ -558,13 +561,13 @@ class _FavoriteDot extends ConsumerWidget {
         (pen.tool == InkTool.highlighter || tool.penStyle == pen.style);
     final scheme = Theme.of(context).colorScheme;
     return IconButton(
-      tooltip: 'Saved pen ${index + 1}: ${_penName(pen)}',
+      tooltip: 'Saved pen ${index + 1}: ${penName(pen)}',
       isSelected: active,
       constraints: const BoxConstraints(minWidth: 40, minHeight: 44),
       style: IconButton.styleFrom(
         backgroundColor: active ? scheme.primary.withValues(alpha: 0.15) : null,
       ),
-      icon: _PenSwatch(pen: pen, size: 24),
+      icon: PenSwatch(pen: pen, size: 24),
       onPressed: () => ref.read(inkToolProvider.notifier).useFavorite(pen),
     );
   }
@@ -578,7 +581,7 @@ class _PenOptionsButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tool = ref.watch(inkToolProvider);
     final color = tool.colorFrom(NotelySkin.of(context).inkColors);
-    return _PenMenu(
+    return PenMenu(
       menuChildren: const [_PenOptions(wrap: true)],
       builder: (context, onPressed) => IconButton(
         tooltip: 'Pen options',
@@ -607,17 +610,25 @@ class _PenOptionsButton extends ConsumerWidget {
 
 /// A pop-up of pen options that also opens for an Apple Pencil gesture
 /// (see [penOptionsRequestProvider]).
-class _PenMenu extends ConsumerStatefulWidget {
-  const _PenMenu({required this.menuChildren, required this.builder});
+class PenMenu extends ConsumerStatefulWidget {
+  const PenMenu({
+    required this.menuChildren,
+    required this.builder,
+    this.alignmentOffset,
+    super.key,
+  });
 
   final List<Widget> menuChildren;
   final Widget Function(BuildContext context, VoidCallback onPressed) builder;
 
+  /// Where the pop-up opens, from below the button.
+  final Offset? alignmentOffset;
+
   @override
-  ConsumerState<_PenMenu> createState() => _PenMenuState();
+  ConsumerState<PenMenu> createState() => _PenMenuState();
 }
 
-class _PenMenuState extends ConsumerState<_PenMenu> {
+class _PenMenuState extends ConsumerState<PenMenu> {
   final _controller = MenuController();
 
   void _toggle() =>
@@ -628,6 +639,7 @@ class _PenMenuState extends ConsumerState<_PenMenu> {
     ref.listen(penOptionsRequestProvider, (_, _) => _toggle());
     return MenuAnchor(
       controller: _controller,
+      alignmentOffset: widget.alignmentOffset,
       menuChildren: widget.menuChildren,
       builder: (context, _, _) => widget.builder(context, _toggle),
     );
@@ -740,12 +752,14 @@ class _ColorPickerDialogState extends State<_ColorPickerDialog> {
   }
 }
 
-class _ColorDot extends StatelessWidget {
-  const _ColorDot({
+/// One ink color to tap; ringed when it is the pen's.
+class InkColorDot extends StatelessWidget {
+  const InkColorDot({
     required this.color,
     required this.selected,
     required this.onTap,
     required this.label,
+    super.key,
   });
 
   final Color color;
@@ -765,15 +779,23 @@ class _ColorDot extends StatelessWidget {
         radius: 22,
         child: Padding(
           padding: const EdgeInsets.all(8),
+          // The chosen color gets a ring around it, apart from the color,
+          // and every color an outline, so dark ink shows on a dark bar.
           child: Container(
-            width: 26,
-            height: 26,
+            width: 28,
+            height: 28,
+            padding: const EdgeInsets.all(3),
             decoration: BoxDecoration(
-              color: color,
               shape: BoxShape.circle,
-              border: Border.all(
-                color: selected ? scheme.primary : scheme.outline,
-                width: selected ? 3 : 1,
+              border: selected
+                  ? Border.all(color: scheme.primary, width: 2.5)
+                  : null,
+            ),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: color,
+                shape: BoxShape.circle,
+                border: Border.all(color: scheme.outline),
               ),
             ),
           ),
