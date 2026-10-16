@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:ui';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:notely/features/canvas/ruler.dart';
@@ -162,6 +163,59 @@ void main() {
       expect(ruler.degrees, 45);
       expect(snapRulerAngle(math.pi / 4 + 0.02), math.pi / 4);
       expect(snapRulerAngle(0.3), 0.3);
+    });
+  });
+
+  group('scribbles', () {
+    /// Back and forth [passes] times across [width], drifting down.
+    List<Offset> zigzag({int passes = 7, double width = 160}) => _hand([
+      for (var i = 0; i <= passes; i++)
+        Offset(i.isEven ? 0 : width, 100 + i * 4.0),
+    ]);
+
+    ({String id, Rect bounds, bool Function(Offset, double) hits}) word(
+      String id,
+      Rect bounds,
+    ) =>
+        (id: id, bounds: bounds, hits: (p, r) => bounds.inflate(r).contains(p));
+
+    test('hard back and forth is a scribble; writing and shapes are not', () {
+      expect(isScribble(zigzag()), isTrue);
+      expect(isScribble(zigzag(passes: 2)), isFalse);
+      expect(
+        isScribble(_hand([const Offset(0, 0), const Offset(200, 10)])),
+        isFalse,
+      );
+      expect(
+        isScribble(
+          _hand([
+            for (var i = 0; i <= 24; i++)
+              Offset(
+                80 * math.cos(i * math.pi / 12),
+                80 * math.sin(i * math.pi / 12),
+              ),
+          ]),
+        ),
+        isFalse,
+      );
+    });
+
+    test('a scribble takes the writing under it, and nothing else', () {
+      final out = scribbledOut(zigzag(), 6, [
+        word('under', const Rect.fromLTWH(20, 98, 120, 24)),
+        word('beside', const Rect.fromLTWH(400, 100, 120, 24)),
+        word('long line', const Rect.fromLTWH(-300, 110, 900, 2)),
+      ]);
+      expect(out, ['under']);
+    });
+
+    test('a scribble over nothing is just ink', () {
+      expect(
+        scribbledOut(zigzag(), 6, [
+          word('far', const Rect.fromLTWH(400, 400, 50, 20)),
+        ]),
+        isEmpty,
+      );
     });
   });
 }

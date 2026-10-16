@@ -1164,9 +1164,35 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
       _live.value = null;
       return;
     }
+    if (_scribbledOut(stroke) case final ids when ids.isNotEmpty) {
+      // Scribbled over writing: it goes, and the scribble with it.
+      HapticFeedback.mediumImpact();
+      _live.value = null;
+      setState(() => _pendingErase.addAll(ids));
+      ref.read(inkHistoryProvider(widget.pageId).notifier).erase(ids);
+      _showZoom('Scribbled out');
+      return;
+    }
     // The live stroke stays on screen until the saved copy arrives (see
     // build), so it doesn't flicker.
     ref.read(inkHistoryProvider(widget.pageId).notifier).addStroke(stroke);
+  }
+
+  /// The ink a pen [stroke] scribbles out, if it's a scribble over some.
+  List<String> _scribbledOut(Stroke stroke) {
+    if (stroke.tool != InkTool.pen ||
+        _snapped != null ||
+        !ref.read(scribbleEraseProvider)) {
+      return const [];
+    }
+    return scribbledOut(
+      [for (final p in stroke.points) p.offset],
+      stroke.width,
+      [
+        for (final s in _currentStrokes())
+          if (s.id != stroke.id) (id: s.id, bounds: s.bounds, hits: s.hitTest),
+      ],
+    );
   }
 
   void _cancelDrawing() {

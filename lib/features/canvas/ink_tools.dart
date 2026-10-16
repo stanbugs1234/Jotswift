@@ -727,3 +727,22 @@ class EyedropperController extends Notifier<bool> {
 final eyedropperProvider = NotifierProvider<EyedropperController, bool>(
   EyedropperController.new,
 );
+
+/// Whether scribbling over writing with the pen erases it. On unless
+/// turned off in Settings, on this device.
+class ScribbleEraseController extends Notifier<bool> {
+  static const _prefsKey = 'scribbleErase';
+
+  @override
+  bool build() =>
+      ref.watch(sharedPreferencesProvider).getBool(_prefsKey) ?? true;
+
+  Future<void> set(bool on) async {
+    state = on;
+    await ref.read(sharedPreferencesProvider).setBool(_prefsKey, on);
+  }
+}
+
+final scribbleEraseProvider = NotifierProvider<ScribbleEraseController, bool>(
+  ScribbleEraseController.new,
+);

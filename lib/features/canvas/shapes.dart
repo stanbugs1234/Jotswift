@@ -257,3 +257,78 @@ List<Offset> densify(List<Offset> outline, {double step = 6}) {
   out.add(outline.last);
   return out;
 }
+
+/// Whether [points] go hard back and forth, like scribbling something out:
+/// at least five passes along one axis, packed into their own width.
+/// Handwriting turns back too (an "m" goes up and down), so this alone
+/// doesn't erase anything; see [scribbledOut].
+bool isScribble(List<Offset> points) {
+  if (points.length < 12) return false;
+  final box = _bounds(points);
+  if (box.longestSide < 20) return false;
+  final length = _pathLength(points);
+  int turns(double Function(Offset) axis, double extent) {
+    // A turn counts once the pen has come back a third of the way, and
+    // more than a wobble.
+    final hysteresis = math.max(extent / 3, 8.0);
+    var count = 0, direction = 0;
+    var extreme = axis(points.first);
+    for (final p in points.skip(1)) {
+      final v = axis(p);
+      if (direction >= 0 && v > extreme || direction <= 0 && v < extreme) {
+        extreme = v;
+        if (direction == 0 && (v - axis(points.first)).abs() > hysteresis) {
+          direction = v > axis(points.first) ? 1 : -1;
+        }
+        continue;
+      }
+      if ((v - extreme).abs() > hysteresis) {
+        count++;
+        direction = v > extreme ? 1 : -1;
+        extreme = v;
+      }
+    }
+    return count;
+  }
+
+  for (final (axis, extent) in [
+    ((Offset p) => p.dx, box.width),
+    ((Offset p) => p.dy, box.height),
+  ]) {
+    if (extent < 20) continue;
+    if (turns(axis, extent) >= 4 && length > 4 * extent) return true;
+  }
+  return false;
+}
+
+/// The strokes a scribble crosses out: those it runs over that lie mostly
+/// within it. Empty when [scribble] isn't one or covers nothing, so it's
+/// ink after all.
+List<String> scribbledOut(
+  List<Offset> scribble,
+  double width,
+  Iterable<({String id, Rect bounds, bool Function(Offset, double) hits})>
+  strokes,
+) {
+  if (!isScribble(scribble)) return const [];
+  final area = _bounds(scribble).inflate(width);
+  return [
+    for (final s in strokes)
+      if (_shareInside(s.bounds, area) > 0.6 &&
+          scribble.any((p) => s.hits(p, width / 2)))
+        s.id,
+  ];
+}
+
+/// How much of [r] lies inside [area].
+double _shareInside(Rect r, Rect area) {
+  final inside = r.intersect(area);
+  if (inside.width <= 0 || inside.height <= 0) {
+    // A level or upright line has no area: compare lengths.
+    if (r.width == 0 || r.height == 0) {
+      return area.overlaps(r.inflate(0.5)) ? 1 : 0;
+    }
+    return 0;
+  }
+  return inside.width * inside.height / (r.width * r.height);
+}

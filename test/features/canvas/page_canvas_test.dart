@@ -837,6 +837,34 @@ void main() {
       expect(await page.visibleStrokes(), hasLength(1));
     });
 
+    testWidgets('scribbling over writing erases it, in one undo', (
+      tester,
+    ) async {
+      final page = await pumpPage(tester);
+      await drag(tester, PointerDeviceKind.stylus, by: const Offset(120, 0));
+      final word = (await page.visibleStrokes()).single;
+
+      final c = canvasCenter(tester);
+      final pen = await tester.startGesture(
+        c + const Offset(-5, -6),
+        kind: PointerDeviceKind.stylus,
+      );
+      for (var i = 1; i <= 8; i++) {
+        for (var k = 1; k <= 4; k++) {
+          final x = i.isEven ? 125 - 130 * k / 4 : -5 + 130 * k / 4;
+          await pen.moveTo(c + Offset(x, -6 + (i - 1 + k / 4) * 1.5));
+        }
+      }
+      await pen.up();
+      await tester.pumpAndSettle();
+      expect(await page.visibleStrokes(), isEmpty, reason: 'both gone');
+
+      await tester.ensureVisible(find.byTooltip('Undo'));
+      await tester.tap(find.byTooltip('Undo'));
+      await tester.pumpAndSettle();
+      expect((await page.visibleStrokes()).single.id, word.id);
+    });
+
     testWidgets('pen opacity is saved in the ink', (tester) async {
       final page = await pumpPage(tester, penPanel: 'left');
       await tester.drag(find.byType(Slider).at(1), const Offset(0, 200));

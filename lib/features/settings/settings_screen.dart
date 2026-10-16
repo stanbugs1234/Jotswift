@@ -222,6 +222,15 @@ class SettingsScreen extends ConsumerWidget {
                     value: ref.watch(fingerTapUndoProvider),
                     onChanged: ref.read(fingerTapUndoProvider.notifier).set,
                   ),
+                  SwitchListTile(
+                    secondary: const Icon(Icons.gesture),
+                    title: const Text('Scribble to erase'),
+                    subtitle: const Text(
+                      'Scribble over writing with the pen to erase it.',
+                    ),
+                    value: ref.watch(scribbleEraseProvider),
+                    onChanged: ref.read(scribbleEraseProvider.notifier).set,
+                  ),
                   // Phones always keep pen options in the toolbar.
                   if (MediaQuery.sizeOf(context).shortestSide >=
                       PenRail.minShortestSide) ...[
