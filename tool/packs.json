@@ -426,6 +426,100 @@
         "creative.handwriting_practice",
         "creative.calligraphy_practice"
       ]
+    },
+    "daily_focus_pages": {
+      "name": "Daily Focus pack",
+      "category": "productivity",
+      "tags": [
+        "productivity",
+        "focus",
+        "time management",
+        "pomodoro",
+        "to-do",
+        "daily"
+      ],
+      "unlock": {
+        "pro": true,
+        "products": [
+          "pack_daily_focus"
+        ]
+      },
+      "price": "1.99",
+      "pages": [
+        "productivity.one_three_five",
+        "productivity.ivy_lee",
+        "productivity.eat_the_frog",
+        "core.time_blocks",
+        "productivity.pomodoro",
+        "productivity.time_audit",
+        "core.priority_matrix",
+        "productivity.distractions",
+        "productivity.done_list",
+        "productivity.shutdown"
+      ]
+    },
+    "project_pages": {
+      "name": "Projects & Meetings pack",
+      "category": "productivity",
+      "tags": [
+        "productivity",
+        "projects",
+        "meetings",
+        "work",
+        "planning",
+        "team"
+      ],
+      "unlock": {
+        "pro": true,
+        "products": [
+          "pack_projects"
+        ]
+      },
+      "price": "1.99",
+      "pages": [
+        "productivity.project_charter",
+        "productivity.timeline",
+        "productivity.raci",
+        "productivity.risk_log",
+        "productivity.stakeholders",
+        "productivity.agenda",
+        "core.meeting_notes",
+        "productivity.action_items",
+        "productivity.status_report",
+        "productivity.swot",
+        "core.kanban"
+      ]
+    },
+    "goal_setting_pages": {
+      "name": "Goal Setting pack",
+      "category": "productivity",
+      "tags": [
+        "productivity",
+        "goals",
+        "planning",
+        "12 week year",
+        "review",
+        "vision"
+      ],
+      "unlock": {
+        "pro": true,
+        "products": [
+          "pack_goal_setting"
+        ]
+      },
+      "price": "1.99",
+      "pages": [
+        "productivity.vision_values",
+        "productivity.wheel_of_life",
+        "productivity.smart_goal",
+        "productivity.goal_breakdown",
+        "core.goals",
+        "productivity.ninety_days",
+        "productivity.quarterly_goals",
+        "productivity.scorecard",
+        "productivity.check_in",
+        "productivity.annual_review"
+      ]
     }
   }
 }

@@ -1,0 +1,45 @@
+{
+  "mode": "pages",
+  "pages": [
+    {
+      "pdfPage": 1,
+      "title": "1-3-5 list"
+    },
+    {
+      "pdfPage": 2,
+      "title": "Ivy Lee method"
+    },
+    {
+      "pdfPage": 3,
+      "title": "Eat the frog"
+    },
+    {
+      "pdfPage": 4,
+      "title": "Time blocks"
+    },
+    {
+      "pdfPage": 5,
+      "title": "Pomodoro tracker"
+    },
+    {
+      "pdfPage": 6,
+      "title": "Time audit"
+    },
+    {
+      "pdfPage": 7,
+      "title": "Priority matrix"
+    },
+    {
+      "pdfPage": 8,
+      "title": "Distraction log"
+    },
+    {
+      "pdfPage": 9,
+      "title": "Done list"
+    },
+    {
+      "pdfPage": 10,
+      "title": "Daily shutdown"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "kind": "template",
+  "name": "Projects & Meetings pack",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "pack_projects"
+    ]
+  },
+  "category": "productivity",
+  "tags": [
+    "productivity",
+    "projects",
+    "meetings",
+    "work",
+    "planning",
+    "team"
+  ]
+}

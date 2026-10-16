@@ -1,0 +1,49 @@
+{
+  "mode": "pages",
+  "pages": [
+    {
+      "pdfPage": 1,
+      "title": "Project charter"
+    },
+    {
+      "pdfPage": 2,
+      "title": "12-week timeline"
+    },
+    {
+      "pdfPage": 3,
+      "title": "RACI matrix"
+    },
+    {
+      "pdfPage": 4,
+      "title": "Risk log"
+    },
+    {
+      "pdfPage": 5,
+      "title": "Stakeholder map"
+    },
+    {
+      "pdfPage": 6,
+      "title": "Meeting agenda"
+    },
+    {
+      "pdfPage": 7,
+      "title": "Meeting notes"
+    },
+    {
+      "pdfPage": 8,
+      "title": "Action items"
+    },
+    {
+      "pdfPage": 9,
+      "title": "Weekly status report"
+    },
+    {
+      "pdfPage": 10,
+      "title": "SWOT"
+    },
+    {
+      "pdfPage": 11,
+      "title": "Kanban board"
+    }
+  ]
+}

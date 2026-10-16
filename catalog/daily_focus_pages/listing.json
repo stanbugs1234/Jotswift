@@ -1,0 +1,20 @@
+{
+  "kind": "template",
+  "name": "Daily Focus pack",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "pack_daily_focus"
+    ]
+  },
+  "category": "productivity",
+  "tags": [
+    "productivity",
+    "focus",
+    "time management",
+    "pomodoro",
+    "to-do",
+    "daily"
+  ]
+}

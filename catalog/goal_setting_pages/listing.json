@@ -1,0 +1,20 @@
+{
+  "kind": "template",
+  "name": "Goal Setting pack",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "pack_goal_setting"
+    ]
+  },
+  "category": "productivity",
+  "tags": [
+    "productivity",
+    "goals",
+    "planning",
+    "12 week year",
+    "review",
+    "vision"
+  ]
+}
