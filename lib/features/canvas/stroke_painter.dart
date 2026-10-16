@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:perfect_freehand/perfect_freehand.dart';
 
 import 'domain/stroke.dart';
+import 'ink_stats.dart';
 
 /// Turns strokes into filled outlines with perfect_freehand. Outlines are
 /// cached per stroke, since saved strokes never change.
@@ -23,8 +24,14 @@ abstract final class StrokeRenderer {
     if (stroke.dash != LineDash.solid && stroke.points.length >= 2) {
       return _dashedPath(stroke);
     }
+    // Written points, filled in along a curve where they're far apart (a
+    // quick stroke between samples), with real pressure as ink weight.
+    final ink = smoothInkPoints(
+      stroke.pressureSensitive ? inkPressures(stroke.points) : stroke.points,
+      spacing: math.max(stroke.width * 0.5, 2.0),
+    );
     final points = [
-      for (final p in stroke.points)
+      for (final p in ink)
         PointVector(p.x, p.y, stroke.pressureSensitive ? p.pressure : null),
     ];
     final highlighter = stroke.tool == InkTool.highlighter;
@@ -39,11 +46,11 @@ abstract final class StrokeRenderer {
         thinning: switch (style) {
           null => 0,
           PenStyle.ballpoint => real ? 0.15 : 0.05,
-          PenStyle.fountain => real ? 0.6 : 0.25,
-          PenStyle.brush => real ? 0.85 : 0.55,
+          PenStyle.fountain => real ? 0.5 : 0.25,
+          PenStyle.brush => real ? 0.75 : 0.55,
           PenStyle.pencil => real ? 0.35 : 0.1,
         },
-        smoothing: 0.5,
+        smoothing: 0.6,
         // Streamline evens out shaky input but trails behind it. A stylus
         // is already steady, so its ink keeps up with the tip.
         streamline: switch ((highlighter, stroke.followsPen)) {
@@ -76,7 +83,22 @@ abstract final class StrokeRenderer {
       return Path()
         ..addOval(Rect.fromCircle(center: at, radius: stroke.width / 2));
     }
-    return Path()..addPolygon(outline, true);
+    return curvedOutline(outline);
+  }
+
+  /// [outline] as a closed path of curves: each point pulls the curve
+  /// toward it on its way between the midpoints either side, so the edge
+  /// of the ink is smooth rather than a chain of straight cuts.
+  static Path curvedOutline(List<Offset> outline) {
+    final n = outline.length;
+    Offset mid(int i) => (outline[i % n] + outline[(i + 1) % n]) / 2;
+    final start = mid(n - 1);
+    final path = Path()..moveTo(start.dx, start.dy);
+    for (var i = 0; i < n; i++) {
+      final control = outline[i], end = mid(i);
+      path.quadraticBezierTo(control.dx, control.dy, end.dx, end.dy);
+    }
+    return path..close();
   }
 
   static final _fillCache = Expando<Path>('strokeFill');
@@ -217,6 +239,82 @@ abstract final class StrokeRenderer {
   }();
 }
 
+/// Stylus pressure (0–1 of the Pencil's full force) as ink weight:
+/// ordinary writing presses lightly, so it's lifted to the middle of the
+/// range, firm pressing reaches full width, and light writing still shows.
+double inkWeight(double pressure) =>
+    math.pow((pressure / 0.45).clamp(0.0, 1.0), 0.65).toDouble();
+
+/// [points] with pressure as [inkWeight], evened out between neighbours
+/// so the width doesn't flicker, and the first point taking the second's
+/// (a stroke's first touch barely presses).
+List<InkPoint> inkPressures(List<InkPoint> points) {
+  if (points.isEmpty) return points;
+  final w = [for (final p in points) inkWeight(p.pressure)];
+  if (w.length > 1) w[0] = w[1];
+  // Twice over neighbours, a quarter each side.
+  for (var pass = 0; pass < 2; pass++) {
+    final prev = [...w];
+    for (var i = 1; i + 1 < w.length; i++) {
+      w[i] = prev[i - 1] * 0.25 + prev[i] * 0.5 + prev[i + 1] * 0.25;
+    }
+  }
+  return [
+    for (var i = 0; i < points.length; i++)
+      InkPoint(points[i].x, points[i].y, w[i]),
+  ];
+}
+
+/// [points] with more put in wherever two are over [spacing] apart, along
+/// a centripetal Catmull-Rom curve through them: it passes through every
+/// point, bends smoothly, and doesn't overshoot or loop. Pressure goes
+/// evenly from one point to the next.
+List<InkPoint> smoothInkPoints(
+  List<InkPoint> points, {
+  required double spacing,
+}) {
+  if (points.length < 3) return points;
+  final out = <InkPoint>[points.first];
+  for (var i = 0; i + 1 < points.length; i++) {
+    final p1 = points[i], p2 = points[i + 1];
+    final gap = (p2.offset - p1.offset).distance;
+    final steps = (gap / spacing).ceil();
+    if (steps > 1) {
+      final p0 = i == 0 ? p1 : points[i - 1];
+      final p3 = i + 2 < points.length ? points[i + 2] : p2;
+      for (var k = 1; k < steps; k++) {
+        final t = k / steps;
+        final at = _centripetal(p0.offset, p1.offset, p2.offset, p3.offset, t);
+        out.add(
+          InkPoint(at.dx, at.dy, p1.pressure + (p2.pressure - p1.pressure) * t),
+        );
+      }
+    }
+    out.add(p2);
+  }
+  return out;
+}
+
+/// The point [t] (0–1) of the way from [p1] to [p2] on the centripetal
+/// Catmull-Rom curve through [p0], [p1], [p2], [p3].
+Offset _centripetal(Offset p0, Offset p1, Offset p2, Offset p3, double t) {
+  double knot(Offset a, Offset b) =>
+      math.max(math.sqrt((b - a).distance), 1e-4);
+  const t0 = 0.0;
+  final t1 = t0 + knot(p0, p1);
+  final t2 = t1 + knot(p1, p2);
+  final t3 = t2 + knot(p2, p3);
+  final u = t1 + (t2 - t1) * t;
+  Offset lerp(Offset a, Offset b, double ta, double tb) =>
+      a * ((tb - u) / (tb - ta)) + b * ((u - ta) / (tb - ta));
+  final a1 = lerp(p0, p1, t0, t1);
+  final a2 = lerp(p1, p2, t1, t2);
+  final a3 = lerp(p2, p3, t2, t3);
+  final b1 = lerp(a1, a2, t0, t2);
+  final b2 = lerp(a2, a3, t1, t3);
+  return lerp(b1, b2, t1, t2);
+}
+
 /// Saved strokes. Kept in its own layer so drawing a new stroke doesn't
 /// repaint the whole page.
 class StrokesPainter extends CustomPainter {
@@ -267,6 +365,7 @@ class LiveStrokePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     var stroke = live.value;
     if (stroke == null || stroke.points.isEmpty) return;
+    final timer = Stopwatch()..start();
     if (predicted.value.isNotEmpty) {
       stroke = stroke.withPoints([...stroke.points, ...predicted.value]);
     }
@@ -275,6 +374,7 @@ class LiveStrokePainter extends CustomPainter {
       stroke,
       path: StrokeRenderer.buildPath(stroke, complete: false),
     );
+    InkStats.instance.drew(timer.elapsedMicroseconds / 1000);
   }
 
   @override

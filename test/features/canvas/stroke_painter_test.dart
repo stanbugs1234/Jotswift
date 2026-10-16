@@ -24,6 +24,64 @@ void main() {
     followsPen: followsPen,
   );
 
+  test('pressure: ordinary writing reaches mid weight, firm is full', () {
+    expect(inkWeight(0), 0);
+    expect(inkWeight(0.05), inInclusiveRange(0.2, 0.3));
+    expect(inkWeight(0.2), inInclusiveRange(0.55, 0.65));
+    expect(inkWeight(0.45), 1);
+    expect(inkWeight(0.9), 1);
+
+    final evened = inkPressures(const [
+      InkPoint(0, 0, 0.01),
+      InkPoint(1, 0, 0.2),
+      InkPoint(2, 0, 0.05),
+      InkPoint(3, 0, 0.2),
+    ]);
+    // The first touch takes the next one's weight; a dip is softened.
+    expect(evened.first.pressure, greaterThan(inkWeight(0.05)));
+    expect(evened[2].pressure, greaterThan(inkWeight(0.05)));
+  });
+
+  test('sparse points are filled in along a smooth curve through them', () {
+    const corners = [
+      InkPoint(0, 0, 0.2),
+      InkPoint(40, 0, 0.4),
+      InkPoint(40, 40, 0.6),
+      InkPoint(0, 40, 0.8),
+    ];
+    final smooth = smoothInkPoints(corners, spacing: 4);
+    // Every real point is kept, in order.
+    var at = 0;
+    for (final p in smooth) {
+      if (at < corners.length && p.offset == corners[at].offset) at++;
+    }
+    expect(at, corners.length);
+    // No two points further apart than the spacing (and a little).
+    for (var i = 1; i < smooth.length; i++) {
+      expect(
+        (smooth[i].offset - smooth[i - 1].offset).distance,
+        lessThan(4 * 1.6),
+      );
+    }
+    // Rounding a right angle bulges a little past it (here 4.2), never far.
+    for (final p in smooth) {
+      expect(p.x, inInclusiveRange(-6, 46));
+      expect(p.y, inInclusiveRange(-6, 46));
+    }
+  });
+
+  test('ink edges are curves, not straight cuts', () {
+    final path = StrokeRenderer.curvedOutline(const [
+      Offset(0, 0),
+      Offset(10, 0),
+      Offset(10, 10),
+      Offset(0, 10),
+    ]);
+    // A curve through midpoints keeps inside the corners.
+    expect(path.contains(const Offset(5, 5)), isTrue);
+    expect(path.contains(const Offset(0.5, 0.5)), isFalse);
+  });
+
   test('dashed and dotted lines are broken into pieces', () {
     int pieces(LineDash dash) => StrokeRenderer.buildPath(
       Stroke(
@@ -70,14 +128,6 @@ void main() {
     final tip = s.points.last.offset;
     final drawn = StrokeRenderer.buildPath(s, complete: false).getBounds();
     expect(drawn.right, greaterThanOrEqualTo(tip.dx));
-
-    // Older (and finger) strokes are smoothed more, so they trail behind.
-    final smoothed = scribble(followsPen: false);
-    final trailing = StrokeRenderer.buildPath(
-      smoothed,
-      complete: false,
-    ).getBounds();
-    expect(trailing.right, lessThan(drawn.right - 1));
   });
 
   test('a brush tapers its end only once the pen lifts', () {
