@@ -1,0 +1,5202 @@
+{
+ "sections": [
+  {
+   "title": "Start",
+   "pages": [
+    {
+     "pdfPage": 1,
+     "title": "Home"
+    },
+    {
+     "pdfPage": 2,
+     "title": "2026-27",
+     "from": "2026-10-01",
+     "to": "2027-12-31"
+    },
+    {
+     "pdfPage": 3,
+     "title": "Year goals"
+    },
+    {
+     "pdfPage": 4,
+     "title": "Vision board"
+    },
+    {
+     "pdfPage": 5,
+     "title": "Year in pixels"
+    }
+   ]
+  },
+  {
+   "title": "October 2026",
+   "pages": [
+    {
+     "pdfPage": 6,
+     "title": "October 2026",
+     "from": "2026-10-01",
+     "to": "2026-10-31"
+    },
+    {
+     "pdfPage": 7,
+     "title": "Oct 26 goals",
+     "group": "month_goals"
+    },
+    {
+     "pdfPage": 8,
+     "title": "Oct 26 vision",
+     "group": "vision"
+    },
+    {
+     "pdfPage": 9,
+     "title": "Oct 26 habits",
+     "group": "habits"
+    },
+    {
+     "pdfPage": 10,
+     "title": "Oct 26 budget",
+     "group": "budget"
+    },
+    {
+     "pdfPage": 11,
+     "title": "Oct 26 wins",
+     "group": "wins"
+    },
+    {
+     "pdfPage": 12,
+     "title": "Oct 26 reflect",
+     "group": "month_review"
+    },
+    {
+     "pdfPage": 13,
+     "title": "Week 1",
+     "group": "weeks",
+     "from": "2026-09-28",
+     "to": "2026-10-04"
+    },
+    {
+     "pdfPage": 14,
+     "title": "Week 1 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 15,
+     "title": "Week 1 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 16,
+     "title": "Oct 1",
+     "group": "days",
+     "from": "2026-10-01",
+     "to": "2026-10-01"
+    },
+    {
+     "pdfPage": 17,
+     "title": "Oct 2",
+     "group": "days",
+     "from": "2026-10-02",
+     "to": "2026-10-02"
+    },
+    {
+     "pdfPage": 18,
+     "title": "Oct 3",
+     "group": "days",
+     "from": "2026-10-03",
+     "to": "2026-10-03"
+    },
+    {
+     "pdfPage": 19,
+     "title": "Oct 4",
+     "group": "days",
+     "from": "2026-10-04",
+     "to": "2026-10-04"
+    },
+    {
+     "pdfPage": 20,
+     "title": "Week 2",
+     "group": "weeks",
+     "from": "2026-10-05",
+     "to": "2026-10-11"
+    },
+    {
+     "pdfPage": 21,
+     "title": "Week 2 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 22,
+     "title": "Week 2 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 23,
+     "title": "Oct 5",
+     "group": "days",
+     "from": "2026-10-05",
+     "to": "2026-10-05"
+    },
+    {
+     "pdfPage": 24,
+     "title": "Oct 6",
+     "group": "days",
+     "from": "2026-10-06",
+     "to": "2026-10-06"
+    },
+    {
+     "pdfPage": 25,
+     "title": "Oct 7",
+     "group": "days",
+     "from": "2026-10-07",
+     "to": "2026-10-07"
+    },
+    {
+     "pdfPage": 26,
+     "title": "Oct 8",
+     "group": "days",
+     "from": "2026-10-08",
+     "to": "2026-10-08"
+    },
+    {
+     "pdfPage": 27,
+     "title": "Oct 9",
+     "group": "days",
+     "from": "2026-10-09",
+     "to": "2026-10-09"
+    },
+    {
+     "pdfPage": 28,
+     "title": "Oct 10",
+     "group": "days",
+     "from": "2026-10-10",
+     "to": "2026-10-10"
+    },
+    {
+     "pdfPage": 29,
+     "title": "Oct 11",
+     "group": "days",
+     "from": "2026-10-11",
+     "to": "2026-10-11"
+    },
+    {
+     "pdfPage": 30,
+     "title": "Week 3",
+     "group": "weeks",
+     "from": "2026-10-12",
+     "to": "2026-10-18"
+    },
+    {
+     "pdfPage": 31,
+     "title": "Week 3 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 32,
+     "title": "Week 3 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 33,
+     "title": "Oct 12",
+     "group": "days",
+     "from": "2026-10-12",
+     "to": "2026-10-12"
+    },
+    {
+     "pdfPage": 34,
+     "title": "Oct 13",
+     "group": "days",
+     "from": "2026-10-13",
+     "to": "2026-10-13"
+    },
+    {
+     "pdfPage": 35,
+     "title": "Oct 14",
+     "group": "days",
+     "from": "2026-10-14",
+     "to": "2026-10-14"
+    },
+    {
+     "pdfPage": 36,
+     "title": "Oct 15",
+     "group": "days",
+     "from": "2026-10-15",
+     "to": "2026-10-15"
+    },
+    {
+     "pdfPage": 37,
+     "title": "Oct 16",
+     "group": "days",
+     "from": "2026-10-16",
+     "to": "2026-10-16"
+    },
+    {
+     "pdfPage": 38,
+     "title": "Oct 17",
+     "group": "days",
+     "from": "2026-10-17",
+     "to": "2026-10-17"
+    },
+    {
+     "pdfPage": 39,
+     "title": "Oct 18",
+     "group": "days",
+     "from": "2026-10-18",
+     "to": "2026-10-18"
+    },
+    {
+     "pdfPage": 40,
+     "title": "Week 4",
+     "group": "weeks",
+     "from": "2026-10-19",
+     "to": "2026-10-25"
+    },
+    {
+     "pdfPage": 41,
+     "title": "Week 4 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 42,
+     "title": "Week 4 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 43,
+     "title": "Oct 19",
+     "group": "days",
+     "from": "2026-10-19",
+     "to": "2026-10-19"
+    },
+    {
+     "pdfPage": 44,
+     "title": "Oct 20",
+     "group": "days",
+     "from": "2026-10-20",
+     "to": "2026-10-20"
+    },
+    {
+     "pdfPage": 45,
+     "title": "Oct 21",
+     "group": "days",
+     "from": "2026-10-21",
+     "to": "2026-10-21"
+    },
+    {
+     "pdfPage": 46,
+     "title": "Oct 22",
+     "group": "days",
+     "from": "2026-10-22",
+     "to": "2026-10-22"
+    },
+    {
+     "pdfPage": 47,
+     "title": "Oct 23",
+     "group": "days",
+     "from": "2026-10-23",
+     "to": "2026-10-23"
+    },
+    {
+     "pdfPage": 48,
+     "title": "Oct 24",
+     "group": "days",
+     "from": "2026-10-24",
+     "to": "2026-10-24"
+    },
+    {
+     "pdfPage": 49,
+     "title": "Oct 25",
+     "group": "days",
+     "from": "2026-10-25",
+     "to": "2026-10-25"
+    },
+    {
+     "pdfPage": 50,
+     "title": "Week 5",
+     "group": "weeks",
+     "from": "2026-10-26",
+     "to": "2026-11-01"
+    },
+    {
+     "pdfPage": 51,
+     "title": "Week 5 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 52,
+     "title": "Week 5 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 53,
+     "title": "Oct 26",
+     "group": "days",
+     "from": "2026-10-26",
+     "to": "2026-10-26"
+    },
+    {
+     "pdfPage": 54,
+     "title": "Oct 27",
+     "group": "days",
+     "from": "2026-10-27",
+     "to": "2026-10-27"
+    },
+    {
+     "pdfPage": 55,
+     "title": "Oct 28",
+     "group": "days",
+     "from": "2026-10-28",
+     "to": "2026-10-28"
+    },
+    {
+     "pdfPage": 56,
+     "title": "Oct 29",
+     "group": "days",
+     "from": "2026-10-29",
+     "to": "2026-10-29"
+    },
+    {
+     "pdfPage": 57,
+     "title": "Oct 30",
+     "group": "days",
+     "from": "2026-10-30",
+     "to": "2026-10-30"
+    },
+    {
+     "pdfPage": 58,
+     "title": "Oct 31",
+     "group": "days",
+     "from": "2026-10-31",
+     "to": "2026-10-31"
+    }
+   ]
+  },
+  {
+   "title": "November 2026",
+   "pages": [
+    {
+     "pdfPage": 59,
+     "title": "November 2026",
+     "from": "2026-11-01",
+     "to": "2026-11-30"
+    },
+    {
+     "pdfPage": 60,
+     "title": "Nov 26 goals",
+     "group": "month_goals"
+    },
+    {
+     "pdfPage": 61,
+     "title": "Nov 26 vision",
+     "group": "vision"
+    },
+    {
+     "pdfPage": 62,
+     "title": "Nov 26 habits",
+     "group": "habits"
+    },
+    {
+     "pdfPage": 63,
+     "title": "Nov 26 budget",
+     "group": "budget"
+    },
+    {
+     "pdfPage": 64,
+     "title": "Nov 26 wins",
+     "group": "wins"
+    },
+    {
+     "pdfPage": 65,
+     "title": "Nov 26 reflect",
+     "group": "month_review"
+    },
+    {
+     "pdfPage": 66,
+     "title": "Nov 1",
+     "group": "days",
+     "from": "2026-11-01",
+     "to": "2026-11-01"
+    },
+    {
+     "pdfPage": 67,
+     "title": "Week 6",
+     "group": "weeks",
+     "from": "2026-11-02",
+     "to": "2026-11-08"
+    },
+    {
+     "pdfPage": 68,
+     "title": "Week 6 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 69,
+     "title": "Week 6 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 70,
+     "title": "Nov 2",
+     "group": "days",
+     "from": "2026-11-02",
+     "to": "2026-11-02"
+    },
+    {
+     "pdfPage": 71,
+     "title": "Nov 3",
+     "group": "days",
+     "from": "2026-11-03",
+     "to": "2026-11-03"
+    },
+    {
+     "pdfPage": 72,
+     "title": "Nov 4",
+     "group": "days",
+     "from": "2026-11-04",
+     "to": "2026-11-04"
+    },
+    {
+     "pdfPage": 73,
+     "title": "Nov 5",
+     "group": "days",
+     "from": "2026-11-05",
+     "to": "2026-11-05"
+    },
+    {
+     "pdfPage": 74,
+     "title": "Nov 6",
+     "group": "days",
+     "from": "2026-11-06",
+     "to": "2026-11-06"
+    },
+    {
+     "pdfPage": 75,
+     "title": "Nov 7",
+     "group": "days",
+     "from": "2026-11-07",
+     "to": "2026-11-07"
+    },
+    {
+     "pdfPage": 76,
+     "title": "Nov 8",
+     "group": "days",
+     "from": "2026-11-08",
+     "to": "2026-11-08"
+    },
+    {
+     "pdfPage": 77,
+     "title": "Week 7",
+     "group": "weeks",
+     "from": "2026-11-09",
+     "to": "2026-11-15"
+    },
+    {
+     "pdfPage": 78,
+     "title": "Week 7 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 79,
+     "title": "Week 7 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 80,
+     "title": "Nov 9",
+     "group": "days",
+     "from": "2026-11-09",
+     "to": "2026-11-09"
+    },
+    {
+     "pdfPage": 81,
+     "title": "Nov 10",
+     "group": "days",
+     "from": "2026-11-10",
+     "to": "2026-11-10"
+    },
+    {
+     "pdfPage": 82,
+     "title": "Nov 11",
+     "group": "days",
+     "from": "2026-11-11",
+     "to": "2026-11-11"
+    },
+    {
+     "pdfPage": 83,
+     "title": "Nov 12",
+     "group": "days",
+     "from": "2026-11-12",
+     "to": "2026-11-12"
+    },
+    {
+     "pdfPage": 84,
+     "title": "Nov 13",
+     "group": "days",
+     "from": "2026-11-13",
+     "to": "2026-11-13"
+    },
+    {
+     "pdfPage": 85,
+     "title": "Nov 14",
+     "group": "days",
+     "from": "2026-11-14",
+     "to": "2026-11-14"
+    },
+    {
+     "pdfPage": 86,
+     "title": "Nov 15",
+     "group": "days",
+     "from": "2026-11-15",
+     "to": "2026-11-15"
+    },
+    {
+     "pdfPage": 87,
+     "title": "Week 8",
+     "group": "weeks",
+     "from": "2026-11-16",
+     "to": "2026-11-22"
+    },
+    {
+     "pdfPage": 88,
+     "title": "Week 8 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 89,
+     "title": "Week 8 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 90,
+     "title": "Nov 16",
+     "group": "days",
+     "from": "2026-11-16",
+     "to": "2026-11-16"
+    },
+    {
+     "pdfPage": 91,
+     "title": "Nov 17",
+     "group": "days",
+     "from": "2026-11-17",
+     "to": "2026-11-17"
+    },
+    {
+     "pdfPage": 92,
+     "title": "Nov 18",
+     "group": "days",
+     "from": "2026-11-18",
+     "to": "2026-11-18"
+    },
+    {
+     "pdfPage": 93,
+     "title": "Nov 19",
+     "group": "days",
+     "from": "2026-11-19",
+     "to": "2026-11-19"
+    },
+    {
+     "pdfPage": 94,
+     "title": "Nov 20",
+     "group": "days",
+     "from": "2026-11-20",
+     "to": "2026-11-20"
+    },
+    {
+     "pdfPage": 95,
+     "title": "Nov 21",
+     "group": "days",
+     "from": "2026-11-21",
+     "to": "2026-11-21"
+    },
+    {
+     "pdfPage": 96,
+     "title": "Nov 22",
+     "group": "days",
+     "from": "2026-11-22",
+     "to": "2026-11-22"
+    },
+    {
+     "pdfPage": 97,
+     "title": "Week 9",
+     "group": "weeks",
+     "from": "2026-11-23",
+     "to": "2026-11-29"
+    },
+    {
+     "pdfPage": 98,
+     "title": "Week 9 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 99,
+     "title": "Week 9 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 100,
+     "title": "Nov 23",
+     "group": "days",
+     "from": "2026-11-23",
+     "to": "2026-11-23"
+    },
+    {
+     "pdfPage": 101,
+     "title": "Nov 24",
+     "group": "days",
+     "from": "2026-11-24",
+     "to": "2026-11-24"
+    },
+    {
+     "pdfPage": 102,
+     "title": "Nov 25",
+     "group": "days",
+     "from": "2026-11-25",
+     "to": "2026-11-25"
+    },
+    {
+     "pdfPage": 103,
+     "title": "Nov 26",
+     "group": "days",
+     "from": "2026-11-26",
+     "to": "2026-11-26"
+    },
+    {
+     "pdfPage": 104,
+     "title": "Nov 27",
+     "group": "days",
+     "from": "2026-11-27",
+     "to": "2026-11-27"
+    },
+    {
+     "pdfPage": 105,
+     "title": "Nov 28",
+     "group": "days",
+     "from": "2026-11-28",
+     "to": "2026-11-28"
+    },
+    {
+     "pdfPage": 106,
+     "title": "Nov 29",
+     "group": "days",
+     "from": "2026-11-29",
+     "to": "2026-11-29"
+    },
+    {
+     "pdfPage": 107,
+     "title": "Week 10",
+     "group": "weeks",
+     "from": "2026-11-30",
+     "to": "2026-12-06"
+    },
+    {
+     "pdfPage": 108,
+     "title": "Week 10 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 109,
+     "title": "Week 10 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 110,
+     "title": "Nov 30",
+     "group": "days",
+     "from": "2026-11-30",
+     "to": "2026-11-30"
+    }
+   ]
+  },
+  {
+   "title": "December 2026",
+   "pages": [
+    {
+     "pdfPage": 111,
+     "title": "December 2026",
+     "from": "2026-12-01",
+     "to": "2026-12-31"
+    },
+    {
+     "pdfPage": 112,
+     "title": "Dec 26 goals",
+     "group": "month_goals"
+    },
+    {
+     "pdfPage": 113,
+     "title": "Dec 26 vision",
+     "group": "vision"
+    },
+    {
+     "pdfPage": 114,
+     "title": "Dec 26 habits",
+     "group": "habits"
+    },
+    {
+     "pdfPage": 115,
+     "title": "Dec 26 budget",
+     "group": "budget"
+    },
+    {
+     "pdfPage": 116,
+     "title": "Dec 26 wins",
+     "group": "wins"
+    },
+    {
+     "pdfPage": 117,
+     "title": "Dec 26 reflect",
+     "group": "month_review"
+    },
+    {
+     "pdfPage": 118,
+     "title": "Dec 1",
+     "group": "days",
+     "from": "2026-12-01",
+     "to": "2026-12-01"
+    },
+    {
+     "pdfPage": 119,
+     "title": "Dec 2",
+     "group": "days",
+     "from": "2026-12-02",
+     "to": "2026-12-02"
+    },
+    {
+     "pdfPage": 120,
+     "title": "Dec 3",
+     "group": "days",
+     "from": "2026-12-03",
+     "to": "2026-12-03"
+    },
+    {
+     "pdfPage": 121,
+     "title": "Dec 4",
+     "group": "days",
+     "from": "2026-12-04",
+     "to": "2026-12-04"
+    },
+    {
+     "pdfPage": 122,
+     "title": "Dec 5",
+     "group": "days",
+     "from": "2026-12-05",
+     "to": "2026-12-05"
+    },
+    {
+     "pdfPage": 123,
+     "title": "Dec 6",
+     "group": "days",
+     "from": "2026-12-06",
+     "to": "2026-12-06"
+    },
+    {
+     "pdfPage": 124,
+     "title": "Week 11",
+     "group": "weeks",
+     "from": "2026-12-07",
+     "to": "2026-12-13"
+    },
+    {
+     "pdfPage": 125,
+     "title": "Week 11 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 126,
+     "title": "Week 11 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 127,
+     "title": "Dec 7",
+     "group": "days",
+     "from": "2026-12-07",
+     "to": "2026-12-07"
+    },
+    {
+     "pdfPage": 128,
+     "title": "Dec 8",
+     "group": "days",
+     "from": "2026-12-08",
+     "to": "2026-12-08"
+    },
+    {
+     "pdfPage": 129,
+     "title": "Dec 9",
+     "group": "days",
+     "from": "2026-12-09",
+     "to": "2026-12-09"
+    },
+    {
+     "pdfPage": 130,
+     "title": "Dec 10",
+     "group": "days",
+     "from": "2026-12-10",
+     "to": "2026-12-10"
+    },
+    {
+     "pdfPage": 131,
+     "title": "Dec 11",
+     "group": "days",
+     "from": "2026-12-11",
+     "to": "2026-12-11"
+    },
+    {
+     "pdfPage": 132,
+     "title": "Dec 12",
+     "group": "days",
+     "from": "2026-12-12",
+     "to": "2026-12-12"
+    },
+    {
+     "pdfPage": 133,
+     "title": "Dec 13",
+     "group": "days",
+     "from": "2026-12-13",
+     "to": "2026-12-13"
+    },
+    {
+     "pdfPage": 134,
+     "title": "Week 12",
+     "group": "weeks",
+     "from": "2026-12-14",
+     "to": "2026-12-20"
+    },
+    {
+     "pdfPage": 135,
+     "title": "Week 12 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 136,
+     "title": "Week 12 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 137,
+     "title": "Dec 14",
+     "group": "days",
+     "from": "2026-12-14",
+     "to": "2026-12-14"
+    },
+    {
+     "pdfPage": 138,
+     "title": "Dec 15",
+     "group": "days",
+     "from": "2026-12-15",
+     "to": "2026-12-15"
+    },
+    {
+     "pdfPage": 139,
+     "title": "Dec 16",
+     "group": "days",
+     "from": "2026-12-16",
+     "to": "2026-12-16"
+    },
+    {
+     "pdfPage": 140,
+     "title": "Dec 17",
+     "group": "days",
+     "from": "2026-12-17",
+     "to": "2026-12-17"
+    },
+    {
+     "pdfPage": 141,
+     "title": "Dec 18",
+     "group": "days",
+     "from": "2026-12-18",
+     "to": "2026-12-18"
+    },
+    {
+     "pdfPage": 142,
+     "title": "Dec 19",
+     "group": "days",
+     "from": "2026-12-19",
+     "to": "2026-12-19"
+    },
+    {
+     "pdfPage": 143,
+     "title": "Dec 20",
+     "group": "days",
+     "from": "2026-12-20",
+     "to": "2026-12-20"
+    },
+    {
+     "pdfPage": 144,
+     "title": "Week 13",
+     "group": "weeks",
+     "from": "2026-12-21",
+     "to": "2026-12-27"
+    },
+    {
+     "pdfPage": 145,
+     "title": "Week 13 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 146,
+     "title": "Week 13 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 147,
+     "title": "Dec 21",
+     "group": "days",
+     "from": "2026-12-21",
+     "to": "2026-12-21"
+    },
+    {
+     "pdfPage": 148,
+     "title": "Dec 22",
+     "group": "days",
+     "from": "2026-12-22",
+     "to": "2026-12-22"
+    },
+    {
+     "pdfPage": 149,
+     "title": "Dec 23",
+     "group": "days",
+     "from": "2026-12-23",
+     "to": "2026-12-23"
+    },
+    {
+     "pdfPage": 150,
+     "title": "Dec 24",
+     "group": "days",
+     "from": "2026-12-24",
+     "to": "2026-12-24"
+    },
+    {
+     "pdfPage": 151,
+     "title": "Dec 25",
+     "group": "days",
+     "from": "2026-12-25",
+     "to": "2026-12-25"
+    },
+    {
+     "pdfPage": 152,
+     "title": "Dec 26",
+     "group": "days",
+     "from": "2026-12-26",
+     "to": "2026-12-26"
+    },
+    {
+     "pdfPage": 153,
+     "title": "Dec 27",
+     "group": "days",
+     "from": "2026-12-27",
+     "to": "2026-12-27"
+    },
+    {
+     "pdfPage": 154,
+     "title": "Week 14",
+     "group": "weeks",
+     "from": "2026-12-28",
+     "to": "2027-01-03"
+    },
+    {
+     "pdfPage": 155,
+     "title": "Week 14 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 156,
+     "title": "Week 14 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 157,
+     "title": "Dec 28",
+     "group": "days",
+     "from": "2026-12-28",
+     "to": "2026-12-28"
+    },
+    {
+     "pdfPage": 158,
+     "title": "Dec 29",
+     "group": "days",
+     "from": "2026-12-29",
+     "to": "2026-12-29"
+    },
+    {
+     "pdfPage": 159,
+     "title": "Dec 30",
+     "group": "days",
+     "from": "2026-12-30",
+     "to": "2026-12-30"
+    },
+    {
+     "pdfPage": 160,
+     "title": "Dec 31",
+     "group": "days",
+     "from": "2026-12-31",
+     "to": "2026-12-31"
+    }
+   ]
+  },
+  {
+   "title": "January",
+   "pages": [
+    {
+     "pdfPage": 161,
+     "title": "January",
+     "from": "2027-01-01",
+     "to": "2027-01-31"
+    },
+    {
+     "pdfPage": 162,
+     "title": "Jan goals",
+     "group": "month_goals"
+    },
+    {
+     "pdfPage": 163,
+     "title": "Jan vision",
+     "group": "vision"
+    },
+    {
+     "pdfPage": 164,
+     "title": "Jan habits",
+     "group": "habits"
+    },
+    {
+     "pdfPage": 165,
+     "title": "Jan budget",
+     "group": "budget"
+    },
+    {
+     "pdfPage": 166,
+     "title": "Jan wins",
+     "group": "wins"
+    },
+    {
+     "pdfPage": 167,
+     "title": "Jan reflect",
+     "group": "month_review"
+    },
+    {
+     "pdfPage": 168,
+     "title": "Jan 1",
+     "group": "days",
+     "from": "2027-01-01",
+     "to": "2027-01-01"
+    },
+    {
+     "pdfPage": 169,
+     "title": "Jan 2",
+     "group": "days",
+     "from": "2027-01-02",
+     "to": "2027-01-02"
+    },
+    {
+     "pdfPage": 170,
+     "title": "Jan 3",
+     "group": "days",
+     "from": "2027-01-03",
+     "to": "2027-01-03"
+    },
+    {
+     "pdfPage": 171,
+     "title": "Week 15",
+     "group": "weeks",
+     "from": "2027-01-04",
+     "to": "2027-01-10"
+    },
+    {
+     "pdfPage": 172,
+     "title": "Week 15 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 173,
+     "title": "Week 15 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 174,
+     "title": "Jan 4",
+     "group": "days",
+     "from": "2027-01-04",
+     "to": "2027-01-04"
+    },
+    {
+     "pdfPage": 175,
+     "title": "Jan 5",
+     "group": "days",
+     "from": "2027-01-05",
+     "to": "2027-01-05"
+    },
+    {
+     "pdfPage": 176,
+     "title": "Jan 6",
+     "group": "days",
+     "from": "2027-01-06",
+     "to": "2027-01-06"
+    },
+    {
+     "pdfPage": 177,
+     "title": "Jan 7",
+     "group": "days",
+     "from": "2027-01-07",
+     "to": "2027-01-07"
+    },
+    {
+     "pdfPage": 178,
+     "title": "Jan 8",
+     "group": "days",
+     "from": "2027-01-08",
+     "to": "2027-01-08"
+    },
+    {
+     "pdfPage": 179,
+     "title": "Jan 9",
+     "group": "days",
+     "from": "2027-01-09",
+     "to": "2027-01-09"
+    },
+    {
+     "pdfPage": 180,
+     "title": "Jan 10",
+     "group": "days",
+     "from": "2027-01-10",
+     "to": "2027-01-10"
+    },
+    {
+     "pdfPage": 181,
+     "title": "Week 16",
+     "group": "weeks",
+     "from": "2027-01-11",
+     "to": "2027-01-17"
+    },
+    {
+     "pdfPage": 182,
+     "title": "Week 16 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 183,
+     "title": "Week 16 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 184,
+     "title": "Jan 11",
+     "group": "days",
+     "from": "2027-01-11",
+     "to": "2027-01-11"
+    },
+    {
+     "pdfPage": 185,
+     "title": "Jan 12",
+     "group": "days",
+     "from": "2027-01-12",
+     "to": "2027-01-12"
+    },
+    {
+     "pdfPage": 186,
+     "title": "Jan 13",
+     "group": "days",
+     "from": "2027-01-13",
+     "to": "2027-01-13"
+    },
+    {
+     "pdfPage": 187,
+     "title": "Jan 14",
+     "group": "days",
+     "from": "2027-01-14",
+     "to": "2027-01-14"
+    },
+    {
+     "pdfPage": 188,
+     "title": "Jan 15",
+     "group": "days",
+     "from": "2027-01-15",
+     "to": "2027-01-15"
+    },
+    {
+     "pdfPage": 189,
+     "title": "Jan 16",
+     "group": "days",
+     "from": "2027-01-16",
+     "to": "2027-01-16"
+    },
+    {
+     "pdfPage": 190,
+     "title": "Jan 17",
+     "group": "days",
+     "from": "2027-01-17",
+     "to": "2027-01-17"
+    },
+    {
+     "pdfPage": 191,
+     "title": "Week 17",
+     "group": "weeks",
+     "from": "2027-01-18",
+     "to": "2027-01-24"
+    },
+    {
+     "pdfPage": 192,
+     "title": "Week 17 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 193,
+     "title": "Week 17 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 194,
+     "title": "Jan 18",
+     "group": "days",
+     "from": "2027-01-18",
+     "to": "2027-01-18"
+    },
+    {
+     "pdfPage": 195,
+     "title": "Jan 19",
+     "group": "days",
+     "from": "2027-01-19",
+     "to": "2027-01-19"
+    },
+    {
+     "pdfPage": 196,
+     "title": "Jan 20",
+     "group": "days",
+     "from": "2027-01-20",
+     "to": "2027-01-20"
+    },
+    {
+     "pdfPage": 197,
+     "title": "Jan 21",
+     "group": "days",
+     "from": "2027-01-21",
+     "to": "2027-01-21"
+    },
+    {
+     "pdfPage": 198,
+     "title": "Jan 22",
+     "group": "days",
+     "from": "2027-01-22",
+     "to": "2027-01-22"
+    },
+    {
+     "pdfPage": 199,
+     "title": "Jan 23",
+     "group": "days",
+     "from": "2027-01-23",
+     "to": "2027-01-23"
+    },
+    {
+     "pdfPage": 200,
+     "title": "Jan 24",
+     "group": "days",
+     "from": "2027-01-24",
+     "to": "2027-01-24"
+    },
+    {
+     "pdfPage": 201,
+     "title": "Week 18",
+     "group": "weeks",
+     "from": "2027-01-25",
+     "to": "2027-01-31"
+    },
+    {
+     "pdfPage": 202,
+     "title": "Week 18 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 203,
+     "title": "Week 18 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 204,
+     "title": "Jan 25",
+     "group": "days",
+     "from": "2027-01-25",
+     "to": "2027-01-25"
+    },
+    {
+     "pdfPage": 205,
+     "title": "Jan 26",
+     "group": "days",
+     "from": "2027-01-26",
+     "to": "2027-01-26"
+    },
+    {
+     "pdfPage": 206,
+     "title": "Jan 27",
+     "group": "days",
+     "from": "2027-01-27",
+     "to": "2027-01-27"
+    },
+    {
+     "pdfPage": 207,
+     "title": "Jan 28",
+     "group": "days",
+     "from": "2027-01-28",
+     "to": "2027-01-28"
+    },
+    {
+     "pdfPage": 208,
+     "title": "Jan 29",
+     "group": "days",
+     "from": "2027-01-29",
+     "to": "2027-01-29"
+    },
+    {
+     "pdfPage": 209,
+     "title": "Jan 30",
+     "group": "days",
+     "from": "2027-01-30",
+     "to": "2027-01-30"
+    },
+    {
+     "pdfPage": 210,
+     "title": "Jan 31",
+     "group": "days",
+     "from": "2027-01-31",
+     "to": "2027-01-31"
+    }
+   ]
+  },
+  {
+   "title": "February",
+   "pages": [
+    {
+     "pdfPage": 211,
+     "title": "February",
+     "from": "2027-02-01",
+     "to": "2027-02-28"
+    },
+    {
+     "pdfPage": 212,
+     "title": "Feb goals",
+     "group": "month_goals"
+    },
+    {
+     "pdfPage": 213,
+     "title": "Feb vision",
+     "group": "vision"
+    },
+    {
+     "pdfPage": 214,
+     "title": "Feb habits",
+     "group": "habits"
+    },
+    {
+     "pdfPage": 215,
+     "title": "Feb budget",
+     "group": "budget"
+    },
+    {
+     "pdfPage": 216,
+     "title": "Feb wins",
+     "group": "wins"
+    },
+    {
+     "pdfPage": 217,
+     "title": "Feb reflect",
+     "group": "month_review"
+    },
+    {
+     "pdfPage": 218,
+     "title": "Week 19",
+     "group": "weeks",
+     "from": "2027-02-01",
+     "to": "2027-02-07"
+    },
+    {
+     "pdfPage": 219,
+     "title": "Week 19 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 220,
+     "title": "Week 19 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 221,
+     "title": "Feb 1",
+     "group": "days",
+     "from": "2027-02-01",
+     "to": "2027-02-01"
+    },
+    {
+     "pdfPage": 222,
+     "title": "Feb 2",
+     "group": "days",
+     "from": "2027-02-02",
+     "to": "2027-02-02"
+    },
+    {
+     "pdfPage": 223,
+     "title": "Feb 3",
+     "group": "days",
+     "from": "2027-02-03",
+     "to": "2027-02-03"
+    },
+    {
+     "pdfPage": 224,
+     "title": "Feb 4",
+     "group": "days",
+     "from": "2027-02-04",
+     "to": "2027-02-04"
+    },
+    {
+     "pdfPage": 225,
+     "title": "Feb 5",
+     "group": "days",
+     "from": "2027-02-05",
+     "to": "2027-02-05"
+    },
+    {
+     "pdfPage": 226,
+     "title": "Feb 6",
+     "group": "days",
+     "from": "2027-02-06",
+     "to": "2027-02-06"
+    },
+    {
+     "pdfPage": 227,
+     "title": "Feb 7",
+     "group": "days",
+     "from": "2027-02-07",
+     "to": "2027-02-07"
+    },
+    {
+     "pdfPage": 228,
+     "title": "Week 20",
+     "group": "weeks",
+     "from": "2027-02-08",
+     "to": "2027-02-14"
+    },
+    {
+     "pdfPage": 229,
+     "title": "Week 20 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 230,
+     "title": "Week 20 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 231,
+     "title": "Feb 8",
+     "group": "days",
+     "from": "2027-02-08",
+     "to": "2027-02-08"
+    },
+    {
+     "pdfPage": 232,
+     "title": "Feb 9",
+     "group": "days",
+     "from": "2027-02-09",
+     "to": "2027-02-09"
+    },
+    {
+     "pdfPage": 233,
+     "title": "Feb 10",
+     "group": "days",
+     "from": "2027-02-10",
+     "to": "2027-02-10"
+    },
+    {
+     "pdfPage": 234,
+     "title": "Feb 11",
+     "group": "days",
+     "from": "2027-02-11",
+     "to": "2027-02-11"
+    },
+    {
+     "pdfPage": 235,
+     "title": "Feb 12",
+     "group": "days",
+     "from": "2027-02-12",
+     "to": "2027-02-12"
+    },
+    {
+     "pdfPage": 236,
+     "title": "Feb 13",
+     "group": "days",
+     "from": "2027-02-13",
+     "to": "2027-02-13"
+    },
+    {
+     "pdfPage": 237,
+     "title": "Feb 14",
+     "group": "days",
+     "from": "2027-02-14",
+     "to": "2027-02-14"
+    },
+    {
+     "pdfPage": 238,
+     "title": "Week 21",
+     "group": "weeks",
+     "from": "2027-02-15",
+     "to": "2027-02-21"
+    },
+    {
+     "pdfPage": 239,
+     "title": "Week 21 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 240,
+     "title": "Week 21 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 241,
+     "title": "Feb 15",
+     "group": "days",
+     "from": "2027-02-15",
+     "to": "2027-02-15"
+    },
+    {
+     "pdfPage": 242,
+     "title": "Feb 16",
+     "group": "days",
+     "from": "2027-02-16",
+     "to": "2027-02-16"
+    },
+    {
+     "pdfPage": 243,
+     "title": "Feb 17",
+     "group": "days",
+     "from": "2027-02-17",
+     "to": "2027-02-17"
+    },
+    {
+     "pdfPage": 244,
+     "title": "Feb 18",
+     "group": "days",
+     "from": "2027-02-18",
+     "to": "2027-02-18"
+    },
+    {
+     "pdfPage": 245,
+     "title": "Feb 19",
+     "group": "days",
+     "from": "2027-02-19",
+     "to": "2027-02-19"
+    },
+    {
+     "pdfPage": 246,
+     "title": "Feb 20",
+     "group": "days",
+     "from": "2027-02-20",
+     "to": "2027-02-20"
+    },
+    {
+     "pdfPage": 247,
+     "title": "Feb 21",
+     "group": "days",
+     "from": "2027-02-21",
+     "to": "2027-02-21"
+    },
+    {
+     "pdfPage": 248,
+     "title": "Week 22",
+     "group": "weeks",
+     "from": "2027-02-22",
+     "to": "2027-02-28"
+    },
+    {
+     "pdfPage": 249,
+     "title": "Week 22 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 250,
+     "title": "Week 22 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 251,
+     "title": "Feb 22",
+     "group": "days",
+     "from": "2027-02-22",
+     "to": "2027-02-22"
+    },
+    {
+     "pdfPage": 252,
+     "title": "Feb 23",
+     "group": "days",
+     "from": "2027-02-23",
+     "to": "2027-02-23"
+    },
+    {
+     "pdfPage": 253,
+     "title": "Feb 24",
+     "group": "days",
+     "from": "2027-02-24",
+     "to": "2027-02-24"
+    },
+    {
+     "pdfPage": 254,
+     "title": "Feb 25",
+     "group": "days",
+     "from": "2027-02-25",
+     "to": "2027-02-25"
+    },
+    {
+     "pdfPage": 255,
+     "title": "Feb 26",
+     "group": "days",
+     "from": "2027-02-26",
+     "to": "2027-02-26"
+    },
+    {
+     "pdfPage": 256,
+     "title": "Feb 27",
+     "group": "days",
+     "from": "2027-02-27",
+     "to": "2027-02-27"
+    },
+    {
+     "pdfPage": 257,
+     "title": "Feb 28",
+     "group": "days",
+     "from": "2027-02-28",
+     "to": "2027-02-28"
+    }
+   ]
+  },
+  {
+   "title": "March",
+   "pages": [
+    {
+     "pdfPage": 258,
+     "title": "March",
+     "from": "2027-03-01",
+     "to": "2027-03-31"
+    },
+    {
+     "pdfPage": 259,
+     "title": "Mar goals",
+     "group": "month_goals"
+    },
+    {
+     "pdfPage": 260,
+     "title": "Mar vision",
+     "group": "vision"
+    },
+    {
+     "pdfPage": 261,
+     "title": "Mar habits",
+     "group": "habits"
+    },
+    {
+     "pdfPage": 262,
+     "title": "Mar budget",
+     "group": "budget"
+    },
+    {
+     "pdfPage": 263,
+     "title": "Mar wins",
+     "group": "wins"
+    },
+    {
+     "pdfPage": 264,
+     "title": "Mar reflect",
+     "group": "month_review"
+    },
+    {
+     "pdfPage": 265,
+     "title": "Week 23",
+     "group": "weeks",
+     "from": "2027-03-01",
+     "to": "2027-03-07"
+    },
+    {
+     "pdfPage": 266,
+     "title": "Week 23 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 267,
+     "title": "Week 23 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 268,
+     "title": "Mar 1",
+     "group": "days",
+     "from": "2027-03-01",
+     "to": "2027-03-01"
+    },
+    {
+     "pdfPage": 269,
+     "title": "Mar 2",
+     "group": "days",
+     "from": "2027-03-02",
+     "to": "2027-03-02"
+    },
+    {
+     "pdfPage": 270,
+     "title": "Mar 3",
+     "group": "days",
+     "from": "2027-03-03",
+     "to": "2027-03-03"
+    },
+    {
+     "pdfPage": 271,
+     "title": "Mar 4",
+     "group": "days",
+     "from": "2027-03-04",
+     "to": "2027-03-04"
+    },
+    {
+     "pdfPage": 272,
+     "title": "Mar 5",
+     "group": "days",
+     "from": "2027-03-05",
+     "to": "2027-03-05"
+    },
+    {
+     "pdfPage": 273,
+     "title": "Mar 6",
+     "group": "days",
+     "from": "2027-03-06",
+     "to": "2027-03-06"
+    },
+    {
+     "pdfPage": 274,
+     "title": "Mar 7",
+     "group": "days",
+     "from": "2027-03-07",
+     "to": "2027-03-07"
+    },
+    {
+     "pdfPage": 275,
+     "title": "Week 24",
+     "group": "weeks",
+     "from": "2027-03-08",
+     "to": "2027-03-14"
+    },
+    {
+     "pdfPage": 276,
+     "title": "Week 24 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 277,
+     "title": "Week 24 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 278,
+     "title": "Mar 8",
+     "group": "days",
+     "from": "2027-03-08",
+     "to": "2027-03-08"
+    },
+    {
+     "pdfPage": 279,
+     "title": "Mar 9",
+     "group": "days",
+     "from": "2027-03-09",
+     "to": "2027-03-09"
+    },
+    {
+     "pdfPage": 280,
+     "title": "Mar 10",
+     "group": "days",
+     "from": "2027-03-10",
+     "to": "2027-03-10"
+    },
+    {
+     "pdfPage": 281,
+     "title": "Mar 11",
+     "group": "days",
+     "from": "2027-03-11",
+     "to": "2027-03-11"
+    },
+    {
+     "pdfPage": 282,
+     "title": "Mar 12",
+     "group": "days",
+     "from": "2027-03-12",
+     "to": "2027-03-12"
+    },
+    {
+     "pdfPage": 283,
+     "title": "Mar 13",
+     "group": "days",
+     "from": "2027-03-13",
+     "to": "2027-03-13"
+    },
+    {
+     "pdfPage": 284,
+     "title": "Mar 14",
+     "group": "days",
+     "from": "2027-03-14",
+     "to": "2027-03-14"
+    },
+    {
+     "pdfPage": 285,
+     "title": "Week 25",
+     "group": "weeks",
+     "from": "2027-03-15",
+     "to": "2027-03-21"
+    },
+    {
+     "pdfPage": 286,
+     "title": "Week 25 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 287,
+     "title": "Week 25 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 288,
+     "title": "Mar 15",
+     "group": "days",
+     "from": "2027-03-15",
+     "to": "2027-03-15"
+    },
+    {
+     "pdfPage": 289,
+     "title": "Mar 16",
+     "group": "days",
+     "from": "2027-03-16",
+     "to": "2027-03-16"
+    },
+    {
+     "pdfPage": 290,
+     "title": "Mar 17",
+     "group": "days",
+     "from": "2027-03-17",
+     "to": "2027-03-17"
+    },
+    {
+     "pdfPage": 291,
+     "title": "Mar 18",
+     "group": "days",
+     "from": "2027-03-18",
+     "to": "2027-03-18"
+    },
+    {
+     "pdfPage": 292,
+     "title": "Mar 19",
+     "group": "days",
+     "from": "2027-03-19",
+     "to": "2027-03-19"
+    },
+    {
+     "pdfPage": 293,
+     "title": "Mar 20",
+     "group": "days",
+     "from": "2027-03-20",
+     "to": "2027-03-20"
+    },
+    {
+     "pdfPage": 294,
+     "title": "Mar 21",
+     "group": "days",
+     "from": "2027-03-21",
+     "to": "2027-03-21"
+    },
+    {
+     "pdfPage": 295,
+     "title": "Week 26",
+     "group": "weeks",
+     "from": "2027-03-22",
+     "to": "2027-03-28"
+    },
+    {
+     "pdfPage": 296,
+     "title": "Week 26 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 297,
+     "title": "Week 26 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 298,
+     "title": "Mar 22",
+     "group": "days",
+     "from": "2027-03-22",
+     "to": "2027-03-22"
+    },
+    {
+     "pdfPage": 299,
+     "title": "Mar 23",
+     "group": "days",
+     "from": "2027-03-23",
+     "to": "2027-03-23"
+    },
+    {
+     "pdfPage": 300,
+     "title": "Mar 24",
+     "group": "days",
+     "from": "2027-03-24",
+     "to": "2027-03-24"
+    },
+    {
+     "pdfPage": 301,
+     "title": "Mar 25",
+     "group": "days",
+     "from": "2027-03-25",
+     "to": "2027-03-25"
+    },
+    {
+     "pdfPage": 302,
+     "title": "Mar 26",
+     "group": "days",
+     "from": "2027-03-26",
+     "to": "2027-03-26"
+    },
+    {
+     "pdfPage": 303,
+     "title": "Mar 27",
+     "group": "days",
+     "from": "2027-03-27",
+     "to": "2027-03-27"
+    },
+    {
+     "pdfPage": 304,
+     "title": "Mar 28",
+     "group": "days",
+     "from": "2027-03-28",
+     "to": "2027-03-28"
+    },
+    {
+     "pdfPage": 305,
+     "title": "Week 27",
+     "group": "weeks",
+     "from": "2027-03-29",
+     "to": "2027-04-04"
+    },
+    {
+     "pdfPage": 306,
+     "title": "Week 27 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 307,
+     "title": "Week 27 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 308,
+     "title": "Mar 29",
+     "group": "days",
+     "from": "2027-03-29",
+     "to": "2027-03-29"
+    },
+    {
+     "pdfPage": 309,
+     "title": "Mar 30",
+     "group": "days",
+     "from": "2027-03-30",
+     "to": "2027-03-30"
+    },
+    {
+     "pdfPage": 310,
+     "title": "Mar 31",
+     "group": "days",
+     "from": "2027-03-31",
+     "to": "2027-03-31"
+    }
+   ]
+  },
+  {
+   "title": "April",
+   "pages": [
+    {
+     "pdfPage": 311,
+     "title": "April",
+     "from": "2027-04-01",
+     "to": "2027-04-30"
+    },
+    {
+     "pdfPage": 312,
+     "title": "Apr goals",
+     "group": "month_goals"
+    },
+    {
+     "pdfPage": 313,
+     "title": "Apr vision",
+     "group": "vision"
+    },
+    {
+     "pdfPage": 314,
+     "title": "Apr habits",
+     "group": "habits"
+    },
+    {
+     "pdfPage": 315,
+     "title": "Apr budget",
+     "group": "budget"
+    },
+    {
+     "pdfPage": 316,
+     "title": "Apr wins",
+     "group": "wins"
+    },
+    {
+     "pdfPage": 317,
+     "title": "Apr reflect",
+     "group": "month_review"
+    },
+    {
+     "pdfPage": 318,
+     "title": "Apr 1",
+     "group": "days",
+     "from": "2027-04-01",
+     "to": "2027-04-01"
+    },
+    {
+     "pdfPage": 319,
+     "title": "Apr 2",
+     "group": "days",
+     "from": "2027-04-02",
+     "to": "2027-04-02"
+    },
+    {
+     "pdfPage": 320,
+     "title": "Apr 3",
+     "group": "days",
+     "from": "2027-04-03",
+     "to": "2027-04-03"
+    },
+    {
+     "pdfPage": 321,
+     "title": "Apr 4",
+     "group": "days",
+     "from": "2027-04-04",
+     "to": "2027-04-04"
+    },
+    {
+     "pdfPage": 322,
+     "title": "Week 28",
+     "group": "weeks",
+     "from": "2027-04-05",
+     "to": "2027-04-11"
+    },
+    {
+     "pdfPage": 323,
+     "title": "Week 28 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 324,
+     "title": "Week 28 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 325,
+     "title": "Apr 5",
+     "group": "days",
+     "from": "2027-04-05",
+     "to": "2027-04-05"
+    },
+    {
+     "pdfPage": 326,
+     "title": "Apr 6",
+     "group": "days",
+     "from": "2027-04-06",
+     "to": "2027-04-06"
+    },
+    {
+     "pdfPage": 327,
+     "title": "Apr 7",
+     "group": "days",
+     "from": "2027-04-07",
+     "to": "2027-04-07"
+    },
+    {
+     "pdfPage": 328,
+     "title": "Apr 8",
+     "group": "days",
+     "from": "2027-04-08",
+     "to": "2027-04-08"
+    },
+    {
+     "pdfPage": 329,
+     "title": "Apr 9",
+     "group": "days",
+     "from": "2027-04-09",
+     "to": "2027-04-09"
+    },
+    {
+     "pdfPage": 330,
+     "title": "Apr 10",
+     "group": "days",
+     "from": "2027-04-10",
+     "to": "2027-04-10"
+    },
+    {
+     "pdfPage": 331,
+     "title": "Apr 11",
+     "group": "days",
+     "from": "2027-04-11",
+     "to": "2027-04-11"
+    },
+    {
+     "pdfPage": 332,
+     "title": "Week 29",
+     "group": "weeks",
+     "from": "2027-04-12",
+     "to": "2027-04-18"
+    },
+    {
+     "pdfPage": 333,
+     "title": "Week 29 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 334,
+     "title": "Week 29 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 335,
+     "title": "Apr 12",
+     "group": "days",
+     "from": "2027-04-12",
+     "to": "2027-04-12"
+    },
+    {
+     "pdfPage": 336,
+     "title": "Apr 13",
+     "group": "days",
+     "from": "2027-04-13",
+     "to": "2027-04-13"
+    },
+    {
+     "pdfPage": 337,
+     "title": "Apr 14",
+     "group": "days",
+     "from": "2027-04-14",
+     "to": "2027-04-14"
+    },
+    {
+     "pdfPage": 338,
+     "title": "Apr 15",
+     "group": "days",
+     "from": "2027-04-15",
+     "to": "2027-04-15"
+    },
+    {
+     "pdfPage": 339,
+     "title": "Apr 16",
+     "group": "days",
+     "from": "2027-04-16",
+     "to": "2027-04-16"
+    },
+    {
+     "pdfPage": 340,
+     "title": "Apr 17",
+     "group": "days",
+     "from": "2027-04-17",
+     "to": "2027-04-17"
+    },
+    {
+     "pdfPage": 341,
+     "title": "Apr 18",
+     "group": "days",
+     "from": "2027-04-18",
+     "to": "2027-04-18"
+    },
+    {
+     "pdfPage": 342,
+     "title": "Week 30",
+     "group": "weeks",
+     "from": "2027-04-19",
+     "to": "2027-04-25"
+    },
+    {
+     "pdfPage": 343,
+     "title": "Week 30 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 344,
+     "title": "Week 30 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 345,
+     "title": "Apr 19",
+     "group": "days",
+     "from": "2027-04-19",
+     "to": "2027-04-19"
+    },
+    {
+     "pdfPage": 346,
+     "title": "Apr 20",
+     "group": "days",
+     "from": "2027-04-20",
+     "to": "2027-04-20"
+    },
+    {
+     "pdfPage": 347,
+     "title": "Apr 21",
+     "group": "days",
+     "from": "2027-04-21",
+     "to": "2027-04-21"
+    },
+    {
+     "pdfPage": 348,
+     "title": "Apr 22",
+     "group": "days",
+     "from": "2027-04-22",
+     "to": "2027-04-22"
+    },
+    {
+     "pdfPage": 349,
+     "title": "Apr 23",
+     "group": "days",
+     "from": "2027-04-23",
+     "to": "2027-04-23"
+    },
+    {
+     "pdfPage": 350,
+     "title": "Apr 24",
+     "group": "days",
+     "from": "2027-04-24",
+     "to": "2027-04-24"
+    },
+    {
+     "pdfPage": 351,
+     "title": "Apr 25",
+     "group": "days",
+     "from": "2027-04-25",
+     "to": "2027-04-25"
+    },
+    {
+     "pdfPage": 352,
+     "title": "Week 31",
+     "group": "weeks",
+     "from": "2027-04-26",
+     "to": "2027-05-02"
+    },
+    {
+     "pdfPage": 353,
+     "title": "Week 31 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 354,
+     "title": "Week 31 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 355,
+     "title": "Apr 26",
+     "group": "days",
+     "from": "2027-04-26",
+     "to": "2027-04-26"
+    },
+    {
+     "pdfPage": 356,
+     "title": "Apr 27",
+     "group": "days",
+     "from": "2027-04-27",
+     "to": "2027-04-27"
+    },
+    {
+     "pdfPage": 357,
+     "title": "Apr 28",
+     "group": "days",
+     "from": "2027-04-28",
+     "to": "2027-04-28"
+    },
+    {
+     "pdfPage": 358,
+     "title": "Apr 29",
+     "group": "days",
+     "from": "2027-04-29",
+     "to": "2027-04-29"
+    },
+    {
+     "pdfPage": 359,
+     "title": "Apr 30",
+     "group": "days",
+     "from": "2027-04-30",
+     "to": "2027-04-30"
+    }
+   ]
+  },
+  {
+   "title": "May",
+   "pages": [
+    {
+     "pdfPage": 360,
+     "title": "May",
+     "from": "2027-05-01",
+     "to": "2027-05-31"
+    },
+    {
+     "pdfPage": 361,
+     "title": "May goals",
+     "group": "month_goals"
+    },
+    {
+     "pdfPage": 362,
+     "title": "May vision",
+     "group": "vision"
+    },
+    {
+     "pdfPage": 363,
+     "title": "May habits",
+     "group": "habits"
+    },
+    {
+     "pdfPage": 364,
+     "title": "May budget",
+     "group": "budget"
+    },
+    {
+     "pdfPage": 365,
+     "title": "May wins",
+     "group": "wins"
+    },
+    {
+     "pdfPage": 366,
+     "title": "May reflect",
+     "group": "month_review"
+    },
+    {
+     "pdfPage": 367,
+     "title": "May 1",
+     "group": "days",
+     "from": "2027-05-01",
+     "to": "2027-05-01"
+    },
+    {
+     "pdfPage": 368,
+     "title": "May 2",
+     "group": "days",
+     "from": "2027-05-02",
+     "to": "2027-05-02"
+    },
+    {
+     "pdfPage": 369,
+     "title": "Week 32",
+     "group": "weeks",
+     "from": "2027-05-03",
+     "to": "2027-05-09"
+    },
+    {
+     "pdfPage": 370,
+     "title": "Week 32 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 371,
+     "title": "Week 32 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 372,
+     "title": "May 3",
+     "group": "days",
+     "from": "2027-05-03",
+     "to": "2027-05-03"
+    },
+    {
+     "pdfPage": 373,
+     "title": "May 4",
+     "group": "days",
+     "from": "2027-05-04",
+     "to": "2027-05-04"
+    },
+    {
+     "pdfPage": 374,
+     "title": "May 5",
+     "group": "days",
+     "from": "2027-05-05",
+     "to": "2027-05-05"
+    },
+    {
+     "pdfPage": 375,
+     "title": "May 6",
+     "group": "days",
+     "from": "2027-05-06",
+     "to": "2027-05-06"
+    },
+    {
+     "pdfPage": 376,
+     "title": "May 7",
+     "group": "days",
+     "from": "2027-05-07",
+     "to": "2027-05-07"
+    },
+    {
+     "pdfPage": 377,
+     "title": "May 8",
+     "group": "days",
+     "from": "2027-05-08",
+     "to": "2027-05-08"
+    },
+    {
+     "pdfPage": 378,
+     "title": "May 9",
+     "group": "days",
+     "from": "2027-05-09",
+     "to": "2027-05-09"
+    },
+    {
+     "pdfPage": 379,
+     "title": "Week 33",
+     "group": "weeks",
+     "from": "2027-05-10",
+     "to": "2027-05-16"
+    },
+    {
+     "pdfPage": 380,
+     "title": "Week 33 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 381,
+     "title": "Week 33 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 382,
+     "title": "May 10",
+     "group": "days",
+     "from": "2027-05-10",
+     "to": "2027-05-10"
+    },
+    {
+     "pdfPage": 383,
+     "title": "May 11",
+     "group": "days",
+     "from": "2027-05-11",
+     "to": "2027-05-11"
+    },
+    {
+     "pdfPage": 384,
+     "title": "May 12",
+     "group": "days",
+     "from": "2027-05-12",
+     "to": "2027-05-12"
+    },
+    {
+     "pdfPage": 385,
+     "title": "May 13",
+     "group": "days",
+     "from": "2027-05-13",
+     "to": "2027-05-13"
+    },
+    {
+     "pdfPage": 386,
+     "title": "May 14",
+     "group": "days",
+     "from": "2027-05-14",
+     "to": "2027-05-14"
+    },
+    {
+     "pdfPage": 387,
+     "title": "May 15",
+     "group": "days",
+     "from": "2027-05-15",
+     "to": "2027-05-15"
+    },
+    {
+     "pdfPage": 388,
+     "title": "May 16",
+     "group": "days",
+     "from": "2027-05-16",
+     "to": "2027-05-16"
+    },
+    {
+     "pdfPage": 389,
+     "title": "Week 34",
+     "group": "weeks",
+     "from": "2027-05-17",
+     "to": "2027-05-23"
+    },
+    {
+     "pdfPage": 390,
+     "title": "Week 34 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 391,
+     "title": "Week 34 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 392,
+     "title": "May 17",
+     "group": "days",
+     "from": "2027-05-17",
+     "to": "2027-05-17"
+    },
+    {
+     "pdfPage": 393,
+     "title": "May 18",
+     "group": "days",
+     "from": "2027-05-18",
+     "to": "2027-05-18"
+    },
+    {
+     "pdfPage": 394,
+     "title": "May 19",
+     "group": "days",
+     "from": "2027-05-19",
+     "to": "2027-05-19"
+    },
+    {
+     "pdfPage": 395,
+     "title": "May 20",
+     "group": "days",
+     "from": "2027-05-20",
+     "to": "2027-05-20"
+    },
+    {
+     "pdfPage": 396,
+     "title": "May 21",
+     "group": "days",
+     "from": "2027-05-21",
+     "to": "2027-05-21"
+    },
+    {
+     "pdfPage": 397,
+     "title": "May 22",
+     "group": "days",
+     "from": "2027-05-22",
+     "to": "2027-05-22"
+    },
+    {
+     "pdfPage": 398,
+     "title": "May 23",
+     "group": "days",
+     "from": "2027-05-23",
+     "to": "2027-05-23"
+    },
+    {
+     "pdfPage": 399,
+     "title": "Week 35",
+     "group": "weeks",
+     "from": "2027-05-24",
+     "to": "2027-05-30"
+    },
+    {
+     "pdfPage": 400,
+     "title": "Week 35 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 401,
+     "title": "Week 35 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 402,
+     "title": "May 24",
+     "group": "days",
+     "from": "2027-05-24",
+     "to": "2027-05-24"
+    },
+    {
+     "pdfPage": 403,
+     "title": "May 25",
+     "group": "days",
+     "from": "2027-05-25",
+     "to": "2027-05-25"
+    },
+    {
+     "pdfPage": 404,
+     "title": "May 26",
+     "group": "days",
+     "from": "2027-05-26",
+     "to": "2027-05-26"
+    },
+    {
+     "pdfPage": 405,
+     "title": "May 27",
+     "group": "days",
+     "from": "2027-05-27",
+     "to": "2027-05-27"
+    },
+    {
+     "pdfPage": 406,
+     "title": "May 28",
+     "group": "days",
+     "from": "2027-05-28",
+     "to": "2027-05-28"
+    },
+    {
+     "pdfPage": 407,
+     "title": "May 29",
+     "group": "days",
+     "from": "2027-05-29",
+     "to": "2027-05-29"
+    },
+    {
+     "pdfPage": 408,
+     "title": "May 30",
+     "group": "days",
+     "from": "2027-05-30",
+     "to": "2027-05-30"
+    },
+    {
+     "pdfPage": 409,
+     "title": "Week 36",
+     "group": "weeks",
+     "from": "2027-05-31",
+     "to": "2027-06-06"
+    },
+    {
+     "pdfPage": 410,
+     "title": "Week 36 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 411,
+     "title": "Week 36 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 412,
+     "title": "May 31",
+     "group": "days",
+     "from": "2027-05-31",
+     "to": "2027-05-31"
+    }
+   ]
+  },
+  {
+   "title": "June",
+   "pages": [
+    {
+     "pdfPage": 413,
+     "title": "June",
+     "from": "2027-06-01",
+     "to": "2027-06-30"
+    },
+    {
+     "pdfPage": 414,
+     "title": "Jun goals",
+     "group": "month_goals"
+    },
+    {
+     "pdfPage": 415,
+     "title": "Jun vision",
+     "group": "vision"
+    },
+    {
+     "pdfPage": 416,
+     "title": "Jun habits",
+     "group": "habits"
+    },
+    {
+     "pdfPage": 417,
+     "title": "Jun budget",
+     "group": "budget"
+    },
+    {
+     "pdfPage": 418,
+     "title": "Jun wins",
+     "group": "wins"
+    },
+    {
+     "pdfPage": 419,
+     "title": "Jun reflect",
+     "group": "month_review"
+    },
+    {
+     "pdfPage": 420,
+     "title": "Jun 1",
+     "group": "days",
+     "from": "2027-06-01",
+     "to": "2027-06-01"
+    },
+    {
+     "pdfPage": 421,
+     "title": "Jun 2",
+     "group": "days",
+     "from": "2027-06-02",
+     "to": "2027-06-02"
+    },
+    {
+     "pdfPage": 422,
+     "title": "Jun 3",
+     "group": "days",
+     "from": "2027-06-03",
+     "to": "2027-06-03"
+    },
+    {
+     "pdfPage": 423,
+     "title": "Jun 4",
+     "group": "days",
+     "from": "2027-06-04",
+     "to": "2027-06-04"
+    },
+    {
+     "pdfPage": 424,
+     "title": "Jun 5",
+     "group": "days",
+     "from": "2027-06-05",
+     "to": "2027-06-05"
+    },
+    {
+     "pdfPage": 425,
+     "title": "Jun 6",
+     "group": "days",
+     "from": "2027-06-06",
+     "to": "2027-06-06"
+    },
+    {
+     "pdfPage": 426,
+     "title": "Week 37",
+     "group": "weeks",
+     "from": "2027-06-07",
+     "to": "2027-06-13"
+    },
+    {
+     "pdfPage": 427,
+     "title": "Week 37 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 428,
+     "title": "Week 37 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 429,
+     "title": "Jun 7",
+     "group": "days",
+     "from": "2027-06-07",
+     "to": "2027-06-07"
+    },
+    {
+     "pdfPage": 430,
+     "title": "Jun 8",
+     "group": "days",
+     "from": "2027-06-08",
+     "to": "2027-06-08"
+    },
+    {
+     "pdfPage": 431,
+     "title": "Jun 9",
+     "group": "days",
+     "from": "2027-06-09",
+     "to": "2027-06-09"
+    },
+    {
+     "pdfPage": 432,
+     "title": "Jun 10",
+     "group": "days",
+     "from": "2027-06-10",
+     "to": "2027-06-10"
+    },
+    {
+     "pdfPage": 433,
+     "title": "Jun 11",
+     "group": "days",
+     "from": "2027-06-11",
+     "to": "2027-06-11"
+    },
+    {
+     "pdfPage": 434,
+     "title": "Jun 12",
+     "group": "days",
+     "from": "2027-06-12",
+     "to": "2027-06-12"
+    },
+    {
+     "pdfPage": 435,
+     "title": "Jun 13",
+     "group": "days",
+     "from": "2027-06-13",
+     "to": "2027-06-13"
+    },
+    {
+     "pdfPage": 436,
+     "title": "Week 38",
+     "group": "weeks",
+     "from": "2027-06-14",
+     "to": "2027-06-20"
+    },
+    {
+     "pdfPage": 437,
+     "title": "Week 38 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 438,
+     "title": "Week 38 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 439,
+     "title": "Jun 14",
+     "group": "days",
+     "from": "2027-06-14",
+     "to": "2027-06-14"
+    },
+    {
+     "pdfPage": 440,
+     "title": "Jun 15",
+     "group": "days",
+     "from": "2027-06-15",
+     "to": "2027-06-15"
+    },
+    {
+     "pdfPage": 441,
+     "title": "Jun 16",
+     "group": "days",
+     "from": "2027-06-16",
+     "to": "2027-06-16"
+    },
+    {
+     "pdfPage": 442,
+     "title": "Jun 17",
+     "group": "days",
+     "from": "2027-06-17",
+     "to": "2027-06-17"
+    },
+    {
+     "pdfPage": 443,
+     "title": "Jun 18",
+     "group": "days",
+     "from": "2027-06-18",
+     "to": "2027-06-18"
+    },
+    {
+     "pdfPage": 444,
+     "title": "Jun 19",
+     "group": "days",
+     "from": "2027-06-19",
+     "to": "2027-06-19"
+    },
+    {
+     "pdfPage": 445,
+     "title": "Jun 20",
+     "group": "days",
+     "from": "2027-06-20",
+     "to": "2027-06-20"
+    },
+    {
+     "pdfPage": 446,
+     "title": "Week 39",
+     "group": "weeks",
+     "from": "2027-06-21",
+     "to": "2027-06-27"
+    },
+    {
+     "pdfPage": 447,
+     "title": "Week 39 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 448,
+     "title": "Week 39 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 449,
+     "title": "Jun 21",
+     "group": "days",
+     "from": "2027-06-21",
+     "to": "2027-06-21"
+    },
+    {
+     "pdfPage": 450,
+     "title": "Jun 22",
+     "group": "days",
+     "from": "2027-06-22",
+     "to": "2027-06-22"
+    },
+    {
+     "pdfPage": 451,
+     "title": "Jun 23",
+     "group": "days",
+     "from": "2027-06-23",
+     "to": "2027-06-23"
+    },
+    {
+     "pdfPage": 452,
+     "title": "Jun 24",
+     "group": "days",
+     "from": "2027-06-24",
+     "to": "2027-06-24"
+    },
+    {
+     "pdfPage": 453,
+     "title": "Jun 25",
+     "group": "days",
+     "from": "2027-06-25",
+     "to": "2027-06-25"
+    },
+    {
+     "pdfPage": 454,
+     "title": "Jun 26",
+     "group": "days",
+     "from": "2027-06-26",
+     "to": "2027-06-26"
+    },
+    {
+     "pdfPage": 455,
+     "title": "Jun 27",
+     "group": "days",
+     "from": "2027-06-27",
+     "to": "2027-06-27"
+    },
+    {
+     "pdfPage": 456,
+     "title": "Week 40",
+     "group": "weeks",
+     "from": "2027-06-28",
+     "to": "2027-07-04"
+    },
+    {
+     "pdfPage": 457,
+     "title": "Week 40 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 458,
+     "title": "Week 40 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 459,
+     "title": "Jun 28",
+     "group": "days",
+     "from": "2027-06-28",
+     "to": "2027-06-28"
+    },
+    {
+     "pdfPage": 460,
+     "title": "Jun 29",
+     "group": "days",
+     "from": "2027-06-29",
+     "to": "2027-06-29"
+    },
+    {
+     "pdfPage": 461,
+     "title": "Jun 30",
+     "group": "days",
+     "from": "2027-06-30",
+     "to": "2027-06-30"
+    }
+   ]
+  },
+  {
+   "title": "July",
+   "pages": [
+    {
+     "pdfPage": 462,
+     "title": "July",
+     "from": "2027-07-01",
+     "to": "2027-07-31"
+    },
+    {
+     "pdfPage": 463,
+     "title": "Jul goals",
+     "group": "month_goals"
+    },
+    {
+     "pdfPage": 464,
+     "title": "Jul vision",
+     "group": "vision"
+    },
+    {
+     "pdfPage": 465,
+     "title": "Jul habits",
+     "group": "habits"
+    },
+    {
+     "pdfPage": 466,
+     "title": "Jul budget",
+     "group": "budget"
+    },
+    {
+     "pdfPage": 467,
+     "title": "Jul wins",
+     "group": "wins"
+    },
+    {
+     "pdfPage": 468,
+     "title": "Jul reflect",
+     "group": "month_review"
+    },
+    {
+     "pdfPage": 469,
+     "title": "Jul 1",
+     "group": "days",
+     "from": "2027-07-01",
+     "to": "2027-07-01"
+    },
+    {
+     "pdfPage": 470,
+     "title": "Jul 2",
+     "group": "days",
+     "from": "2027-07-02",
+     "to": "2027-07-02"
+    },
+    {
+     "pdfPage": 471,
+     "title": "Jul 3",
+     "group": "days",
+     "from": "2027-07-03",
+     "to": "2027-07-03"
+    },
+    {
+     "pdfPage": 472,
+     "title": "Jul 4",
+     "group": "days",
+     "from": "2027-07-04",
+     "to": "2027-07-04"
+    },
+    {
+     "pdfPage": 473,
+     "title": "Week 41",
+     "group": "weeks",
+     "from": "2027-07-05",
+     "to": "2027-07-11"
+    },
+    {
+     "pdfPage": 474,
+     "title": "Week 41 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 475,
+     "title": "Week 41 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 476,
+     "title": "Jul 5",
+     "group": "days",
+     "from": "2027-07-05",
+     "to": "2027-07-05"
+    },
+    {
+     "pdfPage": 477,
+     "title": "Jul 6",
+     "group": "days",
+     "from": "2027-07-06",
+     "to": "2027-07-06"
+    },
+    {
+     "pdfPage": 478,
+     "title": "Jul 7",
+     "group": "days",
+     "from": "2027-07-07",
+     "to": "2027-07-07"
+    },
+    {
+     "pdfPage": 479,
+     "title": "Jul 8",
+     "group": "days",
+     "from": "2027-07-08",
+     "to": "2027-07-08"
+    },
+    {
+     "pdfPage": 480,
+     "title": "Jul 9",
+     "group": "days",
+     "from": "2027-07-09",
+     "to": "2027-07-09"
+    },
+    {
+     "pdfPage": 481,
+     "title": "Jul 10",
+     "group": "days",
+     "from": "2027-07-10",
+     "to": "2027-07-10"
+    },
+    {
+     "pdfPage": 482,
+     "title": "Jul 11",
+     "group": "days",
+     "from": "2027-07-11",
+     "to": "2027-07-11"
+    },
+    {
+     "pdfPage": 483,
+     "title": "Week 42",
+     "group": "weeks",
+     "from": "2027-07-12",
+     "to": "2027-07-18"
+    },
+    {
+     "pdfPage": 484,
+     "title": "Week 42 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 485,
+     "title": "Week 42 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 486,
+     "title": "Jul 12",
+     "group": "days",
+     "from": "2027-07-12",
+     "to": "2027-07-12"
+    },
+    {
+     "pdfPage": 487,
+     "title": "Jul 13",
+     "group": "days",
+     "from": "2027-07-13",
+     "to": "2027-07-13"
+    },
+    {
+     "pdfPage": 488,
+     "title": "Jul 14",
+     "group": "days",
+     "from": "2027-07-14",
+     "to": "2027-07-14"
+    },
+    {
+     "pdfPage": 489,
+     "title": "Jul 15",
+     "group": "days",
+     "from": "2027-07-15",
+     "to": "2027-07-15"
+    },
+    {
+     "pdfPage": 490,
+     "title": "Jul 16",
+     "group": "days",
+     "from": "2027-07-16",
+     "to": "2027-07-16"
+    },
+    {
+     "pdfPage": 491,
+     "title": "Jul 17",
+     "group": "days",
+     "from": "2027-07-17",
+     "to": "2027-07-17"
+    },
+    {
+     "pdfPage": 492,
+     "title": "Jul 18",
+     "group": "days",
+     "from": "2027-07-18",
+     "to": "2027-07-18"
+    },
+    {
+     "pdfPage": 493,
+     "title": "Week 43",
+     "group": "weeks",
+     "from": "2027-07-19",
+     "to": "2027-07-25"
+    },
+    {
+     "pdfPage": 494,
+     "title": "Week 43 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 495,
+     "title": "Week 43 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 496,
+     "title": "Jul 19",
+     "group": "days",
+     "from": "2027-07-19",
+     "to": "2027-07-19"
+    },
+    {
+     "pdfPage": 497,
+     "title": "Jul 20",
+     "group": "days",
+     "from": "2027-07-20",
+     "to": "2027-07-20"
+    },
+    {
+     "pdfPage": 498,
+     "title": "Jul 21",
+     "group": "days",
+     "from": "2027-07-21",
+     "to": "2027-07-21"
+    },
+    {
+     "pdfPage": 499,
+     "title": "Jul 22",
+     "group": "days",
+     "from": "2027-07-22",
+     "to": "2027-07-22"
+    },
+    {
+     "pdfPage": 500,
+     "title": "Jul 23",
+     "group": "days",
+     "from": "2027-07-23",
+     "to": "2027-07-23"
+    },
+    {
+     "pdfPage": 501,
+     "title": "Jul 24",
+     "group": "days",
+     "from": "2027-07-24",
+     "to": "2027-07-24"
+    },
+    {
+     "pdfPage": 502,
+     "title": "Jul 25",
+     "group": "days",
+     "from": "2027-07-25",
+     "to": "2027-07-25"
+    },
+    {
+     "pdfPage": 503,
+     "title": "Week 44",
+     "group": "weeks",
+     "from": "2027-07-26",
+     "to": "2027-08-01"
+    },
+    {
+     "pdfPage": 504,
+     "title": "Week 44 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 505,
+     "title": "Week 44 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 506,
+     "title": "Jul 26",
+     "group": "days",
+     "from": "2027-07-26",
+     "to": "2027-07-26"
+    },
+    {
+     "pdfPage": 507,
+     "title": "Jul 27",
+     "group": "days",
+     "from": "2027-07-27",
+     "to": "2027-07-27"
+    },
+    {
+     "pdfPage": 508,
+     "title": "Jul 28",
+     "group": "days",
+     "from": "2027-07-28",
+     "to": "2027-07-28"
+    },
+    {
+     "pdfPage": 509,
+     "title": "Jul 29",
+     "group": "days",
+     "from": "2027-07-29",
+     "to": "2027-07-29"
+    },
+    {
+     "pdfPage": 510,
+     "title": "Jul 30",
+     "group": "days",
+     "from": "2027-07-30",
+     "to": "2027-07-30"
+    },
+    {
+     "pdfPage": 511,
+     "title": "Jul 31",
+     "group": "days",
+     "from": "2027-07-31",
+     "to": "2027-07-31"
+    }
+   ]
+  },
+  {
+   "title": "August",
+   "pages": [
+    {
+     "pdfPage": 512,
+     "title": "August",
+     "from": "2027-08-01",
+     "to": "2027-08-31"
+    },
+    {
+     "pdfPage": 513,
+     "title": "Aug goals",
+     "group": "month_goals"
+    },
+    {
+     "pdfPage": 514,
+     "title": "Aug vision",
+     "group": "vision"
+    },
+    {
+     "pdfPage": 515,
+     "title": "Aug habits",
+     "group": "habits"
+    },
+    {
+     "pdfPage": 516,
+     "title": "Aug budget",
+     "group": "budget"
+    },
+    {
+     "pdfPage": 517,
+     "title": "Aug wins",
+     "group": "wins"
+    },
+    {
+     "pdfPage": 518,
+     "title": "Aug reflect",
+     "group": "month_review"
+    },
+    {
+     "pdfPage": 519,
+     "title": "Aug 1",
+     "group": "days",
+     "from": "2027-08-01",
+     "to": "2027-08-01"
+    },
+    {
+     "pdfPage": 520,
+     "title": "Week 45",
+     "group": "weeks",
+     "from": "2027-08-02",
+     "to": "2027-08-08"
+    },
+    {
+     "pdfPage": 521,
+     "title": "Week 45 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 522,
+     "title": "Week 45 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 523,
+     "title": "Aug 2",
+     "group": "days",
+     "from": "2027-08-02",
+     "to": "2027-08-02"
+    },
+    {
+     "pdfPage": 524,
+     "title": "Aug 3",
+     "group": "days",
+     "from": "2027-08-03",
+     "to": "2027-08-03"
+    },
+    {
+     "pdfPage": 525,
+     "title": "Aug 4",
+     "group": "days",
+     "from": "2027-08-04",
+     "to": "2027-08-04"
+    },
+    {
+     "pdfPage": 526,
+     "title": "Aug 5",
+     "group": "days",
+     "from": "2027-08-05",
+     "to": "2027-08-05"
+    },
+    {
+     "pdfPage": 527,
+     "title": "Aug 6",
+     "group": "days",
+     "from": "2027-08-06",
+     "to": "2027-08-06"
+    },
+    {
+     "pdfPage": 528,
+     "title": "Aug 7",
+     "group": "days",
+     "from": "2027-08-07",
+     "to": "2027-08-07"
+    },
+    {
+     "pdfPage": 529,
+     "title": "Aug 8",
+     "group": "days",
+     "from": "2027-08-08",
+     "to": "2027-08-08"
+    },
+    {
+     "pdfPage": 530,
+     "title": "Week 46",
+     "group": "weeks",
+     "from": "2027-08-09",
+     "to": "2027-08-15"
+    },
+    {
+     "pdfPage": 531,
+     "title": "Week 46 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 532,
+     "title": "Week 46 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 533,
+     "title": "Aug 9",
+     "group": "days",
+     "from": "2027-08-09",
+     "to": "2027-08-09"
+    },
+    {
+     "pdfPage": 534,
+     "title": "Aug 10",
+     "group": "days",
+     "from": "2027-08-10",
+     "to": "2027-08-10"
+    },
+    {
+     "pdfPage": 535,
+     "title": "Aug 11",
+     "group": "days",
+     "from": "2027-08-11",
+     "to": "2027-08-11"
+    },
+    {
+     "pdfPage": 536,
+     "title": "Aug 12",
+     "group": "days",
+     "from": "2027-08-12",
+     "to": "2027-08-12"
+    },
+    {
+     "pdfPage": 537,
+     "title": "Aug 13",
+     "group": "days",
+     "from": "2027-08-13",
+     "to": "2027-08-13"
+    },
+    {
+     "pdfPage": 538,
+     "title": "Aug 14",
+     "group": "days",
+     "from": "2027-08-14",
+     "to": "2027-08-14"
+    },
+    {
+     "pdfPage": 539,
+     "title": "Aug 15",
+     "group": "days",
+     "from": "2027-08-15",
+     "to": "2027-08-15"
+    },
+    {
+     "pdfPage": 540,
+     "title": "Week 47",
+     "group": "weeks",
+     "from": "2027-08-16",
+     "to": "2027-08-22"
+    },
+    {
+     "pdfPage": 541,
+     "title": "Week 47 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 542,
+     "title": "Week 47 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 543,
+     "title": "Aug 16",
+     "group": "days",
+     "from": "2027-08-16",
+     "to": "2027-08-16"
+    },
+    {
+     "pdfPage": 544,
+     "title": "Aug 17",
+     "group": "days",
+     "from": "2027-08-17",
+     "to": "2027-08-17"
+    },
+    {
+     "pdfPage": 545,
+     "title": "Aug 18",
+     "group": "days",
+     "from": "2027-08-18",
+     "to": "2027-08-18"
+    },
+    {
+     "pdfPage": 546,
+     "title": "Aug 19",
+     "group": "days",
+     "from": "2027-08-19",
+     "to": "2027-08-19"
+    },
+    {
+     "pdfPage": 547,
+     "title": "Aug 20",
+     "group": "days",
+     "from": "2027-08-20",
+     "to": "2027-08-20"
+    },
+    {
+     "pdfPage": 548,
+     "title": "Aug 21",
+     "group": "days",
+     "from": "2027-08-21",
+     "to": "2027-08-21"
+    },
+    {
+     "pdfPage": 549,
+     "title": "Aug 22",
+     "group": "days",
+     "from": "2027-08-22",
+     "to": "2027-08-22"
+    },
+    {
+     "pdfPage": 550,
+     "title": "Week 48",
+     "group": "weeks",
+     "from": "2027-08-23",
+     "to": "2027-08-29"
+    },
+    {
+     "pdfPage": 551,
+     "title": "Week 48 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 552,
+     "title": "Week 48 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 553,
+     "title": "Aug 23",
+     "group": "days",
+     "from": "2027-08-23",
+     "to": "2027-08-23"
+    },
+    {
+     "pdfPage": 554,
+     "title": "Aug 24",
+     "group": "days",
+     "from": "2027-08-24",
+     "to": "2027-08-24"
+    },
+    {
+     "pdfPage": 555,
+     "title": "Aug 25",
+     "group": "days",
+     "from": "2027-08-25",
+     "to": "2027-08-25"
+    },
+    {
+     "pdfPage": 556,
+     "title": "Aug 26",
+     "group": "days",
+     "from": "2027-08-26",
+     "to": "2027-08-26"
+    },
+    {
+     "pdfPage": 557,
+     "title": "Aug 27",
+     "group": "days",
+     "from": "2027-08-27",
+     "to": "2027-08-27"
+    },
+    {
+     "pdfPage": 558,
+     "title": "Aug 28",
+     "group": "days",
+     "from": "2027-08-28",
+     "to": "2027-08-28"
+    },
+    {
+     "pdfPage": 559,
+     "title": "Aug 29",
+     "group": "days",
+     "from": "2027-08-29",
+     "to": "2027-08-29"
+    },
+    {
+     "pdfPage": 560,
+     "title": "Week 49",
+     "group": "weeks",
+     "from": "2027-08-30",
+     "to": "2027-09-05"
+    },
+    {
+     "pdfPage": 561,
+     "title": "Week 49 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 562,
+     "title": "Week 49 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 563,
+     "title": "Aug 30",
+     "group": "days",
+     "from": "2027-08-30",
+     "to": "2027-08-30"
+    },
+    {
+     "pdfPage": 564,
+     "title": "Aug 31",
+     "group": "days",
+     "from": "2027-08-31",
+     "to": "2027-08-31"
+    }
+   ]
+  },
+  {
+   "title": "September",
+   "pages": [
+    {
+     "pdfPage": 565,
+     "title": "September",
+     "from": "2027-09-01",
+     "to": "2027-09-30"
+    },
+    {
+     "pdfPage": 566,
+     "title": "Sep goals",
+     "group": "month_goals"
+    },
+    {
+     "pdfPage": 567,
+     "title": "Sep vision",
+     "group": "vision"
+    },
+    {
+     "pdfPage": 568,
+     "title": "Sep habits",
+     "group": "habits"
+    },
+    {
+     "pdfPage": 569,
+     "title": "Sep budget",
+     "group": "budget"
+    },
+    {
+     "pdfPage": 570,
+     "title": "Sep wins",
+     "group": "wins"
+    },
+    {
+     "pdfPage": 571,
+     "title": "Sep reflect",
+     "group": "month_review"
+    },
+    {
+     "pdfPage": 572,
+     "title": "Sep 1",
+     "group": "days",
+     "from": "2027-09-01",
+     "to": "2027-09-01"
+    },
+    {
+     "pdfPage": 573,
+     "title": "Sep 2",
+     "group": "days",
+     "from": "2027-09-02",
+     "to": "2027-09-02"
+    },
+    {
+     "pdfPage": 574,
+     "title": "Sep 3",
+     "group": "days",
+     "from": "2027-09-03",
+     "to": "2027-09-03"
+    },
+    {
+     "pdfPage": 575,
+     "title": "Sep 4",
+     "group": "days",
+     "from": "2027-09-04",
+     "to": "2027-09-04"
+    },
+    {
+     "pdfPage": 576,
+     "title": "Sep 5",
+     "group": "days",
+     "from": "2027-09-05",
+     "to": "2027-09-05"
+    },
+    {
+     "pdfPage": 577,
+     "title": "Week 50",
+     "group": "weeks",
+     "from": "2027-09-06",
+     "to": "2027-09-12"
+    },
+    {
+     "pdfPage": 578,
+     "title": "Week 50 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 579,
+     "title": "Week 50 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 580,
+     "title": "Sep 6",
+     "group": "days",
+     "from": "2027-09-06",
+     "to": "2027-09-06"
+    },
+    {
+     "pdfPage": 581,
+     "title": "Sep 7",
+     "group": "days",
+     "from": "2027-09-07",
+     "to": "2027-09-07"
+    },
+    {
+     "pdfPage": 582,
+     "title": "Sep 8",
+     "group": "days",
+     "from": "2027-09-08",
+     "to": "2027-09-08"
+    },
+    {
+     "pdfPage": 583,
+     "title": "Sep 9",
+     "group": "days",
+     "from": "2027-09-09",
+     "to": "2027-09-09"
+    },
+    {
+     "pdfPage": 584,
+     "title": "Sep 10",
+     "group": "days",
+     "from": "2027-09-10",
+     "to": "2027-09-10"
+    },
+    {
+     "pdfPage": 585,
+     "title": "Sep 11",
+     "group": "days",
+     "from": "2027-09-11",
+     "to": "2027-09-11"
+    },
+    {
+     "pdfPage": 586,
+     "title": "Sep 12",
+     "group": "days",
+     "from": "2027-09-12",
+     "to": "2027-09-12"
+    },
+    {
+     "pdfPage": 587,
+     "title": "Week 51",
+     "group": "weeks",
+     "from": "2027-09-13",
+     "to": "2027-09-19"
+    },
+    {
+     "pdfPage": 588,
+     "title": "Week 51 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 589,
+     "title": "Week 51 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 590,
+     "title": "Sep 13",
+     "group": "days",
+     "from": "2027-09-13",
+     "to": "2027-09-13"
+    },
+    {
+     "pdfPage": 591,
+     "title": "Sep 14",
+     "group": "days",
+     "from": "2027-09-14",
+     "to": "2027-09-14"
+    },
+    {
+     "pdfPage": 592,
+     "title": "Sep 15",
+     "group": "days",
+     "from": "2027-09-15",
+     "to": "2027-09-15"
+    },
+    {
+     "pdfPage": 593,
+     "title": "Sep 16",
+     "group": "days",
+     "from": "2027-09-16",
+     "to": "2027-09-16"
+    },
+    {
+     "pdfPage": 594,
+     "title": "Sep 17",
+     "group": "days",
+     "from": "2027-09-17",
+     "to": "2027-09-17"
+    },
+    {
+     "pdfPage": 595,
+     "title": "Sep 18",
+     "group": "days",
+     "from": "2027-09-18",
+     "to": "2027-09-18"
+    },
+    {
+     "pdfPage": 596,
+     "title": "Sep 19",
+     "group": "days",
+     "from": "2027-09-19",
+     "to": "2027-09-19"
+    },
+    {
+     "pdfPage": 597,
+     "title": "Week 52",
+     "group": "weeks",
+     "from": "2027-09-20",
+     "to": "2027-09-26"
+    },
+    {
+     "pdfPage": 598,
+     "title": "Week 52 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 599,
+     "title": "Week 52 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 600,
+     "title": "Sep 20",
+     "group": "days",
+     "from": "2027-09-20",
+     "to": "2027-09-20"
+    },
+    {
+     "pdfPage": 601,
+     "title": "Sep 21",
+     "group": "days",
+     "from": "2027-09-21",
+     "to": "2027-09-21"
+    },
+    {
+     "pdfPage": 602,
+     "title": "Sep 22",
+     "group": "days",
+     "from": "2027-09-22",
+     "to": "2027-09-22"
+    },
+    {
+     "pdfPage": 603,
+     "title": "Sep 23",
+     "group": "days",
+     "from": "2027-09-23",
+     "to": "2027-09-23"
+    },
+    {
+     "pdfPage": 604,
+     "title": "Sep 24",
+     "group": "days",
+     "from": "2027-09-24",
+     "to": "2027-09-24"
+    },
+    {
+     "pdfPage": 605,
+     "title": "Sep 25",
+     "group": "days",
+     "from": "2027-09-25",
+     "to": "2027-09-25"
+    },
+    {
+     "pdfPage": 606,
+     "title": "Sep 26",
+     "group": "days",
+     "from": "2027-09-26",
+     "to": "2027-09-26"
+    },
+    {
+     "pdfPage": 607,
+     "title": "Week 53",
+     "group": "weeks",
+     "from": "2027-09-27",
+     "to": "2027-10-03"
+    },
+    {
+     "pdfPage": 608,
+     "title": "Week 53 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 609,
+     "title": "Week 53 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 610,
+     "title": "Sep 27",
+     "group": "days",
+     "from": "2027-09-27",
+     "to": "2027-09-27"
+    },
+    {
+     "pdfPage": 611,
+     "title": "Sep 28",
+     "group": "days",
+     "from": "2027-09-28",
+     "to": "2027-09-28"
+    },
+    {
+     "pdfPage": 612,
+     "title": "Sep 29",
+     "group": "days",
+     "from": "2027-09-29",
+     "to": "2027-09-29"
+    },
+    {
+     "pdfPage": 613,
+     "title": "Sep 30",
+     "group": "days",
+     "from": "2027-09-30",
+     "to": "2027-09-30"
+    }
+   ]
+  },
+  {
+   "title": "October 2027",
+   "pages": [
+    {
+     "pdfPage": 614,
+     "title": "October 2027",
+     "from": "2027-10-01",
+     "to": "2027-10-31"
+    },
+    {
+     "pdfPage": 615,
+     "title": "Oct 27 goals",
+     "group": "month_goals"
+    },
+    {
+     "pdfPage": 616,
+     "title": "Oct 27 vision",
+     "group": "vision"
+    },
+    {
+     "pdfPage": 617,
+     "title": "Oct 27 habits",
+     "group": "habits"
+    },
+    {
+     "pdfPage": 618,
+     "title": "Oct 27 budget",
+     "group": "budget"
+    },
+    {
+     "pdfPage": 619,
+     "title": "Oct 27 wins",
+     "group": "wins"
+    },
+    {
+     "pdfPage": 620,
+     "title": "Oct 27 reflect",
+     "group": "month_review"
+    },
+    {
+     "pdfPage": 621,
+     "title": "Oct 1",
+     "group": "days",
+     "from": "2027-10-01",
+     "to": "2027-10-01"
+    },
+    {
+     "pdfPage": 622,
+     "title": "Oct 2",
+     "group": "days",
+     "from": "2027-10-02",
+     "to": "2027-10-02"
+    },
+    {
+     "pdfPage": 623,
+     "title": "Oct 3",
+     "group": "days",
+     "from": "2027-10-03",
+     "to": "2027-10-03"
+    },
+    {
+     "pdfPage": 624,
+     "title": "Week 54",
+     "group": "weeks",
+     "from": "2027-10-04",
+     "to": "2027-10-10"
+    },
+    {
+     "pdfPage": 625,
+     "title": "Week 54 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 626,
+     "title": "Week 54 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 627,
+     "title": "Oct 4",
+     "group": "days",
+     "from": "2027-10-04",
+     "to": "2027-10-04"
+    },
+    {
+     "pdfPage": 628,
+     "title": "Oct 5",
+     "group": "days",
+     "from": "2027-10-05",
+     "to": "2027-10-05"
+    },
+    {
+     "pdfPage": 629,
+     "title": "Oct 6",
+     "group": "days",
+     "from": "2027-10-06",
+     "to": "2027-10-06"
+    },
+    {
+     "pdfPage": 630,
+     "title": "Oct 7",
+     "group": "days",
+     "from": "2027-10-07",
+     "to": "2027-10-07"
+    },
+    {
+     "pdfPage": 631,
+     "title": "Oct 8",
+     "group": "days",
+     "from": "2027-10-08",
+     "to": "2027-10-08"
+    },
+    {
+     "pdfPage": 632,
+     "title": "Oct 9",
+     "group": "days",
+     "from": "2027-10-09",
+     "to": "2027-10-09"
+    },
+    {
+     "pdfPage": 633,
+     "title": "Oct 10",
+     "group": "days",
+     "from": "2027-10-10",
+     "to": "2027-10-10"
+    },
+    {
+     "pdfPage": 634,
+     "title": "Week 55",
+     "group": "weeks",
+     "from": "2027-10-11",
+     "to": "2027-10-17"
+    },
+    {
+     "pdfPage": 635,
+     "title": "Week 55 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 636,
+     "title": "Week 55 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 637,
+     "title": "Oct 11",
+     "group": "days",
+     "from": "2027-10-11",
+     "to": "2027-10-11"
+    },
+    {
+     "pdfPage": 638,
+     "title": "Oct 12",
+     "group": "days",
+     "from": "2027-10-12",
+     "to": "2027-10-12"
+    },
+    {
+     "pdfPage": 639,
+     "title": "Oct 13",
+     "group": "days",
+     "from": "2027-10-13",
+     "to": "2027-10-13"
+    },
+    {
+     "pdfPage": 640,
+     "title": "Oct 14",
+     "group": "days",
+     "from": "2027-10-14",
+     "to": "2027-10-14"
+    },
+    {
+     "pdfPage": 641,
+     "title": "Oct 15",
+     "group": "days",
+     "from": "2027-10-15",
+     "to": "2027-10-15"
+    },
+    {
+     "pdfPage": 642,
+     "title": "Oct 16",
+     "group": "days",
+     "from": "2027-10-16",
+     "to": "2027-10-16"
+    },
+    {
+     "pdfPage": 643,
+     "title": "Oct 17",
+     "group": "days",
+     "from": "2027-10-17",
+     "to": "2027-10-17"
+    },
+    {
+     "pdfPage": 644,
+     "title": "Week 56",
+     "group": "weeks",
+     "from": "2027-10-18",
+     "to": "2027-10-24"
+    },
+    {
+     "pdfPage": 645,
+     "title": "Week 56 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 646,
+     "title": "Week 56 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 647,
+     "title": "Oct 18",
+     "group": "days",
+     "from": "2027-10-18",
+     "to": "2027-10-18"
+    },
+    {
+     "pdfPage": 648,
+     "title": "Oct 19",
+     "group": "days",
+     "from": "2027-10-19",
+     "to": "2027-10-19"
+    },
+    {
+     "pdfPage": 649,
+     "title": "Oct 20",
+     "group": "days",
+     "from": "2027-10-20",
+     "to": "2027-10-20"
+    },
+    {
+     "pdfPage": 650,
+     "title": "Oct 21",
+     "group": "days",
+     "from": "2027-10-21",
+     "to": "2027-10-21"
+    },
+    {
+     "pdfPage": 651,
+     "title": "Oct 22",
+     "group": "days",
+     "from": "2027-10-22",
+     "to": "2027-10-22"
+    },
+    {
+     "pdfPage": 652,
+     "title": "Oct 23",
+     "group": "days",
+     "from": "2027-10-23",
+     "to": "2027-10-23"
+    },
+    {
+     "pdfPage": 653,
+     "title": "Oct 24",
+     "group": "days",
+     "from": "2027-10-24",
+     "to": "2027-10-24"
+    },
+    {
+     "pdfPage": 654,
+     "title": "Week 57",
+     "group": "weeks",
+     "from": "2027-10-25",
+     "to": "2027-10-31"
+    },
+    {
+     "pdfPage": 655,
+     "title": "Week 57 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 656,
+     "title": "Week 57 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 657,
+     "title": "Oct 25",
+     "group": "days",
+     "from": "2027-10-25",
+     "to": "2027-10-25"
+    },
+    {
+     "pdfPage": 658,
+     "title": "Oct 26",
+     "group": "days",
+     "from": "2027-10-26",
+     "to": "2027-10-26"
+    },
+    {
+     "pdfPage": 659,
+     "title": "Oct 27",
+     "group": "days",
+     "from": "2027-10-27",
+     "to": "2027-10-27"
+    },
+    {
+     "pdfPage": 660,
+     "title": "Oct 28",
+     "group": "days",
+     "from": "2027-10-28",
+     "to": "2027-10-28"
+    },
+    {
+     "pdfPage": 661,
+     "title": "Oct 29",
+     "group": "days",
+     "from": "2027-10-29",
+     "to": "2027-10-29"
+    },
+    {
+     "pdfPage": 662,
+     "title": "Oct 30",
+     "group": "days",
+     "from": "2027-10-30",
+     "to": "2027-10-30"
+    },
+    {
+     "pdfPage": 663,
+     "title": "Oct 31",
+     "group": "days",
+     "from": "2027-10-31",
+     "to": "2027-10-31"
+    }
+   ]
+  },
+  {
+   "title": "November 2027",
+   "pages": [
+    {
+     "pdfPage": 664,
+     "title": "November 2027",
+     "from": "2027-11-01",
+     "to": "2027-11-30"
+    },
+    {
+     "pdfPage": 665,
+     "title": "Nov 27 goals",
+     "group": "month_goals"
+    },
+    {
+     "pdfPage": 666,
+     "title": "Nov 27 vision",
+     "group": "vision"
+    },
+    {
+     "pdfPage": 667,
+     "title": "Nov 27 habits",
+     "group": "habits"
+    },
+    {
+     "pdfPage": 668,
+     "title": "Nov 27 budget",
+     "group": "budget"
+    },
+    {
+     "pdfPage": 669,
+     "title": "Nov 27 wins",
+     "group": "wins"
+    },
+    {
+     "pdfPage": 670,
+     "title": "Nov 27 reflect",
+     "group": "month_review"
+    },
+    {
+     "pdfPage": 671,
+     "title": "Week 58",
+     "group": "weeks",
+     "from": "2027-11-01",
+     "to": "2027-11-07"
+    },
+    {
+     "pdfPage": 672,
+     "title": "Week 58 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 673,
+     "title": "Week 58 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 674,
+     "title": "Nov 1",
+     "group": "days",
+     "from": "2027-11-01",
+     "to": "2027-11-01"
+    },
+    {
+     "pdfPage": 675,
+     "title": "Nov 2",
+     "group": "days",
+     "from": "2027-11-02",
+     "to": "2027-11-02"
+    },
+    {
+     "pdfPage": 676,
+     "title": "Nov 3",
+     "group": "days",
+     "from": "2027-11-03",
+     "to": "2027-11-03"
+    },
+    {
+     "pdfPage": 677,
+     "title": "Nov 4",
+     "group": "days",
+     "from": "2027-11-04",
+     "to": "2027-11-04"
+    },
+    {
+     "pdfPage": 678,
+     "title": "Nov 5",
+     "group": "days",
+     "from": "2027-11-05",
+     "to": "2027-11-05"
+    },
+    {
+     "pdfPage": 679,
+     "title": "Nov 6",
+     "group": "days",
+     "from": "2027-11-06",
+     "to": "2027-11-06"
+    },
+    {
+     "pdfPage": 680,
+     "title": "Nov 7",
+     "group": "days",
+     "from": "2027-11-07",
+     "to": "2027-11-07"
+    },
+    {
+     "pdfPage": 681,
+     "title": "Week 59",
+     "group": "weeks",
+     "from": "2027-11-08",
+     "to": "2027-11-14"
+    },
+    {
+     "pdfPage": 682,
+     "title": "Week 59 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 683,
+     "title": "Week 59 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 684,
+     "title": "Nov 8",
+     "group": "days",
+     "from": "2027-11-08",
+     "to": "2027-11-08"
+    },
+    {
+     "pdfPage": 685,
+     "title": "Nov 9",
+     "group": "days",
+     "from": "2027-11-09",
+     "to": "2027-11-09"
+    },
+    {
+     "pdfPage": 686,
+     "title": "Nov 10",
+     "group": "days",
+     "from": "2027-11-10",
+     "to": "2027-11-10"
+    },
+    {
+     "pdfPage": 687,
+     "title": "Nov 11",
+     "group": "days",
+     "from": "2027-11-11",
+     "to": "2027-11-11"
+    },
+    {
+     "pdfPage": 688,
+     "title": "Nov 12",
+     "group": "days",
+     "from": "2027-11-12",
+     "to": "2027-11-12"
+    },
+    {
+     "pdfPage": 689,
+     "title": "Nov 13",
+     "group": "days",
+     "from": "2027-11-13",
+     "to": "2027-11-13"
+    },
+    {
+     "pdfPage": 690,
+     "title": "Nov 14",
+     "group": "days",
+     "from": "2027-11-14",
+     "to": "2027-11-14"
+    },
+    {
+     "pdfPage": 691,
+     "title": "Week 60",
+     "group": "weeks",
+     "from": "2027-11-15",
+     "to": "2027-11-21"
+    },
+    {
+     "pdfPage": 692,
+     "title": "Week 60 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 693,
+     "title": "Week 60 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 694,
+     "title": "Nov 15",
+     "group": "days",
+     "from": "2027-11-15",
+     "to": "2027-11-15"
+    },
+    {
+     "pdfPage": 695,
+     "title": "Nov 16",
+     "group": "days",
+     "from": "2027-11-16",
+     "to": "2027-11-16"
+    },
+    {
+     "pdfPage": 696,
+     "title": "Nov 17",
+     "group": "days",
+     "from": "2027-11-17",
+     "to": "2027-11-17"
+    },
+    {
+     "pdfPage": 697,
+     "title": "Nov 18",
+     "group": "days",
+     "from": "2027-11-18",
+     "to": "2027-11-18"
+    },
+    {
+     "pdfPage": 698,
+     "title": "Nov 19",
+     "group": "days",
+     "from": "2027-11-19",
+     "to": "2027-11-19"
+    },
+    {
+     "pdfPage": 699,
+     "title": "Nov 20",
+     "group": "days",
+     "from": "2027-11-20",
+     "to": "2027-11-20"
+    },
+    {
+     "pdfPage": 700,
+     "title": "Nov 21",
+     "group": "days",
+     "from": "2027-11-21",
+     "to": "2027-11-21"
+    },
+    {
+     "pdfPage": 701,
+     "title": "Week 61",
+     "group": "weeks",
+     "from": "2027-11-22",
+     "to": "2027-11-28"
+    },
+    {
+     "pdfPage": 702,
+     "title": "Week 61 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 703,
+     "title": "Week 61 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 704,
+     "title": "Nov 22",
+     "group": "days",
+     "from": "2027-11-22",
+     "to": "2027-11-22"
+    },
+    {
+     "pdfPage": 705,
+     "title": "Nov 23",
+     "group": "days",
+     "from": "2027-11-23",
+     "to": "2027-11-23"
+    },
+    {
+     "pdfPage": 706,
+     "title": "Nov 24",
+     "group": "days",
+     "from": "2027-11-24",
+     "to": "2027-11-24"
+    },
+    {
+     "pdfPage": 707,
+     "title": "Nov 25",
+     "group": "days",
+     "from": "2027-11-25",
+     "to": "2027-11-25"
+    },
+    {
+     "pdfPage": 708,
+     "title": "Nov 26",
+     "group": "days",
+     "from": "2027-11-26",
+     "to": "2027-11-26"
+    },
+    {
+     "pdfPage": 709,
+     "title": "Nov 27",
+     "group": "days",
+     "from": "2027-11-27",
+     "to": "2027-11-27"
+    },
+    {
+     "pdfPage": 710,
+     "title": "Nov 28",
+     "group": "days",
+     "from": "2027-11-28",
+     "to": "2027-11-28"
+    },
+    {
+     "pdfPage": 711,
+     "title": "Week 62",
+     "group": "weeks",
+     "from": "2027-11-29",
+     "to": "2027-12-05"
+    },
+    {
+     "pdfPage": 712,
+     "title": "Week 62 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 713,
+     "title": "Week 62 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 714,
+     "title": "Nov 29",
+     "group": "days",
+     "from": "2027-11-29",
+     "to": "2027-11-29"
+    },
+    {
+     "pdfPage": 715,
+     "title": "Nov 30",
+     "group": "days",
+     "from": "2027-11-30",
+     "to": "2027-11-30"
+    }
+   ]
+  },
+  {
+   "title": "December 2027",
+   "pages": [
+    {
+     "pdfPage": 716,
+     "title": "December 2027",
+     "from": "2027-12-01",
+     "to": "2027-12-31"
+    },
+    {
+     "pdfPage": 717,
+     "title": "Dec 27 goals",
+     "group": "month_goals"
+    },
+    {
+     "pdfPage": 718,
+     "title": "Dec 27 vision",
+     "group": "vision"
+    },
+    {
+     "pdfPage": 719,
+     "title": "Dec 27 habits",
+     "group": "habits"
+    },
+    {
+     "pdfPage": 720,
+     "title": "Dec 27 budget",
+     "group": "budget"
+    },
+    {
+     "pdfPage": 721,
+     "title": "Dec 27 wins",
+     "group": "wins"
+    },
+    {
+     "pdfPage": 722,
+     "title": "Dec 27 reflect",
+     "group": "month_review"
+    },
+    {
+     "pdfPage": 723,
+     "title": "Dec 1",
+     "group": "days",
+     "from": "2027-12-01",
+     "to": "2027-12-01"
+    },
+    {
+     "pdfPage": 724,
+     "title": "Dec 2",
+     "group": "days",
+     "from": "2027-12-02",
+     "to": "2027-12-02"
+    },
+    {
+     "pdfPage": 725,
+     "title": "Dec 3",
+     "group": "days",
+     "from": "2027-12-03",
+     "to": "2027-12-03"
+    },
+    {
+     "pdfPage": 726,
+     "title": "Dec 4",
+     "group": "days",
+     "from": "2027-12-04",
+     "to": "2027-12-04"
+    },
+    {
+     "pdfPage": 727,
+     "title": "Dec 5",
+     "group": "days",
+     "from": "2027-12-05",
+     "to": "2027-12-05"
+    },
+    {
+     "pdfPage": 728,
+     "title": "Week 63",
+     "group": "weeks",
+     "from": "2027-12-06",
+     "to": "2027-12-12"
+    },
+    {
+     "pdfPage": 729,
+     "title": "Week 63 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 730,
+     "title": "Week 63 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 731,
+     "title": "Dec 6",
+     "group": "days",
+     "from": "2027-12-06",
+     "to": "2027-12-06"
+    },
+    {
+     "pdfPage": 732,
+     "title": "Dec 7",
+     "group": "days",
+     "from": "2027-12-07",
+     "to": "2027-12-07"
+    },
+    {
+     "pdfPage": 733,
+     "title": "Dec 8",
+     "group": "days",
+     "from": "2027-12-08",
+     "to": "2027-12-08"
+    },
+    {
+     "pdfPage": 734,
+     "title": "Dec 9",
+     "group": "days",
+     "from": "2027-12-09",
+     "to": "2027-12-09"
+    },
+    {
+     "pdfPage": 735,
+     "title": "Dec 10",
+     "group": "days",
+     "from": "2027-12-10",
+     "to": "2027-12-10"
+    },
+    {
+     "pdfPage": 736,
+     "title": "Dec 11",
+     "group": "days",
+     "from": "2027-12-11",
+     "to": "2027-12-11"
+    },
+    {
+     "pdfPage": 737,
+     "title": "Dec 12",
+     "group": "days",
+     "from": "2027-12-12",
+     "to": "2027-12-12"
+    },
+    {
+     "pdfPage": 738,
+     "title": "Week 64",
+     "group": "weeks",
+     "from": "2027-12-13",
+     "to": "2027-12-19"
+    },
+    {
+     "pdfPage": 739,
+     "title": "Week 64 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 740,
+     "title": "Week 64 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 741,
+     "title": "Dec 13",
+     "group": "days",
+     "from": "2027-12-13",
+     "to": "2027-12-13"
+    },
+    {
+     "pdfPage": 742,
+     "title": "Dec 14",
+     "group": "days",
+     "from": "2027-12-14",
+     "to": "2027-12-14"
+    },
+    {
+     "pdfPage": 743,
+     "title": "Dec 15",
+     "group": "days",
+     "from": "2027-12-15",
+     "to": "2027-12-15"
+    },
+    {
+     "pdfPage": 744,
+     "title": "Dec 16",
+     "group": "days",
+     "from": "2027-12-16",
+     "to": "2027-12-16"
+    },
+    {
+     "pdfPage": 745,
+     "title": "Dec 17",
+     "group": "days",
+     "from": "2027-12-17",
+     "to": "2027-12-17"
+    },
+    {
+     "pdfPage": 746,
+     "title": "Dec 18",
+     "group": "days",
+     "from": "2027-12-18",
+     "to": "2027-12-18"
+    },
+    {
+     "pdfPage": 747,
+     "title": "Dec 19",
+     "group": "days",
+     "from": "2027-12-19",
+     "to": "2027-12-19"
+    },
+    {
+     "pdfPage": 748,
+     "title": "Week 65",
+     "group": "weeks",
+     "from": "2027-12-20",
+     "to": "2027-12-26"
+    },
+    {
+     "pdfPage": 749,
+     "title": "Week 65 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 750,
+     "title": "Week 65 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 751,
+     "title": "Dec 20",
+     "group": "days",
+     "from": "2027-12-20",
+     "to": "2027-12-20"
+    },
+    {
+     "pdfPage": 752,
+     "title": "Dec 21",
+     "group": "days",
+     "from": "2027-12-21",
+     "to": "2027-12-21"
+    },
+    {
+     "pdfPage": 753,
+     "title": "Dec 22",
+     "group": "days",
+     "from": "2027-12-22",
+     "to": "2027-12-22"
+    },
+    {
+     "pdfPage": 754,
+     "title": "Dec 23",
+     "group": "days",
+     "from": "2027-12-23",
+     "to": "2027-12-23"
+    },
+    {
+     "pdfPage": 755,
+     "title": "Dec 24",
+     "group": "days",
+     "from": "2027-12-24",
+     "to": "2027-12-24"
+    },
+    {
+     "pdfPage": 756,
+     "title": "Dec 25",
+     "group": "days",
+     "from": "2027-12-25",
+     "to": "2027-12-25"
+    },
+    {
+     "pdfPage": 757,
+     "title": "Dec 26",
+     "group": "days",
+     "from": "2027-12-26",
+     "to": "2027-12-26"
+    },
+    {
+     "pdfPage": 758,
+     "title": "Week 66",
+     "group": "weeks",
+     "from": "2027-12-27",
+     "to": "2028-01-02"
+    },
+    {
+     "pdfPage": 759,
+     "title": "Week 66 meals",
+     "group": "meals"
+    },
+    {
+     "pdfPage": 760,
+     "title": "Week 66 review",
+     "group": "week_review"
+    },
+    {
+     "pdfPage": 761,
+     "title": "Dec 27",
+     "group": "days",
+     "from": "2027-12-27",
+     "to": "2027-12-27"
+    },
+    {
+     "pdfPage": 762,
+     "title": "Dec 28",
+     "group": "days",
+     "from": "2027-12-28",
+     "to": "2027-12-28"
+    },
+    {
+     "pdfPage": 763,
+     "title": "Dec 29",
+     "group": "days",
+     "from": "2027-12-29",
+     "to": "2027-12-29"
+    },
+    {
+     "pdfPage": 764,
+     "title": "Dec 30",
+     "group": "days",
+     "from": "2027-12-30",
+     "to": "2027-12-30"
+    },
+    {
+     "pdfPage": 765,
+     "title": "Dec 31",
+     "group": "days",
+     "from": "2027-12-31",
+     "to": "2027-12-31"
+    }
+   ]
+  },
+  {
+   "title": "Finance",
+   "pages": [
+    {
+     "pdfPage": 766,
+     "title": "Finance",
+     "group": "finance"
+    },
+    {
+     "pdfPage": 767,
+     "title": "Year overview",
+     "group": "finance"
+    },
+    {
+     "pdfPage": 768,
+     "title": "Bills",
+     "group": "finance"
+    },
+    {
+     "pdfPage": 769,
+     "title": "Savings goals",
+     "group": "finance"
+    },
+    {
+     "pdfPage": 770,
+     "title": "Debt payoff",
+     "group": "finance"
+    },
+    {
+     "pdfPage": 771,
+     "title": "Subscriptions",
+     "group": "finance"
+    },
+    {
+     "pdfPage": 772,
+     "title": "Wishlist",
+     "group": "finance"
+    }
+   ]
+  },
+  {
+   "title": "Health",
+   "pages": [
+    {
+     "pdfPage": 773,
+     "title": "Health",
+     "group": "health"
+    },
+    {
+     "pdfPage": 774,
+     "title": "Meal plan",
+     "group": "health"
+    },
+    {
+     "pdfPage": 775,
+     "title": "Sleep log",
+     "group": "health"
+    },
+    {
+     "pdfPage": 776,
+     "title": "Reading log",
+     "group": "health"
+    }
+   ]
+  },
+  {
+   "title": "Home",
+   "pages": [
+    {
+     "pdfPage": 777,
+     "title": "Home",
+     "group": "home_pages"
+    },
+    {
+     "pdfPage": 778,
+     "title": "Cleaning schedule",
+     "group": "home_pages"
+    },
+    {
+     "pdfPage": 779,
+     "title": "Groceries",
+     "group": "home_pages"
+    },
+    {
+     "pdfPage": 780,
+     "title": "Projects",
+     "group": "home_pages"
+    },
+    {
+     "pdfPage": 781,
+     "title": "Gift ideas",
+     "group": "home_pages"
+    }
+   ]
+  },
+  {
+   "title": "Travel",
+   "pages": [
+    {
+     "pdfPage": 782,
+     "title": "Travel",
+     "group": "travel"
+    },
+    {
+     "pdfPage": 783,
+     "title": "Trip 1",
+     "group": "travel"
+    },
+    {
+     "pdfPage": 784,
+     "title": "Trip 2",
+     "group": "travel"
+    },
+    {
+     "pdfPage": 785,
+     "title": "Trip 3",
+     "group": "travel"
+    },
+    {
+     "pdfPage": 786,
+     "title": "Trip 4",
+     "group": "travel"
+    }
+   ]
+  },
+  {
+   "title": "Notes",
+   "pages": [
+    {
+     "pdfPage": 787,
+     "title": "Notes",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 788,
+     "title": "Note 1",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 789,
+     "title": "Note 2",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 790,
+     "title": "Note 3",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 791,
+     "title": "Note 4",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 792,
+     "title": "Note 5",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 793,
+     "title": "Note 6",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 794,
+     "title": "Note 7",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 795,
+     "title": "Note 8",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 796,
+     "title": "Note 9",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 797,
+     "title": "Note 10",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 798,
+     "title": "Note 11",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 799,
+     "title": "Note 12",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 800,
+     "title": "Note 13",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 801,
+     "title": "Note 14",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 802,
+     "title": "Note 15",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 803,
+     "title": "Note 16",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 804,
+     "title": "Note 17",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 805,
+     "title": "Note 18",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 806,
+     "title": "Note 19",
+     "group": "notes"
+    },
+    {
+     "pdfPage": 807,
+     "title": "Note 20",
+     "group": "notes"
+    }
+   ]
+  }
+ ]
+}

@@ -2,6 +2,7 @@
 The planner itself is laid out by planner_nav.
 
   python3 tool/make_planner.py planner 2027   # catalog/planner_2027/
+  python3 tool/make_planner.py planner 2026 --span   # Oct 2026 - Dec 2027: catalog/planner_2026_27/
   python3 tool/make_planner.py essentials     # catalog/essentials_pages/
 
 Each run writes template.pdf and template.json into the catalog folder,
@@ -321,11 +322,29 @@ def write_preview(pdf, out):
 # The planner
 
 
-def planner(year):
-    """The linked weekly and daily planner for [year]; see planner_nav."""
+# A span edition runs from October of its year to the end of the next, so
+# it can be started straight away: October 2026 to December 2027.
+SPAN_MONTH, SPAN_MONTHS = 10, 15
+
+
+def span_title(year):
+    return f"{year}-{(year + 1) % 100:02d}"
+
+
+def span_name(year):
+    return f"Oct {year} - Dec {year + 1}"
+
+
+def planner(year, span=False):
+    """The linked weekly and daily planner for [year] (or with [span], from
+    October [year] to December of the next); see planner_nav."""
     import planner_nav as nav
 
-    book = nav.Planner(str(year), dt.date(year, 1, 1), week_body=nav.week_boxes, day_body=nav.day_plan)
+    if span:
+        book = nav.Planner(span_title(year), dt.date(year, SPAN_MONTH, 1), week_body=nav.week_boxes,
+                           day_body=nav.day_plan, months=SPAN_MONTHS)
+    else:
+        book = nav.Planner(str(year), dt.date(year, 1, 1), week_body=nav.week_boxes, day_body=nav.day_plan)
     return book.build()
 
 
@@ -384,8 +403,9 @@ def essentials():
 def main():
     if len(sys.argv) >= 3 and sys.argv[1] == "planner":
         year = int(sys.argv[2])
-        folder = ROOT / "catalog" / f"planner_{year}"
-        pages, spec = planner(year)
+        span = "--span" in sys.argv
+        folder = ROOT / "catalog" / (f"planner_{year}_{(year + 1) % 100:02d}" if span else f"planner_{year}")
+        pages, spec = planner(year, span)
     elif len(sys.argv) == 2 and sys.argv[1] == "essentials":
         folder = ROOT / "catalog" / "essentials_pages"
         pages, spec = essentials()

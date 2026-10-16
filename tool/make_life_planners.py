@@ -3,6 +3,7 @@ Life, Goals & Projects, Student and Business, each dated and undated.
 
   python3 tool/make_life_planners.py focus              # one planner, both years
   python3 tool/make_life_planners.py --all
+  python3 tool/make_life_planners.py --all --edition span   # just Oct 2026 - Dec 2027
   python3 tool/make_life_planners.py focus --sample OUT  # PNGs of sample pages
 
 Each listing holds four PDFs, one per layout (landscape, portrait) and week
@@ -266,15 +267,29 @@ PLANNERS = {"focus": focus, "wellness": wellness, "life": life, "goals": goals, 
 
 # Building
 
-def make_book(make, dated, week_start):
+# Editions: "year" (2027, or 2026-27 from August for academic planners),
+# "span" (October 2026 to December 2027, to start the planner now) and
+# "undated".
+SPAN_START, SPAN_MONTHS = dt.date(YEAR - 1, 10, 1), 15
+
+
+def editions(key):
+    if PLANNERS[key]().get("academic"):
+        return ["year", "undated"]
+    return ["year", "span", "undated"]
+
+
+def make_book(make, edition, week_start):
     cfg = make()
     mp.use_style(cfg["style"])
-    start = dt.date(YEAR, 1, 1) if dated else None
-    if dated and cfg.get("academic"):
-        start = dt.date(YEAR - 1, 8, 1)
+    start, months = None, 12
+    if edition == "year":
+        start = dt.date(YEAR - 1, 8, 1) if cfg.get("academic") else dt.date(YEAR, 1, 1)
+    elif edition == "span":
+        start, months = SPAN_START, SPAN_MONTHS
     return Book(cfg["title"], cfg["subtitle"], start, week_start=week_start, front=cfg["front"],
                 month_kinds=cfg["month_kinds"], week_kinds=cfg["week_kinds"], day_kinds=cfg["day_kinds"],
-                collections=cfg["collections"], groups=cfg["groups"]), cfg
+                collections=cfg["collections"], groups=cfg["groups"], months=months), cfg
 
 
 def file_name(layout, week, ext):
@@ -282,22 +297,22 @@ def file_name(layout, week, ext):
     return "template" + "".join(f"_{x}" for x in parts) + ext
 
 
-def item_id(key, dated):
-    if not dated:
+def item_id(key, edition):
+    if edition == "undated":
         return f"{key}_planner_undated"
-    if PLANNERS[key]().get("academic"):
+    if edition == "span" or PLANNERS[key]().get("academic"):
         return f"{key}_planner_{YEAR - 1}_{str(YEAR)[2:]}"
     return f"{key}_planner_{YEAR}"
 
 
-def write(key, dated):
-    folder = CATALOG / item_id(key, dated)
+def write(key, edition):
+    folder = CATALOG / item_id(key, edition)
     folder.mkdir(parents=True, exist_ok=True)
     variants, base = [], None
     for layout, layout_name, size in LAYOUTS:
         mp.use_size(*size)
         for week, week_name, week_start in WEEK_STARTS:
-            book, cfg = make_book(PLANNERS[key], dated, week_start)
+            book, cfg = make_book(PLANNERS[key], edition, week_start)
             pages, spec = book.build()
             pdf, js = file_name(layout, week, ".pdf"), file_name(layout, week, ".json")
             write_pdf(pages, folder / pdf)
@@ -321,29 +336,39 @@ def write(key, dated):
     mp.use_size(*LAYOUTS[0][2])
     mp.use_style(cfg["style"])
     mp.write_preview(folder / "template.pdf", folder / "preview.webp")
-    write_listing(folder, cfg, dated, key)
+    write_listing(folder, cfg, edition, key)
 
 
-def product_id(key, dated):
-    """planner_focus_2027 (planner_student_2026 for 2026-27), or
-    pack_focus_undated."""
-    if not dated:
+def product_id(key, edition):
+    """planner_focus_2027, planner_focus_2026 (October 2026 to December
+    2027; for the Student planner, 2026-27), or pack_focus_undated."""
+    if edition == "undated":
         return f"pack_{key}_undated"
-    return f"planner_{key}_{YEAR - 1 if PLANNERS[key]().get('academic') else YEAR}"
+    if edition == "span" or PLANNERS[key]().get("academic"):
+        return f"planner_{key}_{YEAR - 1}"
+    return f"planner_{key}_{YEAR}"
 
 
-def write_listing(folder, cfg, dated, key):
+def listing_name(cfg, edition):
+    if edition == "undated":
+        return f"{cfg['title']} (undated)"
+    if edition == "span":
+        return f"{cfg['title']} Oct {YEAR - 1} - Dec {YEAR}"
+    return f"{cfg['title']} {book_year(cfg)}"
+
+
+def write_listing(folder, cfg, edition, key):
     path = folder / "listing.json"
     old = json.loads(path.read_text()) if path.exists() else {}
-    name = f"{cfg['title']} {book_year(cfg)}" if dated else f"{cfg['title']} (undated)"
+    years = {"year": ["dated", book_year(cfg)], "span": ["dated", str(YEAR - 1), str(YEAR), "15 months"],
+             "undated": ["undated"]}[edition]
     listing = {
         "kind": "template",
-        "name": name,
+        "name": listing_name(cfg, edition),
         "version": old.get("version", 1),
-        "unlock": {"pro": True, "products": [product_id(key, dated)]},
+        "unlock": {"pro": True, "products": [product_id(key, edition)]},
         "category": "planners",
-        "tags": [*cfg["tags"], *(["dated", book_year(cfg)] if dated else ["undated"]),
-                 "landscape", "portrait"],
+        "tags": [*cfg["tags"], *years, "landscape", "portrait"],
     }
     path.write_text(json.dumps(listing, indent=2) + "\n")
 
@@ -358,7 +383,7 @@ def sample(key, out):
     out.mkdir(parents=True, exist_ok=True)
     for layout, _, size in LAYOUTS:
         mp.use_size(*size)
-        book, _ = make_book(PLANNERS[key], True, 0)
+        book, _ = make_book(PLANNERS[key], "span" if "--span" in sys.argv else "year", 0)
         picks = {"home": book.home, "year": book.year_page}
         for k, page in enumerate(book.front_pages):
             picks[f"front{k}"] = page
@@ -387,9 +412,9 @@ def sample(key, out):
 def listings_only():
     """Rewrites every listing.json without rebuilding the PDFs."""
     for key in PLANNERS:
-        for dated in (True, False):
+        for edition in editions(key):
             cfg = PLANNERS[key]()
-            write_listing(CATALOG / item_id(key, dated), cfg, dated, key)
+            write_listing(CATALOG / item_id(key, edition), cfg, edition, key)
 
 
 def main():
@@ -401,12 +426,18 @@ def main():
         i = args.index("--sample")
         sample(args[0], args[i + 1])
         return
+    only = None
+    if "--edition" in args:
+        i = args.index("--edition")
+        only = args[i + 1]
+        del args[i:i + 2]
     keys = list(PLANNERS) if args == ["--all"] else args
     if not keys:
         sys.exit(__doc__)
     for key in keys:
-        for dated in (True, False):
-            write(key, dated)
+        for edition in editions(key):
+            if only in (None, edition):
+                write(key, edition)
 
 
 if __name__ == "__main__":

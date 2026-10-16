@@ -4,6 +4,7 @@ tool/collections.json, all drawn in code:
   python3 tool/make_collection.py botanical               # one collection
   python3 tool/make_collection.py all                     # every collection
   python3 tool/make_collection.py all --year 2026         # planners only, for 2026
+  python3 tool/make_collection.py all --year 2026 --span  # planners only, Oct 2026 - Dec 2027
 
 For a collection <id> it writes these catalog folders:
 
@@ -307,20 +308,22 @@ def write_template(folder, pages, spec_json):
     mp.write_preview(folder / "template.pdf", folder / "preview.webp")
 
 
-def write_planner(cid, spec, year):
+def write_planner(cid, spec, year, span=False):
+    """The collection's planner for [year], or with [span] from October
+    [year] to December of the next."""
     mp.use_style(style_of(spec))
     try:
-        pages, tspec = mp.planner(year)
-        folder = CATALOG / f"{cid}_planner_{year}"
+        pages, tspec = mp.planner(year, span)
+        folder = CATALOG / (f"{cid}_planner_{year}_{(year + 1) % 100:02d}" if span else f"{cid}_planner_{year}")
         write_template(folder, pages, tspec)
         write_listing(folder, {
             "kind": "template",
-            "name": f"{spec['name']} {year} Planner",
+            "name": f"{spec['name']} Planner {mp.span_name(year)}" if span else f"{spec['name']} {year} Planner",
             "version": 1,
             "unlock": {},
             "collectionId": cid,
             "category": "planners",
-            "tags": spec["tags"] + ["dated", "weekly", str(year)],
+            "tags": spec["tags"] + ["dated", "weekly", str(year)] + ([str(year + 1), "15 months"] if span else []),
         })
     finally:
         mp.use_style(mp.DEFAULT)
@@ -386,6 +389,9 @@ def main():
     specs = json.loads(SPECS.read_text())["collections"]
     args = sys.argv[1:]
     year = None
+    span = "--span" in args
+    if span:
+        args = [a for a in args if a != "--span"]
     if len(args) == 3 and args[1] == "--year" and args[2].isdigit():
         year, args = int(args[2]), args[:1]
     if len(args) != 1 or (args[0] != "all" and args[0] not in specs):
@@ -394,8 +400,8 @@ def main():
         if year is None:
             make(cid, specs[cid])
         else:
-            write_planner(cid, specs[cid], year)
-            print(f"{cid}: {year} planner")
+            write_planner(cid, specs[cid], year, span)
+            print(f"{cid}: {mp.span_name(year) if span else year} planner")
 
 
 if __name__ == "__main__":

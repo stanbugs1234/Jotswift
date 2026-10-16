@@ -1,0 +1,27 @@
+{
+  "kind": "template",
+  "name": "Life Planner Oct 2026 - Dec 2027",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "planner_life_2026"
+    ]
+  },
+  "category": "planners",
+  "tags": [
+    "life",
+    "goals",
+    "budget",
+    "habits",
+    "vision board",
+    "meal planning",
+    "linked",
+    "dated",
+    "2026",
+    "2027",
+    "15 months",
+    "landscape",
+    "portrait"
+  ]
+}

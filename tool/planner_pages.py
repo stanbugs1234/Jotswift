@@ -140,17 +140,17 @@ def year_pixels(c, what="mood"):
     """A square for every day, coloured by [what]; each opens its day."""
     book = c.book
     name_w = 20
-    cw = (c.right - c.left - name_w) / 12
+    cw = (c.right - c.left - name_w) / book.n
     top, bottom = c.top, c.bottom + 30
     rh = (top - 16 - bottom) / 31
-    for m in range(12):
+    for m in range(book.n):
         x = c.left + name_w + m * cw
         c.p.text(x + cw / 2, top - 10, book.month_name(m, True), 8, rgb=S().accent, bold=True, center=True)
         c.p.link(x, top - 16, cw, 20, book.month_page[m][0])
     for n in range(1, 32):
         y = top - 16 - n * rh
         c.p.text(c.left + name_w - 5, y + rh / 2 - 3, str(n), 6.5, rgb=S().soft, right=True)
-        for m in range(12):
+        for m in range(book.n):
             i = _day_of_month(book, m, n)
             if i is None:
                 continue
@@ -734,8 +734,8 @@ def goal_dashboard(c):
     prompt_box(c, a0, a1, *t1, "Why it matters", None, "heart")
     prompt_box(c, a0, a1, *t2, "Action steps", None, "list", "checks")
     y = card(p, b0, c.bottom, b1 - b0, top - c.bottom, "Milestones by month", "calendar")
-    rh = (y - c.bottom - 8) / 12
-    for m in range(12):
+    rh = (y - c.bottom - 8) / c.book.n
+    for m in range(c.book.n):
         ty = y - (m + 1) * rh
         name = c.book.month_name(m, True)
         p.text(b0 + 10, ty + rh / 2 - 3, name, 8.5, rgb=S().accent, bold=True)
@@ -897,9 +897,9 @@ def finance_overview(c):
     book = c.book
     heads = ["Month", "Income", "Spending", "Saved", "Notes"]
     fr = [0.14, 0.18, 0.18, 0.18, 0.32]
-    rh = (c.top - 22 - c.bottom) / 13
+    rh = (c.top - 22 - c.bottom) / (book.n + 1)
     table(c, c.left, c.right, c.top, c.bottom, heads, fr, rh)
-    for m in range(12):
+    for m in range(book.n):
         y = c.top - 22 - (m + 1) * rh
         c.p.text(c.left + 8, y + rh / 2 - 3, book.month_name(m, True), 9, rgb=S().accent, bold=True)
         c.p.link(c.left, y, (c.right - c.left) * fr[0], rh, book.month_page[m][0])
@@ -930,8 +930,8 @@ def debt_payoff(c):
 
 def bills_tracker(c):
     book = c.book
-    heads = ["Bill", "Due"] + [book.month_name(m, True) for m in range(12)]
-    fr = [0.2, 0.08] + [0.72 / 12] * 12
+    heads = ["Bill", "Due"] + [book.month_name(m, True) for m in range(book.n)]
+    fr = [0.2, 0.08] + [0.72 / book.n] * book.n
     table(c, c.left, c.right, c.top, c.bottom, heads, fr, 24)
 
 

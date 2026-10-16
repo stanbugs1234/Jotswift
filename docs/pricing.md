@@ -47,11 +47,17 @@ it doesn't sell templates one at a time.
 | Product id | Name | Unlocks | Price |
 |---|---|---|---|
 | `planner_diary_classic_2027` | Classic Daily Diary 2027 | diary_classic_2027 | $3.99 |
+| `planner_diary_classic_2026` | Classic Daily Diary Oct 2026 - Dec 2027 | diary_classic_2026_27 | $3.99 |
 | `planner_diary_modern_2027` | Modern Daily Planner 2027 | diary_modern_2027 | $3.99 |
+| `planner_diary_modern_2026` | Modern Daily Planner Oct 2026 - Dec 2027 | diary_modern_2026_27 | $3.99 |
 | `planner_diary_landscape_2027` | Landscape Weekly Planner 2027 | diary_landscape_2027 | $3.99 |
+| `planner_diary_landscape_2026` | Landscape Weekly Planner Oct 2026 - Dec 2027 | diary_landscape_2026_27 | $3.99 |
 | `planner_tabbed_lavender_2027` | Tabbed Diary: Lavender 2027 | tabbed_lavender_2027 | $3.99 |
+| `planner_tabbed_lavender_2026` | Tabbed Diary: Lavender Oct 2026 - Dec 2027 | tabbed_lavender_2026_27 | $3.99 |
 | `planner_tabbed_linen_2027` | Tabbed Diary: Linen 2027 | tabbed_linen_2027 | $3.99 |
+| `planner_tabbed_linen_2026` | Tabbed Diary: Linen Oct 2026 - Dec 2027 | tabbed_linen_2026_27 | $3.99 |
 | `planner_tabbed_sorbet_2027` | Tabbed Diary: Sorbet 2027 | tabbed_sorbet_2027 | $3.99 |
+| `planner_tabbed_sorbet_2026` | Tabbed Diary: Sorbet Oct 2026 - Dec 2027 | tabbed_sorbet_2026_27 | $3.99 |
 | `planner_academic_planner_2026` | Academic Planner 2026-27 | academic_planner_2026_27 | $3.99 |
 | `planner_teacher_planner_2026` | Teacher Planner 2026-27 | teacher_planner_2026_27 | $3.99 |
 | `pack_undated_weekly` | Undated Weekly Planner | undated_weekly | $2.99 |
@@ -62,16 +68,21 @@ it doesn't sell templates one at a time.
 | Product id | Name | Unlocks | Price |
 |---|---|---|---|
 | `planner_focus_2027` | Focus Planner 2027 | focus_planner_2027 | $7.99 |
+| `planner_focus_2026` | Focus Planner Oct 2026 - Dec 2027 | focus_planner_2026_27 | $7.99 |
 | `pack_focus_undated` | Focus Planner (undated) | focus_planner_undated | $7.99 |
 | `planner_wellness_2027` | Wellness Planner 2027 | wellness_planner_2027 | $7.99 |
+| `planner_wellness_2026` | Wellness Planner Oct 2026 - Dec 2027 | wellness_planner_2026_27 | $7.99 |
 | `pack_wellness_undated` | Wellness Planner (undated) | wellness_planner_undated | $7.99 |
 | `planner_life_2027` | Life Planner 2027 | life_planner_2027 | $7.99 |
+| `planner_life_2026` | Life Planner Oct 2026 - Dec 2027 | life_planner_2026_27 | $7.99 |
 | `pack_life_undated` | Life Planner (undated) | life_planner_undated | $7.99 |
 | `planner_goals_2027` | Goals & Projects 2027 | goals_planner_2027 | $6.99 |
+| `planner_goals_2026` | Goals & Projects Oct 2026 - Dec 2027 | goals_planner_2026_27 | $6.99 |
 | `pack_goals_undated` | Goals & Projects (undated) | goals_planner_undated | $6.99 |
 | `planner_student_2026` | Student Planner 2026-27 | student_planner_2026_27 | $6.99 |
 | `pack_student_undated` | Student Planner (undated) | student_planner_undated | $6.99 |
 | `planner_business_2027` | Business Planner 2027 | business_planner_2027 | $7.99 |
+| `planner_business_2026` | Business Planner Oct 2026 - Dec 2027 | business_planner_2026_27 | $7.99 |
 | `pack_business_undated` | Business Planner (undated) | business_planner_undated | $7.99 |
 
 ## Stickers
@@ -149,6 +160,6 @@ it doesn't sell templates one at a time.
 | `bundle_stickers` | Every sticker pack | stickers_planner_icons, stickers_washi, stickers_labels, stickers_study, stickers_seasonal, stickers_emoji, stickers_weather | $5.99 |
 | `bundle_calendar_templates` | Every calendar template | calendar_paper, calendar_wall, calendar_botanical, calendar_pastel, calendar_bold, calendar_chalkboard, calendar_seasons | $4.99 |
 | `planner_life_all_in_one` | All-in-One Life Planner (every spread planner) | spread_life, spread_weekly, spread_daily, spread_budget, spread_habits, spread_goals, spread_health, spread_home, spread_student, spread_selfcare, spread_work | $9.99 |
-| `bundle_life_planners` | Every bestseller planner (Focus, Wellness, Life, Goals & Projects, Student, Business) | focus_planner_2027, focus_planner_undated, wellness_planner_2027, wellness_planner_undated, life_planner_2027, life_planner_undated, goals_planner_2027, goals_planner_undated, student_planner_2026_27, student_planner_undated, business_planner_2027, business_planner_undated | $24.99 |
+| `bundle_life_planners` | Every bestseller planner (Focus, Wellness, Life, Goals & Projects, Student, Business) | focus_planner_2027, focus_planner_undated, wellness_planner_2027, wellness_planner_undated, life_planner_2027, life_planner_undated, goals_planner_2027, goals_planner_undated, student_planner_2026_27, student_planner_undated, business_planner_2027, business_planner_undated, focus_planner_2026_27, wellness_planner_2026_27, life_planner_2026_27, goals_planner_2026_27, business_planner_2026_27 | $24.99 |
 
-86 products in all.
+97 products in all.

@@ -1,0 +1,21 @@
+{
+  "kind": "template",
+  "name": "Classic Daily Diary Oct 2026 - Dec 2027",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "planner_diary_classic_2026"
+    ]
+  },
+  "category": "diaries",
+  "tags": [
+    "diary",
+    "daily",
+    "dated",
+    "linked",
+    "2026",
+    "2027",
+    "15 months"
+  ]
+}

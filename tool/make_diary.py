@@ -4,6 +4,7 @@ and lists, all linked); this file gives each book its look and pages.
 
   python3 tool/make_diary.py diary_classic 2027      # catalog/diary_classic_2027/
   python3 tool/make_diary.py all 2027                # every book below
+  python3 tool/make_diary.py all 2026 --span         # Oct 2026 - Dec 2027 diaries
   python3 tool/make_diary.py --list
 
 Books (see BOOKS): Classic, Modern and Landscape daily/weekly diaries,
@@ -273,33 +274,45 @@ BOOKS = {
 }
 
 
-def item_id(key, year):
+def spans(key):
+    """Whether [key] comes as a span edition (October to December of the
+    next year): the calendar-year diaries."""
+    book = BOOKS[key]
+    return book.get("dated", True) and book.get("start", 1) == 1
+
+
+def item_id(key, year, span=False):
     book = BOOKS[key]
     if not book.get("dated", True):
         return key
-    return f"{key}_{year}" if book.get("start", 1) == 1 else f"{key}_{year}_{(year + 1) % 100:02d}"
+    if span or book.get("start", 1) != 1:
+        return f"{key}_{year}_{(year + 1) % 100:02d}"
+    return f"{key}_{year}"
 
 
-def write(key, year):
+def write(key, year, span=False):
     book = BOOKS[key]
     dated = book.get("dated", True)
     mp.use_size(*((792, 612) if book.get("landscape") else (612, 792)))
     mp.use_style(book["style"])
-    start = dt.date(year, book.get("start", 1), 1)
+    start = dt.date(year, mp.SPAN_MONTH if span else book.get("start", 1), 1)
     title = book["name"].split(":")[0] if not dated else (
-        str(year) if book.get("start", 1) == 1 else f"{year}-{(year + 1) % 100:02d}")
+        str(year) if book.get("start", 1) == 1 and not span else f"{year}-{(year + 1) % 100:02d}")
     b = nav.Planner(title, start, dated, week_body=book["week"], day_body=book["day"],
                     front=book.get("front", []), tab_colors=RAINBOW.get(book.get("tabs")),
-                    subtitle=book["name"] if dated else "Fill in your own dates")
+                    subtitle=book["name"] if dated else "Fill in your own dates",
+                    months=mp.SPAN_MONTHS if span else 12)
     pages, spec = b.build()
-    iid = item_id(key, year)
+    iid = item_id(key, year, span)
     folder = ROOT / "catalog" / iid
     folder.mkdir(parents=True, exist_ok=True)
     mp.write_pdf(pages, folder / "template.pdf")
     (folder / "template.json").write_text(json.dumps(spec, indent=2) + "\n")
     mp.write_preview(folder / "template.pdf", folder / "preview.webp")
     name = book["name"]
-    if dated:
+    if span:
+        name += f" {mp.span_name(year)}"
+    elif dated:
         name += f" {title}"
     product = f"planner_{key}_{year}" if dated else f"pack_{key}"
     listing = {
@@ -308,7 +321,7 @@ def write(key, year):
         "version": 1,
         "unlock": {"pro": True, "products": [product]},
         "category": book.get("category", "diaries"),
-        "tags": book["tags"] + ([str(year)] if dated else []),
+        "tags": book["tags"] + ([str(year)] if dated else []) + ([str(year + 1), "15 months"] if span else []),
     }
     path = folder / "listing.json"
     if path.exists():
@@ -324,11 +337,15 @@ def main():
         for key, book in BOOKS.items():
             print(f"{key:20} ${book['price']:5} {book['name']}")
         return
+    span = "--span" in args
+    args = [a for a in args if a != "--span"]
     if len(args) != 2 or (args[0] != "all" and args[0] not in BOOKS):
         sys.exit(__doc__)
     year = int(args[1])
     for key in BOOKS if args[0] == "all" else [args[0]]:
-        iid, count = write(key, year)
+        if span and not spans(key):
+            continue
+        iid, count = write(key, year, span)
         print(f"{iid}: {count} pages")
 
 

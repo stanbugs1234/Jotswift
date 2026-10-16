@@ -51,12 +51,17 @@ def rows():
         product = f"planner_{key}_{year}" if book.get("dated", True) else f"pack_{key}"
         name = book["name"] + (f" {item.split('_', 2)[-1].replace('_', '-')}" if book.get("dated", True) else "")
         out.append(("Diaries & planners", product, name, item, book["price"]))
+        if make_diary.spans(key):  # also October to December of the next year
+            year = DIARY_YEAR - 1
+            out.append(("Diaries & planners", f"planner_{key}_{year}",
+                        f"{book['name']} Oct {year} - Dec {year + 1}", make_diary.item_id(key, year, span=True),
+                        book["price"]))
     for key, make in make_life_planners.PLANNERS.items():
         cfg = make()
-        for dated in (True, False):
-            item = make_life_planners.item_id(key, dated)
-            name = f"{cfg['title']} {make_life_planners.book_year(cfg)}" if dated else f"{cfg['title']} (undated)"
-            out.append(("Bestseller planners", make_life_planners.product_id(key, dated), name, item,
+        for edition in make_life_planners.editions(key):
+            item = make_life_planners.item_id(key, edition)
+            name = make_life_planners.listing_name(cfg, edition)
+            out.append(("Bestseller planners", make_life_planners.product_id(key, edition), name, item,
                         make_life_planners.PRICES[key]))
     for pid, (name, _, price) in make_stickers.PACKS.items():
         out.append(("Stickers", f"pack_{pid}", name, pid, price))

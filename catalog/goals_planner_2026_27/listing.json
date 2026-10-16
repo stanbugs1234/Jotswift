@@ -1,0 +1,26 @@
+{
+  "kind": "template",
+  "name": "Goals & Projects Oct 2026 - Dec 2027",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "planner_goals_2026"
+    ]
+  },
+  "category": "planners",
+  "tags": [
+    "goals",
+    "projects",
+    "productivity",
+    "dashboard",
+    "quarterly",
+    "linked",
+    "dated",
+    "2026",
+    "2027",
+    "15 months",
+    "landscape",
+    "portrait"
+  ]
+}

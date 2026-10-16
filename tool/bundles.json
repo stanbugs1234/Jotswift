@@ -52,7 +52,8 @@
       "items": ["focus_planner_2027", "focus_planner_undated", "wellness_planner_2027", "wellness_planner_undated",
                 "life_planner_2027", "life_planner_undated", "goals_planner_2027", "goals_planner_undated",
                 "student_planner_2026_27", "student_planner_undated", "business_planner_2027",
-                "business_planner_undated"]
+                "business_planner_undated", "focus_planner_2026_27", "wellness_planner_2026_27",
+                "life_planner_2026_27", "goals_planner_2026_27", "business_planner_2026_27"]
     }
   }
 }

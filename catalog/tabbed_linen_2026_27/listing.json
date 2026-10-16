@@ -1,0 +1,21 @@
+{
+  "kind": "template",
+  "name": "Tabbed Diary: Linen Oct 2026 - Dec 2027",
+  "version": 1,
+  "unlock": {
+    "pro": true,
+    "products": [
+      "planner_tabbed_linen_2026"
+    ]
+  },
+  "category": "diaries",
+  "tags": [
+    "diary",
+    "tabbed",
+    "neutral",
+    "dated",
+    "2026",
+    "2027",
+    "15 months"
+  ]
+}

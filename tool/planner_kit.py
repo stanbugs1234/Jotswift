@@ -413,9 +413,11 @@ class Book:
     """
 
     def __init__(self, title, subtitle, start, *, week_start=0, front=(), month_kinds, week_kinds,
-                 day_kinds, collections=(), groups, hint=""):
+                 day_kinds, collections=(), groups, hint="", months=12):
         self.title, self.subtitle, self.start = title, subtitle, start
         self.dated = start is not None
+        # How many months: 12, or more for books like Oct 2026 - Dec 2027.
+        self.n = months if self.dated else 12
         self.week_start = week_start
         self.front = list(front)
         self.month_kinds, self.week_kinds, self.day_kinds = month_kinds, week_kinds, day_kinds
@@ -429,8 +431,8 @@ class Book:
         assert not missing, f"groups not listed: {missing}"
 
         if self.dated:
-            self.months = [add_months(start, i) for i in range(12)]
-            end = add_months(start, 12)
+            self.months = [add_months(start, i) for i in range(self.n)]
+            end = add_months(start, self.n)
             self.end = end - dt.timedelta(days=1)
             self.days = [start + dt.timedelta(days=i) for i in range((end - start).days)]
             first = start - dt.timedelta(days=(start.weekday() - week_start) % 7)
@@ -459,10 +461,10 @@ class Book:
                              *((self.start, self.end) if self.dated else ()))
         self.front_pages = [add("Start", name, group, lambda p, k=k: self.draw_front(p, k))
                             for k, (name, _, _, group) in enumerate(self.front)]
-        self.month_page = [[None] * len(self.month_kinds) for _ in range(12)]
+        self.month_page = [[None] * len(self.month_kinds) for _ in range(self.n)]
         self.week_page = [[None] * len(self.week_kinds) for _ in self.weeks]
         self.day_page = [[None] * len(self.day_kinds) for _ in self.days]
-        for m in range(12):
+        for m in range(self.n):
             section = self.month_name(m)
             for s, kind in enumerate(self.month_kinds):
                 period = self.month_period(m) if s == 0 else ()
@@ -533,7 +535,7 @@ class Book:
                 i = self.day_index.get(day)
                 if i is not None:
                     return self.month_of_day(i)
-            return 11
+            return self.n - 1
         return self.weeks[w][0]
 
     def month_of_day(self, d):
@@ -555,15 +557,21 @@ class Book:
     def year_name(self):
         if not self.dated:
             return "Year"
-        if self.start.month == 1:
+        if self.start.year == self.end.year:
             return str(self.start.year)
         return f"{self.start.year}-{str(self.end.year)[2:]}"
 
     def month_name(self, m, short=False):
+        """January, or Jan; with the year (Dec 26, December 2026) when the
+        book has that month twice."""
         if not self.dated:
             return f"M{m + 1}" if short else f"Month {m + 1}"
-        name = MONTHS[self.months[m].month - 1]
-        return name[:3] if short else name
+        first = self.months[m]
+        name = MONTHS[first.month - 1]
+        twice = sum(1 for d in self.months if d.month == first.month) > 1
+        if short:
+            return f"{name[:3]} {str(first.year)[2:]}" if twice else name[:3]
+        return f"{name} {first.year}" if twice else name
 
     def month_title(self, m):
         if not self.dated:
@@ -641,7 +649,7 @@ class Book:
     def month_tabs(self, p, current):
         entries = [(self.year_name() if self.dated and len(self.year_name()) <= 4 else "Year",
                     self.year_page, "year")]
-        entries += [(self.month_name(m, short=True), self.month_page[m][0], m) for m in range(12)]
+        entries += [(self.month_name(m, short=True), self.month_page[m][0], m) for m in range(self.n)]
         x = mp.W - TAB_W - 4
         top, bottom, gap = mp.H - 18, 34, 3
         h = (top - bottom - gap * (len(entries) - 1)) / len(entries)
@@ -650,8 +658,13 @@ class Book:
             on = key == current
             rrect(p, x, y, TAB_W + 12, h, 6, fill=S().accent if on else S().tab)
             ink = S().on_accent if on else S().accent
-            size = 7.5 if len(name) > 3 else 8.5
-            p.text(x + TAB_W / 2, y + h / 2 - size * 0.35, name, size, rgb=ink, bold=True, center=True)
+            if " " in name:  # Dec 26: the year small, under the month
+                mon, yy = name.split(" ")
+                p.text(x + TAB_W / 2, y + h / 2 + 0.5, mon, 8, rgb=ink, bold=True, center=True)
+                p.text(x + TAB_W / 2, y + h / 2 - 8, f"'{yy}", 6.5, rgb=ink, center=True)
+            else:
+                size = 7.5 if len(name) > 3 else 8.5
+                p.text(x + TAB_W / 2, y + h / 2 - size * 0.35, name, size, rgb=ink, bold=True, center=True)
             p.link(x, y, TAB_W + 4, h, target)
 
     def bottom_tabs(self, p, current):
@@ -786,7 +799,7 @@ class Book:
         per_row = 6 if landscape else 4
         th = 50 if landscape else 62
         y = self.tile_grid(p, y, "Start here", tiles, per_row, th, icons=True)
-        months = [(self.month_name(m), None, self.month_page[m][0]) for m in range(12)]
+        months = [(self.month_name(m), None, self.month_page[m][0]) for m in range(self.n)]
         y = self.tile_grid(p, y, "Months", months, 6 if landscape else 4, 30 if landscape else 38)
         weeks = [(str(w + 1), None, pages[0]) for w, pages in enumerate(self.week_page)]
         per_row = 20 if landscape else 14
@@ -824,11 +837,11 @@ class Book:
         self.heading(p, self.year_name() if self.dated else "Year at a glance",
                    "Tap a month, a week number or any date.")
         landscape = mp.W > mp.H
-        cols = 4 if landscape else 3
-        n_rows = 12 // cols
+        cols = (4 if self.n <= 12 else 5) if landscape else 3
+        n_rows = -(-self.n // cols)
         top, bottom = mp.H - 108, 36
         gw, gh = (self.right - LEFT) / cols, (top - bottom) / n_rows
-        for m in range(12):
+        for m in range(self.n):
             cx, cy = LEFT + (m % cols) * gw, top - (m // cols + 1) * gh
             rrect(p, cx + 4, cy + 4, gw - 8, gh - 8, 8, stroke=S().rule)
             self.mini_month(p, m, cx + 12, cy + gh - 20, gw - 24, min(15, (gh - 44) / 6.4), 7.5,
@@ -855,7 +868,7 @@ class Book:
             crumbs.append((kind.name, self.month_page[m][s]))
         self.frame(p, crumbs, m,
                    prev=self.month_page[m - 1][s] if m else None,
-                   next_=self.month_page[m + 1][s] if m < 11 else None)
+                   next_=self.month_page[m + 1][s] if m < self.n - 1 else None)
 
     def draw_week_kind(self, p, w, s):
         kind = self.week_kinds[s]

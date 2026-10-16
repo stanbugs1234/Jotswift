@@ -127,15 +127,17 @@ class Planner:
     [tab_colors] gives each month tab its own colour (hex)."""
 
     def __init__(self, title, start, dated=True, *, week_body, day_body, front=(),
-                 tab_colors=None, subtitle="Planner"):
+                 tab_colors=None, subtitle="Planner", months=12):
         self.title, self.start, self.dated = title, start, dated
+        # 12 months, or more (October 2026 to December 2027 is 15).
+        self.n = months if dated else 12
         self.week_body, self.day_body = week_body, day_body
         self.front = list(front)
         self.tab_colors = tab_colors
         self.subtitle = subtitle
-        self.months = [add_months(start, i) for i in range(12)]
+        self.months = [add_months(start, i) for i in range(self.n)]
         if dated:
-            end = add_months(start, 12)
+            end = add_months(start, self.n)
             self.days = [start + dt.timedelta(days=i) for i in range((end - start).days)]
             monday = start - dt.timedelta(days=start.weekday())
             self.weeks = []
@@ -161,7 +163,7 @@ class Planner:
         self.pixels_page = take(1)
         self.front_pages = [take(1) for _ in self.front]
         # Each month: its calendar, then Goals, Habits and Notes.
-        self.month_pages = [take(4) for _ in range(12)]
+        self.month_pages = [take(4) for _ in range(self.n)]
         self.week_page = [take(1) for _ in self.weeks]
         self.day_page = [take(1) for _ in self.days]
         self.notes_page = take(1)
@@ -197,7 +199,7 @@ class Planner:
         if not self.dated:
             return min(11, i * 12 // 52)
         m = self.month_index(max(self.weeks[i], self.start))
-        return 11 if m is None else m
+        return self.n - 1 if m is None else m
 
     def week_of(self, day):
         """The week index holding [day] (dated books), or None."""
@@ -235,9 +237,14 @@ class Planner:
         return self.title[2:] if len(self.title) == 4 else f"{self.title[2:4]}/{self.title[-2:]}"
 
     def month_name(self, m, short=False):
+        """January, or Jan; with the year (Dec 26, December 2026) when the
+        book has that month twice."""
         if not self.dated:
             return f"M{m + 1}" if short else f"Month {m + 1}"
-        name = MONTHS[self.months[m].month - 1]
+        first = self.months[m]
+        name = MONTHS[first.month - 1]
+        if sum(1 for d in self.months if d.month == first.month) > 1:
+            return f"{name[:3]} {str(first.year)[2:]}" if short else f"{name} {first.year}"
         return name[:3] if short else name
 
     def day_name(self, i):
@@ -274,7 +281,7 @@ class Planner:
     def tabs(self, p, current=None):
         """Home, the year, twelve months, Notes and Lists down the right edge."""
         entries = [("Home", self.home, "home"), (self.year_short(), self.year_page, "year")]
-        entries += [(self.month_name(m, short=True), self.month_page(m), m) for m in range(12)]
+        entries += [(self.month_name(m, short=True), self.month_page(m), m) for m in range(self.n)]
         entries += [("Notes", self.notes_page, "notes"), ("Lists", self.lists_page, "lists")]
         x, w = mp.W - 34, 26
         top, bottom, gap = mp.H - 40, 40, 3
@@ -282,12 +289,20 @@ class Planner:
         for k, (name, target, key) in enumerate(entries):
             y = top - (k + 1) * h - k * gap
             on = key == current
-            color = rgb(self.tab_colors[key]) if self.tab_colors and isinstance(key, int) else None
+            # Each calendar month keeps its colour, also in books of more
+            # than twelve months.
+            shade = (self.months[key].month - 1 if self.dated else key) if isinstance(key, int) else None
+            color = rgb(self.tab_colors[shade]) if self.tab_colors and shade is not None else None
             fill = S().accent if on else (tint(color, 0.35) if color else S().tab)
             p.rect(x, y, w, h, fill=fill)
             size = 7 if len(name) > 3 else 8
             ink = S().on_accent if on else (S().ink if color else S().accent)
-            p.text(x + w / 2, y + h / 2 - size * 0.35, name, size, rgb=ink, bold=True, center=True)
+            if " " in name:  # Dec 26: the year small, under the month
+                mon, yy = name.split(" ")
+                p.text(x + w / 2, y + h / 2 + 0.5, mon, 7.5, rgb=ink, bold=True, center=True)
+                p.text(x + w / 2, y + h / 2 - 7.5, f"'{yy}", 6, rgb=ink, center=True)
+            else:
+                p.text(x + w / 2, y + h / 2 - size * 0.35, name, size, rgb=ink, bold=True, center=True)
             p.link(x, y, w, h, target)
 
     def year_name(self):
@@ -322,7 +337,7 @@ class Planner:
         planner += [(name, page) for (name, _), page in zip(self.front, self.front_pages)]
         planner += [("Notes", self.notes_page), ("Lists", self.lists_page)]
         y = self.tiles(p, y, "Planner", planner, 6 if wide else 5, 40 if wide else 62, size=11)
-        months = [(self.month_name(m), self.month_page(m)) for m in range(12)]
+        months = [(self.month_name(m), self.month_page(m)) for m in range(self.n)]
         y = self.tiles(p, y, "Months", months, 6, 30 if wide else 46)
         weeks = [(str(i + 1), page) for i, page in enumerate(self.week_page)]
         y = self.tiles(p, y, "Weeks", weeks, 18 if wide else 14, 18 if wide else 28, size=9)
@@ -376,10 +391,10 @@ class Planner:
         header(p, LEFT, mp.H - 70, self.year_name(), 30)
         p.text(LEFT, mp.H - 92, "Tap a month, a week or any date.", 11, rgb=S().soft)
         cols = 4 if self.landscape else 3
-        rows = 12 // cols
+        rows = -(-self.n // cols)
         top = mp.H - 108
         gw, gh = (self.right - LEFT) / cols, (top - 40) / rows
-        for m in range(12):
+        for m in range(self.n):
             cx, cy = LEFT + (m % cols) * gw, top - (m // cols + 1) * gh
             p.rect(cx + 4, cy + 4, gw - 8, gh - 8, stroke=S().rule)
             name = self.month_name(m)
@@ -394,9 +409,9 @@ class Planner:
         p.text(LEFT, mp.H - 92, "For the year, then month by month:", 11, rgb=S().soft)
         right = self.right
         gap = 4
-        cw = (right - LEFT - gap * 11) / 12
+        cw = (right - LEFT - gap * (self.n - 1)) / self.n
         y = mp.H - 126
-        for m in range(12):
+        for m in range(self.n):
             x = LEFT + m * (cw + gap)
             p.rect(x, y, cw, 22, fill=S().tab)
             p.text(x + cw / 2, y + 7, self.month_name(m, short=True), 8, rgb=S().accent, bold=True, center=True)
@@ -420,17 +435,17 @@ class Planner:
                10, rgb=S().soft)
         right = self.right
         name_w = 22
-        cw = (right - LEFT - name_w) / 12
+        cw = (right - LEFT - name_w) / self.n
         top, bottom = mp.H - 112, 96
         rh = (top - 16 - bottom) / 31
-        for m in range(12):
+        for m in range(self.n):
             x = LEFT + name_w + m * cw
             p.text(x + cw / 2, top - 10, self.month_name(m, short=True), 8, rgb=S().accent, bold=True, center=True)
             p.link(x, top - 16, cw, 20, self.month_page(m))
         for n in range(1, 32):
             y = top - 16 - n * rh
             p.text(LEFT + name_w - 6, y + rh / 2 - 3, str(n), 7, rgb=S().soft, right=True)
-            for m in range(12):
+            for m in range(self.n):
                 i = self.day_of_month(m, n)
                 if i is None:
                     continue
@@ -462,7 +477,7 @@ class Planner:
             crumbs.append((name, self.month_page(m, sub)))
         self.frame(p, crumbs, m,
                    prev=self.month_page(m - 1, sub) if m else None,
-                   next_=self.month_page(m + 1, sub) if m < 11 else None)
+                   next_=self.month_page(m + 1, sub) if m < self.n - 1 else None)
 
     def month_chips(self, p, m, current):
         """Calendar, Goals, Habits and Notes for month [m], at the top right."""
@@ -658,7 +673,7 @@ class Planner:
         self.draw_pixels(pages[self.pixels_page])
         for k, page in enumerate(self.front_pages):
             self.draw_front(pages[page], k)
-        for m in range(12):
+        for m in range(self.n):
             self.draw_month(pages[self.month_page(m)], m)
             self.draw_month_goals(pages[self.month_page(m, 1)], m)
             self.draw_month_habits(pages[self.month_page(m, 2)], m)
@@ -682,12 +697,12 @@ class Planner:
                 e.update({"from": first.isoformat(), "to": (last or first).isoformat()})
             return e
 
-        end = add_months(self.start, 12) - dt.timedelta(days=1)
+        end = add_months(self.start, self.n) - dt.timedelta(days=1)
         overview = [entry(self.home, "Home"), entry(self.year_page, self.year_name(), self.start, end),
                     entry(self.goals_page, "Goals"), entry(self.pixels_page, "Year in pixels")]
         overview += [entry(page, name) for (name, _), page in zip(self.front, self.front_pages)]
         months = []
-        for m in range(12):
+        for m in range(self.n):
             name = self.month_name(m)
             first = self.months[m]
             last = add_months(first, 1) - dt.timedelta(days=1)
