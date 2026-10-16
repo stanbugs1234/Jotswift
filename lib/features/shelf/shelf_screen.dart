@@ -71,7 +71,6 @@ class _ShelfScreenState extends ConsumerState<ShelfScreen> {
     final prefs = ref.watch(shelfPrefsProvider);
     final shelf = Shelf(notebooks.value ?? const [], groups.value ?? const []);
     final hasSidebar = sidebarShown(context, ref);
-    final wide = MediaQuery.sizeOf(context).width >= Breakpoints.medium;
     final query = _query;
     final searching = query != null && query.trim().isNotEmpty;
 
@@ -218,9 +217,6 @@ class _ShelfScreenState extends ConsumerState<ShelfScreen> {
             ? null
             : _CategoryChips(location: location, categories: categories),
       ),
-      bottomNavigationBar: location is AllNotebooks && wide && !searching
-          ? const _DiscoverBanner()
-          : null,
       body: CustomScrollView(
         slivers: [
           const SliverToBoxAdapter(child: SizedBox(height: Insets.sm)),
@@ -453,42 +449,6 @@ class _AddMenu extends ConsumerWidget {
   }
 }
 
-/// The strip along the bottom of Home that leads to the store.
-class _DiscoverBanner extends StatelessWidget {
-  const _DiscoverBanner();
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return SafeArea(
-      top: false,
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(
-          gutterOf(context),
-          Insets.xs,
-          gutterOf(context),
-          Insets.md,
-        ),
-        child: Material(
-          color: theme.colorScheme.surfaceContainer,
-          borderRadius: BorderRadius.circular(12),
-          clipBehavior: Clip.antiAlias,
-          child: ListTile(
-            dense: true,
-            leading: const Icon(Icons.auto_awesome_outlined),
-            title: Text(
-              'Discover templates and collections',
-              style: theme.textTheme.labelLarge,
-            ),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => context.push(storePath),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 /// Places and categories as chips, for when the sidebar is hidden.
 class _CategoryChips extends ConsumerWidget implements PreferredSizeWidget {
   const _CategoryChips({required this.location, required this.categories});
@@ -716,7 +676,7 @@ class _ShelfItems extends ConsumerWidget {
             onDrop: (d) => _drop(ref, d, onNotebook: n),
             builder: (highlight) => _Draggable(
               data: (notebook: n, group: null),
-              cover: CoverView(cover: n.cover),
+              cover: CoverView(cover: n.cover, title: n.title),
               child: _NotebookTile(
                 notebook: n,
                 subtitle: subtitle,
@@ -858,7 +818,7 @@ class _NotebookTile extends ConsumerWidget {
       subtitle: date,
       place: place,
       starred: notebook.starred,
-      cover: CoverView(cover: notebook.cover),
+      cover: CoverView(cover: notebook.cover, title: notebook.title),
       menu: menu,
       list: list,
       highlight: highlight,
@@ -1074,7 +1034,10 @@ class _TrashedTile extends ConsumerWidget {
       label: '${notebook.title} notebook, in the Trash',
       title: notebook.title,
       subtitle: 'Deleted ${shortDate(notebook.trashedAt!)}',
-      cover: Opacity(opacity: 0.6, child: CoverView(cover: notebook.cover)),
+      cover: Opacity(
+        opacity: 0.6,
+        child: CoverView(cover: notebook.cover, title: notebook.title),
+      ),
       menu: menu,
       list: list,
       highlight: false,

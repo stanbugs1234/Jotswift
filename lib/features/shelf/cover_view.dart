@@ -13,10 +13,19 @@ import 'cover_designs.dart';
 /// downloaded once, then kept). Covers this version can't draw show their
 /// color.
 class CoverView extends ConsumerWidget {
-  const CoverView({required this.cover, this.elevation = 2, super.key});
+  const CoverView({
+    required this.cover,
+    this.elevation = 2,
+    this.title,
+    super.key,
+  });
 
   final NotebookCover cover;
   final double elevation;
+
+  /// The notebook's name, printed on a label on the front, as on a paper
+  /// notebook. Left off when the cover is too small to read it.
+  final String? title;
 
   /// Width / height of every cover.
   static const aspectRatio = 0.72;
@@ -80,11 +89,86 @@ class CoverView extends ConsumerWidget {
               width: 2,
               child: ColoredBox(color: spine.withValues(alpha: 0.22)),
             ),
+            if (title case final title? when title.trim().isNotEmpty)
+              Positioned.fill(child: _CoverLabel(title: title.trim())),
           ],
         ),
       ),
     );
   }
+}
+
+/// A notebook's name on a cream label a third of the way down its cover.
+/// Painted, not a [Text]: the tile under the cover already names the
+/// notebook for screen readers.
+class _CoverLabel extends StatelessWidget {
+  const _CoverLabel({required this.title});
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, box) {
+      // Too small to read (list rows, stacked groups).
+      if (box.maxWidth < 72) return const SizedBox.shrink();
+      return CustomPaint(painter: _LabelPainter(title));
+    },
+  );
+}
+
+class _LabelPainter extends CustomPainter {
+  _LabelPainter(this.title);
+
+  final String title;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final width = size.width;
+    final labelWidth = width * 0.68;
+    final pad = width * 0.05;
+    final text = TextPainter(
+      text: TextSpan(
+        text: title,
+        style: TextStyle(
+          color: const Color(0xFF2A2A2A),
+          fontSize: (width * 0.085).clamp(9, 18),
+          fontWeight: FontWeight.w600,
+          height: 1.2,
+        ),
+      ),
+      textAlign: TextAlign.center,
+      textDirection: TextDirection.ltr,
+      maxLines: 3,
+      ellipsis: '…',
+    )..layout(maxWidth: labelWidth - pad * 2);
+    final height = text.height + width * 0.08;
+    // A little right of center, clear of the spine.
+    final rect = Rect.fromCenter(
+      center: Offset(width * 0.54, size.height * 0.3),
+      width: labelWidth,
+      height: height,
+    );
+    final shape = RRect.fromRectAndRadius(rect, Radius.circular(width * 0.025));
+    canvas
+      ..drawRRect(
+        shape.shift(const Offset(0, 1)),
+        Paint()
+          ..color = Colors.black26
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 1.5),
+      )
+      ..drawRRect(shape, Paint()..color = const Color(0xFFFBF8F1));
+    text.paint(
+      canvas,
+      Offset(
+        rect.left + (labelWidth - text.width) / 2,
+        rect.top + (height - text.height) / 2,
+      ),
+    );
+    text.dispose();
+  }
+
+  @override
+  bool shouldRepaint(_LabelPainter old) => old.title != title;
 }
 
 /// A group: up to three of its covers, fanned out like a stack of books.

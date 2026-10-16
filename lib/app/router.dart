@@ -196,13 +196,14 @@ class _NotebookCoverFor extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final cover = ref.watch(notebookProvider(id)).value?.cover;
+    final notebook = ref.watch(notebookProvider(id)).value;
+    final cover = notebook?.cover;
     return SizedBox(
       width: 360,
       height: 360 / CoverView.aspectRatio,
       child: cover == null
           ? ColoredBox(color: Theme.of(context).colorScheme.primary)
-          : CoverView(cover: cover, elevation: 0),
+          : CoverView(cover: cover, elevation: 0, title: notebook?.title),
     );
   }
 }
