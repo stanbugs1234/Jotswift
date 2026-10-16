@@ -1,3 +1,5 @@
+import '../../shared/ui/skeleton.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -466,7 +468,7 @@ class _TemplatePreview extends ConsumerWidget {
     return SizedBox(
       width: 130,
       child: image == null
-          ? const Center(child: CircularProgressIndicator())
+          ? const Skeleton(radius: 2)
           : DecoratedBox(
               decoration: BoxDecoration(
                 border: Border.all(

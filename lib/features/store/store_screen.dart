@@ -1,3 +1,7 @@
+import '../../shared/ui/empty_state.dart';
+import '../../shared/ui/skeleton.dart';
+import '../../shared/ui/tokens.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -118,19 +122,39 @@ class _StoreScreenState extends ConsumerState<StoreScreen> {
           ),
           if (!entitlements.pro) const _ProBanner(),
           if (catalog.isLoading)
-            const Padding(
-              padding: EdgeInsets.all(48),
-              child: Center(child: CircularProgressIndicator()),
-            )
+            // Rows of cards stand in until the catalog arrives.
+            for (var row = 0; row < 2; row++)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Skeleton(width: 140, height: 18),
+                    const SizedBox(height: Insets.md),
+                    Row(
+                      children: [
+                        for (var i = 0; i < 4; i++) ...[
+                          if (i > 0) const SizedBox(width: Insets.lg),
+                          const Expanded(child: Skeleton(height: 200)),
+                        ],
+                      ],
+                    ),
+                  ],
+                ),
+              )
           else if (items.isEmpty)
             Padding(
-              padding: const EdgeInsets.all(48),
-              child: Text(
-                catalog.hasError
-                    ? 'Couldn\'t load the templates. Check your connection.'
-                    : 'Nothing here yet.',
-                textAlign: TextAlign.center,
-              ),
+              padding: const EdgeInsets.only(top: Insets.xxxl),
+              child: catalog.hasError
+                  ? const EmptyState(
+                      icon: Icons.cloud_off_outlined,
+                      title: 'Couldn\'t load the templates',
+                      message: 'Check your connection and try again.',
+                    )
+                  : const EmptyState(
+                      icon: Icons.storefront_outlined,
+                      title: 'Nothing here yet.',
+                    ),
             ),
           for (final (title, belongs) in _sections)
             if (items.where(belongs).toList() case final row

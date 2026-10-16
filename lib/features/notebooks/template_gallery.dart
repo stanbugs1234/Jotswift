@@ -1,3 +1,5 @@
+import '../../shared/ui/skeleton.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -295,7 +297,7 @@ class _PageThumb extends ConsumerWidget {
               border: Border.all(color: theme.colorScheme.outlineVariant),
             ),
             child: image == null
-                ? const Center(child: CircularProgressIndicator())
+                ? const Skeleton(radius: 0)
                 : RawImage(image: image, fit: BoxFit.contain),
           ),
           const SizedBox(height: 4),

@@ -1,3 +1,5 @@
+import '../../shared/ui/skeleton.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -416,7 +418,7 @@ class _TemplatePageTile extends ConsumerWidget {
             TemplatePageChoice(templateNewPage(item, page)),
           ),
       child: image == null
-          ? const Center(child: CircularProgressIndicator())
+          ? const Skeleton(radius: 2)
           : RawImage(image: image, fit: BoxFit.contain),
     );
   }
