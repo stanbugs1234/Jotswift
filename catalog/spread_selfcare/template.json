@@ -15,10 +15,14 @@
       "pages": [
         {
           "pdfPage": 2,
-          "title": "Self-care"
+          "title": "Contents"
         },
         {
           "pdfPage": 3,
+          "title": "Self-care"
+        },
+        {
+          "pdfPage": 4,
           "title": "Affirmations"
         }
       ]
@@ -27,35 +31,39 @@
       "title": "Gratitude",
       "pages": [
         {
-          "pdfPage": 4,
-          "title": "Gratitude 1"
-        },
-        {
           "pdfPage": 5,
-          "title": "Gratitude 2"
+          "title": "Contents"
         },
         {
           "pdfPage": 6,
-          "title": "Gratitude 3"
+          "title": "Gratitude 1"
         },
         {
           "pdfPage": 7,
-          "title": "Gratitude 4"
+          "title": "Gratitude 2"
         },
         {
           "pdfPage": 8,
-          "title": "Gratitude 5"
+          "title": "Gratitude 3"
         },
         {
           "pdfPage": 9,
-          "title": "Gratitude 6"
+          "title": "Gratitude 4"
         },
         {
           "pdfPage": 10,
-          "title": "Gratitude 7"
+          "title": "Gratitude 5"
         },
         {
           "pdfPage": 11,
+          "title": "Gratitude 6"
+        },
+        {
+          "pdfPage": 12,
+          "title": "Gratitude 7"
+        },
+        {
+          "pdfPage": 13,
           "title": "Gratitude 8"
         }
       ]
@@ -64,83 +72,87 @@
       "title": "Reflection",
       "pages": [
         {
-          "pdfPage": 12,
-          "title": "Reflection 1"
-        },
-        {
-          "pdfPage": 13,
-          "title": "Reflection 2"
-        },
-        {
           "pdfPage": 14,
-          "title": "Reflection 3"
+          "title": "Contents"
         },
         {
           "pdfPage": 15,
-          "title": "Reflection 4"
+          "title": "Reflection 1"
         },
         {
           "pdfPage": 16,
-          "title": "Reflection 5"
+          "title": "Reflection 2"
         },
         {
           "pdfPage": 17,
-          "title": "Reflection 6"
+          "title": "Reflection 3"
         },
         {
           "pdfPage": 18,
-          "title": "Reflection 7"
+          "title": "Reflection 4"
         },
         {
           "pdfPage": 19,
-          "title": "Reflection 8"
+          "title": "Reflection 5"
         },
         {
           "pdfPage": 20,
-          "title": "Reflection 9"
+          "title": "Reflection 6"
         },
         {
           "pdfPage": 21,
-          "title": "Reflection 10"
+          "title": "Reflection 7"
         },
         {
           "pdfPage": 22,
-          "title": "Reflection 11"
+          "title": "Reflection 8"
         },
         {
           "pdfPage": 23,
-          "title": "Reflection 12"
+          "title": "Reflection 9"
         },
         {
           "pdfPage": 24,
-          "title": "Reflection 13"
+          "title": "Reflection 10"
         },
         {
           "pdfPage": 25,
-          "title": "Reflection 14"
+          "title": "Reflection 11"
         },
         {
           "pdfPage": 26,
-          "title": "Reflection 15"
+          "title": "Reflection 12"
         },
         {
           "pdfPage": 27,
-          "title": "Reflection 16"
+          "title": "Reflection 13"
         },
         {
           "pdfPage": 28,
-          "title": "Reflection 17"
+          "title": "Reflection 14"
         },
         {
           "pdfPage": 29,
-          "title": "Reflection 18"
+          "title": "Reflection 15"
         },
         {
           "pdfPage": 30,
-          "title": "Reflection 19"
+          "title": "Reflection 16"
         },
         {
           "pdfPage": 31,
+          "title": "Reflection 17"
+        },
+        {
+          "pdfPage": 32,
+          "title": "Reflection 18"
+        },
+        {
+          "pdfPage": 33,
+          "title": "Reflection 19"
+        },
+        {
+          "pdfPage": 34,
           "title": "Reflection 20"
         }
       ]
@@ -149,7 +161,7 @@
       "title": "Mood",
       "pages": [
         {
-          "pdfPage": 32,
+          "pdfPage": 35,
           "title": "Year in moods"
         }
       ]
@@ -158,7 +170,7 @@
       "title": "Reading",
       "pages": [
         {
-          "pdfPage": 33,
+          "pdfPage": 36,
           "title": "Reading log"
         }
       ]
@@ -167,11 +179,15 @@
       "title": "Bucket list",
       "pages": [
         {
-          "pdfPage": 34,
+          "pdfPage": 37,
+          "title": "Contents"
+        },
+        {
+          "pdfPage": 38,
           "title": "Bucket list"
         },
         {
-          "pdfPage": 35,
+          "pdfPage": 39,
           "title": "Vision board"
         }
       ]

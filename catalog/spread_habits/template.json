@@ -15,50 +15,54 @@
       "pages": [
         {
           "pdfPage": 2,
-          "title": "Circle 1"
+          "title": "Contents"
         },
         {
           "pdfPage": 3,
-          "title": "Circle 2"
+          "title": "Circle 1"
         },
         {
           "pdfPage": 4,
-          "title": "Circle 3"
+          "title": "Circle 2"
         },
         {
           "pdfPage": 5,
-          "title": "Circle 4"
+          "title": "Circle 3"
         },
         {
           "pdfPage": 6,
-          "title": "Circle 5"
+          "title": "Circle 4"
         },
         {
           "pdfPage": 7,
-          "title": "Circle 6"
+          "title": "Circle 5"
         },
         {
           "pdfPage": 8,
-          "title": "Circle 7"
+          "title": "Circle 6"
         },
         {
           "pdfPage": 9,
-          "title": "Circle 8"
+          "title": "Circle 7"
         },
         {
           "pdfPage": 10,
-          "title": "Circle 9"
+          "title": "Circle 8"
         },
         {
           "pdfPage": 11,
-          "title": "Circle 10"
+          "title": "Circle 9"
         },
         {
           "pdfPage": 12,
-          "title": "Circle 11"
+          "title": "Circle 10"
         },
         {
           "pdfPage": 13,
+          "title": "Circle 11"
+        },
+        {
+          "pdfPage": 14,
           "title": "Circle 12"
         }
       ]
@@ -67,51 +71,55 @@
       "title": "Habit grid",
       "pages": [
         {
-          "pdfPage": 14,
-          "title": "Habits 1"
-        },
-        {
           "pdfPage": 15,
-          "title": "Habits 2"
+          "title": "Contents"
         },
         {
           "pdfPage": 16,
-          "title": "Habits 3"
+          "title": "Habits 1"
         },
         {
           "pdfPage": 17,
-          "title": "Habits 4"
+          "title": "Habits 2"
         },
         {
           "pdfPage": 18,
-          "title": "Habits 5"
+          "title": "Habits 3"
         },
         {
           "pdfPage": 19,
-          "title": "Habits 6"
+          "title": "Habits 4"
         },
         {
           "pdfPage": 20,
-          "title": "Habits 7"
+          "title": "Habits 5"
         },
         {
           "pdfPage": 21,
-          "title": "Habits 8"
+          "title": "Habits 6"
         },
         {
           "pdfPage": 22,
-          "title": "Habits 9"
+          "title": "Habits 7"
         },
         {
           "pdfPage": 23,
-          "title": "Habits 10"
+          "title": "Habits 8"
         },
         {
           "pdfPage": 24,
-          "title": "Habits 11"
+          "title": "Habits 9"
         },
         {
           "pdfPage": 25,
+          "title": "Habits 10"
+        },
+        {
+          "pdfPage": 26,
+          "title": "Habits 11"
+        },
+        {
+          "pdfPage": 27,
           "title": "Habits 12"
         }
       ]
@@ -120,7 +128,7 @@
       "title": "Mood",
       "pages": [
         {
-          "pdfPage": 26,
+          "pdfPage": 28,
           "title": "Year in moods"
         }
       ]
@@ -129,51 +137,55 @@
       "title": "Sleep & water",
       "pages": [
         {
-          "pdfPage": 27,
-          "title": "Sleep & water 1"
-        },
-        {
-          "pdfPage": 28,
-          "title": "Sleep & water 2"
-        },
-        {
           "pdfPage": 29,
-          "title": "Sleep & water 3"
+          "title": "Contents"
         },
         {
           "pdfPage": 30,
-          "title": "Sleep & water 4"
+          "title": "Sleep & water 1"
         },
         {
           "pdfPage": 31,
-          "title": "Sleep & water 5"
+          "title": "Sleep & water 2"
         },
         {
           "pdfPage": 32,
-          "title": "Sleep & water 6"
+          "title": "Sleep & water 3"
         },
         {
           "pdfPage": 33,
-          "title": "Sleep & water 7"
+          "title": "Sleep & water 4"
         },
         {
           "pdfPage": 34,
-          "title": "Sleep & water 8"
+          "title": "Sleep & water 5"
         },
         {
           "pdfPage": 35,
-          "title": "Sleep & water 9"
+          "title": "Sleep & water 6"
         },
         {
           "pdfPage": 36,
-          "title": "Sleep & water 10"
+          "title": "Sleep & water 7"
         },
         {
           "pdfPage": 37,
-          "title": "Sleep & water 11"
+          "title": "Sleep & water 8"
         },
         {
           "pdfPage": 38,
+          "title": "Sleep & water 9"
+        },
+        {
+          "pdfPage": 39,
+          "title": "Sleep & water 10"
+        },
+        {
+          "pdfPage": 40,
+          "title": "Sleep & water 11"
+        },
+        {
+          "pdfPage": 41,
           "title": "Sleep & water 12"
         }
       ]
@@ -182,7 +194,7 @@
       "title": "Notes",
       "pages": [
         {
-          "pdfPage": 39,
+          "pdfPage": 42,
           "title": "Lined notes"
         }
       ]

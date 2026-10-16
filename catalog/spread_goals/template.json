@@ -15,11 +15,11 @@
       "pages": [
         {
           "pdfPage": 2,
-          "title": "Yearly goals"
+          "title": "Contents"
         },
         {
           "pdfPage": 3,
-          "title": "SMART goal"
+          "title": "Yearly goals"
         },
         {
           "pdfPage": 4,
@@ -27,6 +27,10 @@
         },
         {
           "pdfPage": 5,
+          "title": "SMART goal"
+        },
+        {
+          "pdfPage": 6,
           "title": "90-day plan"
         }
       ]
@@ -35,23 +39,27 @@
       "title": "Planning",
       "pages": [
         {
-          "pdfPage": 6,
-          "title": "SWOT analysis"
-        },
-        {
           "pdfPage": 7,
-          "title": "Project planner"
+          "title": "Contents"
         },
         {
           "pdfPage": 8,
-          "title": "Project planner"
+          "title": "SWOT analysis"
         },
         {
           "pdfPage": 9,
-          "title": "Priority matrix"
+          "title": "Project planner"
         },
         {
           "pdfPage": 10,
+          "title": "Project planner"
+        },
+        {
+          "pdfPage": 11,
+          "title": "Priority matrix"
+        },
+        {
+          "pdfPage": 12,
           "title": "Mind map"
         }
       ]
@@ -60,51 +68,55 @@
       "title": "Weekly review",
       "pages": [
         {
-          "pdfPage": 11,
-          "title": "Review 1"
-        },
-        {
-          "pdfPage": 12,
-          "title": "Review 2"
-        },
-        {
           "pdfPage": 13,
-          "title": "Review 3"
+          "title": "Contents"
         },
         {
           "pdfPage": 14,
-          "title": "Review 4"
+          "title": "Review 1"
         },
         {
           "pdfPage": 15,
-          "title": "Review 5"
+          "title": "Review 2"
         },
         {
           "pdfPage": 16,
-          "title": "Review 6"
+          "title": "Review 3"
         },
         {
           "pdfPage": 17,
-          "title": "Review 7"
+          "title": "Review 4"
         },
         {
           "pdfPage": 18,
-          "title": "Review 8"
+          "title": "Review 5"
         },
         {
           "pdfPage": 19,
-          "title": "Review 9"
+          "title": "Review 6"
         },
         {
           "pdfPage": 20,
-          "title": "Review 10"
+          "title": "Review 7"
         },
         {
           "pdfPage": 21,
-          "title": "Review 11"
+          "title": "Review 8"
         },
         {
           "pdfPage": 22,
+          "title": "Review 9"
+        },
+        {
+          "pdfPage": 23,
+          "title": "Review 10"
+        },
+        {
+          "pdfPage": 24,
+          "title": "Review 11"
+        },
+        {
+          "pdfPage": 25,
           "title": "Review 12"
         }
       ]
@@ -113,11 +125,15 @@
       "title": "Notes",
       "pages": [
         {
-          "pdfPage": 23,
+          "pdfPage": 26,
+          "title": "Contents"
+        },
+        {
+          "pdfPage": 27,
           "title": "Lined notes"
         },
         {
-          "pdfPage": 24,
+          "pdfPage": 28,
           "title": "Dot grid"
         }
       ]

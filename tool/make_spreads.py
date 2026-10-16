@@ -21,7 +21,9 @@ A planner in spreads.json:
        "pages": [{"layout": "dated.month", "repeat": 12, "title": "Month {n}"}]},
       {"tab": "Weeks", "pages": [{"layout": "dated.week", "repeat": 52}]}]}
 
-Every planner starts with an index page that links to each section.
+Every planner starts with an index page that links to each section. A
+section of more than one page starts with a Contents page linking each of
+its pages, and each page's header steps through its section.
 """
 
 import inspect
@@ -34,27 +36,62 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import make_planner as mp  # noqa: E402
 import spreads  # noqa: E402
 from spreads.kit import S, caps, panel  # noqa: E402
+from planner_nav import chevron  # noqa: E402
 from spreads.look import BOTTOM, COLOURWAYS, TOP, Spread, draw_frame, new_page  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 PLANNERS = json.loads((ROOT / "tool" / "spreads.json").read_text())["planners"]
 
 
+CONTENTS = "contents"
+
+
 def plan(planner):
     """The pages in order: (section, tab, layout, n, title). Page 0 is the
-    index."""
+    index; a section of several pages starts with its Contents page."""
     entries = [("Index", "Index", None, 1, "Index")]
     for section in planner["sections"]:
         tab = section["tab"]
         title = section.get("title", tab)
+        pages = []
         for entry in section["pages"]:
             if isinstance(entry, str):
                 entry = {"layout": entry}
             make, default = spreads.get(entry["layout"])
             for n in range(1, entry.get("repeat", 1) + 1):
                 name = entry.get("title", default)
-                entries.append((title, tab, make, n, name.format(n=n)))
+                pages.append((title, tab, make, n, name.format(n=n)))
+        if len(pages) > 1:
+            entries.append((title, tab, CONTENTS, 1, "Contents"))
+        entries += pages
     return entries
+
+
+def contents_page(sp, entries, first, colour):
+    """Every page of the section starting at [first], linked, in rows
+    across both halves."""
+    p = sp.page
+    tab = entries[first][1]
+    items = [(i, e[4]) for i, e in enumerate(entries) if e[1] == tab and e[2] is not CONTENTS]
+    per_half = (len(items) + 1) // 2
+    cols = 1 if per_half <= 16 else 2
+    rows = (per_half + cols - 1) // cols
+    for half, (x0, x1) in enumerate((sp.left, sp.right)):
+        chunk = items[half * per_half:(half + 1) * per_half]
+        if not chunk:
+            continue
+        title = f"{tab}: tap a page" if half == 0 else "More pages"
+        top = panel(p, x0, TOP - 4, x1 - x0, TOP - BOTTOM - 8, title)
+        cw = (x1 - x0 - 20) / cols
+        rh = min(30, (top - BOTTOM - 16) / rows)
+        for k, (page, name) in enumerate(chunk):
+            c, r = divmod(k, rows)
+            x, y = x0 + 10 + c * cw, top - 14 - (r + 1) * rh
+            p.rect(x, y + rh / 2 - 6, 12, 12, fill=colour)
+            p.text(x + 20, y + rh / 2 - 3.5, name, 10, rgb=S().ink, bold=True)
+            chevron(p, x + cw - 12, y + rh / 2, 7, S().soft)
+            p.line(x, y, x + cw - 6, y, rgb=S().rule, width=0.5)
+            p.link(x - 4, y, cw, rh, page)
 
 
 def index_page(sp, planner, entries, tabs):
@@ -70,7 +107,7 @@ def index_page(sp, planner, entries, tabs):
             y = top - 26 - i * 34
             k = tabs.index((label, target))
             p.rect(x0 + 10, y - 4, 18, 18, fill=colours[k % len(colours)])
-            count = sum(1 for e in entries if e[1] == label)
+            count = sum(1 for e in entries if e[1] == label and e[2] is not CONTENTS)
             p.text(x0 + 38, y + 4, label, 12, rgb=S().ink, bold=True)
             p.text(x1 - 10, y + 4, f"{count} page{'s' if count != 1 else ''}", 8, rgb=S().soft, right=True)
             p.line(x0 + 10, y - 9, x1 - 10, y - 9, rgb=S().rule, width=0.5)
@@ -102,9 +139,16 @@ def build(planner, colourway):
         p = new_page(colourway)
         sp = Spread(p, planner.get("short", planner["name"]), tab, title, tabs, 0 if i else None)
         sp.colourway = colourway
+        siblings = [k for k, e in enumerate(entries) if e[1] == tab and e[2] is not CONTENTS]
+        if make not in (None, CONTENTS) and len(siblings) > 1:
+            at = siblings.index(i)
+            sp.steps = (siblings[at - 1] if at else None, firsts[tab], at + 1, len(siblings),
+                        siblings[at + 1] if at + 1 < len(siblings) else None)
         draw_frame(sp, colourway)
         if make is None:
             index_page(sp, planner, entries, tabs)
+        elif make is CONTENTS:
+            contents_page(sp, entries, i, colourway.tabs[[t for t, _ in tabs].index(tab) % len(colourway.tabs)])
         else:
             make(sp, n) if len(inspect.signature(make).parameters) > 1 else make(sp)
         pages.append(p)

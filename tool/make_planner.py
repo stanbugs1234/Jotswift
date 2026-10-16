@@ -1,4 +1,5 @@
 """Makes Jotswift's own PDF templates, with links between pages.
+The planner itself is laid out by planner_nav.
 
   python3 tool/make_planner.py planner 2027   # catalog/planner_2027/
   python3 tool/make_planner.py essentials     # catalog/essentials_pages/
@@ -17,6 +18,7 @@ import json
 import subprocess
 import sys
 import tempfile
+import zlib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -273,8 +275,9 @@ def write_pdf(pages, path):
             f"/Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> "
             f"/Contents {pid + 1} 0 R /Annots [{annots}] >>"
         )
-        stream = "\n".join(p.ops).encode("latin-1")
-        objs[pid + 1] = (f"<< /Length {len(stream)} >>\nstream\n".encode() + stream + b"\nendstream")
+        stream = zlib.compress("\n".join(p.ops).encode("latin-1"), 9)
+        objs[pid + 1] = (f"<< /Length {len(stream)} /Filter /FlateDecode >>\nstream\n".encode()
+                         + stream + b"\nendstream")
         for aid, ((x0, y0, x1, y1), target) in zip(annot_ids[i], p.links):
             objs[aid] = (
                 f"<< /Type /Annot /Subtype /Link /Rect [{x0:.1f} {y0:.1f} {x1:.1f} {y1:.1f}] "
@@ -319,144 +322,11 @@ def write_preview(pdf, out):
 
 
 def planner(year):
-    months = list(calendar.month_name)[1:]
-    # Weeks start on Monday; the first is the week holding January 1.
-    jan1 = dt.date(year, 1, 1)
-    first_monday = jan1 - dt.timedelta(days=jan1.weekday())
-    weeks = []
-    monday = first_monday
-    while monday <= dt.date(year, 12, 31):
-        weeks.append(monday)
-        monday += dt.timedelta(days=7)
+    """The linked weekly and daily planner for [year]; see planner_nav."""
+    import planner_nav as nav
 
-    YEAR = 0
-    month_page = {m: 1 + m for m in range(12)}
-    week_page = {i: 13 + i for i in range(len(weeks))}
-
-    def week_of(day):
-        return (day - first_monday).days // 7
-
-    pages = [Page() for _ in range(13 + len(weeks))]
-    tab_x, tab_w = W - 34, 26
-
-    def tabs(p, current_month=None):
-        """Month tabs down the right edge, and a year tab on top."""
-        top = H - 60
-        p.rect(tab_x, top, tab_w, 30, fill=S.accent if current_month is None and p is pages[YEAR] else S.tab)
-        p.text(tab_x + tab_w / 2, top + 11, str(year)[2:], 9, rgb=S.on_accent if p is pages[YEAR] else S.accent, bold=True, center=True)
-        p.link(tab_x, top, tab_w, 30, YEAR)
-        h = (top - 40 - 12 * 4) / 12
-        for m in range(12):
-            y = top - 8 - (m + 1) * (h + 4)
-            on = m == current_month
-            p.rect(tab_x, y, tab_w, h, fill=S.accent if on else S.tab)
-            p.text(tab_x + tab_w / 2, y + h / 2 - 3.5, months[m][:3], 8, rgb=S.on_accent if on else S.accent, bold=on, center=True)
-            p.link(tab_x, y, tab_w, h, month_page[m])
-
-    left, right = 40, tab_x - 16
-
-    # Year page: twelve small months, each linking to its page.
-    p = pages[YEAR]
-    header(p, left, H - 70, str(year), 40)
-    p.text(left, H - 92, "Weekly planner", 12, rgb=S.soft)
-    cols, rows = 3, 4
-    gw, gh = (right - left) / cols, (H - 130 - 50) / rows
-    for m in range(12):
-        cx, cy = left + (m % cols) * gw, H - 130 - (m // cols + 1) * gh
-        p.rect(cx + 4, cy + 4, gw - 8, gh - 8, stroke=S.rule)
-        p.text(cx + 12, cy + gh - 26, months[m], 12, rgb=S.accent, bold=True)
-        cw = (gw - 24) / 7
-        for i, d in enumerate("MTWTFSS"):
-            p.text(cx + 12 + i * cw + cw / 2, cy + gh - 44, d, 7, rgb=S.soft, center=True)
-        for r, week in enumerate(calendar.Calendar(0).monthdayscalendar(year, m + 1)):
-            for i, day in enumerate(week):
-                if day:
-                    p.text(cx + 12 + i * cw + cw / 2, cy + gh - 58 - r * 13, str(day), 7.5, center=True)
-        p.link(cx + 4, cy + 4, gw - 8, gh - 8, month_page[m])
-    tabs(p)
-
-    # Month pages: a calendar where each week row links to its week page.
-    for m in range(12):
-        p = pages[month_page[m]]
-        header(p, left, H - 70, months[m], 32)
-        p.text(left, H - 92, str(year), 12, rgb=S.soft)
-        p.link(left, H - 98, 60, 20, YEAR)
-        grid_top, grid_left = H - 130, left + 34
-        cw = (right - grid_left) / 7
-        for i, d in enumerate(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]):
-            p.text(grid_left + i * cw + 6, grid_top + 6, d, 9, rgb=S.soft, bold=True)
-        rows_ = calendar.Calendar(0).monthdatescalendar(year, m + 1)
-        rh = (grid_top - 230) / len(rows_)
-        for r, week in enumerate(rows_):
-            y = grid_top - (r + 1) * rh
-            w = week_of(week[0])
-            p.rect(left, y, 30, rh, fill=S.tab)
-            p.text(left + 15, y + rh / 2 - 3, f"W{w + 1}", 8, rgb=S.accent, bold=True, center=True)
-            p.link(left, y, grid_left - left + 7 * cw, rh, week_page[w])
-            for i, day in enumerate(week):
-                x = grid_left + i * cw
-                p.rect(x, y, cw, rh, stroke=S.rule)
-                inside = day.month == m + 1
-                p.text(x + 6, y + rh - 14, str(day.day), 10, rgb=S.ink if inside else S.rule, bold=inside)
-        p.text(left, 196, "Notes", 11, rgb=S.accent, bold=True)
-        for i in range(6):
-            p.line(left, 180 - i * 26, right, 180 - i * 26)
-        tabs(p, m)
-
-    # Week pages: a box per day, and arrows to the weeks around it.
-    for i, monday in enumerate(weeks):
-        p = pages[week_page[i]]
-        sunday = monday + dt.timedelta(days=6)
-        span = f"{months[monday.month - 1][:3]} {monday.day} - {months[sunday.month - 1][:3]} {sunday.day}"
-        header(p, left, H - 66, f"Week {i + 1}", 26)
-        p.text(left, H - 86, span, 12, rgb=S.soft)
-        month = monday.month - 1 if monday.year == year else 0
-        p.text(left + 180, H - 86, months[month], 12, rgb=S.accent)
-        p.link(left + 176, H - 92, 90, 20, month_page[month])
-        if i > 0:
-            p.text(right - 64, H - 70, "<", 18, rgb=S.accent, bold=True)
-            p.link(right - 70, H - 78, 26, 28, week_page[i - 1])
-        if i < len(weeks) - 1:
-            p.text(right - 20, H - 70, ">", 18, rgb=S.accent, bold=True)
-            p.link(right - 26, H - 78, 26, 28, week_page[i + 1])
-        top = H - 110
-        bw = (right - left - 12) / 2
-        bh = (top - 40 - 3 * 12) / 4
-        boxes = [monday + dt.timedelta(days=d) for d in range(7)] + [None]
-        for b, day in enumerate(boxes):
-            x = left + (b % 2) * (bw + 12)
-            y = top - (b // 2 + 1) * bh - (b // 2) * 12
-            p.rect(x, y, bw, bh, stroke=S.rule)
-            if day is None:
-                p.text(x + 10, y + bh - 18, "Notes", 11, rgb=S.accent, bold=True)
-            else:
-                p.text(x + 10, y + bh - 18, day.strftime("%A"), 11, rgb=S.accent, bold=True)
-                p.text(x + bw - 10, y + bh - 18, f"{months[day.month - 1][:3]} {day.day}", 10, rgb=S.soft, right=True)
-            for k in range(1, int((bh - 30) / 22) + 1):
-                p.line(x + 10, y + bh - 26 - k * 22, x + bw - 10, y + bh - 26 - k * 22)
-        tabs(p, month if monday.year == year else None)
-
-    # Each page says which dates it covers, so the app can open today's.
-    def span(first, last):
-        return {"from": first.isoformat(), "to": last.isoformat()}
-
-    def month_span(m):
-        return span(dt.date(year, m + 1, 1),
-                    dt.date(year, m + 1, calendar.monthrange(year, m + 1)[1]))
-
-    spec = {
-        "mode": "notebook",
-        "sections": [
-            {"title": str(year), "pages": [
-                {"pdfPage": 1, "title": str(year), **span(dt.date(year, 1, 1), dt.date(year, 12, 31))}]},
-            {"title": "Months", "pages": [
-                {"pdfPage": month_page[m] + 1, "title": months[m], **month_span(m)} for m in range(12)]},
-            {"title": "Weeks", "pages": [
-                {"pdfPage": week_page[i] + 1, "title": f"Week {i + 1}",
-                 **span(weeks[i], weeks[i] + dt.timedelta(days=6))} for i in range(len(weeks))]},
-        ],
-    }
-    return pages, spec
+    book = nav.Planner(str(year), dt.date(year, 1, 1), week_body=nav.week_boxes, day_body=nav.day_plan)
+    return book.build()
 
 
 # Single pages

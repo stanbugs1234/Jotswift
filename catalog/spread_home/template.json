@@ -24,18 +24,22 @@
       "pages": [
         {
           "pdfPage": 3,
-          "title": "Chores 1"
+          "title": "Contents"
         },
         {
           "pdfPage": 4,
-          "title": "Chores 2"
+          "title": "Chores 1"
         },
         {
           "pdfPage": 5,
-          "title": "Chores 3"
+          "title": "Chores 2"
         },
         {
           "pdfPage": 6,
+          "title": "Chores 3"
+        },
+        {
+          "pdfPage": 7,
           "title": "Chores 4"
         }
       ]
@@ -44,19 +48,23 @@
       "title": "Meals",
       "pages": [
         {
-          "pdfPage": 7,
-          "title": "Meal plan 1"
-        },
-        {
           "pdfPage": 8,
-          "title": "Meal plan 2"
+          "title": "Contents"
         },
         {
           "pdfPage": 9,
-          "title": "Meal plan 3"
+          "title": "Meal plan 1"
         },
         {
           "pdfPage": 10,
+          "title": "Meal plan 2"
+        },
+        {
+          "pdfPage": 11,
+          "title": "Meal plan 3"
+        },
+        {
+          "pdfPage": 12,
           "title": "Meal plan 4"
         }
       ]
@@ -65,51 +73,55 @@
       "title": "Recipes",
       "pages": [
         {
-          "pdfPage": 11,
-          "title": "Recipe 1"
-        },
-        {
-          "pdfPage": 12,
-          "title": "Recipe 2"
-        },
-        {
           "pdfPage": 13,
-          "title": "Recipe 3"
+          "title": "Contents"
         },
         {
           "pdfPage": 14,
-          "title": "Recipe 4"
+          "title": "Recipe 1"
         },
         {
           "pdfPage": 15,
-          "title": "Recipe 5"
+          "title": "Recipe 2"
         },
         {
           "pdfPage": 16,
-          "title": "Recipe 6"
+          "title": "Recipe 3"
         },
         {
           "pdfPage": 17,
-          "title": "Recipe 7"
+          "title": "Recipe 4"
         },
         {
           "pdfPage": 18,
-          "title": "Recipe 8"
+          "title": "Recipe 5"
         },
         {
           "pdfPage": 19,
-          "title": "Recipe 9"
+          "title": "Recipe 6"
         },
         {
           "pdfPage": 20,
-          "title": "Recipe 10"
+          "title": "Recipe 7"
         },
         {
           "pdfPage": 21,
-          "title": "Recipe 11"
+          "title": "Recipe 8"
         },
         {
           "pdfPage": 22,
+          "title": "Recipe 9"
+        },
+        {
+          "pdfPage": 23,
+          "title": "Recipe 10"
+        },
+        {
+          "pdfPage": 24,
+          "title": "Recipe 11"
+        },
+        {
+          "pdfPage": 25,
           "title": "Recipe 12"
         }
       ]
@@ -118,11 +130,15 @@
       "title": "Contacts",
       "pages": [
         {
-          "pdfPage": 23,
+          "pdfPage": 26,
+          "title": "Contents"
+        },
+        {
+          "pdfPage": 27,
           "title": "Contacts & birthdays"
         },
         {
-          "pdfPage": 24,
+          "pdfPage": 28,
           "title": "Contacts & birthdays"
         }
       ]
@@ -131,7 +147,7 @@
       "title": "Home care",
       "pages": [
         {
-          "pdfPage": 25,
+          "pdfPage": 29,
           "title": "Home maintenance"
         }
       ]
@@ -140,11 +156,15 @@
       "title": "Money",
       "pages": [
         {
-          "pdfPage": 26,
+          "pdfPage": 30,
+          "title": "Contents"
+        },
+        {
+          "pdfPage": 31,
           "title": "Monthly budget"
         },
         {
-          "pdfPage": 27,
+          "pdfPage": 32,
           "title": "Bills"
         }
       ]

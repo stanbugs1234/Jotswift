@@ -15,50 +15,54 @@
       "pages": [
         {
           "pdfPage": 2,
-          "title": "Budget 1"
+          "title": "Contents"
         },
         {
           "pdfPage": 3,
-          "title": "Budget 2"
+          "title": "Budget 1"
         },
         {
           "pdfPage": 4,
-          "title": "Budget 3"
+          "title": "Budget 2"
         },
         {
           "pdfPage": 5,
-          "title": "Budget 4"
+          "title": "Budget 3"
         },
         {
           "pdfPage": 6,
-          "title": "Budget 5"
+          "title": "Budget 4"
         },
         {
           "pdfPage": 7,
-          "title": "Budget 6"
+          "title": "Budget 5"
         },
         {
           "pdfPage": 8,
-          "title": "Budget 7"
+          "title": "Budget 6"
         },
         {
           "pdfPage": 9,
-          "title": "Budget 8"
+          "title": "Budget 7"
         },
         {
           "pdfPage": 10,
-          "title": "Budget 9"
+          "title": "Budget 8"
         },
         {
           "pdfPage": 11,
-          "title": "Budget 10"
+          "title": "Budget 9"
         },
         {
           "pdfPage": 12,
-          "title": "Budget 11"
+          "title": "Budget 10"
         },
         {
           "pdfPage": 13,
+          "title": "Budget 11"
+        },
+        {
+          "pdfPage": 14,
           "title": "Budget 12"
         }
       ]
@@ -67,51 +71,55 @@
       "title": "Spending",
       "pages": [
         {
-          "pdfPage": 14,
-          "title": "Expenses 1"
-        },
-        {
           "pdfPage": 15,
-          "title": "Expenses 2"
+          "title": "Contents"
         },
         {
           "pdfPage": 16,
-          "title": "Expenses 3"
+          "title": "Expenses 1"
         },
         {
           "pdfPage": 17,
-          "title": "Expenses 4"
+          "title": "Expenses 2"
         },
         {
           "pdfPage": 18,
-          "title": "Expenses 5"
+          "title": "Expenses 3"
         },
         {
           "pdfPage": 19,
-          "title": "Expenses 6"
+          "title": "Expenses 4"
         },
         {
           "pdfPage": 20,
-          "title": "Expenses 7"
+          "title": "Expenses 5"
         },
         {
           "pdfPage": 21,
-          "title": "Expenses 8"
+          "title": "Expenses 6"
         },
         {
           "pdfPage": 22,
-          "title": "Expenses 9"
+          "title": "Expenses 7"
         },
         {
           "pdfPage": 23,
-          "title": "Expenses 10"
+          "title": "Expenses 8"
         },
         {
           "pdfPage": 24,
-          "title": "Expenses 11"
+          "title": "Expenses 9"
         },
         {
           "pdfPage": 25,
+          "title": "Expenses 10"
+        },
+        {
+          "pdfPage": 26,
+          "title": "Expenses 11"
+        },
+        {
+          "pdfPage": 27,
           "title": "Expenses 12"
         }
       ]
@@ -120,11 +128,15 @@
       "title": "Bills",
       "pages": [
         {
-          "pdfPage": 26,
+          "pdfPage": 28,
+          "title": "Contents"
+        },
+        {
+          "pdfPage": 29,
           "title": "Bills"
         },
         {
-          "pdfPage": 27,
+          "pdfPage": 30,
           "title": "Subscriptions"
         }
       ]
@@ -133,11 +145,15 @@
       "title": "Saving",
       "pages": [
         {
-          "pdfPage": 28,
+          "pdfPage": 31,
+          "title": "Contents"
+        },
+        {
+          "pdfPage": 32,
           "title": "Savings"
         },
         {
-          "pdfPage": 29,
+          "pdfPage": 33,
           "title": "Sinking funds"
         }
       ]
@@ -146,7 +162,7 @@
       "title": "Debt",
       "pages": [
         {
-          "pdfPage": 30,
+          "pdfPage": 34,
           "title": "Debt payoff"
         }
       ]
@@ -155,7 +171,7 @@
       "title": "Year",
       "pages": [
         {
-          "pdfPage": 31,
+          "pdfPage": 35,
           "title": "Year in money"
         }
       ]
@@ -164,7 +180,7 @@
       "title": "Notes",
       "pages": [
         {
-          "pdfPage": 32,
+          "pdfPage": 36,
           "title": "Lined notes"
         }
       ]

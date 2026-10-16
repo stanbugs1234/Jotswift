@@ -15,50 +15,54 @@
       "pages": [
         {
           "pdfPage": 2,
-          "title": "Workout 1"
+          "title": "Contents"
         },
         {
           "pdfPage": 3,
-          "title": "Workout 2"
+          "title": "Workout 1"
         },
         {
           "pdfPage": 4,
-          "title": "Workout 3"
+          "title": "Workout 2"
         },
         {
           "pdfPage": 5,
-          "title": "Workout 4"
+          "title": "Workout 3"
         },
         {
           "pdfPage": 6,
-          "title": "Workout 5"
+          "title": "Workout 4"
         },
         {
           "pdfPage": 7,
-          "title": "Workout 6"
+          "title": "Workout 5"
         },
         {
           "pdfPage": 8,
-          "title": "Workout 7"
+          "title": "Workout 6"
         },
         {
           "pdfPage": 9,
-          "title": "Workout 8"
+          "title": "Workout 7"
         },
         {
           "pdfPage": 10,
-          "title": "Workout 9"
+          "title": "Workout 8"
         },
         {
           "pdfPage": 11,
-          "title": "Workout 10"
+          "title": "Workout 9"
         },
         {
           "pdfPage": 12,
-          "title": "Workout 11"
+          "title": "Workout 10"
         },
         {
           "pdfPage": 13,
+          "title": "Workout 11"
+        },
+        {
+          "pdfPage": 14,
           "title": "Workout 12"
         }
       ]
@@ -67,35 +71,39 @@
       "title": "Meal plans",
       "pages": [
         {
-          "pdfPage": 14,
-          "title": "Meal plan 1"
-        },
-        {
           "pdfPage": 15,
-          "title": "Meal plan 2"
+          "title": "Contents"
         },
         {
           "pdfPage": 16,
-          "title": "Meal plan 3"
+          "title": "Meal plan 1"
         },
         {
           "pdfPage": 17,
-          "title": "Meal plan 4"
+          "title": "Meal plan 2"
         },
         {
           "pdfPage": 18,
-          "title": "Meal plan 5"
+          "title": "Meal plan 3"
         },
         {
           "pdfPage": 19,
-          "title": "Meal plan 6"
+          "title": "Meal plan 4"
         },
         {
           "pdfPage": 20,
-          "title": "Meal plan 7"
+          "title": "Meal plan 5"
         },
         {
           "pdfPage": 21,
+          "title": "Meal plan 6"
+        },
+        {
+          "pdfPage": 22,
+          "title": "Meal plan 7"
+        },
+        {
+          "pdfPage": 23,
           "title": "Meal plan 8"
         }
       ]
@@ -104,59 +112,63 @@
       "title": "Food diary",
       "pages": [
         {
-          "pdfPage": 22,
-          "title": "Food diary 1"
-        },
-        {
-          "pdfPage": 23,
-          "title": "Food diary 2"
-        },
-        {
           "pdfPage": 24,
-          "title": "Food diary 3"
+          "title": "Contents"
         },
         {
           "pdfPage": 25,
-          "title": "Food diary 4"
+          "title": "Food diary 1"
         },
         {
           "pdfPage": 26,
-          "title": "Food diary 5"
+          "title": "Food diary 2"
         },
         {
           "pdfPage": 27,
-          "title": "Food diary 6"
+          "title": "Food diary 3"
         },
         {
           "pdfPage": 28,
-          "title": "Food diary 7"
+          "title": "Food diary 4"
         },
         {
           "pdfPage": 29,
-          "title": "Food diary 8"
+          "title": "Food diary 5"
         },
         {
           "pdfPage": 30,
-          "title": "Food diary 9"
+          "title": "Food diary 6"
         },
         {
           "pdfPage": 31,
-          "title": "Food diary 10"
+          "title": "Food diary 7"
         },
         {
           "pdfPage": 32,
-          "title": "Food diary 11"
+          "title": "Food diary 8"
         },
         {
           "pdfPage": 33,
-          "title": "Food diary 12"
+          "title": "Food diary 9"
         },
         {
           "pdfPage": 34,
-          "title": "Food diary 13"
+          "title": "Food diary 10"
         },
         {
           "pdfPage": 35,
+          "title": "Food diary 11"
+        },
+        {
+          "pdfPage": 36,
+          "title": "Food diary 12"
+        },
+        {
+          "pdfPage": 37,
+          "title": "Food diary 13"
+        },
+        {
+          "pdfPage": 38,
           "title": "Food diary 14"
         }
       ]
@@ -165,7 +177,7 @@
       "title": "Body",
       "pages": [
         {
-          "pdfPage": 36,
+          "pdfPage": 39,
           "title": "Body & weight"
         }
       ]
@@ -174,15 +186,19 @@
       "title": "Medication",
       "pages": [
         {
-          "pdfPage": 37,
+          "pdfPage": 40,
+          "title": "Contents"
+        },
+        {
+          "pdfPage": 41,
           "title": "Medication 1"
         },
         {
-          "pdfPage": 38,
+          "pdfPage": 42,
           "title": "Medication 2"
         },
         {
-          "pdfPage": 39,
+          "pdfPage": 43,
           "title": "Medication 3"
         }
       ]
@@ -191,11 +207,15 @@
       "title": "Habits",
       "pages": [
         {
-          "pdfPage": 40,
+          "pdfPage": 44,
+          "title": "Contents"
+        },
+        {
+          "pdfPage": 45,
           "title": "Circle habit tracker"
         },
         {
-          "pdfPage": 41,
+          "pdfPage": 46,
           "title": "Sleep & water"
         }
       ]

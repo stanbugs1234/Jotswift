@@ -71,6 +71,8 @@ class Spread:
     def __init__(self, page, planner, section, title, tabs, index_page):
         self.page, self.planner, self.section, self.title = page, planner, section, title
         self.tabs, self.index_page = tabs, index_page  # [(label, first page)], page
+        # Within a section: (previous, contents, number, count, next), or None.
+        self.steps = None
 
     # The two pages, as (x0, x1).
     left = (LEFT_X + 6, MID - GUTTER)
@@ -104,6 +106,21 @@ def draw_frame(sp, colourway):
         p.text(MID + GUTTER, H - 32, "< INDEX", 7.5, rgb=c.header, bold=True)
         p.link(MID + GUTTER - 4, H - 38, 48, 16, sp.index_page)
     p.line(MID + GUTTER, H - 38, RIGHT_X - 10, H - 38, rgb=c.style.rule, width=0.8)
+    if sp.steps:
+        # Back, "3 / 12" (opens the section's contents) and next.
+        from planner_nav import chevron
+        prev, contents, n, count, next_ = sp.steps
+        x = MID + GUTTER + 70
+        label = f"{n} / {count}"
+        lw = mp.text_width(label, 8)
+        if prev is not None:
+            chevron(p, x + 6, H - 29, 8, c.header, back=True, width=1.4)
+            p.link(x - 6, H - 42, 24, 22, prev)
+        p.text(x + 18, H - 32, label, 8, rgb=c.header, bold=True)
+        p.link(x + 14, H - 42, lw + 8, 22, contents)
+        if next_ is not None:
+            chevron(p, x + 30 + lw, H - 29, 8, c.header, width=1.4)
+            p.link(x + 18 + lw, H - 42, 24, 22, next_)
 
     # Tabs down the right edge; the current one sticks out.
     n = max(1, len(sp.tabs))

@@ -15,22 +15,26 @@
       "pages": [
         {
           "pdfPage": 2,
-          "title": "Lined notes"
+          "title": "Contents"
         },
         {
           "pdfPage": 3,
-          "title": "Dot grid"
+          "title": "Lined notes"
         },
         {
           "pdfPage": 4,
-          "title": "Grid"
+          "title": "Dot grid"
         },
         {
           "pdfPage": 5,
-          "title": "Blank"
+          "title": "Grid"
         },
         {
           "pdfPage": 6,
+          "title": "Blank"
+        },
+        {
+          "pdfPage": 7,
           "title": "Cornell notes"
         }
       ]
