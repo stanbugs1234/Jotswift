@@ -36,10 +36,40 @@ class TemplateFilter {
       );
 }
 
-/// The label for a catalog category, e.g. "planners" → "Planners".
-String categoryLabel(String category) => category.isEmpty
-    ? category
-    : category[0].toUpperCase() + category.substring(1);
+/// The template categories, in the order the pickers and the store show
+/// them, with their names. Every picker uses these, so a category looks the
+/// same wherever it appears.
+const templateCategories = {
+  'planners': 'Planners',
+  'productivity': 'Productivity',
+  'spreads': 'Spread planners',
+  'diaries': 'Diaries',
+  'journals': 'Journals',
+  'study': 'Study',
+  'wellness': 'Wellness',
+  'lifestyle': 'Lifestyle',
+  'creative': 'Creative',
+  'pages': 'Basics',
+};
+
+/// The name of a catalog category, e.g. "pages" → "Basics"; one this
+/// version doesn't know is capitalized.
+String categoryLabel(String category) =>
+    templateCategories[category] ??
+    (category.isEmpty
+        ? category
+        : category[0].toUpperCase() + category.substring(1));
+
+/// Sorts categories in the order of [templateCategories], unknown ones
+/// last by name.
+int compareCategories(String a, String b) {
+  final known = templateCategories.keys.toList();
+  final (i, j) = (known.indexOf(a), known.indexOf(b));
+  if (i >= 0 && j >= 0) return i - j;
+  if (i >= 0) return -1;
+  if (j >= 0) return 1;
+  return a.compareTo(b);
+}
 
 /// A search box and a row of category chips for [templates]. Shows the
 /// chips only when there's more than one category.
@@ -73,7 +103,7 @@ class _TemplateFilterBarState extends State<TemplateFilterBar> {
     final filter = widget.filter;
     final categories = <String>{
       for (final t in widget.templates) ?t.category,
-    }.toList()..sort();
+    }.toList()..sort(compareCategories);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,

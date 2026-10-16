@@ -1,3 +1,4 @@
+import '../notebooks/template_filter.dart';
 import '../../shared/ui/empty_state.dart';
 import '../../shared/ui/skeleton.dart';
 import '../../shared/ui/tokens.dart';
@@ -29,15 +30,11 @@ bool _isTemplate(CatalogItem i, TemplateMode mode, Set<String> categories) =>
     !categories.contains(i.category);
 
 /// Template categories with their own row, in the order shown.
-const _categoryRows = [
-  ('spreads', 'Spread planners'),
-  ('productivity', 'Productivity'),
-  ('diaries', 'Diaries'),
-  ('journals', 'Journals'),
-  ('study', 'Study'),
-  ('wellness', 'Wellness'),
-  ('lifestyle', 'Lifestyle'),
-  ('creative', 'Creative'),
+/// Categories with rows of their own, named and ordered as in the
+/// pickers. Planners and basic pages have the rows below.
+final _categoryRows = [
+  for (final MapEntry(:key, :value) in templateCategories.entries)
+    if (key != 'planners' && key != 'pages') (key, value),
 ];
 
 final _ownRows = {for (final (category, _) in _categoryRows) category};
