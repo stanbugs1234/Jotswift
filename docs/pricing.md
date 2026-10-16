@@ -31,6 +31,9 @@ it doesn't sell templates one at a time.
 | `pack_events` | Wedding & events | event_pages | $2.99 |
 | `pack_money` | Money pack | money_pages | $1.99 |
 | `pack_creative` | Creative pack | creative_pages | $1.99 |
+| `pack_daily_focus` | Daily Focus pack | daily_focus_pages | $1.99 |
+| `pack_projects` | Projects & Meetings pack | project_pages | $1.99 |
+| `pack_goal_setting` | Goal Setting pack | goal_setting_pages | $1.99 |
 
 ## Journals
 
@@ -160,6 +163,7 @@ it doesn't sell templates one at a time.
 | `bundle_stickers` | Every sticker pack | stickers_planner_icons, stickers_washi, stickers_labels, stickers_study, stickers_seasonal, stickers_emoji, stickers_weather | $5.99 |
 | `bundle_calendar_templates` | Every calendar template | calendar_paper, calendar_wall, calendar_botanical, calendar_pastel, calendar_bold, calendar_chalkboard, calendar_seasons | $4.99 |
 | `planner_life_all_in_one` | All-in-One Life Planner (every spread planner) | spread_life, spread_weekly, spread_daily, spread_budget, spread_habits, spread_goals, spread_health, spread_home, spread_student, spread_selfcare, spread_work | $9.99 |
+| `bundle_productivity` | Productivity bundle (four page packs) | daily_focus_pages, project_pages, goal_setting_pages, work_pages | $4.99 |
 | `bundle_life_planners` | Every bestseller planner (Focus, Wellness, Life, Goals & Projects, Student, Business) | focus_planner_2027, focus_planner_undated, wellness_planner_2027, wellness_planner_undated, life_planner_2027, life_planner_undated, goals_planner_2027, goals_planner_undated, student_planner_2026_27, student_planner_undated, business_planner_2027, business_planner_undated, focus_planner_2026_27, wellness_planner_2026_27, life_planner_2026_27, goals_planner_2026_27, business_planner_2026_27 | $24.99 |
 
-97 products in all.
+101 products in all.

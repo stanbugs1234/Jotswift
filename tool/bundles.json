@@ -46,6 +46,11 @@
       "items": ["spread_life", "spread_weekly", "spread_daily", "spread_budget", "spread_habits", "spread_goals",
                 "spread_health", "spread_home", "spread_student", "spread_selfcare", "spread_work"]
     },
+    "bundle_productivity": {
+      "name": "Productivity bundle (four page packs)",
+      "price": "4.99",
+      "items": ["daily_focus_pages", "project_pages", "goal_setting_pages", "work_pages"]
+    },
     "bundle_life_planners": {
       "name": "Every bestseller planner (Focus, Wellness, Life, Goals & Projects, Student, Business)",
       "price": "24.99",
