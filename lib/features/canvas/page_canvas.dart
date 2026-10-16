@@ -34,6 +34,7 @@ import 'handwriting.dart';
 import '../exports/export_sheet.dart' show shareFilesProvider;
 import '../exports/page_export.dart' show PageRenderer;
 import 'zoom_window.dart';
+import 'ink_stats.dart';
 import '../audio/audio_controllers.dart';
 import '../notebooks/page_jumper.dart';
 import '../../core/motion/motion.dart';
@@ -1425,6 +1426,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
   void _extendStroke(PointerMoveEvent e) {
     final stroke = _live.value;
     if (stroke == null) return;
+    InkStats.instance.penEvent();
     if (_rulerSide != null && _ruler != null) {
       _clearPrediction();
       _live.value = stroke.withPoints([

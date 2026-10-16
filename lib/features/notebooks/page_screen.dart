@@ -11,6 +11,7 @@ import '../../core/skins/widgets/page_style.dart';
 import '../../shared/dialogs.dart';
 import '../canvas/ink_toolbar.dart';
 import '../canvas/page_canvas.dart';
+import '../canvas/ink_stats.dart';
 import '../canvas/pen_rail.dart';
 import '../canvas/toolbar_layout.dart';
 import '../audio/audio_bar.dart';
@@ -378,6 +379,7 @@ class PageScreen extends ConsumerWidget {
                   Positioned.fill(child: pageView),
                   if (!readOnly && inkEnabled)
                     const Positioned.fill(child: PenRail()),
+                  const Positioned.fill(child: InkStatsReadout()),
                 ],
               ),
             ),

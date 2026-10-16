@@ -1,5 +1,7 @@
 import '../../shared/ui/tokens.dart';
 
+import '../../core/catalog/catalog_providers.dart' show isTesterProvider;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,6 +19,7 @@ import '../calendar/calendar_providers.dart' show monthAnimationProvider;
 import '../calendar/templates/calendar_look.dart' show calendarTemplateProvider;
 import '../calendar/templates/calendar_templates_screen.dart';
 import '../canvas/ink_tools.dart';
+import '../canvas/ink_stats.dart';
 import '../canvas/pen_rail.dart';
 import '../canvas/toolbar_layout.dart';
 import '../canvas/pencil_actions.dart';
@@ -239,6 +242,16 @@ class SettingsScreen extends ConsumerWidget {
                     value: ref.watch(scribbleEraseProvider),
                     onChanged: ref.read(scribbleEraseProvider.notifier).set,
                   ),
+                  if (ref.watch(isTesterProvider).value ?? false)
+                    SwitchListTile(
+                      secondary: const Icon(Icons.speed_outlined),
+                      title: const Text('Show ink stats (testers)'),
+                      subtitle: const Text(
+                        'Pencil samples a second and drawing time, on pages.',
+                      ),
+                      value: ref.watch(inkStatsProvider),
+                      onChanged: ref.read(inkStatsProvider.notifier).set,
+                    ),
                   // Phones always keep pen options in the toolbar.
                   if (MediaQuery.sizeOf(context).shortestSide >=
                       PenRail.minShortestSide) ...[
