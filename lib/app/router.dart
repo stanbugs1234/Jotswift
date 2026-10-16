@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../core/motion/book_open.dart';
+import '../core/motion/fade_through.dart';
 import '../features/auth/auth_repository.dart';
 import '../features/auth/sign_in_screen.dart';
 import '../features/calendar/calendar_screen.dart';
@@ -100,7 +101,9 @@ final routerProvider = Provider<GoRouter>((ref) {
                         // another page updates this screen in place, so it
                         // can turn the page instead of replacing the screen.
                         // Opened straight from the shelf, it opens like a
-                        // book; moves between pages keep that page type.
+                        // book; otherwise it fades through (neither has a
+                        // swipe-back, as the left edge turns back a page).
+                        // Moves between pages keep that page type.
                         pageBuilder: (context, state) {
                           final id = state.pathParameters['notebookId']!;
                           final key = ValueKey('pages-of-$id');
@@ -114,7 +117,11 @@ final routerProvider = Provider<GoRouter>((ref) {
                                   cover: _NotebookCoverFor(id),
                                   child: screen,
                                 )
-                              : MaterialPage(key: key, child: screen);
+                              : fadeThroughPage(
+                                  context: context,
+                                  key: key,
+                                  child: screen,
+                                );
                         },
                       ),
                     ],

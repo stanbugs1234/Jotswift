@@ -48,6 +48,9 @@ abstract final class MotionTokens {
   /// Big moments: opening a notebook, turning a page.
   static const emphasized = Duration(milliseconds: 520);
 
+  /// A notebook page turning (tapped, not dragged).
+  static const pageTurn = Duration(milliseconds: 420);
+
   /// Fades used instead of movement when animations are reduced.
   static const fade = Duration(milliseconds: 150);
 

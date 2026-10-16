@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:notely/app/router.dart';
 import 'package:notely/core/motion/motion.dart';
 import 'package:notely/core/motion/page_turn.dart';
+import 'package:notely/core/settings/synced_setting.dart';
 import 'package:notely/core/skins/skin_manifest.dart';
 import 'package:notely/features/canvas/page_canvas.dart';
 import 'package:notely/features/notebooks/data/in_memory_notes_backend.dart';
@@ -63,6 +64,9 @@ void main() {
   });
 
   group('turning pages', () {
+    late List<String> ids;
+    late ProviderContainer container;
+
     /// Opens page 1 of a 3-page notebook (pages titled P1, P2, P3).
     Future<void> openFirstPage(
       WidgetTester tester, {
@@ -81,16 +85,35 @@ void main() {
         NewNotebook(title: 'Book', cover: NotebookCover.color(0)),
       );
       final section = (await repo.watchSections(nb.id).first).single;
-      final ids = <String>[];
+      ids = [];
       for (var i = 1; i <= 3; i++) {
         final p = await repo.createPage(nb.id, section.id);
         await repo.renamePage(p.id, 'P$i');
         ids.add(p.id);
       }
-      final router = ProviderScope.containerOf(
+      container = ProviderScope.containerOf(
         tester.element(find.byType(Navigator).first),
-      ).read(routerProvider);
-      router.go('/notebooks/${nb.id}/pages/${ids.first}');
+      );
+      container
+          .read(routerProvider)
+          .go('/notebooks/${nb.id}/pages/${ids.first}');
+      await tester.pumpAndSettle();
+    }
+
+    /// A finger (that doesn't draw) dragging across the page from [from]
+    /// by [dx], in steps.
+    Future<void> dragAcross(
+      WidgetTester tester,
+      Offset from,
+      double dx, {
+      int steps = 12,
+    }) async {
+      final finger = await tester.startGesture(from);
+      for (var i = 1; i <= steps; i++) {
+        await finger.moveBy(Offset(dx / steps, 0));
+        await tester.pump(const Duration(milliseconds: 16));
+      }
+      await finger.up();
       await tester.pumpAndSettle();
     }
 
@@ -132,7 +155,7 @@ void main() {
 
       await tester.tap(find.byTooltip('Next page'));
       await tester.pump();
-      await tester.pump(MotionTokens.emphasized ~/ 2);
+      await tester.pump(MotionTokens.pageTurn ~/ 2);
       expect(find.byType(PageCanvas), findsNWidgets(2));
       // The page being turned away can't be drawn on.
       expect(
@@ -161,6 +184,186 @@ void main() {
       expect(find.byType(PageCanvas), findsOneWidget);
       await tester.pumpAndSettle();
       expect(title(tester), 'P2');
+    });
+
+    for (final style in PageTurnStyle.values.where(
+      (s) => s != PageTurnStyle.none,
+    )) {
+      testWidgets('${style.label} shows both pages mid-turn, then the new', (
+        tester,
+      ) async {
+        await openFirstPage(tester, prefs: {'pageTurnStyle': style.name});
+
+        await tester.tap(find.byTooltip('Next page'));
+        await tester.pump();
+        await tester.pump(MotionTokens.pageTurn ~/ 2);
+        expect(find.byType(PageCanvas), findsNWidgets(2));
+        await tester.pumpAndSettle();
+        expect(find.byType(PageCanvas), findsOneWidget);
+        expect(title(tester), 'P2');
+
+        await tester.tap(find.byTooltip('Previous page'));
+        await tester.pump();
+        await tester.pump(MotionTokens.pageTurn ~/ 2);
+        expect(find.byType(PageCanvas), findsNWidgets(2));
+        await tester.pumpAndSettle();
+        expect(title(tester), 'P1');
+      });
+    }
+
+    testWidgets('None changes the page at once', (tester) async {
+      await openFirstPage(tester, prefs: {'pageTurnStyle': 'none'});
+
+      await tester.tap(find.byTooltip('Next page'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 16));
+      expect(find.byType(PageCanvas), findsOneWidget);
+    });
+
+    testWidgets('the style is chosen in Settings and remembered', (
+      tester,
+    ) async {
+      await openFirstPage(tester);
+      expect(container.read(pageTurnStyleProvider), PageTurnStyle.curl);
+
+      await container
+          .read(pageTurnStyleProvider.notifier)
+          .set(PageTurnStyle.slide);
+      expect(
+        container.read(sharedPreferencesProvider).getString('pageTurnStyle'),
+        'slide',
+      );
+    });
+
+    testWidgets('tapping Next quickly riffles through to the right page', (
+      tester,
+    ) async {
+      await openFirstPage(tester);
+
+      await tester.tap(find.byTooltip('Next page'));
+      await tester.pump();
+      await tester.pump(MotionTokens.pageTurn ~/ 4);
+      await tester.tap(find.byTooltip('Next page'));
+      await tester.pump();
+      await tester.pump(MotionTokens.pageTurn ~/ 8);
+      // Only the page leaving now and the one arriving: none left behind.
+      expect(find.byType(PageCanvas), findsNWidgets(2));
+      await tester.pumpAndSettle();
+      expect(find.byType(PageCanvas), findsOneWidget);
+      expect(title(tester), 'P3');
+    });
+
+    testWidgets('the pages either side are loaded ahead', (tester) async {
+      await openFirstPage(tester);
+      expect(container.exists(strokesProvider(ids[1])), isTrue);
+      expect(container.exists(elementsProvider(ids[1])), isTrue);
+
+      await tester.tap(find.byTooltip('Next page'));
+      await tester.pumpAndSettle();
+      expect(container.exists(strokesProvider(ids[0])), isTrue);
+      expect(container.exists(strokesProvider(ids[2])), isTrue);
+    });
+
+    group('by hand', () {
+      Rect canvas(WidgetTester tester) =>
+          tester.getRect(find.byType(PageCanvas));
+
+      testWidgets('dragging from the right edge past halfway turns forward', (
+        tester,
+      ) async {
+        await openFirstPage(tester, prefs: {'fingerDrawing': 'off'});
+        final r = canvas(tester);
+
+        final finger = await tester.startGesture(
+          r.centerRight.translate(-8, 0),
+        );
+        for (var i = 1; i <= 10; i++) {
+          await finger.moveBy(Offset(-r.width * 0.06, 0));
+          await tester.pump(const Duration(milliseconds: 16));
+        }
+        // The next page shows underneath while the finger holds it.
+        expect(find.byType(PageCanvas), findsNWidgets(2));
+        await finger.up();
+        await tester.pumpAndSettle();
+
+        expect(title(tester), 'P2');
+        expect(find.byType(PageCanvas), findsOneWidget);
+      });
+
+      testWidgets('a short drag falls back', (tester) async {
+        await openFirstPage(tester, prefs: {'fingerDrawing': 'off'});
+        final r = canvas(tester);
+
+        // Slowly, so it isn't a flick.
+        final finger = await tester.startGesture(
+          r.centerRight.translate(-8, 0),
+        );
+        for (var i = 1; i <= 10; i++) {
+          await finger.moveBy(Offset(-r.width * 0.02, 0));
+          await tester.pump(const Duration(milliseconds: 100));
+        }
+        await tester.pump(const Duration(milliseconds: 200));
+        await finger.up();
+        await tester.pumpAndSettle();
+
+        expect(title(tester), 'P1');
+        expect(find.byType(PageCanvas), findsOneWidget);
+      });
+
+      testWidgets('a quick flick from the edge turns even when short', (
+        tester,
+      ) async {
+        await openFirstPage(tester, prefs: {'fingerDrawing': 'off'});
+        final r = canvas(tester);
+
+        await tester.flingFrom(
+          r.centerRight.translate(-8, 0),
+          Offset(-r.width * 0.3, 0),
+          2000,
+        );
+        await tester.pumpAndSettle();
+        expect(title(tester), 'P2');
+      });
+
+      testWidgets('dragging from the left edge turns back', (tester) async {
+        await openFirstPage(tester, prefs: {'fingerDrawing': 'off'});
+        await tester.tap(find.byTooltip('Next page'));
+        await tester.pumpAndSettle();
+
+        final r = canvas(tester);
+        await dragAcross(tester, r.centerLeft.translate(8, 0), r.width * 0.7);
+        expect(title(tester), 'P1');
+      });
+
+      testWidgets('there is nothing to turn to before the first page', (
+        tester,
+      ) async {
+        await openFirstPage(tester, prefs: {'fingerDrawing': 'off'});
+        final r = canvas(tester);
+        await dragAcross(tester, r.centerLeft.translate(8, 0), r.width * 0.7);
+        expect(title(tester), 'P1');
+      });
+
+      testWidgets('a drag in the middle moves the page, not turns it', (
+        tester,
+      ) async {
+        await openFirstPage(tester, prefs: {'fingerDrawing': 'off'});
+        final r = canvas(tester);
+        await dragAcross(tester, r.center, -r.width * 0.4);
+        expect(title(tester), 'P1');
+        expect(find.byType(PageCanvas), findsOneWidget);
+      });
+
+      testWidgets('when fingers draw, the edge draws too', (tester) async {
+        await openFirstPage(tester, prefs: {'fingerDrawing': 'on'});
+        final r = canvas(tester);
+        await dragAcross(
+          tester,
+          r.centerRight.translate(-8, 0),
+          -r.width * 0.7,
+        );
+        expect(title(tester), 'P1');
+      });
     });
 
     testWidgets('going back to the shelf still works', (tester) async {

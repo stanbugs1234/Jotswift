@@ -7,6 +7,7 @@ import '../../core/entitlements/entitlements.dart';
 import '../../core/purchases/purchases_providers.dart';
 import '../../core/input/finger_drawing.dart';
 import '../../core/motion/motion.dart';
+import '../../core/motion/page_turn.dart';
 import '../../core/settings/appearance.dart';
 import '../../core/skins/skin_providers.dart';
 import '../auth/auth_repository.dart';
@@ -16,6 +17,7 @@ import '../calendar/templates/calendar_templates_screen.dart';
 import '../canvas/pencil_actions.dart';
 import '../skins/notebook_style_screen.dart';
 import '../store/paywall.dart';
+import 'page_turn_picker.dart';
 import '../store/store_actions.dart';
 import '../store/store_screen.dart';
 
@@ -147,6 +149,13 @@ class SettingsScreen extends ConsumerWidget {
               onSelectionChanged: (s) =>
                   ref.read(animationLevelProvider.notifier).set(s.first),
             ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.auto_stories_outlined),
+            title: const Text('Page turn style'),
+            subtitle: Text(ref.watch(pageTurnStyleProvider).label),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => showPageTurnPicker(context),
           ),
           ListTile(
             leading: const Icon(Icons.calendar_month_outlined),

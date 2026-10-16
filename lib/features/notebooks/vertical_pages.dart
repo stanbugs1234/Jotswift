@@ -7,6 +7,7 @@ import '../../core/skins/skin_providers.dart';
 import '../../core/skins/widgets/page_style.dart';
 import '../canvas/page_canvas.dart';
 import 'notes_providers.dart';
+import '../../core/motion/motion.dart';
 
 /// How a notebook's pages are shown: one at a time, turning like a book,
 /// or one under another, scrolling.
@@ -132,11 +133,10 @@ class _VerticalPagesState extends ConsumerState<VerticalPages> {
     final i = widget.order.indexOf(pageId);
     final scroll = _scroll;
     if (i == -1 || scroll == null || !scroll.hasClients) return;
-    scroll.animateTo(
-      (i * _extent).clamp(0, scroll.position.maxScrollExtent),
-      duration: const Duration(milliseconds: 350),
-      curve: Curves.easeOutCubic,
-    );
+    final target = (i * _extent).clamp(0.0, scroll.position.maxScrollExtent);
+    final duration = Motion.of(context).duration(MotionTokens.standard);
+    if (duration == Duration.zero) return scroll.jumpTo(target);
+    scroll.animateTo(target, duration: duration, curve: MotionTokens.move);
   }
 
   @override

@@ -6,6 +6,7 @@ import '../canvas/page_canvas.dart';
 import 'domain/notebook_models.dart';
 import 'notes_providers.dart';
 import 'paper_picker.dart';
+import '../../core/motion/motion.dart';
 
 /// An order between [before] and [after] (either may be missing, at the
 /// start or end of a section).
@@ -142,7 +143,7 @@ class _PageTile extends ConsumerWidget {
               children: [
                 Expanded(
                   child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 150),
+                    duration: Motion.of(context).duration(MotionTokens.quick),
                     decoration: BoxDecoration(
                       border: Border.all(
                         color: candidates.isNotEmpty

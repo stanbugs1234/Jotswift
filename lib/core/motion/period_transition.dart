@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import 'motion.dart';
+import 'transition_frames.dart';
 
 /// Ways to move from one month (or year) to the next.
 enum PeriodAnimation {
@@ -135,25 +136,9 @@ class _PeriodTransitionState<T extends Comparable<T>>
         Stack(fit: StackFit.expand, children: children);
     switch (animation) {
       case PeriodAnimation.fade:
-        return stack([
-          Opacity(opacity: 1 - t, child: old),
-          Opacity(opacity: t, child: current),
-        ]);
+        return fadeFrame(t, old, current);
       case PeriodAnimation.slide:
-        final dx = size.width * 0.35 * (f ? 1 : -1);
-        return stack([
-          Opacity(
-            opacity: 1 - t,
-            child: Transform.translate(offset: Offset(-dx * t, 0), child: old),
-          ),
-          Opacity(
-            opacity: t,
-            child: Transform.translate(
-              offset: Offset(dx * (1 - t), 0),
-              child: current,
-            ),
-          ),
-        ]);
+        return slideFrame(t, size, old, current, forward: f);
       case PeriodAnimation.pageTurn:
         // Forward: the old page swings away around its left edge. Back: the
         // new page swings back in over the old one.
@@ -161,8 +146,8 @@ class _PeriodTransitionState<T extends Comparable<T>>
             ? MotionTokens.exit.transform(raw)
             : 1 - MotionTokens.enter.transform(raw);
         return stack([
-          _shade(f ? current : old, 0.18 * (1 - swing)),
-          _hinged(
+          shade(f ? current : old, 0.18 * (1 - swing)),
+          hinged(
             f ? old : current,
             swing,
             alignment: Alignment.centerLeft,
@@ -176,8 +161,8 @@ class _PeriodTransitionState<T extends Comparable<T>>
             ? MotionTokens.exit.transform(raw)
             : 1 - MotionTokens.enter.transform(raw);
         return stack([
-          _shade(f ? current : old, 0.22 * (1 - swing)),
-          _hinged(
+          shade(f ? current : old, 0.22 * (1 - swing)),
+          hinged(
             f ? old : current,
             swing,
             alignment: Alignment.topCenter,
@@ -197,7 +182,7 @@ class _PeriodTransitionState<T extends Comparable<T>>
                 transform: Matrix4.identity()
                   ..setEntry(3, 2, 0.0011)
                   ..rotateY(turn),
-                child: _shade(child, 0.4 * (turn.abs() / angle)),
+                child: shade(child, 0.4 * (turn.abs() / angle)),
               ),
             );
         return stack([
@@ -236,60 +221,7 @@ class _PeriodTransitionState<T extends Comparable<T>>
       case PeriodAnimation.stack:
         // Forward: the new card slides up on top while the old one sinks.
         // Back: the top card slides down off the stack.
-        final top = f ? current : old;
-        final under = f ? old : current;
-        final p = f ? t : 1 - t; // how far the top card is in place
-        return stack([
-          Transform.scale(scale: 1 - 0.06 * p, child: _shade(under, 0.25 * p)),
-          Transform.translate(
-            offset: Offset(0, size.height * (1 - p)),
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.18 * p),
-                    blurRadius: 24,
-                    offset: const Offset(0, -6),
-                  ),
-                ],
-              ),
-              child: top,
-            ),
-          ),
-        ]);
+        return stackFrame(t, size, old, current, forward: f);
     }
-  }
-
-  /// [child] turned by [swing] (0 flat, 1 edge-on) around [alignment],
-  /// darkening as it turns.
-  Widget _hinged(
-    Widget child,
-    double swing, {
-    required Alignment alignment,
-    required Matrix4 Function(Matrix4, double) rotate,
-  }) {
-    if (swing >= 0.999) return const SizedBox.shrink();
-    return Transform(
-      alignment: alignment,
-      transform: rotate(
-        Matrix4.identity()..setEntry(3, 2, 0.0012),
-        swing * math.pi / 2,
-      ),
-      child: _shade(child, 0.35 * swing),
-    );
-  }
-
-  /// [child] darkened by [amount] (0–1).
-  Widget _shade(Widget child, double amount) {
-    if (amount <= 0.001) return child;
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        child,
-        IgnorePointer(
-          child: ColoredBox(color: Colors.black.withValues(alpha: amount)),
-        ),
-      ],
-    );
   }
 }

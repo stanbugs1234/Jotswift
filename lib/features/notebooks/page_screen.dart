@@ -11,6 +11,7 @@ import '../../core/skins/widgets/page_style.dart';
 import '../../shared/dialogs.dart';
 import '../canvas/ink_toolbar.dart';
 import '../canvas/page_canvas.dart';
+import '../canvas/templates.dart' show templateImageProvider;
 import '../exports/export_sheet.dart';
 import '../tasks/task_providers.dart' show todayProvider;
 import 'domain/notebook_models.dart';
@@ -95,10 +96,17 @@ class PageScreen extends ConsumerWidget {
         ref.read(pageJumpProvider(notebookId).notifier).to(id);
         return;
       }
-      context.replace(
-        '/notebooks/$notebookId/pages/$id',
-        extra: GoRouterState.of(context).extra,
-      );
+      final extra = GoRouterState.of(context).extra;
+      void go() =>
+          context.replace('/notebooks/$notebookId/pages/$id', extra: extra);
+      // Neighbours are loaded already; give a page further away a moment
+      // to load, so it doesn't appear half drawn mid-turn.
+      if (id == adjacent.previous || id == adjacent.next) return go();
+      final warm = warmPage(ProviderScope.containerOf(context), id);
+      warm.ready.then((_) {
+        if (context.mounted) go();
+        WidgetsBinding.instance.addPostFrameCallback((_) => warm.close());
+      });
     }
 
     void openToday() {
@@ -121,6 +129,19 @@ class PageScreen extends ConsumerWidget {
         );
       openPage(nearest.id);
     }
+
+    // Each page keeps its own paper while it turns.
+    Widget turnPage(String id) => Consumer(
+      builder: (context, ref, _) => PageStyle(
+        style: ref.watch(pageStyleProvider(id)),
+        child: PageCanvas(
+          pageId: id,
+          readOnly: readOnly,
+          inkEnabled: inkEnabled,
+          onOpenPage: openPage,
+        ),
+      ),
+    );
 
     final wide = MediaQuery.sizeOf(context).width >= Breakpoints.medium;
     Future<void> choosePaper() async {
@@ -280,6 +301,8 @@ class PageScreen extends ConsumerWidget {
         body: Column(
           children: [
             _MarkOpened(pageId: pageId),
+            if (!vertical)
+              _Preload(pageIds: [?adjacent.previous, ?adjacent.next]),
             if (!inkEnabled) const _ViewOnlyBanner(),
             if (!readOnly) InkToolbar(pageId: pageId, inkEnabled: inkEnabled),
             const Divider(height: 1),
@@ -295,16 +318,10 @@ class PageScreen extends ConsumerWidget {
                   : PageTurnSwitcher(
                       pageKey: pageId,
                       order: order,
-                      // Each page keeps its own paper while it turns.
-                      child: PageStyle(
-                        style: ref.watch(pageStyleProvider(pageId)),
-                        child: PageCanvas(
-                          pageId: pageId,
-                          readOnly: readOnly,
-                          inkEnabled: inkEnabled,
-                          onOpenPage: openPage,
-                        ),
-                      ),
+                      style: ref.watch(pageTurnStyleProvider),
+                      pageBuilder: (id) => turnPage(id as String),
+                      onTurned: (id) => openPage(id as String),
+                      child: turnPage(pageId),
                     ),
             ),
           ],
@@ -320,6 +337,63 @@ const _monthNames = [
 ];
 
 String _monthYear(DateTime d) => '${_monthNames[d.month - 1]} ${d.year}';
+
+/// Keeps [pageIds] loaded (template drawn, ink and items read), so turning
+/// to them shows them complete at once.
+class _Preload extends ConsumerWidget {
+  const _Preload({required this.pageIds});
+
+  final List<String> pageIds;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    for (final id in pageIds) {
+      ref.listen(strokesProvider(id), (_, _) {});
+      ref.listen(elementsProvider(id), (_, _) {});
+      final template = ref.watch(
+        pageProvider(id).select((p) => p.value?.template),
+      );
+      if (template != null) {
+        ref.listen(
+          templateImageProvider((template: template, width: templateDrawWidth)),
+          (_, _) {},
+        );
+      }
+    }
+    return const SizedBox.shrink();
+  }
+}
+
+/// Starts loading page [id], waiting at most [limit] for its template to be
+/// drawn. Close it once the page is showing (it holds the page loaded until
+/// then).
+({Future<void> ready, void Function() close}) warmPage(
+  ProviderContainer container,
+  String id, {
+  Duration limit = const Duration(milliseconds: 120),
+}) {
+  final subs = <ProviderSubscription<Object?>>[
+    container.listen(strokesProvider(id), (_, _) {}),
+    container.listen(elementsProvider(id), (_, _) {}),
+  ];
+  Future<void> load() async {
+    final page = await container.read(pageProvider(id).future);
+    final template = page?.template;
+    if (template == null) return;
+    final key = (template: template, width: templateDrawWidth);
+    subs.add(container.listen(templateImageProvider(key), (_, _) {}));
+    await container.read(templateImageProvider(key).future);
+  }
+
+  return (
+    ready: load().timeout(limit).catchError((_) {}),
+    close: () {
+      for (final s in subs) {
+        s.close();
+      }
+    },
+  );
+}
 
 /// Records each page shown, so its notebook opens there next time.
 class _MarkOpened extends ConsumerStatefulWidget {

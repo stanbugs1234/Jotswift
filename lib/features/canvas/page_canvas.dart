@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/input/finger_drawing.dart';
+import '../../core/motion/page_turn.dart';
 import '../../core/motion/pop_in.dart';
 import '../../core/settings/synced_setting.dart';
 import '../../core/paper/paper_style.dart';
@@ -29,6 +30,7 @@ import 'stickers.dart';
 import 'stroke_painter.dart';
 import 'templates.dart';
 import '../notebooks/page_jumper.dart';
+import '../../core/motion/motion.dart';
 
 /// Ruling on full-size pages is drawn larger than on the small previews.
 const _paperScale = 1.6;
@@ -170,6 +172,18 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
   /// A finger resting on a sticker picks it up after [_holdToMove], unless
   /// it moves first (then it scrolls).
   Timer? _holdTimer;
+
+  /// A finger dragging from the screen's left or right edge turns the page
+  /// (inside a [PageTurnSwitcher]); this wide.
+  static const _turnEdge = 28.0;
+
+  /// A finger down at the edge that hasn't moved far enough yet to tell a
+  /// turn from a scroll.
+  (PointerDownEvent, TurnDirection)? _turnCandidate;
+  int? _turnPointer;
+  double _turnStartX = 0;
+  VelocityTracker? _turnVelocity;
+  PageTurnDrag? _turnDrag;
   static const _holdToMove = Duration(milliseconds: 280);
 
   /// Template pages are drawn this many pixels wide: sharp at fit-to-width
@@ -337,6 +351,8 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
       }
     }
     _holdTimer?.cancel();
+    _turnCandidate = null;
+    _endTurn(0);
     _navPointers.clear();
     _navStarts.clear();
     _velocity.clear();
@@ -350,6 +366,9 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
       _yieldToPencil(e.timeStamp);
     } else if (e.kind == PointerDeviceKind.touch && _penDown) {
       // A palm while the Pencil writes: no ink, no scrolling, no zoom.
+      return;
+    } else if (_turnPointer != null || _turnCandidate != null) {
+      // One finger turns the page; others wait.
       return;
     }
 
@@ -384,6 +403,12 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
 
     if (e.kind == PointerDeviceKind.touch ||
         e.kind == PointerDeviceKind.mouse) {
+      if (_drawPointer == null && _navPointers.isEmpty) {
+        if (_turnEdgeAt(e.localPosition) case final direction?) {
+          _turnCandidate = (e, direction);
+          return;
+        }
+      }
       // A second finger while a finger is drawing means "zoom", not "draw".
       if (_drawPointer case final first?
           when _drawKind == PointerDeviceKind.touch) {
@@ -436,7 +461,65 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     });
   }
 
+  /// Which way a drag starting at [point] would turn the page, if it's at
+  /// the screen's edge and the page can be turned.
+  TurnDirection? _turnEdgeAt(Offset point) {
+    final viewport = _viewport;
+    if (widget.embedded ||
+        viewport == null ||
+        PageTurnScope.maybeOf(context) == null) {
+      return null;
+    }
+    if (point.dx <= _turnEdge) return TurnDirection.backward;
+    if (point.dx >= viewport.width - _turnEdge) return TurnDirection.forward;
+    return null;
+  }
+
+  /// A finger at the edge moved: across and inwards turns the page;
+  /// anything else scrolls as usual. False while it's too soon to tell.
+  bool _resolveTurn(PointerMoveEvent e) {
+    final (down, direction) = _turnCandidate!;
+    final moved = e.localPosition - down.localPosition;
+    if (moved.distance < 10) return false;
+    _turnCandidate = null;
+    final inwards = direction == TurnDirection.forward
+        ? moved.dx < 0
+        : moved.dx > 0;
+    final drag = PageTurnScope.maybeOf(context);
+    if (inwards &&
+        moved.dx.abs() > moved.dy.abs() &&
+        drag != null &&
+        drag.start(direction)) {
+      _turnPointer = e.pointer;
+      _turnDrag = drag;
+      _turnStartX = down.localPosition.dx;
+      _turnVelocity = VelocityTracker.withKind(e.kind)
+        ..addPosition(e.timeStamp, e.localPosition);
+      drag.update(e.localPosition.dx - _turnStartX);
+      return false;
+    }
+    _navPointers[e.pointer] = down.localPosition;
+    _navStarts[e.pointer] = (down.localPosition, down.timeStamp);
+    _velocity[e.pointer] = VelocityTracker.withKind(e.kind)
+      ..addPosition(down.timeStamp, down.localPosition);
+    return true;
+  }
+
+  void _endTurn(double velocityX) {
+    final drag = _turnDrag;
+    _turnPointer = null;
+    _turnDrag = null;
+    _turnVelocity = null;
+    drag?.end(velocityX);
+  }
+
   void _onPointerMove(PointerMoveEvent e) {
+    if (_turnCandidate?.$1.pointer == e.pointer && !_resolveTurn(e)) return;
+    if (e.pointer == _turnPointer) {
+      _turnVelocity?.addPosition(e.timeStamp, e.localPosition);
+      _turnDrag?.update(e.localPosition.dx - _turnStartX);
+      return;
+    }
     if (_rulerPointers.containsKey(e.pointer)) return _moveRuler(e);
     if (e.pointer == _laserPointer) return _addLaserPoint(e.localPosition);
     if (e.pointer == _lassoPointer) {
@@ -551,6 +634,15 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
 
   void _onPointerUp(PointerEvent e) {
     _holdTimer?.cancel();
+    if (_turnCandidate?.$1.pointer == e.pointer) {
+      // A tap at the edge.
+      _turnCandidate = null;
+      _followLinkAt(e.localPosition);
+      return;
+    }
+    if (e.pointer == _turnPointer) {
+      return _endTurn(_turnVelocity?.getVelocity().pixelsPerSecond.dx ?? 0);
+    }
     if (_rulerPointers.remove(e.pointer) != null) return;
     if (e.pointer == _laserPointer) {
       _laserPointer = null;
@@ -664,6 +756,8 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
 
   void _onPointerCancel(PointerEvent e) {
     _holdTimer?.cancel();
+    if (_turnCandidate?.$1.pointer == e.pointer) _turnCandidate = null;
+    if (e.pointer == _turnPointer) return _endTurn(0);
     if (_rulerPointers.remove(e.pointer) != null) return;
     if (e.pointer == _laserPointer) _laserPointer = null;
     if (e.pointer == _lassoPointer) {
@@ -1924,7 +2018,8 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
                                 valueListenable: _zoomBadge,
                                 builder: (context, text, _) => AnimatedOpacity(
                                   opacity: text == null ? 0 : 1,
-                                  duration: const Duration(milliseconds: 150),
+                                  duration: Motion.of(context)
+                                      .duration(MotionTokens.fade),
                                   child: Center(child: _ZoomBadge(text ?? '')),
                                 ),
                               ),

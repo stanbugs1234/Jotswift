@@ -10,6 +10,7 @@ import '../features/reminders/reminders.dart';
 import '../features/shelf/shelf_actions.dart';
 import '../features/shelf/shelf_view.dart';
 import '../features/store/store_screen.dart';
+import '../core/motion/motion.dart';
 
 /// Width breakpoints for the three layouts.
 abstract final class Breakpoints {
@@ -537,7 +538,8 @@ class _SidebarSectionState extends State<_SidebarSection> {
                 ),
                 AnimatedRotation(
                   turns: _open ? 0 : -0.25,
-                  duration: const Duration(milliseconds: 150),
+                  duration: Motion.of(context).duration(MotionTokens.quick),
+                  curve: MotionTokens.move,
                   child: Icon(
                     Icons.expand_more,
                     size: 20,
