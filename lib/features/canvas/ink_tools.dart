@@ -14,6 +14,10 @@ enum InkToolKind {
   /// Selects stickers, photos and text boxes to move, resize, rotate,
   /// remove or (text) edit.
   select,
+
+  /// Draws a loop around handwriting (and items) to move, resize, rotate,
+  /// recolor, copy or delete it.
+  lasso,
 }
 
 /// The selected drawing tool. Shared by all pages, so it sticks when the
@@ -47,7 +51,9 @@ class InkToolState {
   static const eraserSizes = [8.0, 16.0, 32.0];
 
   double get size => switch (kind) {
-    InkToolKind.pen || InkToolKind.select => penSizes[sizeIndex],
+    InkToolKind.pen ||
+    InkToolKind.select ||
+    InkToolKind.lasso => penSizes[sizeIndex],
     InkToolKind.highlighter => highlighterSizes[sizeIndex],
     InkToolKind.eraser => eraserSizes[sizeIndex],
   };
@@ -115,6 +121,20 @@ class ElementFrameCommand extends InkCommand {
   final String elementId;
   final ElementFrame before;
   final ElementFrame after;
+}
+
+/// Strokes were moved, recolored, pasted or deleted with the lasso: the
+/// [removed] ones were erased and the [added] ones saved in their place.
+class ReplaceStrokesCommand extends InkCommand {
+  const ReplaceStrokesCommand(this.removed, this.added);
+  final List<String> removed;
+  final List<String> added;
+}
+
+/// Several changes undone and redone as one step.
+class CompositeCommand extends InkCommand {
+  const CompositeCommand(this.commands);
+  final List<InkCommand> commands;
 }
 
 @immutable
@@ -203,6 +223,44 @@ class InkHistory extends Notifier<InkHistoryState> {
     _touchNotebook();
   }
 
+  /// One lasso edit, undone as one step: strokes replaced, items moved
+  /// ([frames] is id, before, after), added or removed.
+  Future<void> lassoEdit({
+    List<String> removeStrokes = const [],
+    List<Stroke> addStrokes = const [],
+    List<(String, ElementFrame, ElementFrame)> frames = const [],
+    List<PageElement> addElements = const [],
+    List<String> removeElements = const [],
+  }) async {
+    final commands = <InkCommand>[];
+    if (removeStrokes.isNotEmpty || addStrokes.isNotEmpty) {
+      await ref
+          .read(strokeRepositoryProvider)
+          .replaceStrokes(pageId, remove: removeStrokes, add: addStrokes);
+      commands.add(
+        ReplaceStrokesCommand(removeStrokes, [
+          for (final s in addStrokes) s.id,
+        ]),
+      );
+    }
+    for (final (id, before, after) in frames) {
+      if (before == after) continue;
+      await _elements.setElementFrame(pageId, id, after);
+      commands.add(ElementFrameCommand(id, before, after));
+    }
+    for (final e in addElements) {
+      await _elements.addElement(pageId, e);
+      commands.add(ElementPresenceCommand(e.id, added: true));
+    }
+    for (final id in removeElements) {
+      await _elements.setElementDeleted(pageId, id, deleted: true);
+      commands.add(ElementPresenceCommand(id, added: false));
+    }
+    if (commands.isEmpty) return;
+    _push(commands.length == 1 ? commands.single : CompositeCommand(commands));
+    _touchNotebook();
+  }
+
   ElementRepository get _elements => ref.read(elementRepositoryProvider);
 
   void _push(InkCommand command) {
@@ -232,7 +290,7 @@ class InkHistory extends Notifier<InkHistoryState> {
     await _apply(command, reverse: false);
   }
 
-  Future<void> _apply(InkCommand command, {required bool reverse}) {
+  Future<void> _apply(InkCommand command, {required bool reverse}) async {
     final strokes = ref.read(strokeRepositoryProvider);
     // Undoing an add hides it; undoing a removal brings it back.
     return switch (command) {
@@ -255,6 +313,15 @@ class InkHistory extends Notifier<InkHistoryState> {
       ElementEditCommand(:final before, :final after) => () {
         final e = reverse ? before : after;
         return _elements.setElementContent(pageId, e.id, e.content, e.frame);
+      }(),
+      ReplaceStrokesCommand(:final removed, :final added) => () async {
+        await strokes.setDeleted(pageId, added, reverse);
+        await strokes.setDeleted(pageId, removed, !reverse);
+      }(),
+      CompositeCommand(:final commands) => () async {
+        for (final c in reverse ? commands.reversed : commands) {
+          await _apply(c, reverse: reverse);
+        }
       }(),
     };
   }

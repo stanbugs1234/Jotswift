@@ -4,11 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/input/finger_drawing.dart';
 import '../../core/skins/notely_skin.dart';
 import 'ink_tools.dart';
+import 'lasso.dart';
 import 'page_items.dart';
 import 'stickers.dart';
 
-/// The page tools: a finger toggle, pen, highlighter, eraser, select, text,
-/// photos, stickers, colors, sizes, undo and redo. On narrow screens the
+/// The page tools: a finger toggle, pen, highlighter, eraser, select, lasso,
+/// paste (after copying), text, photos, stickers, colors, sizes, undo and
+/// redo. On narrow screens the
 /// colors and sizes fold into one "Pen options" button.
 class InkToolbar extends ConsumerWidget {
   const InkToolbar({required this.pageId, this.inkEnabled = true, super.key});
@@ -19,8 +21,9 @@ class InkToolbar extends ConsumerWidget {
   final bool inkEnabled;
 
   /// Below this width, colors and sizes go into a pop-up.
-  // The full toolbar is about 970 wide, so an upright iPad (820) folds too.
-  static const compactWidth = 1060.0;
+  // The full toolbar is about 1020 wide (1070 with Paste), so an upright
+  // iPad (820) folds too.
+  static const compactWidth = 1110.0;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -29,6 +32,7 @@ class InkToolbar extends ConsumerWidget {
     final history = ref.watch(inkHistoryProvider(pageId));
     final historyActions = ref.read(inkHistoryProvider(pageId).notifier);
     final scheme = Theme.of(context).colorScheme;
+    final canPaste = ref.watch(inkClipboardProvider) != null;
 
     Widget toolButton(InkToolKind kind, IconData icon, String label) {
       final selected = tool.kind == kind;
@@ -69,6 +73,16 @@ class InkToolbar extends ConsumerWidget {
                     Icons.near_me_outlined,
                     'Select',
                   ),
+                  toolButton(InkToolKind.lasso, Icons.highlight_alt, 'Lasso'),
+                  if (canPaste)
+                    _ToolButton(
+                      tooltip: 'Paste',
+                      icon: Icons.content_paste,
+                      selected: false,
+                      onPressed: () => ref
+                          .read(pasteRequestProvider(pageId).notifier)
+                          .request(),
+                    ),
                 ],
                 _ToolButton(
                   tooltip: 'Text',

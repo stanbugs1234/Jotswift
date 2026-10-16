@@ -20,6 +20,7 @@ import '../notebooks/notes_providers.dart';
 import 'domain/page_element.dart';
 import 'domain/stroke.dart';
 import 'ink_tools.dart';
+import 'lasso.dart';
 import 'page_items.dart';
 import 'stickers.dart';
 import 'stroke_painter.dart';
@@ -141,6 +142,19 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
   /// Handles are this many screen pixels across at any zoom.
   static const _handleSize = 28.0;
 
+  // Lasso.
+  /// The loop being drawn, in page units, and the pointer drawing it.
+  final _lassoPoints = ValueNotifier<List<Offset>>(const []);
+  int? _lassoPointer;
+
+  /// What the lasso holds, and a drag moving, resizing or rotating it.
+  _LassoSelection? _lasso;
+  _LassoDrag? _lassoDrag;
+
+  /// Strokes made by the lasso (moved, recolored, pasted), shown until the
+  /// saved copies arrive.
+  final _pendingAdd = <String, Stroke>{};
+
   @override
   void initState() {
     super.initState();
@@ -170,6 +184,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
   @override
   void dispose() {
     _live.dispose();
+    _lassoPoints.dispose();
     _coast.dispose();
     _zoomBadge.dispose();
     _zoomBadgeTimer?.cancel();
@@ -262,6 +277,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
       return;
     }
 
+    if (_lassoWith(e)) return;
     if (_selectWith(e)) return;
 
     if (_canDraw(e)) {
@@ -331,6 +347,14 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
   }
 
   void _onPointerMove(PointerMoveEvent e) {
+    if (e.pointer == _lassoPointer) {
+      _lassoPoints.value = [..._lassoPoints.value, _toPage(e.localPosition)];
+      return;
+    }
+    if (e.pointer == _lassoDrag?.pointer) {
+      setState(() => _lassoDragTo(_toPage(e.localPosition)));
+      return;
+    }
     if (e.pointer == _drag?.pointer) {
       setState(() => _dragTo(_toPage(e.localPosition)));
       return;
@@ -427,6 +451,8 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
 
   void _onPointerUp(PointerEvent e) {
     _holdTimer?.cancel();
+    if (e.pointer == _lassoPointer) return _finishLasso();
+    if (e.pointer == _lassoDrag?.pointer) return _finishLassoDrag();
     if (e.pointer == _drag?.pointer) _finishDrag();
     _checkTwoFingerTap(e);
     final tracker = _velocity.remove(e.pointer);
@@ -523,6 +549,16 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
 
   void _onPointerCancel(PointerEvent e) {
     _holdTimer?.cancel();
+    if (e.pointer == _lassoPointer) {
+      _lassoPointer = null;
+      _lassoPoints.value = const [];
+    }
+    if (e.pointer == _lassoDrag?.pointer) {
+      setState(() {
+        _lasso = _lasso?.withTransform(_lassoDrag!.start);
+        _lassoDrag = null;
+      });
+    }
     _velocity.remove(e.pointer);
     _navStarts.remove(e.pointer);
     if (e.pointer == _drag?.pointer) setState(() => _drag = null);
@@ -645,17 +681,343 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     ref.read(inkHistoryProvider(widget.pageId).notifier).erase(ids);
   }
 
+  // Lasso
+
+  /// With the lasso tool: a pointer on the selection or its handles moves,
+  /// resizes or rotates it; elsewhere it lets go and, if it can draw,
+  /// starts a new loop. Returns whether the pointer was used.
+  bool _lassoWith(PointerDownEvent e) {
+    if (widget.readOnly ||
+        !widget.inkEnabled ||
+        ref.read(inkToolProvider).kind != InkToolKind.lasso ||
+        e.kind == PointerDeviceKind.invertedStylus ||
+        _lassoPointer != null ||
+        _lassoDrag != null ||
+        _drawPointer != null ||
+        (e.kind == PointerDeviceKind.mouse &&
+            e.buttons != kPrimaryMouseButton)) {
+      return false;
+    }
+    final point = _toPage(e.localPosition);
+    final lasso = _lasso;
+    if (lasso != null && _navPointers.isEmpty) {
+      final t = lasso.transform;
+      final unit = 1 / _scale;
+      final reach = LassoSelectionPainter.handleRadius * 1.4 * unit;
+      final mode = (t.apply(lasso.box.bottomRight) - point).distance <= reach
+          ? _DragMode.resize
+          : (LassoSelectionPainter.rotateHandle(lasso.box, t, unit) - point)
+                    .distance <=
+                reach
+          ? _DragMode.rotate
+          : lasso.box.inflate(8 * unit / t.scale).contains(t.invert(point))
+          ? _DragMode.move
+          : null;
+      if (mode != null) {
+        setState(() => _lassoDrag = _LassoDrag(e.pointer, mode, t, point));
+        return true;
+      }
+      setState(() => _lasso = null);
+    }
+    if (!_canDraw(e)) return false;
+    _lassoPointer = e.pointer;
+    _lassoPoints.value = [point];
+    return true;
+  }
+
+  /// The loop is closed: take the strokes and items inside it.
+  void _finishLasso() {
+    final polygon = _lassoPoints.value;
+    _lassoPointer = null;
+    _lassoPoints.value = const [];
+    if (polygon.length < 3) return;
+    final strokes = [
+      for (final s in _currentStrokes())
+        if (lassoTakesStroke(polygon, s)) s,
+    ];
+    final elements = [
+      for (final e in _restingElements())
+        if (lassoTakesElement(polygon, e)) e,
+    ];
+    if (strokes.isEmpty && elements.isEmpty) return;
+    HapticFeedback.selectionClick();
+    setState(() => _lasso = _LassoSelection.of(strokes, elements));
+  }
+
+  /// The page's strokes as shown: saved, plus those waiting to be saved,
+  /// without erased ones.
+  List<Stroke> _currentStrokes() {
+    final saved = ref.read(strokesProvider(widget.pageId)).value ?? [];
+    final ids = {for (final s in saved) s.id};
+    return [
+      for (final s in [
+        ...saved,
+        for (final s in _pendingAdd.values)
+          if (!ids.contains(s.id)) s,
+      ])
+        if (!s.deleted && !_pendingErase.contains(s.id)) s,
+    ];
+  }
+
+  List<Stroke> _heldStrokes() {
+    final ids = _lasso?.strokeIds.toSet() ?? const {};
+    return [
+      for (final s in _currentStrokes())
+        if (ids.contains(s.id)) s,
+    ];
+  }
+
+  List<PageElement> _heldElements() {
+    final ids = _lasso?.elementIds.toSet() ?? const {};
+    return [
+      for (final e in _restingElements())
+        if (ids.contains(e.id)) e,
+    ];
+  }
+
+  void _lassoDragTo(Offset point) {
+    final drag = _lassoDrag!;
+    final start = drag.start;
+    final middle = start.pivot + start.translate;
+    _lasso = _lasso!.withTransform(switch (drag.mode) {
+      _DragMode.move => start.copyWith(
+        translate: start.translate + (point - drag.startPoint),
+      ),
+      _DragMode.resize => () {
+        final from = (drag.startPoint - middle).distance;
+        final factor = from < 1 ? 1.0 : (point - middle).distance / from;
+        return start.copyWith(scale: (start.scale * factor).clamp(0.1, 10.0));
+      }(),
+      _DragMode.rotate => start.copyWith(
+        rotation: _snapAngle(
+          math.atan2(point.dy - middle.dy, point.dx - middle.dx) + math.pi / 2,
+        ),
+      ),
+    });
+  }
+
+  /// Saves a move, resize or rotation: the strokes are replaced by moved
+  /// copies, and items get their new frames.
+  void _finishLassoDrag() {
+    final t = _lasso!.transform;
+    setState(() => _lassoDrag = null);
+    if (t.isIdentity) return;
+    final repo = ref.read(strokeRepositoryProvider);
+    final strokes = _heldStrokes();
+    final moved = [
+      for (final s in strokes) t.applyToStroke(s, repo.newStrokeId()),
+    ];
+    final elements = _heldElements();
+    final frames = [
+      for (final e in elements) (e.id, e.frame, t.applyToFrame(e.frame)),
+    ];
+    _replaceHeld(strokes, moved, frames: frames);
+  }
+
+  /// Shows [added] in place of [removed] at once, keeps them selected, and
+  /// saves the change as one undo step.
+  void _replaceHeld(
+    List<Stroke> removed,
+    List<Stroke> added, {
+    List<(String, ElementFrame, ElementFrame)> frames = const [],
+    List<PageElement> addElements = const [],
+  }) {
+    final lasso = _lasso;
+    setState(() {
+      _pendingErase.addAll(removed.map((s) => s.id));
+      for (final s in added) {
+        _pendingAdd[s.id] = s;
+      }
+      for (final (id, _, after) in frames) {
+        _frameOverrides[id] = after;
+      }
+      // Moved or recolored: the same items. Pasted: only the new ones.
+      final kept = addElements.isEmpty ? lasso?.elementIds ?? const [] : [];
+      final elements = [
+        for (final e in _restingElements())
+          if (kept.contains(e.id)) e,
+        ...addElements,
+      ];
+      _lasso = _LassoSelection.of(added, elements);
+      if (added.isEmpty && elements.isEmpty) _lasso = null;
+    });
+    ref
+        .read(inkHistoryProvider(widget.pageId).notifier)
+        .lassoEdit(
+          removeStrokes: [for (final s in removed) s.id],
+          addStrokes: added,
+          frames: frames,
+          addElements: addElements,
+        );
+  }
+
+  void _lassoAction(LassoAction action) {
+    final lasso = _lasso;
+    if (lasso == null || widget.readOnly) return;
+    final strokes = _heldStrokes();
+    final elements = _heldElements();
+    final history = ref.read(inkHistoryProvider(widget.pageId).notifier);
+    switch (action) {
+      case LassoAction.copy || LassoAction.cut:
+        ref
+            .read(inkClipboardProvider.notifier)
+            .copy(InkClip(strokes: strokes, elements: elements));
+        if (action == LassoAction.copy) {
+          ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+            const SnackBar(
+              content: Text('Copied. Paste it on any page.'),
+              duration: Duration(seconds: 2),
+            ),
+          );
+          return;
+        }
+        continue delete;
+      delete:
+      case LassoAction.delete:
+        setState(() {
+          _pendingErase.addAll(strokes.map((s) => s.id));
+          _lasso = null;
+        });
+        history.lassoEdit(
+          removeStrokes: [for (final s in strokes) s.id],
+          removeElements: [for (final e in elements) e.id],
+        );
+      case LassoAction.duplicate:
+        _place(
+          InkClip(strokes: strokes, elements: elements),
+          by: const Offset(40, 40),
+        );
+      case LassoAction.color:
+        break;
+    }
+  }
+
+  /// Recolors the held handwriting. Highlighter keeps its see-through ink.
+  void _recolor(Color color) {
+    final repo = ref.read(strokeRepositoryProvider);
+    final strokes = _heldStrokes();
+    if (strokes.isEmpty) return;
+    const identity = LassoTransform(pivot: Offset.zero);
+    final recolored = [
+      for (final s in strokes)
+        identity.applyToStroke(
+          s,
+          repo.newStrokeId(),
+          color:
+              (s.tool == InkTool.highlighter
+                      ? color.withValues(alpha: 0.35)
+                      : color)
+                  .toARGB32(),
+        ),
+    ];
+    _replaceHeld(strokes, recolored);
+  }
+
+  /// Pastes the clipboard in the middle of the view, selected.
+  void _paste() {
+    final clip = ref.read(inkClipboardProvider);
+    final viewport = _viewport;
+    if (clip == null || viewport == null || widget.readOnly) return;
+    if (!widget.inkEnabled && clip.strokes.isNotEmpty) return;
+    final middle = _toPage(viewport.center(Offset.zero));
+    _place(clip, by: middle - clip.bounds.center);
+    if (ref.read(inkToolProvider).kind != InkToolKind.lasso) {
+      ref.read(inkToolProvider.notifier).selectTool(InkToolKind.lasso);
+    }
+  }
+
+  /// Adds copies of [clip] moved [by], on top of everything, and selects
+  /// them.
+  void _place(InkClip clip, {required Offset by}) {
+    final strokeRepo = ref.read(strokeRepositoryProvider);
+    final elementRepo = ref.read(elementRepositoryProvider);
+    final t = LassoTransform(pivot: Offset.zero, translate: by);
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final ordered = [...clip.strokes]
+      ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
+    final strokes = [
+      for (final (i, s) in ordered.indexed)
+        t.applyToStroke(s, strokeRepo.newStrokeId(), createdAt: now + i),
+    ];
+    final top = (ref.read(elementsProvider(widget.pageId)).value ?? [])
+        .fold<double>(0.0, (z, e) => math.max(z, e.z));
+    final elements = [
+      for (final (i, e) in clip.elements.indexed)
+        PageElement(
+          id: elementRepo.newElementId(),
+          content: e.content,
+          frame: t.applyToFrame(e.frame),
+          z: top + 1 + i,
+          createdAt: now + i,
+        ),
+    ];
+    _poppingIn.addAll(elements.map((e) => e.id));
+    _replaceHeld(const [], strokes, addElements: elements);
+  }
+
+  /// The bar over the selection, kept on screen.
+  Widget _lassoBar(_LassoSelection lasso, bool hasInk, Size viewport) {
+    final corners = [
+      lasso.box.topLeft,
+      lasso.box.topRight,
+      lasso.box.bottomRight,
+      lasso.box.bottomLeft,
+    ].map((c) => lasso.transform.apply(c) * _scale + _offset).toList();
+    final top = corners.map((c) => c.dy).reduce(math.min);
+    final bottom = corners.map((c) => c.dy).reduce(math.max);
+    final middle = corners.map((c) => c.dx).reduce((a, b) => a + b) / 4;
+    const barHeight = 44.0, gap = 64.0;
+    final y = top - gap - barHeight >= 8
+        ? top - gap - barHeight
+        : math.min(bottom + 28, viewport.height - barHeight - 8);
+    const width = 300.0;
+    final x = (middle - width / 2)
+        .clamp(8.0, math.max(8.0, viewport.width - width - 8))
+        .toDouble();
+    return Positioned(
+      left: x,
+      top: y,
+      width: width,
+      height: barHeight,
+      child: Center(
+        child: LassoActionBar(
+          colors: NotelySkin.of(context).inkColors,
+          canRecolor: hasInk,
+          onAction: _lassoAction,
+          onColor: _recolor,
+        ),
+      ),
+    );
+  }
+
   // Stickers
 
   /// The page's stickers as shown: not removed, with frames being moved.
-  List<PageElement> _shownElements() => [
+  List<PageElement> _shownElements() {
+    final lasso = _lasso;
+    return [
+      for (final e in ref.read(elementsProvider(widget.pageId)).value ?? [])
+        if (!e.deleted)
+          () {
+            final frame = _drag?.elementId == e.id
+                ? _drag!.frame
+                : _frameOverrides[e.id] ?? e.frame;
+            final moving =
+                lasso != null &&
+                !lasso.transform.isIdentity &&
+                lasso.elementIds.contains(e.id);
+            return e.copyWith(
+              frame: moving ? lasso.transform.applyToFrame(frame) : frame,
+            );
+          }(),
+    ];
+  }
+
+  /// Elements as saved, with frames being shown until they're saved, but
+  /// not the lasso's live transform.
+  List<PageElement> _restingElements() => [
     for (final e in ref.read(elementsProvider(widget.pageId)).value ?? [])
-      if (!e.deleted)
-        e.copyWith(
-          frame: _drag?.elementId == e.id
-              ? _drag!.frame
-              : _frameOverrides[e.id] ?? e.frame,
-        ),
+      if (!e.deleted) e.copyWith(frame: _frameOverrides[e.id] ?? e.frame),
   ];
 
   /// Whether pointers select and move items rather than draw.
@@ -664,6 +1026,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
 
   /// Removes the selected item (the Delete key).
   void _deleteSelected() {
+    if (_lasso != null) return _lassoAction(LassoAction.delete);
     final id = _selectedId;
     if (id == null || widget.readOnly) return;
     ref.read(inkHistoryProvider(widget.pageId).notifier).removeElement(id);
@@ -884,12 +1247,34 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     final saved = {for (final s in strokes) s.id: s};
     final liveSaved = liveId != null && saved.containsKey(liveId);
     final erased = _pendingErase.where(
-      (id) => _drawPointer == null && (saved[id]?.deleted ?? true),
+      (id) =>
+          _drawPointer == null &&
+          (saved[id]?.deleted ?? !_pendingAdd.containsKey(id)),
     );
-    if (!liveSaved && erased.isEmpty) return;
+    final added = [
+      for (final id in _pendingAdd.keys)
+        if (saved.containsKey(id)) id,
+    ];
+    // Undo took away everything the lasso held: let go of it.
+    final lasso = _lasso;
+    final lassoGone =
+        lasso != null &&
+        _lassoDrag == null &&
+        lasso.elementIds.isEmpty &&
+        lasso.strokeIds.isNotEmpty &&
+        lasso.strokeIds.every(
+          (id) => !_pendingAdd.containsKey(id) && (saved[id]?.deleted ?? true),
+        );
+    if (!liveSaved && erased.isEmpty && added.isEmpty && !lassoGone) return;
     final erasedIds = erased.toList();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
+      if (added.isNotEmpty || lassoGone) {
+        setState(() {
+          added.forEach(_pendingAdd.remove);
+          if (lassoGone && identical(_lasso, lasso)) _lasso = null;
+        });
+      }
       if (liveSaved && _live.value?.id == liveId) {
         // Rebuild too: build hides the saved copy while the live one shows.
         setState(() => _live.value = null);
@@ -913,10 +1298,32 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     final strokes = ref.watch(strokesProvider(widget.pageId)).value ?? [];
     _reconcile(strokes);
     final liveId = _live.value?.id;
-    final visible = [
-      for (final s in strokes)
-        if (!s.deleted && !_pendingErase.contains(s.id) && s.id != liveId) s,
+    final lasso = _lasso;
+    final held = lasso?.strokeIds.toSet() ?? const <String>{};
+    final savedIds = {for (final s in strokes) s.id};
+    final shown = [
+      ...strokes,
+      for (final s in _pendingAdd.values)
+        if (!savedIds.contains(s.id)) s,
     ];
+    final visible = [
+      for (final s in shown)
+        if (!s.deleted &&
+            !_pendingErase.contains(s.id) &&
+            s.id != liveId &&
+            !held.contains(s.id))
+          s,
+    ];
+    final heldStrokes = [
+      for (final s in shown)
+        if (held.contains(s.id) && !s.deleted) s,
+    ];
+    ref.listen(inkToolProvider, (_, next) {
+      if (next.kind != InkToolKind.lasso && _lasso != null) {
+        setState(() => _lasso = null);
+      }
+    });
+    ref.listen(pasteRequestProvider(widget.pageId), (_, _) => _paste());
     // Keep the history notifier alive while the page is open.
     ref.watch(inkHistoryProvider(widget.pageId));
 
@@ -964,6 +1371,31 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
         final history = ref.read(inkHistoryProvider(widget.pageId).notifier);
         return CallbackShortcuts(
           bindings: {
+            for (final meta in [false, true]) ...{
+              SingleActivator(
+                LogicalKeyboardKey.keyC,
+                meta: meta,
+                control: !meta,
+              ): () =>
+                  _lassoAction(LassoAction.copy),
+              SingleActivator(
+                LogicalKeyboardKey.keyX,
+                meta: meta,
+                control: !meta,
+              ): () =>
+                  _lassoAction(LassoAction.cut),
+              SingleActivator(
+                LogicalKeyboardKey.keyD,
+                meta: meta,
+                control: !meta,
+              ): () =>
+                  _lassoAction(LassoAction.duplicate),
+              SingleActivator(
+                LogicalKeyboardKey.keyV,
+                meta: meta,
+                control: !meta,
+              ): _paste,
+            },
             const SingleActivator(LogicalKeyboardKey.delete): _deleteSelected,
             const SingleActivator(LogicalKeyboardKey.backspace):
                 _deleteSelected,
@@ -985,55 +1417,96 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
           child: Focus(
             autofocus: true,
             child: ClipRect(
-              child: Listener(
-                behavior: HitTestBehavior.opaque,
-                onPointerDown: _onPointerDown,
-                onPointerMove: _onPointerMove,
-                onPointerUp: _onPointerUp,
-                onPointerCancel: _onPointerCancel,
-                onPointerSignal: _onPointerSignal,
-                child: Stack(
-                  children: [
-                    Positioned(
-                      left: _offset.dx,
-                      top: _offset.dy,
-                      child: Transform.scale(
-                        scale: _scale,
-                        alignment: Alignment.topLeft,
-                        child: _PageSurface(
-                          size: _pageSize,
-                          paper: paper,
-                          hasTemplate: template != null,
-                          templateImage: templateImage,
-                          templateRect: templateImage == null
-                              ? null
-                              : _templateRect(templateImage),
-                          elements: elements,
-                          poppingIn: _poppingIn,
-                          selected: selected?.frame,
-                          handleScale: _handleSize / _scale,
-                          strokes: visible,
-                          live: _live,
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      top: 12,
-                      left: 0,
-                      right: 0,
-                      child: IgnorePointer(
-                        child: ValueListenableBuilder<String?>(
-                          valueListenable: _zoomBadge,
-                          builder: (context, text, _) => AnimatedOpacity(
-                            opacity: text == null ? 0 : 1,
-                            duration: const Duration(milliseconds: 150),
-                            child: Center(child: _ZoomBadge(text ?? '')),
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: Listener(
+                      behavior: HitTestBehavior.opaque,
+                      onPointerDown: _onPointerDown,
+                      onPointerMove: _onPointerMove,
+                      onPointerUp: _onPointerUp,
+                      onPointerCancel: _onPointerCancel,
+                      onPointerSignal: _onPointerSignal,
+                      child: Stack(
+                        children: [
+                          Positioned(
+                            left: _offset.dx,
+                            top: _offset.dy,
+                            child: Transform.scale(
+                              scale: _scale,
+                              alignment: Alignment.topLeft,
+                              child: _PageSurface(
+                                size: _pageSize,
+                                paper: paper,
+                                hasTemplate: template != null,
+                                templateImage: templateImage,
+                                templateRect: templateImage == null
+                                    ? null
+                                    : _templateRect(templateImage),
+                                elements: elements,
+                                poppingIn: _poppingIn,
+                                selected: selected?.frame,
+                                handleScale: _handleSize / _scale,
+                                strokes: visible,
+                                live: _live,
+                                overlays: [
+                                  if (lasso != null)
+                                    IgnorePointer(
+                                      child: CustomPaint(
+                                        painter: LassoSelectionPainter(
+                                          paths: [
+                                            for (final s in heldStrokes)
+                                              (
+                                                StrokeRenderer.pathFor(s),
+                                                StrokeRenderer.paintFor(s),
+                                              ),
+                                          ],
+                                          box: lasso.box,
+                                          transform: lasso.transform,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
+                                          unit: 1 / _scale,
+                                        ),
+                                      ),
+                                    ),
+                                  IgnorePointer(
+                                    child: CustomPaint(
+                                      painter: LassoPathPainter(
+                                        _lassoPoints,
+                                        Theme.of(context).colorScheme.primary,
+                                        1 / _scale,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
-                        ),
+                          Positioned(
+                            top: 12,
+                            left: 0,
+                            right: 0,
+                            child: IgnorePointer(
+                              child: ValueListenableBuilder<String?>(
+                                valueListenable: _zoomBadge,
+                                builder: (context, text, _) => AnimatedOpacity(
+                                  opacity: text == null ? 0 : 1,
+                                  duration: const Duration(milliseconds: 150),
+                                  child: Center(child: _ZoomBadge(text ?? '')),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                  // Outside the Listener, so tapping it doesn't count as
+                  // tapping the page.
+                  if (lasso != null && _lassoDrag == null)
+                    _lassoBar(lasso, heldStrokes.isNotEmpty, viewport),
+                ],
               ),
             ),
           ),
@@ -1056,6 +1529,7 @@ class _PageSurface extends StatelessWidget {
     required this.handleScale,
     required this.strokes,
     required this.live,
+    this.overlays = const [],
   });
 
   final Size size;
@@ -1079,6 +1553,9 @@ class _PageSurface extends StatelessWidget {
   final double handleScale;
   final List<Stroke> strokes;
   final ValueNotifier<Stroke?> live;
+
+  /// Drawn over everything else (the lasso).
+  final List<Widget> overlays;
 
   @override
   Widget build(BuildContext context) {
@@ -1138,6 +1615,7 @@ class _PageSurface extends StatelessWidget {
                 ),
               ),
             ),
+          ...overlays,
         ],
       ),
     );
@@ -1299,4 +1777,48 @@ class _ElementView extends StatelessWidget {
     ImageContent(:final path) => PageImageView(path: path),
     final TextContent text => TextBoxView(content: text),
   };
+}
+
+/// What the lasso holds: strokes and items, the box around them before
+/// [transform], and how they're being moved.
+@immutable
+class _LassoSelection {
+  const _LassoSelection({
+    required this.strokeIds,
+    required this.elementIds,
+    required this.box,
+    required this.transform,
+  });
+
+  factory _LassoSelection.of(List<Stroke> strokes, List<PageElement> elements) {
+    final box = selectionBounds(strokes, elements);
+    return _LassoSelection(
+      strokeIds: [for (final s in strokes) s.id],
+      elementIds: [for (final e in elements) e.id],
+      box: box,
+      transform: LassoTransform(pivot: box.center),
+    );
+  }
+
+  final List<String> strokeIds;
+  final List<String> elementIds;
+  final Rect box;
+  final LassoTransform transform;
+
+  _LassoSelection withTransform(LassoTransform t) => _LassoSelection(
+    strokeIds: strokeIds,
+    elementIds: elementIds,
+    box: box,
+    transform: t,
+  );
+}
+
+/// One pointer moving, resizing or rotating the lasso selection.
+class _LassoDrag {
+  _LassoDrag(this.pointer, this.mode, this.start, this.startPoint);
+
+  final int pointer;
+  final _DragMode mode;
+  final LassoTransform start;
+  final Offset startPoint;
 }

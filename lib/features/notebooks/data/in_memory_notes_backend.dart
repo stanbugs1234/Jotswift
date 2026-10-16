@@ -499,6 +499,23 @@ class _InMemoryUserData
     _changed();
   }
 
+  @override
+  Future<void> replaceStrokes(
+    String pageId, {
+    required List<String> remove,
+    required List<Stroke> add,
+  }) async {
+    final strokes = _strokes.putIfAbsent(pageId, () => {});
+    for (final id in remove) {
+      final s = strokes[id];
+      if (s != null) strokes[id] = s.copyWith(deleted: true);
+    }
+    for (final s in add) {
+      strokes[s.id] = s;
+    }
+    _changed();
+  }
+
   // Elements
 
   @override

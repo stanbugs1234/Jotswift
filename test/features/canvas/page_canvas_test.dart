@@ -7,6 +7,7 @@ import 'package:notely/core/paper/paper_style.dart';
 import 'package:notely/core/skins/skin_manifest.dart';
 import 'package:notely/core/skins/widgets/paper.dart';
 import 'package:notely/features/auth/auth_repository.dart';
+import 'package:notely/features/canvas/domain/page_element.dart';
 import 'package:notely/features/canvas/domain/stroke.dart';
 import 'package:notely/features/canvas/ink_toolbar.dart';
 import 'package:notely/features/canvas/page_canvas.dart';
@@ -248,6 +249,273 @@ void main() {
     await drag(tester, PointerDeviceKind.stylus);
 
     expect((await page.strokes()).single.color, inkColors[2].toARGB32());
+  });
+
+  group('lasso', () {
+    /// Draws a loop with the stylus around a box from [topLeft] to
+    /// [bottomRight] (relative to the canvas middle).
+    Future<void> loop(
+      WidgetTester tester, {
+      Offset topLeft = const Offset(-60, -60),
+      Offset bottomRight = const Offset(200, 100),
+    }) async {
+      final c = canvasCenter(tester);
+      final corners = [
+        topLeft,
+        Offset(bottomRight.dx, topLeft.dy),
+        bottomRight,
+        Offset(topLeft.dx, bottomRight.dy),
+        topLeft,
+      ];
+      final gesture = await tester.startGesture(
+        c + corners.first,
+        kind: PointerDeviceKind.stylus,
+      );
+      for (var i = 0; i + 1 < corners.length; i++) {
+        for (var k = 1; k <= 5; k++) {
+          await gesture.moveTo(
+            c + Offset.lerp(corners[i], corners[i + 1], k / 5)!,
+          );
+        }
+      }
+      await gesture.up();
+      await tester.pumpAndSettle();
+    }
+
+    Future<void> chooseLasso(WidgetTester tester) async {
+      await tester.ensureVisible(find.byTooltip('Lasso'));
+      await tester.tap(find.byTooltip('Lasso'));
+      await tester.pump();
+    }
+
+    Future<void> tapAction(WidgetTester tester, String label) async {
+      await tester.tap(find.byTooltip(label));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('a loop takes handwriting, and dragging moves it', (
+      tester,
+    ) async {
+      final page = await pumpPage(tester);
+      await drag(tester, PointerDeviceKind.stylus);
+      final before = (await page.visibleStrokes()).single;
+
+      await chooseLasso(tester);
+      await loop(tester);
+      expect(find.byTooltip('Delete'), findsOneWidget);
+
+      await drag(
+        tester,
+        PointerDeviceKind.stylus,
+        from: const Offset(60, 20),
+        by: const Offset(0, 100),
+      );
+
+      final after = (await page.visibleStrokes()).single;
+      expect(after.id, isNot(before.id));
+      expect(after.points, hasLength(before.points.length));
+      // 100 screen pixels is about 180 page units at fit-to-width.
+      expect(after.bounds.top - before.bounds.top, closeTo(183, 8));
+      expect(after.bounds.left, closeTo(before.bounds.left, 1));
+      expect(after.color, before.color);
+
+      await tester.ensureVisible(find.byTooltip('Undo'));
+      await tester.tap(find.byTooltip('Undo'));
+      await tester.pumpAndSettle();
+      expect((await page.visibleStrokes()).single.id, before.id);
+    });
+
+    testWidgets('a loop around nothing selects nothing', (tester) async {
+      await pumpPage(tester);
+      await drag(tester, PointerDeviceKind.stylus);
+      await chooseLasso(tester);
+
+      await loop(
+        tester,
+        topLeft: const Offset(-200, 150),
+        bottomRight: const Offset(-100, 250),
+      );
+
+      expect(find.byTooltip('Delete'), findsNothing);
+    });
+
+    testWidgets('only strokes mostly inside the loop are taken', (
+      tester,
+    ) async {
+      final page = await pumpPage(tester);
+      await drag(tester, PointerDeviceKind.stylus);
+      await drag(tester, PointerDeviceKind.stylus, from: const Offset(0, 200));
+      await chooseLasso(tester);
+
+      await loop(tester);
+      await tapAction(tester, 'Delete');
+
+      final left = await page.visibleStrokes();
+      expect(left, hasLength(1));
+      expect(left.single.bounds.top, greaterThan(1000));
+    });
+
+    testWidgets('delete removes the selection, and undo restores it', (
+      tester,
+    ) async {
+      final page = await pumpPage(tester);
+      await drag(tester, PointerDeviceKind.stylus);
+      await chooseLasso(tester);
+      await loop(tester);
+
+      await tapAction(tester, 'Delete');
+      expect(await page.visibleStrokes(), isEmpty);
+      expect(find.byTooltip('Delete'), findsNothing);
+
+      await tester.ensureVisible(find.byTooltip('Undo'));
+      await tester.tap(find.byTooltip('Undo'));
+      await tester.pumpAndSettle();
+      expect(await page.visibleStrokes(), hasLength(1));
+    });
+
+    testWidgets('copy then paste adds a copy; duplicate adds another', (
+      tester,
+    ) async {
+      final page = await pumpPage(tester);
+      await drag(tester, PointerDeviceKind.stylus);
+      await chooseLasso(tester);
+      await loop(tester);
+
+      expect(find.byTooltip('Paste'), findsNothing);
+      await tapAction(tester, 'Copy');
+      await tester.ensureVisible(find.byTooltip('Paste'));
+      await tester.tap(find.byTooltip('Paste'));
+      await tester.pumpAndSettle();
+      expect(await page.visibleStrokes(), hasLength(2));
+
+      // The pasted copy is selected: duplicate it.
+      await tapAction(tester, 'Duplicate');
+      final strokes = await page.visibleStrokes();
+      expect(strokes, hasLength(3));
+      expect(strokes.map((s) => s.id).toSet(), hasLength(3));
+    });
+
+    testWidgets('cut removes it until pasted', (tester) async {
+      final page = await pumpPage(tester);
+      await drag(tester, PointerDeviceKind.stylus);
+      await chooseLasso(tester);
+      await loop(tester);
+
+      await tapAction(tester, 'Cut');
+      expect(await page.visibleStrokes(), isEmpty);
+
+      await tester.ensureVisible(find.byTooltip('Paste'));
+      await tester.tap(find.byTooltip('Paste'));
+      await tester.pumpAndSettle();
+      expect(await page.visibleStrokes(), hasLength(1));
+    });
+
+    testWidgets('recoloring changes the ink color', (tester) async {
+      final page = await pumpPage(tester);
+      final inkColors = skinById(skins, 'classic').inkColors;
+      await drag(tester, PointerDeviceKind.stylus);
+      await chooseLasso(tester);
+      await loop(tester);
+
+      await tapAction(tester, 'Color');
+      await tester.tap(
+        find.byKey(ValueKey('lasso-color-${inkColors[2].toARGB32()}')),
+      );
+      await tester.pumpAndSettle();
+
+      final stroke = (await page.visibleStrokes()).single;
+      expect(stroke.color, inkColors[2].toARGB32());
+    });
+
+    testWidgets('the resize handle scales the handwriting', (tester) async {
+      final page = await pumpPage(tester);
+      await drag(tester, PointerDeviceKind.stylus);
+      final before = (await page.visibleStrokes()).single;
+      await chooseLasso(tester);
+      await loop(tester);
+
+      // The handle sits on the box's bottom right corner (the stroke's
+      // bounds plus half its width), at fit-to-width scale.
+      final canvas = tester.getTopLeft(find.byType(PageCanvas));
+      final scale = (800 - 32) / pageSize.width;
+      final corner = before.bounds.inflate(before.width / 2).bottomRight;
+      final handle = canvas + Offset(16, 16) + corner * scale;
+      final gesture = await tester.startGesture(
+        handle,
+        kind: PointerDeviceKind.stylus,
+      );
+      final middle =
+          canvas +
+          const Offset(16, 16) +
+          before.bounds.inflate(before.width / 2).center * scale;
+      for (var k = 1; k <= 5; k++) {
+        await gesture.moveTo(handle + (handle - middle) * (k / 5));
+      }
+      await gesture.up();
+      await tester.pumpAndSettle();
+
+      final after = (await page.visibleStrokes()).single;
+      expect(after.bounds.width / before.bounds.width, closeTo(2, 0.1));
+      expect(after.width, closeTo(before.width * 2, 0.2));
+    });
+
+    testWidgets('items in the loop move with the handwriting, in one undo', (
+      tester,
+    ) async {
+      final page = await pumpPage(tester);
+      final scale = (800 - 32) / pageSize.width;
+      final size = tester.getSize(find.byType(PageCanvas));
+      final middle = Offset(size.width / 2 - 16, size.height / 2 - 16) / scale;
+      final elements = page.backend.elements(page.uid);
+      await elements.addElement(
+        page.pageId,
+        PageElement(
+          id: 'note',
+          content: const TextContent(
+            text: 'Hi',
+            fontSize: 40,
+            color: 0xFF000000,
+          ),
+          frame: ElementFrame(center: middle, width: 120, height: 60),
+          z: 1,
+          createdAt: 1,
+        ),
+      );
+      await drag(tester, PointerDeviceKind.stylus);
+      await chooseLasso(tester);
+      await loop(tester);
+
+      await drag(
+        tester,
+        PointerDeviceKind.stylus,
+        from: const Offset(60, 20),
+        by: const Offset(0, 100),
+      );
+
+      Future<PageElement> note() async =>
+          (await elements.watchElements(page.pageId).first).singleWhere(
+            (e) => e.id == 'note',
+          );
+      expect((await note()).frame.center.dy - middle.dy, closeTo(183, 8));
+
+      await tester.ensureVisible(find.byTooltip('Undo'));
+      await tester.tap(find.byTooltip('Undo'));
+      await tester.pumpAndSettle();
+      expect((await note()).frame.center, middle);
+      expect((await page.visibleStrokes()).single.bounds.top, lessThan(1000));
+    });
+
+    testWidgets('switching tools lets go of the selection', (tester) async {
+      await pumpPage(tester);
+      await drag(tester, PointerDeviceKind.stylus);
+      await chooseLasso(tester);
+      await loop(tester);
+      expect(find.byTooltip('Delete'), findsOneWidget);
+
+      await tester.tap(find.byTooltip('Pen'));
+      await tester.pumpAndSettle();
+      expect(find.byTooltip('Delete'), findsNothing);
+    });
   });
 
   testWidgets('view-only pages have no tools and ignore drawing', (

@@ -530,6 +530,27 @@ class _FirestoreUserNotes
     }
   }
 
+  @override
+  Future<void> replaceStrokes(
+    String pageId, {
+    required List<String> remove,
+    required List<Stroke> add,
+  }) async {
+    final writes = <void Function(WriteBatch)>[
+      for (final id in remove)
+        (b) => b.update(_strokes(pageId).doc(id), {'deleted': true}),
+      for (final s in add) (b) => b.set(_strokes(pageId).doc(s.id), s.toMap()),
+    ];
+    for (var i = 0; i < writes.length; i += _batchLimit) {
+      final batch = _user.firestore.batch();
+      for (final write in writes.skip(i).take(_batchLimit)) {
+        write(batch);
+      }
+      if (i == 0) batch.update(_pages.doc(pageId), {'updatedAt': nowMillis()});
+      _commitInBackground(batch);
+    }
+  }
+
   // Elements
 
   @override

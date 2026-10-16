@@ -126,6 +126,14 @@ abstract interface class StrokeRepository {
 
   /// Erases ([deleted] = true) or restores strokes, in one write.
   Future<void> setDeleted(String pageId, List<String> strokeIds, bool deleted);
+
+  /// Erases [remove] and adds [add] together: how strokes are moved,
+  /// recolored or pasted, since saved strokes never change.
+  Future<void> replaceStrokes(
+    String pageId, {
+    required List<String> remove,
+    required List<Stroke> add,
+  });
 }
 
 /// Stickers, photos and text boxes on a user's pages.
