@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/input/finger_drawing.dart';
 import '../../core/skins/notely_skin.dart';
+import 'domain/page_element.dart';
 import 'domain/stroke.dart';
 import 'ink_tools.dart';
 import 'lasso.dart';
@@ -11,6 +12,7 @@ import 'pencil_actions.dart';
 import 'ruler.dart';
 import 'page_items.dart';
 import 'stickers.dart';
+import 'tape.dart';
 
 /// The page tools: a finger toggle, pen, highlighter, eraser, select, lasso,
 /// paste (after copying), text, photos, stickers, colors, sizes, undo and
@@ -74,6 +76,7 @@ class InkToolbar extends ConsumerWidget {
                     Icons.auto_fix_normal,
                     'Eraser',
                   ),
+                  toolButton(InkToolKind.tape, Icons.crop_7_5, 'Tape'),
                   toolButton(
                     InkToolKind.select,
                     Icons.near_me_outlined,
@@ -241,6 +244,23 @@ class _PenOptions extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     if (wrap) return const PenPanel(withSizes: true);
     final favorites = ref.watch(penFavoritesProvider);
+    if (ref.watch(inkToolProvider.select((t) => t.kind)) == InkToolKind.tape) {
+      return PenMenu(
+        menuChildren: const [PenPanel(withSizes: false)],
+        builder: (context, onPressed) => Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const TapeColors(),
+            IconButton(
+              tooltip: 'Tape settings',
+              constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
+              icon: const Icon(Icons.tune),
+              onPressed: onPressed,
+            ),
+          ],
+        ),
+      );
+    }
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -390,6 +410,40 @@ class PenPanel extends ConsumerWidget {
       padding: const EdgeInsets.fromLTRB(4, 10, 4, 4),
       child: Text(label, style: text.labelMedium),
     );
+
+    if (tool.kind == InkToolKind.tape) {
+      return ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 340),
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              heading('Tape'),
+              const TapePatterns(),
+              heading('Color'),
+              const TapeColors(wrap: true),
+              heading('Width  ${tool.tapeWidth.round()}'),
+              Slider(
+                min: InkToolState.tapeRange.min,
+                max: InkToolState.tapeRange.max,
+                value: tool.tapeWidth,
+                onChanged: tools.setWidth,
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(4, 0, 4, 4),
+                child: Text(
+                  'Lay tape over what you want to hide. Tap it to peel it '
+                  'back, and again to cover. The eraser takes it off.',
+                  style: text.bodySmall,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
 
     return ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 340),
@@ -594,6 +648,119 @@ class _FavoriteDot extends ConsumerWidget {
   }
 }
 
+/// The tape colors, and any other color.
+class TapeColors extends ConsumerWidget {
+  const TapeColors({this.wrap = false, this.column = false, super.key});
+
+  /// In rows (a panel) or a column (the side panel) rather than a line.
+  final bool wrap;
+  final bool column;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tool = ref.watch(inkToolProvider);
+    final tools = ref.read(inkToolProvider.notifier);
+    final custom = !InkToolState.tapeColors.contains(tool.tapeColor);
+    final children = [
+      for (final (i, c) in InkToolState.tapeColors.indexed)
+        InkColorDot(
+          color: Color(c),
+          selected: tool.tapeColor == c,
+          onTap: () => tools.selectTapeColor(c),
+          label: 'Tape color ${i + 1}',
+        ),
+      if (custom)
+        InkColorDot(
+          color: Color(tool.tapeColor),
+          selected: true,
+          onTap: () {},
+          label: 'Chosen tape color',
+        ),
+      IconButton(
+        tooltip: 'More tape colors',
+        constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
+        icon: const Icon(Icons.palette_outlined),
+        onPressed: () async {
+          final picked = await showInkColorPicker(
+            context,
+            Color(tool.tapeColor),
+          );
+          if (picked != null) tools.selectTapeColor(picked.toARGB32());
+        },
+      ),
+    ];
+    if (column) {
+      return Column(mainAxisSize: MainAxisSize.min, children: children);
+    }
+    return wrap
+        ? Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: children,
+          )
+        : Row(mainAxisSize: MainAxisSize.min, children: children);
+  }
+}
+
+/// The tape's prints, each shown as a swatch of tape.
+class TapePatterns extends ConsumerWidget {
+  const TapePatterns({this.column = false, super.key});
+
+  final bool column;
+
+  static String label(TapePattern p) => switch (p) {
+    TapePattern.solid => 'Plain tape',
+    TapePattern.stripes => 'Striped tape',
+    TapePattern.dots => 'Dotted tape',
+    TapePattern.grid => 'Grid tape',
+  };
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final scheme = Theme.of(context).colorScheme;
+    final tool = ref.watch(inkToolProvider);
+    final children = [
+      for (final p in TapePattern.values)
+        Tooltip(
+          message: label(p),
+          child: Semantics(
+            button: true,
+            selected: tool.tapePattern == p,
+            label: label(p),
+            excludeSemantics: true,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(10),
+              onTap: () =>
+                  ref.read(inkToolProvider.notifier).selectTapePattern(p),
+              child: Container(
+                width: 48,
+                height: 36,
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 9),
+                decoration: BoxDecoration(
+                  color: tool.tapePattern == p
+                      ? scheme.primary.withValues(alpha: 0.14)
+                      : null,
+                  borderRadius: BorderRadius.circular(10),
+                  border: tool.tapePattern == p
+                      ? Border.all(color: scheme.primary, width: 1.5)
+                      : null,
+                ),
+                child: CustomPaint(
+                  painter: TapePainter(
+                    color: Color(tool.tapeColor),
+                    pattern: p,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+    ];
+    return column
+        ? Column(mainAxisSize: MainAxisSize.min, children: children)
+        : Wrap(spacing: 4, children: children);
+  }
+}
+
 /// Takes up the eyedropper: the next touch on the page picks up the color
 /// of the ink there. Tap again to put it down.
 class EyedropperButton extends ConsumerWidget {
@@ -625,7 +792,9 @@ class _PenOptionsButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tool = ref.watch(inkToolProvider);
-    final color = tool.colorFrom(NotelySkin.of(context).inkColors);
+    final color = tool.kind == InkToolKind.tape
+        ? Color(tool.tapeColor)
+        : tool.colorFrom(NotelySkin.of(context).inkColors);
     return PenMenu(
       menuChildren: const [_PenOptions(wrap: true)],
       builder: (context, onPressed) => IconButton(

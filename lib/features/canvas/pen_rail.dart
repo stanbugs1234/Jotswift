@@ -111,7 +111,10 @@ class _PenRailState extends ConsumerState<PenRail> {
     final placement = ref.watch(penRailPlacementProvider);
     final kind = ref.watch(inkToolProvider.select((t) => t.kind));
     final shown = switch (kind) {
-      InkToolKind.pen || InkToolKind.highlighter || InkToolKind.eraser => true,
+      InkToolKind.pen ||
+      InkToolKind.highlighter ||
+      InkToolKind.eraser ||
+      InkToolKind.tape => true,
       _ => false,
     };
     final places = ref.read(penRailPlacementProvider.notifier);
@@ -316,15 +319,31 @@ class _RailBody extends ConsumerWidget {
                     _StyleButton(style: style),
                   divider,
                 ],
-                if (eraser) const _EraserSizes() else const _WidthSlider(),
-                if (!eraser) ...[divider, const _Colors(), const _SavedPens()],
+                if (tool.kind == InkToolKind.tape) ...[
+                  const TapePatterns(column: true),
+                  divider,
+                  const _WidthSlider(),
+                  divider,
+                  const TapeColors(column: true),
+                ] else if (eraser)
+                  const _EraserSizes()
+                else ...[
+                  const _WidthSlider(),
+                  divider,
+                  const _Colors(),
+                  const _SavedPens(),
+                ],
                 divider,
                 PenMenu(
                   // Opens beside the panel, not over it.
                   alignmentOffset: Offset(left ? PenRail.width : -348, -52),
                   menuChildren: const [PenPanel(withSizes: false)],
                   builder: (context, onPressed) => IconButton(
-                    tooltip: eraser ? 'Eraser settings' : 'Pen settings',
+                    tooltip: switch (tool.kind) {
+                      InkToolKind.eraser => 'Eraser settings',
+                      InkToolKind.tape => 'Tape settings',
+                      _ => 'Pen settings',
+                    },
                     constraints: const BoxConstraints(
                       minWidth: 44,
                       minHeight: 44,
@@ -467,13 +486,19 @@ class _WidthSlider extends ConsumerWidget {
     final tool = ref.watch(inkToolProvider);
     final tools = ref.read(inkToolProvider.notifier);
     final highlighter = tool.kind == InkToolKind.highlighter;
-    final range = highlighter
-        ? InkToolState.highlighterRange
-        : InkToolState.penRange;
+    final tape = tool.kind == InkToolKind.tape;
+    final range = switch (tool.kind) {
+      InkToolKind.highlighter => InkToolState.highlighterRange,
+      InkToolKind.tape => InkToolState.tapeRange,
+      _ => InkToolState.penRange,
+    };
     final width = tool.size.clamp(range.min, range.max);
     final share = (width - range.min) / (range.max - range.min);
-    final ink = tool.colorFrom(NotelySkin.of(context).inkColors);
+    final ink = tape
+        ? Color(tool.tapeColor)
+        : tool.colorFrom(NotelySkin.of(context).inkColors);
     final dot = 4 + share * 24;
+    final flat = highlighter || tape;
     final small = Theme.of(context).textTheme.labelSmall
         ?.copyWith(color: scheme.onSurfaceVariant);
     return Column(
@@ -483,30 +508,40 @@ class _WidthSlider extends ConsumerWidget {
           height: 32,
           child: Center(
             child: Container(
-              width: highlighter ? dot * 0.7 : dot,
+              width: flat ? dot * 0.7 : dot,
               height: dot,
               decoration: BoxDecoration(
                 color: ink.withValues(
-                  alpha: highlighter ? 0.45 : tool.penOpacity,
+                  alpha: highlighter
+                      ? 0.45
+                      : tape
+                      ? 1
+                      : tool.penOpacity,
                 ),
                 // An outline so dark ink shows on a dark panel.
                 border: Border.all(color: scheme.outline),
-                shape: highlighter ? BoxShape.rectangle : BoxShape.circle,
-                borderRadius: highlighter ? BorderRadius.circular(2) : null,
+                shape: flat ? BoxShape.rectangle : BoxShape.circle,
+                borderRadius: flat ? BorderRadius.circular(2) : null,
               ),
             ),
           ),
         ),
         _RailSlider(
-          label: highlighter ? 'Highlighter width' : 'Pen width',
-          height: highlighter ? 150 : 120,
+          label: switch (tool.kind) {
+            InkToolKind.highlighter => 'Highlighter width',
+            InkToolKind.tape => 'Tape width',
+            _ => 'Pen width',
+          },
+          height: tool.kind == InkToolKind.pen ? 120 : 150,
           min: range.min,
           max: range.max,
           value: width,
           onChanged: tools.setWidth,
         ),
         Text(width.toStringAsFixed(width < 10 ? 1 : 0), style: small),
-        if (highlighter)
+        if (tape)
+          const SizedBox.shrink()
+        else if (highlighter)
           Padding(
             padding: const EdgeInsets.only(top: 8),
             child: IconButton(

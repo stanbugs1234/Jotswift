@@ -28,6 +28,7 @@ import 'ruler.dart';
 import 'shapes.dart';
 import 'stickers.dart';
 import 'stroke_painter.dart';
+import 'tape.dart';
 import 'templates.dart';
 import '../notebooks/page_jumper.dart';
 import '../../core/motion/motion.dart';
@@ -221,6 +222,13 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
   /// the size and color of the mark it would make.
   final _hover = ValueNotifier<Offset?>(null);
 
+  // Tape: the strip being laid (page units), from where, by which pointer;
+  // and strips the eraser has touched, hidden until they're removed.
+  PageElement? _tapeDraft;
+  Offset? _tapeFrom;
+  int? _tapePointer;
+  final _erasedTapes = <String>{};
+
   // Laser pointer: recent points (page units) with when they were added.
   final _laser = ValueNotifier<List<(Offset, Duration)>>(const []);
   int? _laserPointer;
@@ -401,6 +409,14 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     if (_selectWith(e)) return;
 
     if (_canDraw(e) &&
+        ref.read(inkToolProvider).kind == InkToolKind.tape &&
+        e.kind != PointerDeviceKind.invertedStylus) {
+      _tapePointer = e.pointer;
+      _tapeFrom = _toPage(e.localPosition);
+      return;
+    }
+
+    if (_canDraw(e) &&
         ref.read(inkToolProvider).kind == InkToolKind.laser &&
         e.kind != PointerDeviceKind.invertedStylus) {
       _laserPointer = e.pointer;
@@ -576,6 +592,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     }
     if (_rulerPointers.containsKey(e.pointer)) return _moveRuler(e);
     if (e.pointer == _laserPointer) return _addLaserPoint(e.localPosition);
+    if (e.pointer == _tapePointer) return _stretchTape(e.localPosition);
     if (e.pointer == _lassoPointer) {
       _lassoPoints.value = [..._lassoPoints.value, _toPage(e.localPosition)];
       return;
@@ -689,7 +706,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     if (_turnCandidate?.$1.pointer == e.pointer) {
       // A tap at the edge.
       _turnCandidate = null;
-      _followLinkAt(e.localPosition);
+      if (!_toggleTapeAt(e.localPosition)) _followLinkAt(e.localPosition);
       return;
     }
     if (e.pointer == _turnPointer) {
@@ -700,6 +717,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
       _laserPointer = null;
       return;
     }
+    if (e.pointer == _tapePointer) return _finishTape(e.localPosition);
     if (e.pointer == _lassoPointer) return _finishLasso();
     if (e.pointer == _lassoDrag?.pointer) return _finishLassoDrag();
     if (e.pointer == _drag?.pointer) _finishDrag();
@@ -721,7 +739,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
         _navPointers.length == 1 &&
         (e.localPosition - start.$1).distance < 10 &&
         e.timeStamp - start.$2 < const Duration(milliseconds: 400)) {
-      _followLinkAt(e.localPosition);
+      if (!_toggleTapeAt(e.localPosition)) _followLinkAt(e.localPosition);
     }
     if (e.pointer == _drawPointer) {
       if (_erasing) {
@@ -731,6 +749,83 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
       }
     }
     _navPointers.remove(e.pointer);
+  }
+
+  // Tape
+
+  /// The strip from where the pen went down to [screen]: level, upright or
+  /// diagonal when it's near one, as wide as the tool's tape.
+  void _stretchTape(Offset screen) {
+    final from = _tapeFrom;
+    if (from == null) return;
+    final to = snapLine(from, _toPage(screen));
+    final tool = ref.read(inkToolProvider);
+    final along = to - from;
+    setState(
+      () => _tapeDraft = PageElement(
+        id:
+            _tapeDraft?.id ??
+            ref.read(elementRepositoryProvider).newElementId(),
+        content: TapeContent(color: tool.tapeColor, pattern: tool.tapePattern),
+        frame: ElementFrame(
+          center: (from + to) / 2,
+          width: math.max(along.distance, 1),
+          height: tool.tapeWidth,
+          rotation: math.atan2(along.dy, along.dx),
+        ),
+        z: 0,
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+      ),
+    );
+  }
+
+  /// The pen lifted: lay the strip, or if it barely moved, it was a tap.
+  void _finishTape(Offset screen) {
+    final draft = _tapeDraft;
+    setState(() {
+      _tapePointer = null;
+      _tapeDraft = null;
+      _tapeFrom = null;
+    });
+    if (draft == null || draft.frame.width * _scale < 10) {
+      _toggleTapeAt(screen);
+      return;
+    }
+    final top = _shownElements().fold(0.0, (z, e) => math.max(z, e.z));
+    ref
+        .read(inkHistoryProvider(widget.pageId).notifier)
+        .addElement(
+          PageElement(
+            id: draft.id,
+            content: draft.content,
+            frame: draft.frame,
+            z: top + 1,
+            createdAt: draft.createdAt,
+          ),
+        );
+  }
+
+  /// Peels back the tape at [screen], or puts it back. Returns whether
+  /// there was tape there.
+  bool _toggleTapeAt(Offset screen) {
+    if (widget.readOnly) return false;
+    final point = _toPage(screen);
+    final tape = _shownElements().reversed
+        .where(
+          (e) =>
+              e.content is TapeContent &&
+              e.frame.contains(point, slop: 4 / _scale),
+        )
+        .firstOrNull;
+    if (tape == null) return false;
+    HapticFeedback.selectionClick();
+    ref
+        .read(inkHistoryProvider(widget.pageId).notifier)
+        .editElement(
+          tape,
+          tape.copyWith(content: (tape.content as TapeContent).toggled()),
+        );
+    return true;
   }
 
   /// Opens the page a template link at [screen] points to, if any.
@@ -938,6 +1033,12 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     if (e.pointer == _turnPointer) return _endTurn(0);
     if (_rulerPointers.remove(e.pointer) != null) return;
     if (e.pointer == _laserPointer) _laserPointer = null;
+    if (e.pointer == _tapePointer) {
+      setState(() {
+        _tapePointer = null;
+        _tapeDraft = null;
+      });
+    }
     if (e.pointer == _lassoPointer) {
       _lassoPointer = null;
       _lassoPoints.value = const [];
@@ -1153,9 +1254,16 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     _clearPrediction();
     if (stroke == null) return;
     // A quick finger or mouse tap on a template link follows the link
-    // instead of leaving a dot. (A stylus always writes.)
+    // instead of leaving a dot. (A stylus always writes.) Any quick tap on
+    // tape peels it back or puts it back.
     final bounds = stroke.bounds;
     final first = stroke.points.first;
+    if (bounds.longestSide * _scale < 10 &&
+        DateTime.now().millisecondsSinceEpoch - stroke.createdAt < 400 &&
+        _toggleTapeAt(Offset(first.x, first.y) * _scale + _offset)) {
+      _live.value = null;
+      return;
+    }
     if (kind != PointerDeviceKind.stylus &&
         kind != PointerDeviceKind.invertedStylus &&
         bounds.longestSide * _scale < 10 &&
@@ -1203,6 +1311,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     _clearPrediction();
     _live.value = null;
     final undo = {..._erased, ..._cutStrokes, ..._cutPieces};
+    if (_erasedTapes.isNotEmpty) setState(_erasedTapes.clear);
     if (undo.isEmpty) return;
     setState(() {
       _pendingErase.removeAll(undo);
@@ -1223,6 +1332,14 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
         : InkToolState.eraserSizes[1] / _scale;
     bool erasable(Stroke s) =>
         !tool.eraseHighlighterOnly || s.tool == InkTool.highlighter;
+    if (!tool.eraseHighlighterOnly) {
+      final tapes = [
+        for (final t in _shownElements())
+          if (t.content is TapeContent && t.frame.contains(point, slop: radius))
+            t.id,
+      ];
+      if (tapes.isNotEmpty) setState(() => _erasedTapes.addAll(tapes));
+    }
     if (tool.eraserMode == EraserMode.partial) {
       return _cutAt(point, radius, erasable);
     }
@@ -1265,7 +1382,24 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
   void _finishErasing() {
     _drawPointer = null;
     widget.onWriting?.call(false);
-    if (_cutStrokes.isNotEmpty) {
+    if (_erasedTapes.isNotEmpty) {
+      // Tape and ink erased together, undone together.
+      final tapes = _erasedTapes.toList();
+      final pieces = [for (final id in _cutPieces) ?_pendingAdd[id]];
+      ref
+          .read(inkHistoryProvider(widget.pageId).notifier)
+          .lassoEdit(
+            removeStrokes: [..._cutStrokes, ..._erased],
+            addStrokes: pieces,
+            removeElements: tapes,
+          )
+          .then((_) {
+            if (mounted) setState(() => _erasedTapes.removeAll(tapes));
+          });
+      _cutStrokes.clear();
+      _cutPieces.clear();
+      _erased.clear();
+    } else if (_cutStrokes.isNotEmpty) {
       final pieces = [for (final id in _cutPieces) ?_pendingAdd[id]];
       ref
           .read(inkHistoryProvider(widget.pageId).notifier)
@@ -1705,7 +1839,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     final lasso = _lasso;
     return [
       for (final e in ref.read(elementsProvider(widget.pageId)).value ?? [])
-        if (!e.deleted)
+        if (!e.deleted && !_erasedTapes.contains(e.id))
           () {
             final frame = _drag?.elementId == e.id
                 ? _drag!.frame
@@ -2063,7 +2197,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
 
     final saved = ref.watch(elementsProvider(widget.pageId)).value ?? [];
     _reconcileElements(saved);
-    final elements = _shownElements();
+    final elements = [..._shownElements(), ?_tapeDraft];
     final tool = ref.watch(inkToolProvider).kind;
     final selectedId = _selecting(tool)
         ? _selectedId
@@ -2324,6 +2458,18 @@ class _PageSurface extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget placed(PageElement e) => Positioned(
+      left: e.frame.center.dx - e.frame.width / 2,
+      top: e.frame.center.dy - e.frame.height / 2,
+      width: e.frame.width,
+      height: e.frame.height,
+      child: Transform.rotate(
+        angle: e.frame.rotation,
+        child: poppingIn.contains(e.id)
+            ? PopIn(key: ValueKey(e.id), child: _ElementView(e))
+            : _ElementView(e),
+      ),
+    );
     return Container(
       width: size.width,
       height: size.height,
@@ -2356,23 +2502,15 @@ class _PageSurface extends StatelessWidget {
               const Center(child: CircularProgressIndicator()),
           ],
           for (final e in elements)
-            Positioned(
-              left: e.frame.center.dx - e.frame.width / 2,
-              top: e.frame.center.dy - e.frame.height / 2,
-              width: e.frame.width,
-              height: e.frame.height,
-              child: Transform.rotate(
-                angle: e.frame.rotation,
-                child: poppingIn.contains(e.id)
-                    ? PopIn(key: ValueKey(e.id), child: _ElementView(e))
-                    : _ElementView(e),
-              ),
-            ),
+            if (e.content is! TapeContent) placed(e),
           RepaintBoundary(child: CustomPaint(painter: StrokesPainter(strokes))),
           // Its own layer: the pen repaints only the ink it's drawing.
           RepaintBoundary(
             child: CustomPaint(painter: LiveStrokePainter(live, predicted)),
           ),
+          // Tape goes over the ink: it's there to hide it.
+          for (final e in elements)
+            if (e.content is TapeContent) placed(e),
           if (selected case final frame?)
             IgnorePointer(
               child: CustomPaint(
@@ -2573,6 +2711,13 @@ class PagePrint extends ConsumerWidget {
           in ref.watch(elementsProvider(pageId)).value ?? <PageElement>[])
         if (!e.deleted && e.content is! LinkContent) e,
     ];
+    Widget placed(PageElement e) => Positioned(
+      left: e.frame.center.dx - e.frame.width / 2,
+      top: e.frame.center.dy - e.frame.height / 2,
+      width: e.frame.width,
+      height: e.frame.height,
+      child: Transform.rotate(angle: e.frame.rotation, child: _ElementView(e)),
+    );
     return SizedBox.fromSize(
       size: size,
       child: Stack(
@@ -2596,17 +2741,11 @@ class PagePrint extends ConsumerWidget {
               ),
           ],
           for (final e in elements)
-            Positioned(
-              left: e.frame.center.dx - e.frame.width / 2,
-              top: e.frame.center.dy - e.frame.height / 2,
-              width: e.frame.width,
-              height: e.frame.height,
-              child: Transform.rotate(
-                angle: e.frame.rotation,
-                child: _ElementView(e),
-              ),
-            ),
+            if (e.content is! TapeContent) placed(e),
           CustomPaint(painter: StrokesPainter(strokes)),
+          // Tape over the ink, as on the page.
+          for (final e in elements)
+            if (e.content is TapeContent) placed(e),
         ],
       ),
     );
@@ -2627,6 +2766,7 @@ class _ElementView extends StatelessWidget {
     ImageContent(:final path) => PageImageView(path: path),
     LinkContent() => const LinkView(),
     final TextContent text => TextBoxView(content: text),
+    final TapeContent tape => TapeView(content: tape),
   };
 }
 

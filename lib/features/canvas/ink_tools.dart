@@ -27,6 +27,9 @@ enum InkToolKind {
   /// A glowing trail that fades away: for pointing at things while
   /// presenting. Never saved.
   laser,
+
+  /// Lays strips of tape over the page, to hide answers until tapped.
+  tape,
 }
 
 /// What the eraser takes: whole strokes it touches, or only the ink under
@@ -51,6 +54,9 @@ class InkToolState {
     this.eraserReturns = false,
     this.penOpacity = 1,
     this.straightHighlighter = false,
+    this.tapeColor = defaultTapeColor,
+    this.tapePattern = TapePattern.solid,
+    this.tapeWidth = 60,
   });
 
   factory InkToolState.fromJson(Map<String, dynamic> json) {
@@ -82,6 +88,14 @@ class InkToolState {
         1,
       ),
       straightHighlighter: json['straightHighlighter'] == true,
+      tapeColor: (json['tapeColor'] as num?)?.toInt() ?? defaultTapeColor,
+      tapePattern:
+          TapePattern.values.asNameMap()[json['tapePattern']] ??
+          TapePattern.solid,
+      tapeWidth: (width(json['tapeWidth']) ?? 60).clamp(
+        tapeRange.min,
+        tapeRange.max,
+      ),
     );
   }
 
@@ -98,6 +112,9 @@ class InkToolState {
     'eraserReturns': eraserReturns,
     'penOpacity': penOpacity,
     'straightHighlighter': straightHighlighter,
+    'tapeColor': tapeColor,
+    'tapePattern': tapePattern.name,
+    'tapeWidth': tapeWidth,
   };
 
   final InkToolKind kind;
@@ -135,6 +152,24 @@ class InkToolState {
   /// The highlighter draws straight lines, start to end, like a ruler.
   final bool straightHighlighter;
 
+  /// The tape's color (ARGB), print and width in page units.
+  final int tapeColor;
+  final TapePattern tapePattern;
+  final double tapeWidth;
+
+  static const defaultTapeColor = 0xFFF2C94C;
+  static const tapeRange = (min: 24.0, max: 200.0);
+
+  /// Tape colors: soft, like washi and correction tape.
+  static const tapeColors = [
+    0xFFF2C94C, // yellow
+    0xFFF4A7B9, // pink
+    0xFF9ED9C3, // mint
+    0xFF9CC8EE, // sky
+    0xFFC3B1E1, // lavender
+    0xFF9AA0A6, // grey
+  ];
+
   /// When false ("hand" mode), one finger scrolls instead of drawing. A
   /// stylus always draws.
   final bool drawMode;
@@ -157,6 +192,7 @@ class InkToolState {
     InkToolKind.laser => penWidth ?? penSizes[sizeIndex],
     InkToolKind.highlighter => highlighterWidth ?? highlighterSizes[sizeIndex],
     InkToolKind.eraser => eraserSizes[sizeIndex],
+    InkToolKind.tape => tapeWidth,
   };
 
   /// The ink color, from the skin's [palette] unless a custom one is set.
@@ -178,6 +214,9 @@ class InkToolState {
     bool? eraserReturns,
     double? penOpacity,
     bool? straightHighlighter,
+    int? tapeColor,
+    TapePattern? tapePattern,
+    double? tapeWidth,
   }) => InkToolState(
     kind: kind ?? this.kind,
     colorIndex: colorIndex ?? this.colorIndex,
@@ -194,6 +233,9 @@ class InkToolState {
     eraserReturns: eraserReturns ?? this.eraserReturns,
     penOpacity: penOpacity ?? this.penOpacity,
     straightHighlighter: straightHighlighter ?? this.straightHighlighter,
+    tapeColor: tapeColor ?? this.tapeColor,
+    tapePattern: tapePattern ?? this.tapePattern,
+    tapeWidth: tapeWidth ?? this.tapeWidth,
   );
 
   static const _keep = Object();
@@ -294,12 +336,17 @@ class InkToolController extends Notifier<InkToolState> {
     ),
   );
 
-  /// Sets the current pen's (or highlighter's) width from the slider.
-  void setWidth(double width) => _set(
-    state.kind == InkToolKind.highlighter
-        ? state.copyWith(highlighterWidth: width)
-        : state.copyWith(penWidth: width),
-  );
+  /// Sets the current pen's (or highlighter's, or tape's) width from the
+  /// slider.
+  void setWidth(double width) => _set(switch (state.kind) {
+    InkToolKind.highlighter => state.copyWith(highlighterWidth: width),
+    InkToolKind.tape => state.copyWith(tapeWidth: width),
+    _ => state.copyWith(penWidth: width),
+  });
+
+  void selectTapeColor(int color) => _set(state.copyWith(tapeColor: color));
+  void selectTapePattern(TapePattern pattern) =>
+      _set(state.copyWith(tapePattern: pattern));
 
   void setPenOpacity(double opacity) => _set(
     state.copyWith(

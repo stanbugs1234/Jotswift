@@ -18,6 +18,7 @@ import 'package:notely/features/canvas/ink_tools.dart';
 import 'package:notely/features/canvas/page_canvas.dart';
 import 'package:notely/features/canvas/pen_rail.dart';
 import 'package:notely/features/canvas/stroke_painter.dart';
+import 'package:notely/features/canvas/tape.dart';
 import 'package:notely/features/notebooks/data/in_memory_notes_backend.dart';
 import 'package:notely/features/notebooks/domain/notebook_models.dart';
 import 'package:notely/features/notebooks/notes_providers.dart';
@@ -37,6 +38,12 @@ class _Page {
 
   Future<List<Stroke>> visibleStrokes() async =>
       (await strokes()).where((s) => !s.deleted).toList();
+
+  /// The page's strips of tape, not removed.
+  Future<List<TapeContent>> tapes() async => [
+    for (final e in await backend.elements(uid).watchElements(pageId).first)
+      if (!e.deleted && e.content is TapeContent) e.content as TapeContent,
+  ];
 }
 
 void main() {
@@ -312,6 +319,7 @@ void main() {
     final inkColors = skinById(skins, 'classic').inkColors;
 
     // An upright-iPad-wide toolbar keeps colors under Pen options.
+    await tester.ensureVisible(find.byTooltip('Pen options'));
     await tester.tap(find.byTooltip('Pen options'));
     await tester.pumpAndSettle();
     await tester.tap(find.bySemanticsLabel('Ink color 3'));
@@ -679,6 +687,7 @@ void main() {
 
   group('pens', () {
     Future<void> openPenOptions(WidgetTester tester) async {
+      await tester.ensureVisible(find.byTooltip('Pen options'));
       await tester.tap(find.byTooltip('Pen options'));
       await tester.pumpAndSettle();
     }
@@ -970,10 +979,73 @@ void main() {
     });
   });
 
+  group('tape', () {
+    testWidgets('lays a strip that a tap peels back and covers again', (
+      tester,
+    ) async {
+      final page = await pumpPage(tester, penPanel: 'left');
+      await drag(tester, PointerDeviceKind.stylus, by: const Offset(120, 0));
+      await tester.tap(find.byTooltip('Tape'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('Striped tape'));
+      await drag(tester, PointerDeviceKind.stylus, by: const Offset(160, 0));
+
+      final tape = (await page.tapes()).single;
+      expect(tape.pattern, TapePattern.stripes);
+      expect(tape.revealed, isFalse);
+      expect(find.byType(TapeView), findsOneWidget);
+
+      // A Pencil tap with the pen peels it back instead of leaving a dot.
+      await tester.tap(find.byTooltip('Pen'));
+      await tester.pump();
+      await tester.tapAt(
+        canvasCenter(tester) + const Offset(80, 0),
+        kind: PointerDeviceKind.stylus,
+      );
+      await tester.pumpAndSettle();
+      expect((await page.tapes()).single.revealed, isTrue);
+      expect(await page.visibleStrokes(), hasLength(1), reason: 'no dot');
+
+      // And a finger tap covers it again.
+      await tester.tapAt(canvasCenter(tester) + const Offset(80, 0));
+      await tester.pumpAndSettle();
+      expect((await page.tapes()).single.revealed, isFalse);
+    });
+
+    testWidgets('the eraser takes tape off, in one undo with the ink', (
+      tester,
+    ) async {
+      final page = await pumpPage(tester);
+      await drag(tester, PointerDeviceKind.stylus, by: const Offset(120, 0));
+      await tester.tap(find.byTooltip('Tape'));
+      await tester.pump();
+      await drag(tester, PointerDeviceKind.stylus, by: const Offset(160, 0));
+      expect(await page.tapes(), hasLength(1));
+
+      await tester.tap(find.byTooltip('Eraser'));
+      await tester.pump();
+      await drag(
+        tester,
+        PointerDeviceKind.stylus,
+        from: const Offset(60, -40),
+        by: const Offset(0, 80),
+      );
+      expect(await page.tapes(), isEmpty);
+      expect(await page.visibleStrokes(), isEmpty);
+
+      await tester.ensureVisible(find.byTooltip('Undo'));
+      await tester.tap(find.byTooltip('Undo'));
+      await tester.pumpAndSettle();
+      expect(await page.tapes(), hasLength(1));
+      expect(await page.visibleStrokes(), hasLength(1));
+    });
+  });
+
   group('eraser options', () {
     Future<void> eraserOption(WidgetTester tester, String label) async {
       await tester.tap(find.byTooltip('Eraser'));
       await tester.pump();
+      await tester.ensureVisible(find.byTooltip('Pen options'));
       await tester.tap(find.byTooltip('Pen options'));
       await tester.pumpAndSettle();
       await tester.tap(find.text(label));

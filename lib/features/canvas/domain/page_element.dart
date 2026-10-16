@@ -83,6 +83,16 @@ sealed class ElementContent {
         final pageId = map['pageId'];
         if (pageId is! String) return null;
         return LinkContent(pageId);
+      case 'tape':
+        final color = map['color'];
+        if (color is! int) return null;
+        return TapeContent(
+          color: color,
+          pattern:
+              TapePattern.values.asNameMap()[map['pattern']] ??
+              TapePattern.solid,
+          revealed: map['revealed'] == true,
+        );
       case 'text':
         final text = map['text'];
         if (text is! String) return null;
@@ -156,6 +166,48 @@ class LinkContent extends ElementContent {
 
   @override
   int get hashCode => pageId.hashCode;
+}
+
+/// How a strip of tape is printed.
+enum TapePattern { solid, stripes, dots, grid }
+
+/// A strip of tape over the page, hiding what's under it until it's
+/// tapped (for answers to test yourself on). Drawn over the ink.
+@immutable
+class TapeContent extends ElementContent {
+  const TapeContent({
+    required this.color,
+    this.pattern = TapePattern.solid,
+    this.revealed = false,
+  });
+
+  /// ARGB.
+  final int color;
+  final TapePattern pattern;
+
+  /// Peeled back: what's under it shows, with the tape's outline.
+  final bool revealed;
+
+  TapeContent toggled() =>
+      TapeContent(color: color, pattern: pattern, revealed: !revealed);
+
+  @override
+  Map<String, Object?> toMap() => {
+    'kind': 'tape',
+    'color': color,
+    'pattern': pattern.name,
+    'revealed': revealed,
+  };
+
+  @override
+  bool operator ==(Object other) =>
+      other is TapeContent &&
+      other.color == color &&
+      other.pattern == pattern &&
+      other.revealed == revealed;
+
+  @override
+  int get hashCode => Object.hash(color, pattern, revealed);
 }
 
 /// Typed text. It wraps at [layoutWidth] page units with [fontSize], and the
