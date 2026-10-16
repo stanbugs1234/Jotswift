@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -86,22 +88,40 @@ class _CoverPickerState extends ConsumerState<CoverPicker> {
       );
     }
 
-    final colors = Wrap(
-      spacing: 10,
-      runSpacing: 10,
-      children: [
-        for (final c in coverColors)
-          colorDot(
-            c,
-            () => widget.onChanged(switch (_tab) {
-              _CoverTab.designs => NotebookCover.art(
-                (design ?? CoverDesign.stripes).id,
-                color: c,
-              ),
-              _ => NotebookCover.color(c),
-            }),
+    // Rows of even length, so no color is left alone on the last row.
+    final colors = LayoutBuilder(
+      builder: (context, constraints) {
+        const dot = 36.0, gap = 10.0;
+        final fits = math.max(
+          1,
+          ((constraints.maxWidth + gap) / (dot + gap)).floor(),
+        );
+        final rows = (coverColors.length / fits).ceil();
+        final perRow = (coverColors.length / rows).ceil();
+        return Align(
+          alignment: Alignment.centerLeft,
+          child: SizedBox(
+            width: perRow * (dot + gap) - gap,
+            child: Wrap(
+              spacing: gap,
+              runSpacing: gap,
+              children: [
+                for (final c in coverColors)
+                  colorDot(
+                    c,
+                    () => widget.onChanged(switch (_tab) {
+                      _CoverTab.designs => NotebookCover.art(
+                        (design ?? CoverDesign.stripes).id,
+                        color: c,
+                      ),
+                      _ => NotebookCover.color(c),
+                    }),
+                  ),
+              ],
+            ),
           ),
-      ],
+        );
+      },
     );
 
     return Column(
