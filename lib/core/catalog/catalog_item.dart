@@ -116,6 +116,7 @@ class CatalogItem {
     this.paper,
     this.templateMode,
     this.pageCount,
+    this.linked = false,
     this.templateId,
     this._previewPath,
   });
@@ -151,6 +152,7 @@ class CatalogItem {
         _ => null,
       },
       pageCount: map['pageCount'] as int?,
+      linked: map['linked'] == true,
       templateId: map['templateId'] as String?,
       // Collections have a preview but no pack.
       previewPath: switch (map['files']) {
@@ -189,6 +191,10 @@ class CatalogItem {
 
   /// Templates: how many PDF pages it has.
   final int? pageCount;
+
+  /// Templates: whether its pages link to each other, so a tap on a date or
+  /// tab opens another page.
+  final bool linked;
 
   /// Calendar listings: the template's id in the app.
   final String? templateId;

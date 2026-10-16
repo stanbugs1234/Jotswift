@@ -64,6 +64,23 @@ class StoreItemScreen extends ConsumerWidget {
         Text(item.name, style: theme.textTheme.headlineSmall),
         const SizedBox(height: 4),
         Text(kindLabel(item), style: theme.textTheme.bodyLarge),
+        if (item.linked)
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Row(
+              children: [
+                const LinkedPagesBadge(size: 14),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'Linked pages: tap a date, tab or button to jump to '
+                    'that page.',
+                    style: theme.textTheme.bodyMedium,
+                  ),
+                ),
+              ],
+            ),
+          ),
         if (item.tags.isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(top: 12),

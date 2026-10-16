@@ -199,7 +199,12 @@ class StoreTile extends ConsumerWidget {
     final badge = ref.watch(itemBadgeProvider(item));
     return Semantics(
       button: true,
-      label: '${item.name}, ${kindLabel(item)}, $badge',
+      label: [
+        item.name,
+        kindLabel(item),
+        if (item.linked) 'linked pages',
+        badge,
+      ].join(', '),
       excludeSemantics: true,
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
@@ -214,7 +219,18 @@ class StoreTile extends ConsumerWidget {
                 child: SizedBox(
                   height: 180,
                   width: 140,
-                  child: ItemPreview(item: item),
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      ItemPreview(item: item),
+                      if (item.linked)
+                        const Positioned(
+                          top: 6,
+                          right: 6,
+                          child: LinkedPagesBadge(),
+                        ),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 6),

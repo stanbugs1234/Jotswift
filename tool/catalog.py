@@ -422,6 +422,10 @@ def publish(item_id, visibility, dry_run):
         spec, pages = template_spec(folder)
         doc["templateMode"] = spec["mode"]
         doc["pageCount"] = len(pages)
+        # Pages that link to each other (a planner's dates and tabs).
+        doc["linked"] = any(
+            b"/Subtype /Link" in pdf.read_bytes() for pdf in folder.glob("template*.pdf")
+        )
     if kind == "calendar":
         doc["templateId"] = listing["templateId"]
     if kind == "paper":

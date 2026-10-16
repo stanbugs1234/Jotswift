@@ -174,7 +174,17 @@ class _TemplateRow extends ConsumerWidget {
       children: [
         Padding(
           padding: const EdgeInsets.only(top: 20, bottom: 8),
-          child: Text(item.name, style: theme.textTheme.titleSmall),
+          child: Row(
+            children: [
+              Flexible(
+                child: Text(item.name, style: theme.textTheme.titleSmall),
+              ),
+              if (item.linked) ...[
+                const SizedBox(width: 8),
+                const LinkedPagesBadge(size: 12),
+              ],
+            ],
+          ),
         ),
         switch (ref.watch(templateSpecProvider(item))) {
           AsyncData(value: final spec) when spec.mode == TemplateMode.pages =>
@@ -283,7 +293,15 @@ class _LockedRow extends ConsumerWidget {
           child: ItemPreview(item: item),
         ),
       ),
-      title: Text(item.name),
+      title: Row(
+        children: [
+          Flexible(child: Text(item.name)),
+          if (item.linked) ...[
+            const SizedBox(width: 8),
+            const LinkedPagesBadge(size: 12),
+          ],
+        ],
+      ),
       subtitle: Text(kindLabel(item)),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,

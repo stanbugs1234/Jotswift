@@ -356,6 +356,42 @@ void main() {
       );
     });
 
+    testWidgets('templates with linked pages are marked', (tester) async {
+      final planner = item(
+        'linked_planner',
+        'template',
+        {'free': true},
+        extra: {
+          'category': 'planners',
+          'templateMode': 'notebook',
+          'linked': true,
+          ..._templateFiles,
+        },
+      );
+      await pumpApp(
+        tester,
+        skins,
+        size: const Size(800, 1000),
+        overrides: [
+          purchasesClientProvider.overrideWithValue(FakePurchases()),
+          catalogRepositoryProvider.overrideWithValue(
+            InMemoryCatalogRepository([planner, starterPages]),
+          ),
+        ],
+      );
+      await tester.tap(find.text('Templates').first);
+      await tester.pumpAndSettle();
+      expect(
+        find.bySemanticsLabel(RegExp('^linked_planner, .*linked pages')),
+        findsOneWidget,
+      );
+      expect(find.byType(LinkedPagesBadge), findsOneWidget);
+      expect(
+        find.bySemanticsLabel(RegExp('^starter_pages, .*linked pages')),
+        findsNothing,
+      );
+    });
+
     testWidgets('buying an item unlocks it', (tester) async {
       final store = await open(tester);
       await tester.tap(find.bySemanticsLabel(RegExp('^sold_paper')));

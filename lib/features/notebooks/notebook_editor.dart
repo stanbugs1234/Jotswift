@@ -10,6 +10,7 @@ import '../../core/skins/skin_providers.dart';
 import '../../core/skins/widgets/paper.dart';
 import '../canvas/templates.dart';
 import '../shelf/cover_view.dart';
+import '../store/store_item.dart';
 import 'cover_picker.dart';
 import 'domain/notebook_models.dart';
 import 'paper_picker.dart';
@@ -243,7 +244,11 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
                         ),
                         for (final t in planners)
                           ChoiceChip(
-                            avatar: const Icon(Icons.event_note, size: 18),
+                            avatar: Icon(
+                              t.linked ? Icons.link : Icons.event_note,
+                              size: 18,
+                            ),
+                            tooltip: t.linked ? LinkedPagesBadge.tooltip : null,
                             label: Text(t.name),
                             selected: t.id == template?.id,
                             onSelected: (_) => setState(() {
@@ -263,8 +268,12 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
                       Padding(
                         padding: const EdgeInsets.only(top: 8),
                         child: Text(
-                          '${template.pageCount ?? 'All'} pages, with links '
-                          'between them. Pages are sized to fit the planner.',
+                          template.linked
+                              ? '${template.pageCount ?? 'All'} pages, with '
+                                    'links between them. Pages are sized to '
+                                    'fit the planner.'
+                              : '${template.pageCount ?? 'All'} pages. Pages '
+                                    'are sized to fit the planner.',
                           style: theme.textTheme.bodySmall,
                         ),
                       ),

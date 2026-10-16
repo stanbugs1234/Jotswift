@@ -67,6 +67,32 @@ final itemBadgeProvider = Provider.family<String, CatalogItem>((ref, item) {
   }
 });
 
+/// Marks a template whose pages link to each other.
+class LinkedPagesBadge extends StatelessWidget {
+  const LinkedPagesBadge({this.size = 16, super.key});
+
+  final double size;
+
+  static const tooltip = 'Linked pages: tap dates and tabs to jump around';
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Tooltip(
+      message: tooltip,
+      child: Container(
+        padding: EdgeInsets.all(size * 0.25),
+        decoration: BoxDecoration(
+          color: scheme.primary,
+          shape: BoxShape.circle,
+          boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 3)],
+        ),
+        child: Icon(Icons.link, size: size, color: scheme.onPrimary),
+      ),
+    );
+  }
+}
+
 /// An item's preview: the paper itself, or its preview image.
 class ItemPreview extends ConsumerWidget {
   const ItemPreview({required this.item, super.key});
