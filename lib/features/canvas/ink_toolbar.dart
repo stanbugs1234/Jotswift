@@ -306,6 +306,7 @@ class _Palette extends ConsumerWidget {
           if (picked != null) tools.selectCustomColor(picked);
         },
       ),
+      const EyedropperButton(),
     ];
     return wrap
         ? Wrap(
@@ -382,6 +383,7 @@ class PenPanel extends ConsumerWidget {
       width: tool.kind == InkToolKind.eraser
           ? InkToolState.penSizes[1]
           : tool.size,
+      opacity: highlighter ? 1 : tool.penOpacity,
     );
 
     Widget heading(String label) => Padding(
@@ -458,6 +460,22 @@ class PenPanel extends ConsumerWidget {
                 onChanged: tools.setWidth,
               ),
             ],
+            if (tool.kind == InkToolKind.pen) ...[
+              heading('Opacity  ${(tool.penOpacity * 100).round()}%'),
+              Slider(
+                min: InkToolState.minOpacity,
+                value: tool.penOpacity,
+                label: '${(tool.penOpacity * 100).round()}%',
+                onChanged: tools.setPenOpacity,
+              ),
+            ],
+            if (highlighter)
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: const Text('Straight lines'),
+                value: tool.straightHighlighter,
+                onChanged: tools.setStraightHighlighter,
+              ),
             if (tool.kind != InkToolKind.eraser) heading('Saved pens'),
             if (tool.kind != InkToolKind.eraser)
               Wrap(
@@ -528,8 +546,9 @@ class PenSwatch extends StatelessWidget {
           width: dot,
           height: dot,
           decoration: BoxDecoration(
-            color: Color(pen.color)
-                .withValues(alpha: pen.tool == InkTool.highlighter ? 0.5 : 1),
+            color: Color(pen.color).withValues(
+              alpha: pen.tool == InkTool.highlighter ? 0.5 : pen.opacity,
+            ),
             shape: pen.tool == InkTool.highlighter
                 ? BoxShape.rectangle
                 : BoxShape.circle,
@@ -558,6 +577,8 @@ class _FavoriteDot extends ConsumerWidget {
         tool.kind != InkToolKind.eraser &&
         tool.colorFrom(skin.inkColors).toARGB32() == pen.color &&
         (tool.size - pen.width).abs() < 0.05 &&
+        (pen.tool == InkTool.highlighter ||
+            (tool.penOpacity - pen.opacity).abs() < 0.005) &&
         (pen.tool == InkTool.highlighter || tool.penStyle == pen.style);
     final scheme = Theme.of(context).colorScheme;
     return IconButton(
@@ -569,6 +590,30 @@ class _FavoriteDot extends ConsumerWidget {
       ),
       icon: PenSwatch(pen: pen, size: 24),
       onPressed: () => ref.read(inkToolProvider.notifier).useFavorite(pen),
+    );
+  }
+}
+
+/// Takes up the eyedropper: the next touch on the page picks up the color
+/// of the ink there. Tap again to put it down.
+class EyedropperButton extends ConsumerWidget {
+  const EyedropperButton({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final scheme = Theme.of(context).colorScheme;
+    final out = ref.watch(eyedropperProvider);
+    return IconButton(
+      tooltip: out ? 'Tap ink on the page' : 'Pick a color from the page',
+      isSelected: out,
+      constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
+      style: IconButton.styleFrom(backgroundColor: out ? scheme.primary : null),
+      icon: Icon(Icons.colorize, color: out ? scheme.onPrimary : null),
+      onPressed: () {
+        ref.read(eyedropperProvider.notifier).toggle();
+        // Out of the pop-up, so the page can be touched.
+        if (!out) MenuController.maybeOf(context)?.close();
+      },
     );
   }
 }

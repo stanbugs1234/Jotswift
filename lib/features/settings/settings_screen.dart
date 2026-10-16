@@ -16,6 +16,7 @@ import '../auth/auth_repository.dart';
 import '../calendar/calendar_providers.dart' show monthAnimationProvider;
 import '../calendar/templates/calendar_look.dart' show calendarTemplateProvider;
 import '../calendar/templates/calendar_templates_screen.dart';
+import '../canvas/ink_tools.dart';
 import '../canvas/pen_rail.dart';
 import '../canvas/pencil_actions.dart';
 import '../skins/notebook_style_screen.dart';
@@ -210,6 +211,16 @@ class SettingsScreen extends ConsumerWidget {
                     ],
                     ref.watch(fingerDrawingProvider),
                     ref.read(fingerDrawingProvider.notifier).set,
+                  ),
+                  SwitchListTile(
+                    secondary: const Icon(Icons.touch_app_outlined),
+                    title: const Text('Tap to undo'),
+                    subtitle: const Text(
+                      'Tap with two fingers to undo, three to redo. A quick '
+                      'pinch fits the page to the screen.',
+                    ),
+                    value: ref.watch(fingerTapUndoProvider),
+                    onChanged: ref.read(fingerTapUndoProvider.notifier).set,
                   ),
                   // Phones always keep pen options in the toolbar.
                   if (MediaQuery.sizeOf(context).shortestSide >=

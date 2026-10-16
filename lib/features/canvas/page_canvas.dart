@@ -159,11 +159,16 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
   FrictionSimulation? _coastX;
   FrictionSimulation? _coastY;
 
-  /// Two-finger double-tap (fit the page to the width): when two fingers
-  /// went down, how far they've moved, and when the last two-finger tap was.
+  /// A quick pinch fits the page to the width: when two fingers went down
+  /// and how far apart.
   Duration? _twoDownAt;
-  double _twoTravel = 0;
-  Duration? _lastTwoTap;
+  double _twoSpan = 0;
+
+  /// Fingers tapping the page together (two undo, three redo): when the
+  /// first went down, how many were down at once, and how far they moved.
+  Duration? _tapStart;
+  int _tapFingers = 0;
+  double _tapTravel = 0;
 
   /// The zoom shown briefly while pinching, e.g. "125%".
   final _zoomBadge = ValueNotifier<String?>(null);
@@ -211,6 +216,10 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
   final _rulerPointers = <int, Offset>{};
   double _rulerTurn = 0;
   int? _rulerSide;
+
+  /// Where a hovering Pencil (or mouse) is, in screen pixels, to show
+  /// the size and color of the mark it would make.
+  final _hover = ValueNotifier<Offset?>(null);
 
   // Laser pointer: recent points (page units) with when they were added.
   final _laser = ValueNotifier<List<(Offset, Duration)>>(const []);
@@ -260,6 +269,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
   @override
   void dispose() {
     _live.dispose();
+    _hover.dispose();
     _predicted.dispose();
     _predictionTimer?.cancel();
     _lassoPoints.dispose();
@@ -363,10 +373,17 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     _navStarts.clear();
     _velocity.clear();
     _twoDownAt = null;
+    _tapStart = null;
+  }
+
+  void _onPointerHover(PointerHoverEvent e) {
+    if (e.kind == PointerDeviceKind.touch || widget.readOnly) return;
+    _hover.value = e.localPosition;
   }
 
   void _onPointerDown(PointerDownEvent e) {
     _stopCoasting();
+    _hover.value = null;
     if (_isStylus(e.kind)) {
       ref.read(devicePencilProvider.notifier).stylusSeen();
       _yieldToPencil(e.timeStamp);
@@ -378,6 +395,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
       return;
     }
 
+    if (_pickColorWith(e)) return;
     if (_rulerWith(e)) return;
     if (_lassoWith(e)) return;
     if (_selectWith(e)) return;
@@ -415,20 +433,28 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
           return;
         }
       }
+      if (_navPointers.isEmpty) {
+        // Perhaps the start of a tap with two or three fingers.
+        _tapStart = e.kind == PointerDeviceKind.touch ? e.timeStamp : null;
+        _tapFingers = 0;
+        _tapTravel = 0;
+      }
       // A second finger while a finger is drawing means "zoom", not "draw".
       if (_drawPointer case final first?
           when _drawKind == PointerDeviceKind.touch) {
+        _tapStart = _drawStartedAt;
         _cancelDrawing();
         // The drawing finger is now one of the two.
         _navPointers[first] = _drawPosition;
       }
       _navPointers[e.pointer] = e.localPosition;
+      _tapFingers = math.max(_tapFingers, _navPointers.length);
       _navStarts[e.pointer] = (e.localPosition, e.timeStamp);
       _velocity[e.pointer] = VelocityTracker.withKind(e.kind)
         ..addPosition(e.timeStamp, e.localPosition);
       if (_navPointers.length == 2) {
         _twoDownAt = e.timeStamp;
-        _twoTravel = 0;
+        _twoSpan = _span();
       } else if (_navPointers.length > 2) {
         _twoDownAt = null;
       }
@@ -465,6 +491,28 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
         () => _drag = _ElementDrag(e.pointer, hit, _DragMode.move, _toPage(at)),
       );
     });
+  }
+
+  /// With the eyedropper out, a touch takes the color of the ink under it:
+  /// writing over highlighting, and the newest first.
+  bool _pickColorWith(PointerDownEvent e) {
+    if (!ref.read(eyedropperProvider) || widget.readOnly) return false;
+    if (_drawPointer != null || _navPointers.isNotEmpty) return false;
+    ref.read(eyedropperProvider.notifier).put();
+    final point = _toPage(e.localPosition);
+    final hits = [
+      for (final s in _currentStrokes())
+        if (s.hitTest(point, 8 / _scale)) s,
+    ];
+    final ink =
+        hits.where((s) => s.tool == InkTool.pen).lastOrNull ?? hits.lastOrNull;
+    if (ink == null) {
+      _showZoom('No ink there');
+      return true;
+    }
+    HapticFeedback.selectionClick();
+    ref.read(inkToolProvider.notifier).pickColorOf(ink);
+    return true;
   }
 
   /// Which way a drag starting at [point] would turn the page, if it's at
@@ -553,6 +601,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
 
     final before = Map.of(_navPointers);
     _navPointers[e.pointer] = e.localPosition;
+    _tapTravel += (e.localPosition - before[e.pointer]!).distance;
     // The list of pages scrolls instead.
     if (widget.embedded) {
       if (_navPointers.length == 2 && ref.read(fingersDrawProvider)) {
@@ -561,9 +610,6 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
       return;
     }
     _velocity[e.pointer]?.addPosition(e.timeStamp, e.localPosition);
-    if (_navPointers.length == 2) {
-      _twoTravel += (e.localPosition - before[e.pointer]!).distance;
-    }
     setState(() {
       if (_navPointers.length == 1) {
         _offset += e.localPosition - before[e.pointer]!;
@@ -657,7 +703,10 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     if (e.pointer == _lassoPointer) return _finishLasso();
     if (e.pointer == _lassoDrag?.pointer) return _finishLassoDrag();
     if (e.pointer == _drag?.pointer) _finishDrag();
-    _checkTwoFingerTap(e);
+    _checkQuickPinch(e);
+    if (_navPointers.length == 1 && _navPointers.containsKey(e.pointer)) {
+      _checkFingerTap(e.timeStamp);
+    }
     final tracker = _velocity.remove(e.pointer);
     if (tracker != null && _navPointers.length == 1) {
       final start = _navStarts[e.pointer];
@@ -833,7 +882,15 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
 
   /// Two fingers tapped together (briefly, without moving), twice in a
   /// row: fit the page to the width again.
-  void _checkTwoFingerTap(PointerEvent e) {
+  /// Distance between the first two scrolling pointers.
+  double _span() {
+    final points = _navPointers.values.take(2).toList();
+    return points.length < 2 ? 0 : (points[0] - points[1]).distance;
+  }
+
+  /// Two fingers pinched in quickly: fit the page to the width, as a quick
+  /// pinch fits the canvas in Procreate.
+  void _checkQuickPinch(PointerEvent e) {
     final down = _twoDownAt;
     if (down == null ||
         _navPointers.length != 2 ||
@@ -841,19 +898,37 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
       return;
     }
     _twoDownAt = null;
-    final quick = e.timeStamp - down < const Duration(milliseconds: 300);
-    if (!quick || _twoTravel > 24) return;
-    final last = _lastTwoTap;
-    if (last != null &&
-        e.timeStamp - last < const Duration(milliseconds: 450)) {
-      _lastTwoTap = null;
-      final viewport = _viewport;
-      if (viewport != null) {
-        setState(() => _fitWidth(viewport));
-        _showZoom('Fit width');
-      }
+    final quick = e.timeStamp - down < const Duration(milliseconds: 350);
+    if (!quick || widget.embedded || _span() > _twoSpan * 0.6) return;
+    final viewport = _viewport;
+    if (viewport == null) return;
+    setState(() => _fitWidth(viewport));
+    _showZoom('Fit width');
+  }
+
+  /// The last of two or three fingers lifted: if they only tapped, undo
+  /// (two) or redo (three), as in most drawing and note apps.
+  void _checkFingerTap(Duration now) {
+    final start = _tapStart;
+    _tapStart = null;
+    if (start == null ||
+        widget.readOnly ||
+        _tapFingers < 2 ||
+        _tapFingers > 3 ||
+        now - start > const Duration(milliseconds: 350) ||
+        _tapTravel > 12.0 * _tapFingers ||
+        !ref.read(fingerTapUndoProvider)) {
+      return;
+    }
+    final undo = _tapFingers == 2;
+    final history = ref.read(inkHistoryProvider(widget.pageId));
+    final notifier = ref.read(inkHistoryProvider(widget.pageId).notifier);
+    if (undo ? history.canUndo : history.canRedo) {
+      HapticFeedback.selectionClick();
+      undo ? notifier.undo() : notifier.redo();
+      _showZoom(undo ? 'Undo' : 'Redo');
     } else {
-      _lastTwoTap = e.timeStamp;
+      _showZoom(undo ? 'Nothing to undo' : 'Nothing to redo');
     }
   }
 
@@ -875,6 +950,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     }
     _velocity.remove(e.pointer);
     _navStarts.remove(e.pointer);
+    _tapStart = null;
     if (e.pointer == _drag?.pointer) setState(() => _drag = null);
     if (e.pointer == _drawPointer) _cancelDrawing();
     _navPointers.remove(e.pointer);
@@ -912,6 +988,8 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     var color = tool.colorFrom(colors);
     if (tool.kind == InkToolKind.highlighter) {
       color = color.withValues(alpha: 0.35);
+    } else if (tool.penOpacity < 1) {
+      color = color.withValues(alpha: color.a * tool.penOpacity);
     }
     _live.value = Stroke(
       id: ref.read(strokeRepositoryProvider).newStrokeId(),
@@ -940,6 +1018,11 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     if (_rulerSide != null) {
       _live.value = _live.value!.withPoints([_guided(first)]);
       return; // Following the ruler: no shapes.
+    }
+    if (tool.kind == InkToolKind.highlighter && tool.straightHighlighter) {
+      // A straight line from the start to the pen, as a snapped line.
+      _snapped = ShapeKind.line;
+      return;
     }
     _waitForHold(e.localPosition);
   }
@@ -2031,6 +2114,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
                   Positioned.fill(
                     child: Listener(
                       behavior: HitTestBehavior.opaque,
+                      onPointerHover: _onPointerHover,
                       onPointerDown: _onPointerDown,
                       onPointerMove: _onPointerMove,
                       onPointerUp: _onPointerUp,
@@ -2112,6 +2196,29 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
                               ),
                             ),
                           ),
+                          if (widget.inkEnabled && !widget.readOnly)
+                            Positioned.fill(
+                              child: MouseRegion(
+                                opaque: false,
+                                hitTestBehavior: HitTestBehavior.translucent,
+                                onExit: (_) => _hover.value = null,
+                                child: IgnorePointer(
+                                  child: CustomPaint(
+                                    painter: _HoverPainter(
+                                      _hover,
+                                      tool: ref.read(inkToolProvider),
+                                      ink: ref
+                                          .read(inkToolProvider)
+                                          .colorFrom(skin.inkColors),
+                                      scale: _scale,
+                                      outline: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
                           Positioned(
                             top: 12,
                             left: 0,
@@ -2543,6 +2650,75 @@ class _LassoDrag {
 
 /// The laser pointer's trail: a red glow with a bright core, fading along
 /// its length as points age.
+/// Under a hovering Pencil: a ring the size of the mark the pen,
+/// highlighter or eraser would make, in the ink's color.
+class _HoverPainter extends CustomPainter {
+  _HoverPainter(
+    this.hover, {
+    required this.tool,
+    required this.ink,
+    required this.scale,
+    required this.outline,
+  }) : super(repaint: hover);
+
+  final ValueNotifier<Offset?> hover;
+  final InkToolState tool;
+  final Color ink;
+  final double scale;
+  final Color outline;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final at = hover.value;
+    if (at == null) return;
+    final radius = switch (tool.kind) {
+      InkToolKind.pen || InkToolKind.highlighter => tool.size * scale / 2,
+      InkToolKind.eraser => tool.size,
+      _ => 0.0,
+    };
+    if (radius <= 0) return;
+    final r = math.max(radius, 2.5);
+    if (tool.kind != InkToolKind.eraser) {
+      canvas.drawCircle(
+        at,
+        r,
+        Paint()
+          ..color = ink.withValues(
+            alpha: tool.kind == InkToolKind.highlighter
+                ? 0.35
+                : 0.55 * tool.penOpacity,
+          ),
+      );
+    }
+    // Light then dark, so the ring shows on any paper or ink.
+    canvas
+      ..drawCircle(
+        at,
+        r + 1,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2
+          ..color = const Color(0xCCFFFFFF),
+      )
+      ..drawCircle(
+        at,
+        r + 1,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1
+          ..color = outline.withValues(alpha: 0.7),
+      );
+  }
+
+  @override
+  bool shouldRepaint(_HoverPainter old) =>
+      old.hover != hover ||
+      old.tool != tool ||
+      old.ink != ink ||
+      old.scale != scale ||
+      old.outline != outline;
+}
+
 class _LaserPainter extends CustomPainter {
   _LaserPainter(this.points, this.clock, this.life, this.unit)
     : super(repaint: points);

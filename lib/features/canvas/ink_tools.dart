@@ -49,6 +49,8 @@ class InkToolState {
     this.eraserMode = EraserMode.stroke,
     this.eraseHighlighterOnly = false,
     this.eraserReturns = false,
+    this.penOpacity = 1,
+    this.straightHighlighter = false,
   });
 
   factory InkToolState.fromJson(Map<String, dynamic> json) {
@@ -75,6 +77,11 @@ class InkToolState {
           EraserMode.stroke,
       eraseHighlighterOnly: json['eraseHighlighterOnly'] == true,
       eraserReturns: json['eraserReturns'] == true,
+      penOpacity: ((json['penOpacity'] as num?)?.toDouble() ?? 1).clamp(
+        minOpacity,
+        1,
+      ),
+      straightHighlighter: json['straightHighlighter'] == true,
     );
   }
 
@@ -89,6 +96,8 @@ class InkToolState {
     'eraserMode': eraserMode.name,
     'eraseHighlighterOnly': eraseHighlighterOnly,
     'eraserReturns': eraserReturns,
+    'penOpacity': penOpacity,
+    'straightHighlighter': straightHighlighter,
   };
 
   final InkToolKind kind;
@@ -117,6 +126,14 @@ class InkToolState {
 
   /// After each erase, go back to the tool used before the eraser.
   final bool eraserReturns;
+
+  /// How solid the pen's ink is, from [minOpacity] to 1.
+  final double penOpacity;
+
+  static const minOpacity = 0.1;
+
+  /// The highlighter draws straight lines, start to end, like a ruler.
+  final bool straightHighlighter;
 
   /// When false ("hand" mode), one finger scrolls instead of drawing. A
   /// stylus always draws.
@@ -159,6 +176,8 @@ class InkToolState {
     EraserMode? eraserMode,
     bool? eraseHighlighterOnly,
     bool? eraserReturns,
+    double? penOpacity,
+    bool? straightHighlighter,
   }) => InkToolState(
     kind: kind ?? this.kind,
     colorIndex: colorIndex ?? this.colorIndex,
@@ -173,6 +192,8 @@ class InkToolState {
     eraserMode: eraserMode ?? this.eraserMode,
     eraseHighlighterOnly: eraseHighlighterOnly ?? this.eraseHighlighterOnly,
     eraserReturns: eraserReturns ?? this.eraserReturns,
+    penOpacity: penOpacity ?? this.penOpacity,
+    straightHighlighter: straightHighlighter ?? this.straightHighlighter,
   );
 
   static const _keep = Object();
@@ -211,6 +232,7 @@ class InkToolController extends Notifier<InkToolState> {
       _beforeEraser = state.kind;
     }
     if (kind != state.kind) _previous = state.kind;
+    ref.read(eyedropperProvider.notifier).put();
     _set(state.copyWith(kind: kind, drawMode: true));
   }
 
@@ -245,6 +267,22 @@ class InkToolController extends Notifier<InkToolState> {
   void selectCustomColor(Color color) =>
       _set(state.copyWith(customColor: color.toARGB32()));
 
+  /// Takes up [stroke]'s ink: its color, and a pen's opacity. Stays on the
+  /// highlighter if that's in hand, otherwise picks up the pen.
+  void pickColorOf(Stroke stroke) {
+    final color = Color(stroke.color);
+    final highlighter = state.kind == InkToolKind.highlighter;
+    _set(
+      state.copyWith(
+        customColor: color.withValues(alpha: 1).toARGB32(),
+        kind: highlighter ? null : InkToolKind.pen,
+        penOpacity: stroke.tool == InkTool.pen && !highlighter
+            ? color.a.clamp(InkToolState.minOpacity, 1)
+            : null,
+      ),
+    );
+  }
+
   /// Picks a preset size; the slider's width is forgotten.
   void selectSize(int index) => _set(
     state.copyWith(
@@ -262,6 +300,15 @@ class InkToolController extends Notifier<InkToolState> {
         ? state.copyWith(highlighterWidth: width)
         : state.copyWith(penWidth: width),
   );
+
+  void setPenOpacity(double opacity) => _set(
+    state.copyWith(
+      penOpacity: opacity.clamp(InkToolState.minOpacity, 1),
+      kind: InkToolKind.pen,
+    ),
+  );
+  void setStraightHighlighter(bool straight) =>
+      _set(state.copyWith(straightHighlighter: straight));
 
   void selectPenStyle(PenStyle style) => _set(
     state.copyWith(
@@ -286,6 +333,7 @@ class InkToolController extends Notifier<InkToolState> {
             customColor: pen.color,
             penWidth: pen.width,
             penStyle: pen.style,
+            penOpacity: pen.opacity,
             drawMode: true,
           ),
   );
@@ -303,6 +351,7 @@ class PenFavorite {
     required this.style,
     required this.color,
     required this.width,
+    this.opacity = 1,
   });
 
   static PenFavorite? fromJson(Object? json) {
@@ -315,6 +364,7 @@ class PenFavorite {
       style: PenStyle.values.asNameMap()[json['style']] ?? PenStyle.fountain,
       color: color.toInt(),
       width: width.toDouble(),
+      opacity: (json['opacity'] as num?)?.toDouble() ?? 1,
     );
   }
 
@@ -325,11 +375,15 @@ class PenFavorite {
   final int color;
   final double width;
 
+  /// How solid a pen's ink is (highlighters are always see-through).
+  final double opacity;
+
   Map<String, Object> toJson() => {
     'tool': tool.name,
     'style': style.name,
     'color': color,
     'width': (width * 10).round() / 10,
+    if (opacity < 1) 'opacity': (opacity * 100).round() / 100,
   };
 
   @override
@@ -338,10 +392,17 @@ class PenFavorite {
       other.tool == tool &&
       other.style == style &&
       other.color == color &&
-      (other.width - width).abs() < 0.05;
+      (other.width - width).abs() < 0.05 &&
+      (other.opacity - opacity).abs() < 0.005;
 
   @override
-  int get hashCode => Object.hash(tool, style, color, (width * 10).round());
+  int get hashCode => Object.hash(
+    tool,
+    style,
+    color,
+    (width * 10).round(),
+    (opacity * 100).round(),
+  );
 }
 
 /// The user's saved pens, on the account so they follow them to every
@@ -633,3 +694,36 @@ class InkHistory extends Notifier<InkHistoryState> {
 
 final inkHistoryProvider = NotifierProvider.autoDispose
     .family<InkHistory, InkHistoryState, String>(InkHistory.new);
+
+/// Whether tapping a page with two fingers undoes, and with three redoes.
+/// On unless turned off in Settings, on this device.
+class FingerTapUndoController extends Notifier<bool> {
+  static const _prefsKey = 'fingerTapUndo';
+
+  @override
+  bool build() =>
+      ref.watch(sharedPreferencesProvider).getBool(_prefsKey) ?? true;
+
+  Future<void> set(bool on) async {
+    state = on;
+    await ref.read(sharedPreferencesProvider).setBool(_prefsKey, on);
+  }
+}
+
+final fingerTapUndoProvider = NotifierProvider<FingerTapUndoController, bool>(
+  FingerTapUndoController.new,
+);
+
+/// The eyedropper is out: the next touch on a page takes the color of the
+/// ink there instead of drawing.
+class EyedropperController extends Notifier<bool> {
+  @override
+  bool build() => false;
+
+  void toggle() => state = !state;
+  void put() => state = false;
+}
+
+final eyedropperProvider = NotifierProvider<EyedropperController, bool>(
+  EyedropperController.new,
+);

@@ -43,7 +43,42 @@ bool showsPenRail(BuildContext context, WidgetRef ref) =>
 /// The pen's types, width, colors and saved pens in a slim panel floating
 /// at the side of the page, like an art app's sidebar: one tap to change
 /// any of them while writing. Shown for the pen, highlighter and eraser.
-class PenRail extends ConsumerWidget {
+/// Where the panel sits along its edge (-1 top to 1 bottom), and whether
+/// it's tucked away to a small tab. Kept on the device.
+class PenRailPlacementController extends Notifier<({double y, bool hidden})> {
+  static const _yKey = 'penPanelY', _hiddenKey = 'penPanelHidden';
+
+  @override
+  ({double y, bool hidden}) build() {
+    final prefs = ref.watch(sharedPreferencesProvider);
+    return (
+      y: (prefs.getDouble(_yKey) ?? 0).clamp(-1.0, 1.0),
+      hidden: prefs.getBool(_hiddenKey) ?? false,
+    );
+  }
+
+  /// Moves the panel while it's dragged; [save] keeps it there.
+  void moveTo(double y) =>
+      state = (y: y.clamp(-1.0, 1.0), hidden: state.hidden);
+
+  void save() => ref.read(sharedPreferencesProvider).setDouble(_yKey, state.y);
+
+  void setHidden(bool hidden) {
+    state = (y: state.y, hidden: hidden);
+    ref.read(sharedPreferencesProvider).setBool(_hiddenKey, hidden);
+  }
+}
+
+final penRailPlacementProvider =
+    NotifierProvider<PenRailPlacementController, ({double y, bool hidden})>(
+      PenRailPlacementController.new,
+    );
+
+/// The pen's types, width, colors and saved pens in a slim panel floating
+/// at the side of the page, like an art app's sidebar: one tap to change
+/// any of them while writing. Shown for the pen, highlighter and eraser;
+/// it can be dragged along its edge, or tucked away to a tab.
+class PenRail extends ConsumerStatefulWidget {
   const PenRail({super.key});
 
   /// Screens narrower than this (phones) keep pen options in the toolbar.
@@ -52,34 +87,191 @@ class PenRail extends ConsumerWidget {
   static const width = 60.0;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PenRail> createState() => _PenRailState();
+}
+
+class _PenRailState extends ConsumerState<PenRail> {
+  final _panel = GlobalKey();
+
+  static const _inset = 10.0;
+
+  /// Moves the panel by [dy] pixels within [height].
+  void _drag(double dy, double height) {
+    final panel = _panel.currentContext?.size?.height ?? 0;
+    final room = height - 2 * _inset - panel;
+    if (room <= 0) return;
+    final placement = ref.read(penRailPlacementProvider.notifier);
+    placement.moveTo(ref.read(penRailPlacementProvider).y + dy * 2 / room);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     if (!showsPenRail(context, ref)) return const SizedBox.shrink();
     final left = ref.watch(penPanelSideProvider) == PenPanelSide.left;
+    final placement = ref.watch(penRailPlacementProvider);
     final kind = ref.watch(inkToolProvider.select((t) => t.kind));
     final shown = switch (kind) {
       InkToolKind.pen || InkToolKind.highlighter || InkToolKind.eraser => true,
       _ => false,
     };
-    return Align(
-      alignment: left ? Alignment.centerLeft : Alignment.centerRight,
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        // Slides away for tools without pen options (select, lasso, laser).
-        child: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 180),
-          transitionBuilder: (child, animation) => FadeTransition(
-            opacity: animation,
-            child: SlideTransition(
-              position: Tween(
-                begin: Offset(left ? -0.4 : 0.4, 0),
-                end: Offset.zero,
-              ).animate(animation),
-              child: child,
+    final places = ref.read(penRailPlacementProvider.notifier);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final height = constraints.maxHeight;
+        void onDrag(DragUpdateDetails d) => _drag(d.delta.dy, height);
+        void onDragEnd(DragEndDetails _) => places.save();
+        return Align(
+          alignment: Alignment(left ? -1 : 1, placement.y),
+          child: Padding(
+            padding: const EdgeInsets.all(_inset),
+            // Slides away for tools without pen options (select, lasso,
+            // laser).
+            child: KeyedSubtree(
+              key: _panel,
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 180),
+                transitionBuilder: (child, animation) => FadeTransition(
+                  opacity: animation,
+                  child: SlideTransition(
+                    position: Tween(
+                      begin: Offset(left ? -0.4 : 0.4, 0),
+                      end: Offset.zero,
+                    ).animate(animation),
+                    child: child,
+                  ),
+                ),
+                child: !shown
+                    ? const SizedBox.shrink()
+                    : placement.hidden
+                    ? _RailTab(
+                        key: const ValueKey('tab'),
+                        onShow: () => places.setHidden(false),
+                        onDrag: onDrag,
+                        onDragEnd: onDragEnd,
+                      )
+                    // One panel for every tool: its contents change in
+                    // place, so a panel fading out never shows the new
+                    // tool's.
+                    : _RailBody(
+                        key: const ValueKey('panel'),
+                        left: left,
+                        handle: _RailHandle(
+                          onHide: () => places.setHidden(true),
+                          onDrag: onDrag,
+                          onDragEnd: onDragEnd,
+                        ),
+                      ),
+              ),
             ),
           ),
-          child: shown
-              ? _RailBody(key: ValueKey(kind), left: left)
-              : const SizedBox.shrink(),
+        );
+      },
+    );
+  }
+}
+
+/// The grip at the top of the panel: drag to move it, tap to tuck it away.
+class _RailHandle extends StatelessWidget {
+  const _RailHandle({
+    required this.onHide,
+    required this.onDrag,
+    required this.onDragEnd,
+  });
+
+  final VoidCallback onHide;
+  final GestureDragUpdateCallback onDrag;
+  final GestureDragEndCallback onDragEnd;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Tooltip(
+      message: 'Hide pen panel · drag to move it',
+      child: Semantics(
+        button: true,
+        label: 'Hide pen panel',
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: onHide,
+          onVerticalDragUpdate: onDrag,
+          onVerticalDragEnd: onDragEnd,
+          child: SizedBox(
+            width: PenRail.width,
+            height: 28,
+            child: Center(
+              child: Container(
+                width: 24,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: scheme.onSurfaceVariant.withValues(alpha: 0.6),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The panel tucked away: a small tab with the pen's color. Tap to bring
+/// the panel back; drag to move it.
+class _RailTab extends ConsumerWidget {
+  const _RailTab({
+    required this.onShow,
+    required this.onDrag,
+    required this.onDragEnd,
+    super.key,
+  });
+
+  final VoidCallback onShow;
+  final GestureDragUpdateCallback onDrag;
+  final GestureDragEndCallback onDragEnd;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final scheme = Theme.of(context).colorScheme;
+    final tool = ref.watch(inkToolProvider);
+    final ink = tool.colorFrom(NotelySkin.of(context).inkColors);
+    return Tooltip(
+      message: 'Show pen panel',
+      child: Semantics(
+        button: true,
+        label: 'Show pen panel',
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: onShow,
+          onVerticalDragUpdate: onDrag,
+          onVerticalDragEnd: onDragEnd,
+          child: Material(
+            color: scheme.surfaceContainerHigh,
+            elevation: 3,
+            shadowColor: Colors.black45,
+            borderRadius: BorderRadius.circular(PenRail.width / 2),
+            child: SizedBox(
+              width: 44,
+              height: 64,
+              child: Center(
+                child: Container(
+                  width: 22,
+                  height: 22,
+                  decoration: BoxDecoration(
+                    color: tool.kind == InkToolKind.eraser ? null : ink,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: scheme.outline, width: 1.5),
+                  ),
+                  child: tool.kind == InkToolKind.eraser
+                      ? Icon(
+                          Icons.auto_fix_normal,
+                          size: 14,
+                          color: scheme.onSurfaceVariant,
+                        )
+                      : null,
+                ),
+              ),
+            ),
+          ),
         ),
       ),
     );
@@ -87,9 +279,12 @@ class PenRail extends ConsumerWidget {
 }
 
 class _RailBody extends ConsumerWidget {
-  const _RailBody({required this.left, super.key});
+  const _RailBody({required this.left, required this.handle, super.key});
 
   final bool left;
+
+  /// The grip at the top.
+  final Widget handle;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -107,32 +302,39 @@ class _RailBody extends ConsumerWidget {
       child: SizedBox(
         width: PenRail.width,
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (tool.kind == InkToolKind.pen) ...[
-                for (final style in PenStyle.values) _StyleButton(style: style),
+          padding: const EdgeInsets.only(bottom: 10),
+          child: AnimatedSize(
+            duration: const Duration(milliseconds: 160),
+            curve: Curves.easeOutCubic,
+            alignment: Alignment.topCenter,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                handle,
+                if (tool.kind == InkToolKind.pen) ...[
+                  for (final style in PenStyle.values)
+                    _StyleButton(style: style),
+                  divider,
+                ],
+                if (eraser) const _EraserSizes() else const _WidthSlider(),
+                if (!eraser) ...[divider, const _Colors(), const _SavedPens()],
                 divider,
-              ],
-              if (eraser) const _EraserSizes() else const _WidthSlider(),
-              if (!eraser) ...[divider, const _Colors(), const _SavedPens()],
-              divider,
-              PenMenu(
-                // Opens beside the panel, not over it.
-                alignmentOffset: Offset(left ? PenRail.width : -348, -52),
-                menuChildren: const [PenPanel(withSizes: false)],
-                builder: (context, onPressed) => IconButton(
-                  tooltip: eraser ? 'Eraser settings' : 'Pen settings',
-                  constraints: const BoxConstraints(
-                    minWidth: 44,
-                    minHeight: 44,
+                PenMenu(
+                  // Opens beside the panel, not over it.
+                  alignmentOffset: Offset(left ? PenRail.width : -348, -52),
+                  menuChildren: const [PenPanel(withSizes: false)],
+                  builder: (context, onPressed) => IconButton(
+                    tooltip: eraser ? 'Eraser settings' : 'Pen settings',
+                    constraints: const BoxConstraints(
+                      minWidth: 44,
+                      minHeight: 44,
+                    ),
+                    icon: const Icon(Icons.tune),
+                    onPressed: onPressed,
                   ),
-                  icon: const Icon(Icons.tune),
-                  onPressed: onPressed,
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -254,8 +456,8 @@ class _StyleSample extends CustomPainter {
       old.style != style || old.color != color;
 }
 
-/// The pen's (or highlighter's) width: an upright slider under a dot as
-/// wide as the line.
+/// The pen's (or highlighter's) width, and the pen's opacity: upright
+/// sliders under a dot drawn as the line will be.
 class _WidthSlider extends ConsumerWidget {
   const _WidthSlider();
 
@@ -263,6 +465,7 @@ class _WidthSlider extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final scheme = Theme.of(context).colorScheme;
     final tool = ref.watch(inkToolProvider);
+    final tools = ref.read(inkToolProvider.notifier);
     final highlighter = tool.kind == InkToolKind.highlighter;
     final range = highlighter
         ? InkToolState.highlighterRange
@@ -271,6 +474,8 @@ class _WidthSlider extends ConsumerWidget {
     final share = (width - range.min) / (range.max - range.min);
     final ink = tool.colorFrom(NotelySkin.of(context).inkColors);
     final dot = 4 + share * 24;
+    final small = Theme.of(context).textTheme.labelSmall
+        ?.copyWith(color: scheme.onSurfaceVariant);
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -281,7 +486,9 @@ class _WidthSlider extends ConsumerWidget {
               width: highlighter ? dot * 0.7 : dot,
               height: dot,
               decoration: BoxDecoration(
-                color: highlighter ? ink.withValues(alpha: 0.45) : ink,
+                color: ink.withValues(
+                  alpha: highlighter ? 0.45 : tool.penOpacity,
+                ),
                 // An outline so dark ink shows on a dark panel.
                 border: Border.all(color: scheme.outline),
                 shape: highlighter ? BoxShape.rectangle : BoxShape.circle,
@@ -290,39 +497,99 @@ class _WidthSlider extends ConsumerWidget {
             ),
           ),
         ),
-        Semantics(
+        _RailSlider(
           label: highlighter ? 'Highlighter width' : 'Pen width',
-          child: SizedBox(
-            height: 150,
-            width: PenRail.width,
-            child: RotatedBox(
-              quarterTurns: 3,
-              child: SliderTheme(
-                data: SliderTheme.of(context).copyWith(
-                  trackHeight: 6,
-                  activeTrackColor: scheme.primary,
-                  inactiveTrackColor: scheme.outlineVariant,
-                  overlayShape: SliderComponentShape.noOverlay,
-                ),
-                child: Slider(
-                  min: range.min,
-                  max: range.max,
-                  value: width,
-                  onChanged: ref.read(inkToolProvider.notifier).setWidth,
-                ),
+          height: highlighter ? 150 : 120,
+          min: range.min,
+          max: range.max,
+          value: width,
+          onChanged: tools.setWidth,
+        ),
+        Text(width.toStringAsFixed(width < 10 ? 1 : 0), style: small),
+        if (highlighter)
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: IconButton(
+              tooltip: 'Straight lines',
+              isSelected: tool.straightHighlighter,
+              constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
+              style: IconButton.styleFrom(
+                backgroundColor: tool.straightHighlighter
+                    ? scheme.primary.withValues(alpha: 0.14)
+                    : null,
+              ),
+              icon: Icon(
+                Icons.horizontal_rule,
+                color: tool.straightHighlighter ? scheme.primary : null,
+              ),
+              onPressed: () =>
+                  tools.setStraightHighlighter(!tool.straightHighlighter),
+            ),
+          )
+        else ...[
+          const SizedBox(height: 12),
+          _RailSlider(
+            label: 'Pen opacity',
+            height: 90,
+            min: InkToolState.minOpacity,
+            max: 1,
+            value: tool.penOpacity,
+            onChanged: tools.setPenOpacity,
+          ),
+          Text('${(tool.penOpacity * 100).round()}%', style: small),
+        ],
+      ],
+    );
+  }
+}
+
+/// An upright slider, low at the bottom, as in an art app's sidebar.
+class _RailSlider extends StatelessWidget {
+  const _RailSlider({
+    required this.label,
+    required this.height,
+    required this.min,
+    required this.max,
+    required this.value,
+    required this.onChanged,
+  });
+
+  final String label;
+  final double height;
+  final double min;
+  final double max;
+  final double value;
+  final ValueChanged<double> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Semantics(
+      label: label,
+      child: Tooltip(
+        message: label,
+        child: SizedBox(
+          height: height,
+          width: PenRail.width,
+          child: RotatedBox(
+            quarterTurns: 3,
+            child: SliderTheme(
+              data: SliderTheme.of(context).copyWith(
+                trackHeight: 6,
+                activeTrackColor: scheme.primary,
+                inactiveTrackColor: scheme.outlineVariant,
+                overlayShape: SliderComponentShape.noOverlay,
+              ),
+              child: Slider(
+                min: min,
+                max: max,
+                value: value.clamp(min, max),
+                onChanged: onChanged,
               ),
             ),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(top: 4),
-          child: Text(
-            width.toStringAsFixed(width < 10 ? 1 : 0),
-            style: Theme.of(context).textTheme.labelSmall
-                ?.copyWith(color: scheme.onSurfaceVariant),
-          ),
-        ),
-      ],
+      ),
     );
   }
 }
@@ -408,6 +675,7 @@ class _Colors extends ConsumerWidget {
             if (picked != null) tools.selectCustomColor(picked);
           },
         ),
+        const EyedropperButton(),
       ],
     );
   }
@@ -428,6 +696,7 @@ class _SavedPens extends ConsumerWidget {
       style: highlighter ? PenStyle.fountain : tool.penStyle,
       color: tool.colorFrom(inkColors).toARGB32(),
       width: tool.size,
+      opacity: highlighter ? 1 : tool.penOpacity,
     );
     final favorites = ref.watch(penFavoritesProvider);
     return Column(

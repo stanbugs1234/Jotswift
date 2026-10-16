@@ -141,7 +141,14 @@ class StrokesPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    for (final stroke in strokes) {
+    // Highlighters go under the ink, as a highlighter on paper sits under
+    // what it marks, so a highlight never dulls the writing.
+    for (final stroke in [
+      for (final s in strokes)
+        if (s.tool == InkTool.highlighter) s,
+      for (final s in strokes)
+        if (s.tool != InkTool.highlighter) s,
+    ]) {
       canvas.drawPath(
         StrokeRenderer.pathFor(stroke),
         StrokeRenderer.paintFor(stroke),

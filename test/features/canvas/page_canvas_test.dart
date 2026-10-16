@@ -711,7 +711,7 @@ void main() {
     testWidgets('the width slider sets any width', (tester) async {
       final page = await pumpPage(tester);
       await openPenOptions(tester);
-      await tester.drag(find.byType(Slider), const Offset(400, 0));
+      await tester.drag(find.byType(Slider).first, const Offset(400, 0));
       await tester.pump();
 
       await drag(tester, PointerDeviceKind.stylus);
@@ -782,7 +782,7 @@ void main() {
         greaterThan(700),
         reason: 'on the right',
       );
-      await tester.drag(find.byType(Slider), const Offset(0, -300));
+      await tester.drag(find.byType(Slider).first, const Offset(0, -300));
       await tester.pump();
       await tester.tap(find.byTooltip('Save this pen'));
       await tester.pumpAndSettle();
@@ -805,6 +805,140 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.byTooltip('Large eraser'), findsOneWidget);
       expect(find.byTooltip('More colors'), findsNothing);
+    });
+  });
+
+  group('writing tools', () {
+    /// Taps the page with [count] fingers at once.
+    Future<void> fingerTap(WidgetTester tester, int count) async {
+      final c = canvasCenter(tester);
+      final gestures = [
+        for (var i = 0; i < count; i++)
+          await tester.startGesture(
+            c + Offset(i * 60.0 - 60, 200),
+            pointer: 20 + i,
+          ),
+      ];
+      for (final g in gestures) {
+        await g.up();
+      }
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('two fingers tap to undo, three to redo', (tester) async {
+      final page = await pumpPage(tester);
+      await drag(tester, PointerDeviceKind.stylus);
+      expect(await page.visibleStrokes(), hasLength(1));
+
+      await fingerTap(tester, 2);
+      expect(await page.visibleStrokes(), isEmpty);
+
+      await fingerTap(tester, 3);
+      expect(await page.visibleStrokes(), hasLength(1));
+    });
+
+    testWidgets('pen opacity is saved in the ink', (tester) async {
+      final page = await pumpPage(tester, penPanel: 'left');
+      await tester.drag(find.byType(Slider).at(1), const Offset(0, 200));
+      await tester.pump();
+      expect(find.text('10%'), findsOneWidget);
+
+      await drag(tester, PointerDeviceKind.stylus);
+      expect(
+        Color((await page.strokes()).single.color).a,
+        closeTo(InkToolState.minOpacity, 0.01),
+      );
+    });
+
+    testWidgets('the highlighter can draw straight lines, under the ink', (
+      tester,
+    ) async {
+      final page = await pumpPage(tester, penPanel: 'left');
+      await drag(tester, PointerDeviceKind.stylus, by: const Offset(150, 0));
+      await tester.tap(find.byTooltip('Highlighter'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('Straight lines'));
+      await tester.pump();
+
+      // Nearly level: drawn dead level.
+      await drag(
+        tester,
+        PointerDeviceKind.stylus,
+        from: const Offset(0, 4),
+        by: const Offset(150, 8),
+      );
+      final highlight = (await page.strokes()).firstWhere(
+        (s) => s.tool == InkTool.highlighter,
+      );
+      final ys = highlight.points.map((p) => p.y);
+      expect(ys.reduce(math.max) - ys.reduce(math.min), lessThan(0.5));
+
+      // The highlight, drawn after the writing, is painted under it.
+      final pen = (await page.strokes()).firstWhere(
+        (s) => s.tool == InkTool.pen,
+      );
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is CustomPaint && w.painter is StrokesPainter,
+        ),
+        paints
+          ..path(color: Color(highlight.color))
+          ..path(color: Color(pen.color)),
+      );
+    });
+
+    testWidgets('the eyedropper picks up the color of ink on the page', (
+      tester,
+    ) async {
+      final page = await pumpPage(tester, penPanel: 'left');
+      final inkColors = skinById(skins, 'classic').inkColors;
+      await tester.tap(find.bySemanticsLabel('Ink color 3'));
+      await tester.pump();
+      await drag(tester, PointerDeviceKind.stylus);
+      await tester.tap(find.bySemanticsLabel('Ink color 1'));
+      await tester.tap(find.byTooltip('Pick a color from the page'));
+      await tester.pump();
+
+      await tester.tapAt(
+        canvasCenter(tester) + const Offset(60, 20),
+        kind: PointerDeviceKind.stylus,
+      );
+      await tester.pumpAndSettle();
+      expect(await page.strokes(), hasLength(1), reason: 'no new ink');
+
+      await drag(tester, PointerDeviceKind.stylus, from: const Offset(0, 120));
+      final strokes = await page.strokes();
+      expect(strokes.last.color, inkColors[2].toARGB32());
+    });
+
+    testWidgets('a hovering pen shows the size of its mark', (tester) async {
+      await pumpPage(tester);
+      final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await mouse.addPointer(location: canvasCenter(tester));
+      addTearDown(mouse.removePointer);
+      await mouse.moveTo(canvasCenter(tester) + const Offset(10, 10));
+      await tester.pump();
+      expect(
+        find.byWidgetPredicate(
+          (w) =>
+              w is CustomPaint &&
+              w.painter.runtimeType.toString() == '_HoverPainter',
+        ),
+        paints..circle(),
+      );
+    });
+
+    testWidgets('the pen panel tucks away to a tab and comes back', (
+      tester,
+    ) async {
+      await pumpPage(tester, penPanel: 'left');
+      await tester.tap(find.bySemanticsLabel('Hide pen panel'));
+      await tester.pumpAndSettle();
+      expect(find.byTooltip('Pencil'), findsNothing);
+
+      await tester.tap(find.bySemanticsLabel('Show pen panel'));
+      await tester.pumpAndSettle();
+      expect(find.byTooltip('Pencil'), findsOneWidget);
     });
   });
 
