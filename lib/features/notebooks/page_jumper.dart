@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../shared/dialogs.dart';
+import '../../shared/ui/empty_state.dart';
 import '../tasks/task_providers.dart' show todayProvider;
 import 'domain/notebook_models.dart';
 import 'notes_providers.dart';
@@ -65,22 +66,39 @@ class _PageJumper extends ConsumerStatefulWidget {
 }
 
 class _PageJumperState extends ConsumerState<_PageJumper> {
-  late final ScrollController _scroll;
+  final _scroll = ScrollController();
+  final _current = GlobalKey();
+  final _search = TextEditingController();
+  String _query = '';
+
+  /// Sections shown open, in a notebook long enough to fold them.
+  late final Set<String> _open = {
+    ?ref
+        .read(orderedPagesProvider(widget.notebookId))
+        .where((p) => p.id == widget.currentPageId)
+        .firstOrNull
+        ?.sectionId,
+  };
+
+  /// Notebooks with more pages than this fold their sections.
+  static const foldFrom = 40;
 
   @override
   void initState() {
     super.initState();
-    // Open with the current page in view (rows are about 48 high).
-    final pages = ref.read(orderedPagesProvider(widget.notebookId));
-    final index = pages.indexWhere((p) => p.id == widget.currentPageId);
-    _scroll = ScrollController(
-      initialScrollOffset: index <= 4 ? 0.0 : (index - 3) * 48.0,
-    );
+    // Open with the current page in view.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final row = _current.currentContext;
+      if (row != null && mounted) {
+        Scrollable.ensureVisible(row, alignment: 0.3);
+      }
+    });
   }
 
   @override
   void dispose() {
     _scroll.dispose();
+    _search.dispose();
     super.dispose();
   }
 
@@ -91,6 +109,7 @@ class _PageJumperState extends ConsumerState<_PageJumper> {
     final pages = ref.watch(orderedPagesProvider(notebookId));
     final sections = ref.watch(sectionsProvider(notebookId)).value ?? const [];
     final today = todaysPage(pages, ref.watch(todayProvider).toDateTime());
+    final first = pages.firstOrNull;
     final bookmarks = [
       for (final p in pages)
         if (p.bookmarked) p,
@@ -101,6 +120,13 @@ class _PageJumperState extends ConsumerState<_PageJumper> {
     ];
     final here = pages.where((p) => p.id == currentPageId).firstOrNull;
     final repo = ref.read(notebookRepositoryProvider);
+    final fold = pages.length > foldFrom;
+    final words = _query
+        .toLowerCase()
+        .split(RegExp(r'\s+'))
+        .where((w) => w.isNotEmpty)
+        .toList();
+    final sectionTitles = {for (final s in sections) s.id: s.title};
 
     Future<void> nameEntry(NotePage p) async {
       final name = await askForText(
@@ -135,13 +161,20 @@ class _PageJumperState extends ConsumerState<_PageJumper> {
             ),
     );
 
-    Widget pageTile(NotePage p, {IconData? icon}) {
+    Widget pageTile(
+      NotePage p, {
+      IconData? icon,
+      String? subtitle,
+      bool mark = true,
+    }) {
       final current = p.id == currentPageId;
       return ListTile(
+        key: current && mark ? _current : null,
         dense: true,
         selected: current,
         leading: icon == null ? null : Icon(icon, size: 20),
         title: Text(p.displayTitle),
+        subtitle: subtitle == null ? null : Text(subtitle),
         trailing: current
             ? Text(widget.choosing ? 'This page' : 'Open now')
             : null,
@@ -154,23 +187,92 @@ class _PageJumperState extends ConsumerState<_PageJumper> {
       child: Text(text, style: theme.textTheme.titleSmall),
     );
 
-    final children = <Widget>[
-      if (today != null) pageTile(today, icon: Icons.today),
-      if (bookmarks.isNotEmpty) ...[
-        heading('Bookmarks'),
-        for (final p in bookmarks) pageTile(p, icon: Icons.bookmark),
-      ],
-      if (outline.isNotEmpty) ...[
-        heading('Outline'),
-        for (final p in outline) outlineTile(p),
-      ],
-      for (final s in sections)
-        if (pages.any((p) => p.sectionId == s.id)) ...[
-          heading(s.title),
-          for (final p in pages)
-            if (p.sectionId == s.id) pageTile(p),
+    // A section's heading; in a long notebook it opens and closes.
+    Widget sectionHeading(Section s, int count) {
+      if (!fold) return heading(s.title);
+      final open = _open.contains(s.id);
+      return ListTile(
+        dense: true,
+        title: Text(s.title, style: theme.textTheme.titleSmall),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              '$count',
+              style: theme.textTheme.labelMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(width: 4),
+            Icon(open ? Icons.expand_less : Icons.expand_more),
+          ],
+        ),
+        onTap: () => setState(() {
+          if (!_open.remove(s.id)) _open.add(s.id);
+        }),
+      );
+    }
+
+    final List<Widget> children;
+    if (words.isNotEmpty) {
+      // Searching: every page whose title or section has every word.
+      final found = [
+        for (final p in pages)
+          if (words.every(
+            ('${p.displayTitle} ${p.outline ?? ''} '
+                    '${sectionTitles[p.sectionId] ?? ''}')
+                .toLowerCase()
+                .contains,
+          ))
+            p,
+      ];
+      children = found.isEmpty
+          ? [
+              const Padding(
+                padding: EdgeInsets.only(top: 32),
+                child: EmptyState(
+                  icon: Icons.search_off,
+                  title: 'No pages match.',
+                ),
+              ),
+            ]
+          : [
+              for (final p in found)
+                pageTile(p, subtitle: sectionTitles[p.sectionId]),
+            ];
+    } else {
+      children = [
+        if (today != null)
+          pageTile(today, icon: Icons.today, subtitle: 'Today', mark: false),
+        // A planner's first page is its Home.
+        if (fold &&
+            first != null &&
+            first.id != today?.id &&
+            first.id != currentPageId)
+          pageTile(
+            first,
+            icon: Icons.home_outlined,
+            subtitle: 'First page',
+            mark: false,
+          ),
+        if (bookmarks.isNotEmpty) ...[
+          heading('Bookmarks'),
+          for (final p in bookmarks)
+            pageTile(p, icon: Icons.bookmark, mark: false),
         ],
-    ];
+        if (outline.isNotEmpty) ...[
+          heading('Outline'),
+          for (final p in outline) outlineTile(p),
+        ],
+        for (final s in sections)
+          if (pages.where((p) => p.sectionId == s.id).toList()
+              case final inSection when inSection.isNotEmpty) ...[
+            sectionHeading(s, inSection.length),
+            if (!fold || _open.contains(s.id))
+              for (final p in inSection) pageTile(p),
+          ],
+      ];
+    }
     return SafeArea(
       child: SizedBox(
         height: MediaQuery.sizeOf(context).height * 0.75,
@@ -203,8 +305,38 @@ class _PageJumperState extends ConsumerState<_PageJumper> {
                 ],
               ),
             ),
+            if (pages.length > 12)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                child: TextField(
+                  controller: _search,
+                  textInputAction: TextInputAction.search,
+                  onTapOutside: (_) => FocusScope.of(context).unfocus(),
+                  decoration: InputDecoration(
+                    isDense: true,
+                    prefixIcon: const Icon(Icons.search),
+                    hintText: 'Search pages',
+                    suffixIcon: _query.isEmpty
+                        ? null
+                        : IconButton(
+                            tooltip: 'Clear search',
+                            icon: const Icon(Icons.close),
+                            onPressed: () => setState(() {
+                              _search.clear();
+                              _query = '';
+                            }),
+                          ),
+                  ),
+                  onChanged: (q) => setState(() => _query = q),
+                ),
+              ),
             Expanded(
-              child: ListView(controller: _scroll, children: children),
+              child: ListView(
+                controller: _scroll,
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
+                children: children,
+              ),
             ),
           ],
         ),

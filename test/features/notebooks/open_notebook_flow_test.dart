@@ -56,13 +56,22 @@ void main() {
   }
 
   /// The title of the open page.
-  String openTitle(WidgetTester tester) => tester
-      .widget<Text>(
-        find
-            .descendant(of: find.byType(AppBar), matching: find.byType(Text))
-            .first,
-      )
-      .data!;
+  // A page shows its notebook above its title; other screens just a title.
+  String openTitle(WidgetTester tester) {
+    final page = find.byKey(const Key('page-title'));
+    return tester
+        .widget<Text>(
+          page.evaluate().isNotEmpty
+              ? page
+              : find
+                    .descendant(
+                      of: find.byType(AppBar),
+                      matching: find.byType(Text),
+                    )
+                    .first,
+        )
+        .data!;
+  }
 
   Future<void> openFromHome(WidgetTester tester) async {
     await tester.tap(find.text('Week planner'));
@@ -147,5 +156,56 @@ void main() {
     await tester.tap(find.text('All pages'));
     await tester.pumpAndSettle();
     expect(find.byType(NotebookScreen), findsOneWidget);
+  });
+
+  testWidgets('a long notebook folds its sections, and pages can be searched', (
+    tester,
+  ) async {
+    await pumpApp(tester, skins, size: tablet);
+    final repo = ProviderScope.containerOf(
+      tester.element(find.byType(NotelyApp)),
+    ).read(notebookRepositoryProvider);
+    final nb = await repo.createNotebook(
+      const NewNotebook(title: 'Long book', cover: NotebookCover.color(0)),
+    );
+    final first = (await repo.watchSections(nb.id).first).single;
+    await repo.renameSection(nb.id, first.id, 'Spring');
+    final second = await repo.createSection(nb.id, 'Autumn');
+    for (final (section, name) in [(first, 'Spring'), (second, 'Autumn')]) {
+      await repo.createPages(nb.id, section.id, [
+        for (var i = 1; i <= 25; i++)
+          (title: '$name $i', paper: null, template: null),
+      ]);
+    }
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Long book'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byTooltip('Go to page'));
+    await tester.pumpAndSettle();
+    // Only the open page's section is unfolded.
+    expect(find.widgetWithText(ListTile, 'Spring 2'), findsOneWidget);
+    expect(find.widgetWithText(ListTile, 'Autumn 2'), findsNothing);
+    await tester.dragUntilVisible(
+      find.text('Autumn'),
+      find.byType(ListView).last,
+      const Offset(0, -300),
+    );
+    await tester.tap(find.text('Autumn'));
+    await tester.pumpAndSettle();
+    await tester.dragUntilVisible(
+      find.widgetWithText(ListTile, 'Autumn 2'),
+      find.byType(ListView).last,
+      const Offset(0, -300),
+    );
+    expect(find.widgetWithText(ListTile, 'Autumn 2'), findsOneWidget);
+
+    await tester.enterText(find.byType(TextField), 'autumn 17');
+    await tester.pumpAndSettle();
+    expect(find.widgetWithText(ListTile, 'Autumn 17'), findsOneWidget);
+    expect(find.widgetWithText(ListTile, 'Spring 2'), findsNothing);
+    await tester.tap(find.widgetWithText(ListTile, 'Autumn 17'));
+    await tester.pumpAndSettle();
+    expect(openTitle(tester), 'Autumn 17');
   });
 }
