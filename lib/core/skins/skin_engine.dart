@@ -72,6 +72,20 @@ class SkinEngine {
         border: OutlineInputBorder(borderRadius: radius),
       ),
       dividerTheme: DividerThemeData(color: c.outline.withValues(alpha: 0.4)),
+      // Messages float above the content as a rounded card (on tablets no
+      // wider than a phone; see NotelyApp), instead of a full-width bar.
+      snackBarTheme: SnackBarThemeData(
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ),
+      dialogTheme: DialogThemeData(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      ),
+      bottomSheetTheme: const BottomSheetThemeData(
+        // Wide enough for a grid of templates, but not edge to edge on a
+        // large tablet.
+        constraints: BoxConstraints(maxWidth: 760),
+      ),
       extensions: [buildNotelySkin(skin)],
     );
   }

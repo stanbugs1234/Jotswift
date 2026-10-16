@@ -26,7 +26,20 @@ class NotelyApp extends ConsumerWidget {
           : MotionTokens.standard,
       themeAnimationCurve: MotionTokens.move,
       routerConfig: ref.watch(routerProvider),
-      builder: (context, child) => MotionScope(child: child!),
+      builder: (context, child) {
+        // On tablets, messages are a card no wider than a phone, centered,
+        // rather than stretching across the screen.
+        final width = MediaQuery.sizeOf(context).width;
+        final theme = Theme.of(context);
+        return Theme(
+          data: width < 600
+              ? theme
+              : theme.copyWith(
+                  snackBarTheme: theme.snackBarTheme.copyWith(width: 440),
+                ),
+          child: MotionScope(child: child!),
+        );
+      },
     );
   }
 }
