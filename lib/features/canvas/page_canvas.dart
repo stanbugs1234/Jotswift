@@ -48,10 +48,25 @@ class PageCanvas extends ConsumerStatefulWidget {
     this.readOnly = false,
     this.inkEnabled = true,
     this.onOpenPage,
+    this.embedded = false,
+    this.onWriting,
+    this.onScroll,
     super.key,
   });
 
   final String pageId;
+
+  /// One of a scrolling list of pages: always fitted to the width, with no
+  /// panning or zooming of its own, so fingers scroll the list.
+  final bool embedded;
+
+  /// Hears when the pen starts (true) and stops (false) writing, so a list
+  /// of pages can hold still under a resting palm.
+  final ValueChanged<bool>? onWriting;
+
+  /// When [embedded] and fingers draw: two fingers moved by this much, to
+  /// scroll the list of pages (one finger scrolls it directly otherwise).
+  final ValueChanged<Offset>? onScroll;
 
   /// Opens another page of the notebook (when a template link is tapped).
   final ValueChanged<String>? onOpenPage;
@@ -233,6 +248,11 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
   Offset _toPage(Offset screen) => (screen - _offset) / _scale;
 
   void _fitWidth(Size viewport) {
+    if (widget.embedded) {
+      _scale = viewport.width / _pageSize.width;
+      _offset = Offset.zero;
+      return;
+    }
     _scale = ((viewport.width - 2 * _margin) / _pageSize.width).clamp(
       _minScale,
       _maxScale,
@@ -243,7 +263,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
   /// Keeps at least part of the page on screen.
   void _clampOffset() {
     final viewport = _viewport;
-    if (viewport == null) return;
+    if (viewport == null || widget.embedded) return;
     final w = _pageSize.width * _scale;
     final h = _pageSize.height * _scale;
     double clampAxis(double value, double content, double view) {
@@ -262,6 +282,9 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
       kind == PointerDeviceKind.invertedStylus;
 
   /// The Pencil is writing or erasing right now.
+  /// Where the drawing pointer is now.
+  Offset _drawPosition = Offset.zero;
+
   bool get _penDown => _drawPointer != null && _isStylus(_drawKind!);
 
   bool _canDraw(PointerDownEvent e) {
@@ -329,6 +352,8 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
 
     if (_canDraw(e)) {
       _drawPointer = e.pointer;
+      _drawPosition = e.localPosition;
+      widget.onWriting?.call(true);
       _drawKind = e.kind;
       _drawStartedAt = e.timeStamp;
       _erasing =
@@ -345,8 +370,11 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     if (e.kind == PointerDeviceKind.touch ||
         e.kind == PointerDeviceKind.mouse) {
       // A second finger while a finger is drawing means "zoom", not "draw".
-      if (_drawPointer != null && _drawKind == PointerDeviceKind.touch) {
+      if (_drawPointer case final first?
+          when _drawKind == PointerDeviceKind.touch) {
         _cancelDrawing();
+        // The drawing finger is now one of the two.
+        _navPointers[first] = _drawPosition;
       }
       _navPointers[e.pointer] = e.localPosition;
       _navStarts[e.pointer] = (e.localPosition, e.timeStamp);
@@ -409,6 +437,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
       return;
     }
     if (e.pointer == _drawPointer) {
+      _drawPosition = e.localPosition;
       if (_erasing) {
         _eraseAt(e.localPosition);
       } else {
@@ -420,6 +449,13 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
 
     final before = Map.of(_navPointers);
     _navPointers[e.pointer] = e.localPosition;
+    // The list of pages scrolls instead.
+    if (widget.embedded) {
+      if (_navPointers.length == 2 && ref.read(fingersDrawProvider)) {
+        widget.onScroll?.call((e.localPosition - before[e.pointer]!) / 2);
+      }
+      return;
+    }
     _velocity[e.pointer]?.addPosition(e.timeStamp, e.localPosition);
     if (_navPointers.length == 2) {
       _twoTravel += (e.localPosition - before[e.pointer]!).distance;
@@ -514,7 +550,9 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
       final start = _navStarts[e.pointer];
       final moved =
           start != null && (e.localPosition - start.$1).distance >= 10;
-      if (moved) _startCoast(tracker.getVelocity().pixelsPerSecond);
+      if (moved && !widget.embedded) {
+        _startCoast(tracker.getVelocity().pixelsPerSecond);
+      }
     }
     final start = _navStarts.remove(e.pointer);
     if (start != null &&
@@ -623,7 +661,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
   }
 
   void _onPointerSignal(PointerSignalEvent e) {
-    if (e is! PointerScrollEvent) return;
+    if (e is! PointerScrollEvent || widget.embedded) return;
     setState(() {
       if (HardwareKeyboard.instance.isControlPressed) {
         final pageAtPointer = _toPage(e.localPosition);
@@ -770,6 +808,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     final stroke = _live.value;
     final kind = _drawKind;
     _drawPointer = null;
+    widget.onWriting?.call(false);
     _rulerSide = null;
     _stopWaitingForHold();
     if (stroke == null) return;
@@ -792,6 +831,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
 
   void _cancelDrawing() {
     _drawPointer = null;
+    widget.onWriting?.call(false);
     _rulerSide = null;
     _stopWaitingForHold();
     _live.value = null;
@@ -857,6 +897,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
 
   void _finishErasing() {
     _drawPointer = null;
+    widget.onWriting?.call(false);
     if (_cutStrokes.isNotEmpty) {
       final pieces = [for (final id in _cutPieces) ?_pendingAdd[id]];
       ref
@@ -1636,7 +1677,9 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     return LayoutBuilder(
       builder: (context, constraints) {
         final viewport = constraints.biggest;
-        if (_viewport == null) _fitWidth(viewport);
+        if (_viewport == null || (widget.embedded && _viewport != viewport)) {
+          _fitWidth(viewport);
+        }
         _viewport = viewport;
         if (rulerOut) {
           _ruler ??= Ruler(center: _toPage(viewport.center(Offset.zero)));

@@ -19,6 +19,7 @@ import 'open_page.dart';
 import 'page_jumper.dart';
 import 'page_order.dart';
 import 'paper_picker.dart';
+import 'vertical_pages.dart';
 
 /// A single page: handwriting on phones and tablets, view-only on the web.
 class PageScreen extends ConsumerWidget {
@@ -41,6 +42,7 @@ class PageScreen extends ConsumerWidget {
   Future<void> _rename(
     BuildContext context,
     WidgetRef ref,
+    String pageId,
     String current,
   ) async {
     final title = await askForText(
@@ -56,6 +58,15 @@ class PageScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Scrolling vertically, the title and tools follow the page in view.
+    final vertical = ref.watch(pageScrollProvider) == PageScroll.vertical;
+    final routeNotebookId = ref
+        .watch(pageProvider(this.pageId))
+        .value
+        ?.notebookId;
+    final pageId = vertical && routeNotebookId != null
+        ? ref.watch(visiblePageProvider(routeNotebookId)) ?? this.pageId
+        : this.pageId;
     final page = ref.watch(pageProvider(pageId));
 
     if (page case AsyncData(value: null)) {
@@ -80,6 +91,10 @@ class PageScreen extends ConsumerWidget {
     // shelf, when the notebook was opened from there).
     void openPage(String id) {
       if (id == pageId) return;
+      if (vertical && notebookId != null) {
+        ref.read(pageJumpProvider(notebookId).notifier).to(id);
+        return;
+      }
       context.replace(
         '/notebooks/$notebookId/pages/$id',
         extra: GoRouterState.of(context).extra,
@@ -144,7 +159,7 @@ class PageScreen extends ConsumerWidget {
       child: Scaffold(
         appBar: AppBar(
           title: InkWell(
-            onTap: () => _rename(context, ref, title),
+            onTap: () => _rename(context, ref, pageId, title),
             child: Text(page.value?.displayTitle ?? ''),
           ),
           actions: [
@@ -186,6 +201,17 @@ class PageScreen extends ConsumerWidget {
                   : () => openPage(adjacent.next!),
             ),
             if (wide) ...[
+              IconButton(
+                tooltip: vertical ? 'Show page by page' : 'Scroll vertically',
+                icon: Icon(
+                  vertical
+                      ? Icons.auto_stories_outlined
+                      : Icons.view_day_outlined,
+                ),
+                onPressed: () => ref
+                    .read(pageScrollProvider.notifier)
+                    .set(vertical ? PageScroll.pages : PageScroll.vertical),
+              ),
               if (!readOnly && page.value != null)
                 IconButton(
                   tooltip: 'Page paper',
@@ -195,7 +221,7 @@ class PageScreen extends ConsumerWidget {
               IconButton(
                 tooltip: 'Rename page',
                 icon: const Icon(Icons.edit_note),
-                onPressed: () => _rename(context, ref, title),
+                onPressed: () => _rename(context, ref, pageId, title),
               ),
             ] else
               // Phones have room for fewer buttons.
@@ -226,7 +252,22 @@ class PageScreen extends ConsumerWidget {
                       ),
                     ),
                   PopupMenuItem(
-                    value: () => _rename(context, ref, title),
+                    value: () => ref
+                        .read(pageScrollProvider.notifier)
+                        .set(vertical ? PageScroll.pages : PageScroll.vertical),
+                    child: ListTile(
+                      leading: Icon(
+                        vertical
+                            ? Icons.auto_stories_outlined
+                            : Icons.view_day_outlined,
+                      ),
+                      title: Text(
+                        vertical ? 'Show page by page' : 'Scroll vertically',
+                      ),
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: () => _rename(context, ref, pageId, title),
                     child: const ListTile(
                       leading: Icon(Icons.edit_note),
                       title: Text('Rename page'),
@@ -243,20 +284,28 @@ class PageScreen extends ConsumerWidget {
             if (!readOnly) InkToolbar(pageId: pageId, inkEnabled: inkEnabled),
             const Divider(height: 1),
             Expanded(
-              child: PageTurnSwitcher(
-                pageKey: pageId,
-                order: order,
-                // Each page keeps its own paper while it turns.
-                child: PageStyle(
-                  style: ref.watch(pageStyleProvider(pageId)),
-                  child: PageCanvas(
-                    pageId: pageId,
-                    readOnly: readOnly,
-                    inkEnabled: inkEnabled,
-                    onOpenPage: openPage,
-                  ),
-                ),
-              ),
+              child: vertical && notebookId != null
+                  ? VerticalPages(
+                      notebookId: notebookId,
+                      order: order,
+                      startPageId: this.pageId,
+                      readOnly: readOnly,
+                      inkEnabled: inkEnabled,
+                    )
+                  : PageTurnSwitcher(
+                      pageKey: pageId,
+                      order: order,
+                      // Each page keeps its own paper while it turns.
+                      child: PageStyle(
+                        style: ref.watch(pageStyleProvider(pageId)),
+                        child: PageCanvas(
+                          pageId: pageId,
+                          readOnly: readOnly,
+                          inkEnabled: inkEnabled,
+                          onOpenPage: openPage,
+                        ),
+                      ),
+                    ),
             ),
           ],
         ),
