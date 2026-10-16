@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:notely/core/settings/synced_setting.dart';
 import 'package:notely/features/canvas/domain/stroke.dart';
 import 'package:notely/features/canvas/ink_tools.dart';
+import 'package:notely/features/canvas/pencil_actions.dart';
 
 import '../../helpers.dart';
 
@@ -136,5 +137,38 @@ void main() {
       expect(eraseFromStroke(line, const Offset(50, 40), 10, id), isNull);
       expect(eraseFromStroke(line, const Offset(100, 0), 150, id), isEmpty);
     });
+  });
+
+  test('Pencil gestures use the iPad setting unless one is chosen here', () {
+    expect(
+      resolvePencilAction(PencilAction.system, 'switchEraser'),
+      PencilAction.switchEraser,
+    );
+    expect(
+      resolvePencilAction(PencilAction.system, 'showInkAttributes'),
+      PencilAction.showColors,
+    );
+    expect(
+      resolvePencilAction(PencilAction.system, 'ignore'),
+      PencilAction.off,
+    );
+    expect(
+      resolvePencilAction(PencilAction.switchPrevious, 'switchEraser'),
+      PencilAction.switchPrevious,
+    );
+  });
+
+  test('eraser and back, and the previous tool', () async {
+    final container = await makeContainer(await loadTestSkins());
+    final tools = container.read(inkToolProvider.notifier);
+    tools.selectTool(InkToolKind.highlighter);
+    tools.toggleEraser();
+    expect(container.read(inkToolProvider).kind, InkToolKind.eraser);
+    tools.toggleEraser();
+    expect(container.read(inkToolProvider).kind, InkToolKind.highlighter);
+
+    tools.selectTool(InkToolKind.lasso);
+    tools.switchToPrevious();
+    expect(container.read(inkToolProvider).kind, InkToolKind.highlighter);
   });
 }

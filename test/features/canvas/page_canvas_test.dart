@@ -1,7 +1,9 @@
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:notely/core/paper/basic_papers.dart';
@@ -756,6 +758,68 @@ void main() {
 
       await drag(tester, PointerDeviceKind.stylus, from: const Offset(0, 200));
       expect(await page.visibleStrokes(), hasLength(1));
+    });
+  });
+
+  testWidgets('the laser pointer leaves no ink, and its trail fades', (
+    tester,
+  ) async {
+    final page = await pumpPage(tester);
+    await tester.ensureVisible(find.byTooltip('Laser pointer'));
+    await tester.tap(find.byTooltip('Laser pointer'));
+    await tester.pump();
+
+    await drag(tester, PointerDeviceKind.stylus);
+
+    expect(await page.strokes(), isEmpty);
+    // pumpAndSettle in drag returned, so the fade stopped by itself.
+  });
+
+  group('Apple Pencil gestures', () {
+    Future<void> pencil(WidgetTester tester, String gesture, String action) =>
+        tester.binding.defaultBinaryMessenger.handlePlatformMessage(
+          'notely/pencil',
+          const StandardMethodCodec().encodeMethodCall(
+            MethodCall('pencilAction', {'gesture': gesture, 'action': action}),
+          ),
+          (_) {},
+        );
+
+    bool selected(WidgetTester tester, String tool) => tester
+        .widget<IconButton>(
+          find.ancestor(
+            of: find.byTooltip(tool),
+            matching: find.byType(IconButton),
+          ),
+        )
+        .isSelected!;
+
+    testWidgets('a double-tap follows the iPad: eraser and back', (
+      tester,
+    ) async {
+      debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+      addTearDown(() => debugDefaultTargetPlatformOverride = null);
+      await pumpPage(tester);
+
+      await pencil(tester, 'tap', 'switchEraser');
+      await tester.pump();
+      expect(selected(tester, 'Eraser'), isTrue);
+
+      await pencil(tester, 'tap', 'switchEraser');
+      await tester.pump();
+      expect(selected(tester, 'Pen'), isTrue);
+      debugDefaultTargetPlatformOverride = null;
+    });
+
+    testWidgets('a squeeze can open the pen options', (tester) async {
+      debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+      addTearDown(() => debugDefaultTargetPlatformOverride = null);
+      await pumpPage(tester);
+
+      await pencil(tester, 'squeeze', 'showInkAttributes');
+      await tester.pumpAndSettle();
+      expect(find.text('Pen type'), findsOneWidget);
+      debugDefaultTargetPlatformOverride = null;
     });
   });
 

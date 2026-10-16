@@ -6,6 +6,7 @@ import '../../core/skins/notely_skin.dart';
 import 'domain/stroke.dart';
 import 'ink_tools.dart';
 import 'lasso.dart';
+import 'pencil_actions.dart';
 import 'page_items.dart';
 import 'stickers.dart';
 
@@ -34,6 +35,7 @@ class InkToolbar extends ConsumerWidget {
     final historyActions = ref.read(inkHistoryProvider(pageId).notifier);
     final scheme = Theme.of(context).colorScheme;
     final canPaste = ref.watch(inkClipboardProvider) != null;
+    if (inkEnabled) ref.watch(pencilGesturesProvider);
 
     Widget toolButton(InkToolKind kind, IconData icon, String label) {
       final selected = tool.kind == kind;
@@ -75,6 +77,7 @@ class InkToolbar extends ConsumerWidget {
                     'Select',
                   ),
                   toolButton(InkToolKind.lasso, Icons.highlight_alt, 'Lasso'),
+                  toolButton(InkToolKind.laser, Icons.flare, 'Laser pointer'),
                   if (canPaste)
                     _ToolButton(
                       tooltip: 'Paste',
@@ -234,14 +237,13 @@ class _PenOptions extends ConsumerWidget {
         const _Palette(),
         const _Divider(),
         const _SizePresets(),
-        MenuAnchor(
+        _PenMenu(
           menuChildren: const [_PenPanel(withSizes: false)],
-          builder: (context, controller, _) => IconButton(
+          builder: (context, onPressed) => IconButton(
             tooltip: 'Pen settings',
             constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
             icon: const Icon(Icons.tune),
-            onPressed: () =>
-                controller.isOpen ? controller.close() : controller.open(),
+            onPressed: onPressed,
           ),
         ),
         if (favorites.isNotEmpty) ...[
@@ -569,9 +571,9 @@ class _PenOptionsButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tool = ref.watch(inkToolProvider);
     final color = tool.colorFrom(NotelySkin.of(context).inkColors);
-    return MenuAnchor(
+    return _PenMenu(
       menuChildren: const [_PenOptions(wrap: true)],
-      builder: (context, controller, _) => IconButton(
+      builder: (context, onPressed) => IconButton(
         tooltip: 'Pen options',
         constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
         icon: Container(
@@ -583,9 +585,37 @@ class _PenOptionsButton extends ConsumerWidget {
             border: Border.all(color: Theme.of(context).colorScheme.outline),
           ),
         ),
-        onPressed: () =>
-            controller.isOpen ? controller.close() : controller.open(),
+        onPressed: onPressed,
       ),
+    );
+  }
+}
+
+/// A pop-up of pen options that also opens for an Apple Pencil gesture
+/// (see [penOptionsRequestProvider]).
+class _PenMenu extends ConsumerStatefulWidget {
+  const _PenMenu({required this.menuChildren, required this.builder});
+
+  final List<Widget> menuChildren;
+  final Widget Function(BuildContext context, VoidCallback onPressed) builder;
+
+  @override
+  ConsumerState<_PenMenu> createState() => _PenMenuState();
+}
+
+class _PenMenuState extends ConsumerState<_PenMenu> {
+  final _controller = MenuController();
+
+  void _toggle() =>
+      _controller.isOpen ? _controller.close() : _controller.open();
+
+  @override
+  Widget build(BuildContext context) {
+    ref.listen(penOptionsRequestProvider, (_, _) => _toggle());
+    return MenuAnchor(
+      controller: _controller,
+      menuChildren: widget.menuChildren,
+      builder: (context, _, _) => widget.builder(context, _toggle),
     );
   }
 }

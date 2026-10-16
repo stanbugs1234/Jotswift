@@ -23,6 +23,10 @@ enum InkToolKind {
   /// Draws a loop around handwriting (and items) to move, resize, rotate,
   /// recolor, copy or delete it.
   lasso,
+
+  /// A glowing trail that fades away: for pointing at things while
+  /// presenting. Never saved.
+  laser,
 }
 
 /// What the eraser takes: whole strokes it touches, or only the ink under
@@ -51,8 +55,12 @@ class InkToolState {
     double? width(Object? v) => v is num ? v.toDouble() : null;
     final kind = InkToolKind.values.asNameMap()[json['kind']];
     return InkToolState(
-      // The select and lasso tools aren't kept: a page opens ready to write.
-      kind: kind == InkToolKind.select || kind == InkToolKind.lasso
+      // The select, lasso and laser tools aren't kept: a page opens ready
+      // to write.
+      kind:
+          kind == InkToolKind.select ||
+              kind == InkToolKind.lasso ||
+              kind == InkToolKind.laser
           ? InkToolKind.pen
           : kind ?? InkToolKind.pen,
       colorIndex: (json['colorIndex'] as num?)?.toInt() ?? 0,
@@ -128,7 +136,8 @@ class InkToolState {
   double get size => switch (kind) {
     InkToolKind.pen ||
     InkToolKind.select ||
-    InkToolKind.lasso => penWidth ?? penSizes[sizeIndex],
+    InkToolKind.lasso ||
+    InkToolKind.laser => penWidth ?? penSizes[sizeIndex],
     InkToolKind.highlighter => highlighterWidth ?? highlighterSizes[sizeIndex],
     InkToolKind.eraser => eraserSizes[sizeIndex],
   };
@@ -194,12 +203,26 @@ class InkToolController extends Notifier<InkToolState> {
   /// [InkToolState.eraserReturns]).
   InkToolKind? _beforeEraser;
 
+  /// The tool before the current one (for a Pencil double-tap).
+  InkToolKind? _previous;
+
   void selectTool(InkToolKind kind) {
     if (kind == InkToolKind.eraser && state.kind != InkToolKind.eraser) {
       _beforeEraser = state.kind;
     }
+    if (kind != state.kind) _previous = state.kind;
     _set(state.copyWith(kind: kind, drawMode: true));
   }
+
+  /// Eraser and back (an Apple Pencil double-tap).
+  void toggleEraser() => selectTool(
+    state.kind == InkToolKind.eraser
+        ? _beforeEraser ?? InkToolKind.pen
+        : InkToolKind.eraser,
+  );
+
+  /// The tool used before this one.
+  void switchToPrevious() => selectTool(_previous ?? InkToolKind.pen);
 
   /// An erase finished: go back to the previous tool if the user asked.
   void erased() {

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -12,6 +13,7 @@ import '../auth/auth_repository.dart';
 import '../calendar/calendar_providers.dart' show monthAnimationProvider;
 import '../calendar/templates/calendar_look.dart' show calendarTemplateProvider;
 import '../calendar/templates/calendar_templates_screen.dart';
+import '../canvas/pencil_actions.dart';
 import '../skins/notebook_style_screen.dart';
 import '../store/paywall.dart';
 import '../store/store_actions.dart';
@@ -118,6 +120,9 @@ class SettingsScreen extends ConsumerWidget {
                   ref.read(fingerDrawingProvider.notifier).set(s.first),
             ),
           ),
+          if (!kIsWeb && defaultTargetPlatform == TargetPlatform.iOS)
+            for (final gesture in PencilGesture.values)
+              _PencilGestureTile(gesture: gesture),
           const ListTile(
             leading: Icon(Icons.animation),
             title: Text('Animations'),
@@ -199,6 +204,44 @@ class SettingsScreen extends ConsumerWidget {
             title: const Text('Delete account'),
             onTap: () => _confirmDelete(context, ref),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+/// What an Apple Pencil double-tap or squeeze does.
+class _PencilGestureTile extends ConsumerWidget {
+  const _PencilGestureTile({required this.gesture});
+
+  final PencilGesture gesture;
+
+  static String label(PencilAction action) => switch (action) {
+    PencilAction.system => 'As in iPad Settings',
+    PencilAction.switchEraser => 'Eraser and back',
+    PencilAction.switchPrevious => 'Previous tool',
+    PencilAction.showColors => 'Colors and pen options',
+    PencilAction.off => 'Nothing',
+  };
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final action = ref.watch(pencilActionProvider(gesture));
+    return ListTile(
+      contentPadding: const EdgeInsets.fromLTRB(72, 0, 16, 0),
+      title: Text(
+        gesture == PencilGesture.tap
+            ? 'Pencil double-tap'
+            : 'Pencil squeeze (Apple Pencil Pro)',
+      ),
+      subtitle: Text(label(action)),
+      trailing: PopupMenuButton<PencilAction>(
+        tooltip: 'Change',
+        initialValue: action,
+        onSelected: ref.read(pencilActionProvider(gesture).notifier).set,
+        itemBuilder: (context) => [
+          for (final a in PencilAction.values)
+            PopupMenuItem(value: a, child: Text(label(a))),
         ],
       ),
     );

@@ -68,7 +68,7 @@ class PageCanvas extends ConsumerStatefulWidget {
 }
 
 class _PageCanvasState extends ConsumerState<PageCanvas>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   static const _minScale = 0.2;
   static const _maxScale = 6.0;
   static const _margin = 16.0;
@@ -163,6 +163,12 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
   /// Handles are this many screen pixels across at any zoom.
   static const _handleSize = 28.0;
 
+  // Laser pointer: recent points (page units) with when they were added.
+  final _laser = ValueNotifier<List<(Offset, Duration)>>(const []);
+  int? _laserPointer;
+  final _laserClock = Stopwatch()..start();
+  late final Ticker _laserFade = createTicker((_) => _fadeLaser());
+
   // Lasso.
   /// The loop being drawn, in page units, and the pointer drawing it.
   final _lassoPoints = ValueNotifier<List<Offset>>(const []);
@@ -206,6 +212,8 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
   void dispose() {
     _live.dispose();
     _lassoPoints.dispose();
+    _laser.dispose();
+    _laserFade.dispose();
     _coast.dispose();
     _zoomBadge.dispose();
     _zoomBadgeTimer?.cancel();
@@ -302,6 +310,14 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     if (_lassoWith(e)) return;
     if (_selectWith(e)) return;
 
+    if (_canDraw(e) &&
+        ref.read(inkToolProvider).kind == InkToolKind.laser &&
+        e.kind != PointerDeviceKind.invertedStylus) {
+      _laserPointer = e.pointer;
+      _addLaserPoint(e.localPosition);
+      return;
+    }
+
     if (_canDraw(e)) {
       _drawPointer = e.pointer;
       _drawKind = e.kind;
@@ -369,6 +385,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
   }
 
   void _onPointerMove(PointerMoveEvent e) {
+    if (e.pointer == _laserPointer) return _addLaserPoint(e.localPosition);
     if (e.pointer == _lassoPointer) {
       _lassoPoints.value = [..._lassoPoints.value, _toPage(e.localPosition)];
       return;
@@ -473,6 +490,10 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
 
   void _onPointerUp(PointerEvent e) {
     _holdTimer?.cancel();
+    if (e.pointer == _laserPointer) {
+      _laserPointer = null;
+      return;
+    }
     if (e.pointer == _lassoPointer) return _finishLasso();
     if (e.pointer == _lassoDrag?.pointer) return _finishLassoDrag();
     if (e.pointer == _drag?.pointer) _finishDrag();
@@ -571,6 +592,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
 
   void _onPointerCancel(PointerEvent e) {
     _holdTimer?.cancel();
+    if (e.pointer == _laserPointer) _laserPointer = null;
     if (e.pointer == _lassoPointer) {
       _lassoPointer = null;
       _lassoPoints.value = const [];
@@ -819,6 +841,27 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     if (_drawKind != PointerDeviceKind.invertedStylus) {
       ref.read(inkToolProvider.notifier).erased();
     }
+  }
+
+  // Laser pointer
+
+  /// How long the laser's trail lasts.
+  static const _laserLife = Duration(milliseconds: 900);
+
+  void _addLaserPoint(Offset screen) {
+    _laser.value = [..._laser.value, (_toPage(screen), _laserClock.elapsed)];
+    if (!_laserFade.isActive) _laserFade.start();
+  }
+
+  /// Drops points older than [_laserLife] and repaints so the tail keeps
+  /// fading; stops once the trail is gone.
+  void _fadeLaser() {
+    final now = _laserClock.elapsed;
+    _laser.value = [
+      for (final p in _laser.value)
+        if (now - p.$2 < _laserLife) p,
+    ];
+    if (_laser.value.isEmpty && _laserPointer == null) _laserFade.stop();
   }
 
   // Lasso
@@ -1612,6 +1655,16 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
                                     ),
                                   IgnorePointer(
                                     child: CustomPaint(
+                                      painter: _LaserPainter(
+                                        _laser,
+                                        _laserClock,
+                                        _laserLife,
+                                        1 / _scale,
+                                      ),
+                                    ),
+                                  ),
+                                  IgnorePointer(
+                                    child: CustomPaint(
                                       painter: LassoPathPainter(
                                         _lassoPoints,
                                         Theme.of(context).colorScheme.primary,
@@ -1961,4 +2014,59 @@ class _LassoDrag {
   final _DragMode mode;
   final LassoTransform start;
   final Offset startPoint;
+}
+
+/// The laser pointer's trail: a red glow with a bright core, fading along
+/// its length as points age.
+class _LaserPainter extends CustomPainter {
+  _LaserPainter(this.points, this.clock, this.life, this.unit)
+    : super(repaint: points);
+
+  final ValueNotifier<List<(Offset, Duration)>> points;
+  final Stopwatch clock;
+  final Duration life;
+
+  /// One screen pixel in page units.
+  final double unit;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final pts = points.value;
+    if (pts.isEmpty) return;
+    final now = clock.elapsed;
+    double alpha((Offset, Duration) p) =>
+        (1 - (now - p.$2).inMicroseconds / life.inMicroseconds).clamp(0.0, 1.0);
+    final glow = Paint()
+      ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 14 * unit
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 6 * unit);
+    final core = Paint()
+      ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 4 * unit;
+    for (var i = 0; i + 1 < pts.length; i++) {
+      final a = alpha(pts[i + 1]);
+      if (a <= 0) continue;
+      glow.color = const Color(0xFFFF2D2D).withValues(alpha: 0.55 * a);
+      core.color = const Color(0xFFFFE5E5).withValues(alpha: a);
+      canvas
+        ..drawLine(pts[i].$1, pts[i + 1].$1, glow)
+        ..drawLine(pts[i].$1, pts[i + 1].$1, core);
+    }
+    // The tip.
+    final tip = pts.last;
+    final a = alpha(tip);
+    if (a > 0) {
+      canvas.drawCircle(
+        tip.$1,
+        7 * unit,
+        Paint()..color = const Color(0xFFFF2D2D).withValues(alpha: a),
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(_LaserPainter old) =>
+      old.points != points || old.unit != unit;
 }
