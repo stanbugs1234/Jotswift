@@ -1,3 +1,5 @@
+import '../../shared/ui/tokens.dart';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -57,176 +59,257 @@ class SettingsScreen extends ConsumerWidget {
     final user = ref.watch(authStateProvider).value;
     final skin = ref.watch(activeSkinProvider);
 
+    final theme = Theme.of(context);
+    final purchases = ref.watch(purchasesClientProvider).isAvailable;
+
+    // A choice of a few, under the row it belongs to.
+    Widget segments<T>(
+      List<(T, String)> options,
+      T selected,
+      ValueChanged<T> onChanged,
+    ) => Padding(
+      padding: const EdgeInsets.fromLTRB(Insets.lg, 0, Insets.lg, Insets.md),
+      child: SegmentedButton<T>(
+        showSelectedIcon: false,
+        segments: [
+          for (final (value, label) in options)
+            ButtonSegment(value: value, label: Text(label)),
+        ],
+        selected: {selected},
+        onSelectionChanged: (s) => onChanged(s.first),
+      ),
+    );
+
+    Widget link(
+      IconData icon,
+      String title,
+      String? subtitle,
+      VoidCallback onTap,
+    ) => ListTile(
+      leading: Icon(icon),
+      title: Text(title),
+      subtitle: subtitle == null ? null : Text(subtitle),
+      trailing: const Icon(Icons.chevron_right),
+      onTap: onTap,
+    );
+
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
-      body: ListView(
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: contentMaxWidth),
+          child: ListView(
+            padding: EdgeInsets.fromLTRB(
+              gutterOf(context),
+              Insets.sm,
+              gutterOf(context),
+              Insets.xxl,
+            ),
+            children: [
+              _Group(
+                title: 'Account',
+                children: [
+                  ListTile(
+                    leading: const Icon(Icons.account_circle_outlined),
+                    title: Text(
+                      user?.displayName ?? user?.email ?? 'Signed in',
+                    ),
+                    subtitle: const Text('Signed in'),
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.logout),
+                    title: const Text('Sign out'),
+                    onTap: () => ref.read(authRepositoryProvider).signOut(),
+                  ),
+                ],
+              ),
+              _Group(
+                title: 'Appearance',
+                children: [
+                  const ListTile(
+                    leading: Icon(Icons.contrast),
+                    title: Text('Light or dark'),
+                    subtitle: Text(
+                      'Pages keep their own paper in light and dark.',
+                    ),
+                  ),
+                  segments(
+                    const [
+                      (ThemeMode.system, 'System'),
+                      (ThemeMode.light, 'Light'),
+                      (ThemeMode.dark, 'Dark'),
+                    ],
+                    ref.watch(themeModeProvider),
+                    ref.read(appearanceProvider.notifier).set,
+                  ),
+                  link(
+                    Icons.palette_outlined,
+                    'Notebook style',
+                    skin.name,
+                    () => context.push(notebookStylePath),
+                  ),
+                  const ListTile(
+                    leading: Icon(Icons.animation),
+                    title: Text('Animations'),
+                    subtitle: Text(
+                      'Page turns, opening notebooks and other motion. '
+                      "Your device's Reduce Motion setting also tones them "
+                      'down.',
+                    ),
+                  ),
+                  segments(
+                    const [
+                      (AnimationLevel.full, 'Full'),
+                      (AnimationLevel.reduced, 'Reduced'),
+                      (AnimationLevel.off, 'Off'),
+                    ],
+                    ref.watch(animationLevelProvider),
+                    ref.read(animationLevelProvider.notifier).set,
+                  ),
+                  link(
+                    Icons.auto_stories_outlined,
+                    'Page turn style',
+                    ref.watch(pageTurnStyleProvider).label,
+                    () => showPageTurnPicker(context),
+                  ),
+                  link(
+                    Icons.calendar_month_outlined,
+                    'Calendar template & animation',
+                    '${ref.watch(calendarTemplateProvider).name} · '
+                        '${ref.watch(monthAnimationProvider).label}',
+                    () => showCalendarTemplates(context),
+                  ),
+                ],
+              ),
+              _Group(
+                title: 'Apple Pencil & touch',
+                children: [
+                  ListTile(
+                    leading: const Icon(Icons.draw_outlined),
+                    title: const Text('Fingers'),
+                    subtitle: Text(switch (ref.watch(fingerDrawingProvider)) {
+                      FingerDrawing.device =>
+                        ref.watch(devicePencilProvider).pencilOnly
+                            ? 'Fingers scroll and zoom: your iPad is set to '
+                                  'Only Draw with Apple Pencil.'
+                            : ref.watch(fingersDrawProvider)
+                            ? 'Fingers draw, following this device.'
+                            : 'Fingers scroll and zoom, since you use a '
+                                  'stylus.',
+                      FingerDrawing.on => 'Fingers draw on pages.',
+                      FingerDrawing.off =>
+                        'Fingers scroll and zoom; only the pen draws.',
+                    }),
+                  ),
+                  segments(
+                    const [
+                      (FingerDrawing.device, 'Follow device'),
+                      (FingerDrawing.on, 'Finger draws'),
+                      (FingerDrawing.off, 'Pen only'),
+                    ],
+                    ref.watch(fingerDrawingProvider),
+                    ref.read(fingerDrawingProvider.notifier).set,
+                  ),
+                  if (!kIsWeb && defaultTargetPlatform == TargetPlatform.iOS)
+                    for (final gesture in PencilGesture.values)
+                      _PencilGestureTile(gesture: gesture),
+                ],
+              ),
+              _Group(
+                title: 'Templates & Pro',
+                children: [
+                  link(
+                    Icons.auto_awesome_outlined,
+                    'Jotswift Pro',
+                    ref.watch(entitlementsProvider).pro
+                        ? 'You have Pro'
+                        : 'Unlimited notebooks and everything marked Pro',
+                    () => showPaywall(context, ref),
+                  ),
+                  link(
+                    Icons.storefront_outlined,
+                    'Templates',
+                    'Planners, covers, papers and stickers',
+                    () => context.push(storePath),
+                  ),
+                  link(
+                    Icons.copy_all_outlined,
+                    'My templates',
+                    switch (ref.watch(myTemplatesProvider).value?.length ?? 0) {
+                      0 =>
+                        'Save any notebook as a template to start new ones '
+                            'from',
+                      1 => '1 template',
+                      final n => '$n templates',
+                    },
+                    () => context.push(myTemplatesPath),
+                  ),
+                  if (purchases)
+                    ListTile(
+                      leading: const Icon(Icons.restore),
+                      title: const Text('Restore purchases'),
+                      onTap: () => restorePurchases(context, ref),
+                    ),
+                ],
+              ),
+              _Group(
+                children: [
+                  ListTile(
+                    leading: Icon(
+                      Icons.delete_forever_outlined,
+                      color: theme.colorScheme.error,
+                    ),
+                    title: Text(
+                      'Delete account',
+                      style: TextStyle(color: theme.colorScheme.error),
+                    ),
+                    onTap: () => _confirmDelete(context, ref),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Settings that belong together, on one rounded card under a heading.
+class _Group extends StatelessWidget {
+  const _Group({required this.children, this.title});
+
+  final String? title;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(top: Insets.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          ListTile(
-            leading: const Icon(Icons.account_circle_outlined),
-            title: Text(user?.displayName ?? user?.email ?? 'Signed in'),
-            subtitle: const Text('Account'),
-          ),
-          const ListTile(
-            leading: Icon(Icons.contrast),
-            title: Text('Appearance'),
-            subtitle: Text('Pages keep their own paper in light and dark.'),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(72, 0, 16, 8),
-            child: SegmentedButton<ThemeMode>(
-              showSelectedIcon: false,
-              segments: const [
-                ButtonSegment(value: ThemeMode.system, label: Text('System')),
-                ButtonSegment(value: ThemeMode.light, label: Text('Light')),
-                ButtonSegment(value: ThemeMode.dark, label: Text('Dark')),
-              ],
-              selected: {ref.watch(themeModeProvider)},
-              onSelectionChanged: (s) =>
-                  ref.read(appearanceProvider.notifier).set(s.first),
-            ),
-          ),
-          ListTile(
-            leading: const Icon(Icons.draw_outlined),
-            title: const Text('Apple Pencil & touch'),
-            subtitle: Text(switch (ref.watch(fingerDrawingProvider)) {
-              FingerDrawing.device =>
-                ref.watch(devicePencilProvider).pencilOnly
-                    ? 'Fingers scroll and zoom: your iPad is set to Only '
-                          'Draw with Apple Pencil.'
-                    : ref.watch(fingersDrawProvider)
-                    ? 'Fingers draw, following this device.'
-                    : 'Fingers scroll and zoom, since you use a stylus.',
-              FingerDrawing.on => 'Fingers draw on pages.',
-              FingerDrawing.off =>
-                'Fingers scroll and zoom; only the pen draws.',
-            }),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(72, 0, 16, 8),
-            child: SegmentedButton<FingerDrawing>(
-              showSelectedIcon: false,
-              segments: const [
-                ButtonSegment(
-                  value: FingerDrawing.device,
-                  label: Text('Follow device'),
+          if (title case final t?)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                Insets.lg,
+                Insets.sm,
+                Insets.lg,
+                Insets.sm,
+              ),
+              child: Text(
+                t,
+                style: theme.textTheme.titleSmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
                 ),
-                ButtonSegment(
-                  value: FingerDrawing.on,
-                  label: Text('Finger draws'),
-                ),
-                ButtonSegment(
-                  value: FingerDrawing.off,
-                  label: Text('Pen only'),
-                ),
-              ],
-              selected: {ref.watch(fingerDrawingProvider)},
-              onSelectionChanged: (s) =>
-                  ref.read(fingerDrawingProvider.notifier).set(s.first),
+              ),
             ),
-          ),
-          if (!kIsWeb && defaultTargetPlatform == TargetPlatform.iOS)
-            for (final gesture in PencilGesture.values)
-              _PencilGestureTile(gesture: gesture),
-          const ListTile(
-            leading: Icon(Icons.animation),
-            title: Text('Animations'),
-            subtitle: Text(
-              'Page turns, opening notebooks and other motion. '
-              "Your device's Reduce Motion setting also tones them down.",
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(72, 0, 16, 8),
-            child: SegmentedButton<AnimationLevel>(
-              showSelectedIcon: false,
-              segments: const [
-                ButtonSegment(value: AnimationLevel.full, label: Text('Full')),
-                ButtonSegment(
-                  value: AnimationLevel.reduced,
-                  label: Text('Reduced'),
-                ),
-                ButtonSegment(value: AnimationLevel.off, label: Text('Off')),
-              ],
-              selected: {ref.watch(animationLevelProvider)},
-              onSelectionChanged: (s) =>
-                  ref.read(animationLevelProvider.notifier).set(s.first),
-            ),
-          ),
-          ListTile(
-            leading: const Icon(Icons.auto_stories_outlined),
-            title: const Text('Page turn style'),
-            subtitle: Text(ref.watch(pageTurnStyleProvider).label),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => showPageTurnPicker(context),
-          ),
-          ListTile(
-            leading: const Icon(Icons.calendar_month_outlined),
-            title: const Text('Calendar template & animation'),
-            subtitle: Text(
-              '${ref.watch(calendarTemplateProvider).name} · '
-              '${ref.watch(monthAnimationProvider).label}',
-            ),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => showCalendarTemplates(context),
-          ),
-          ListTile(
-            leading: const Icon(Icons.copy_all_outlined),
-            title: const Text('My templates'),
-            subtitle: Text(
-              switch (ref.watch(myTemplatesProvider).value?.length ?? 0) {
-                0 => 'Save any notebook as a template to start new ones from',
-                1 => '1 template',
-                final n => '$n templates',
-              },
-            ),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => context.push(myTemplatesPath),
-          ),
-          ListTile(
-            leading: const Icon(Icons.palette_outlined),
-            title: const Text('Notebook style'),
-            subtitle: Text(skin.name),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => context.push(notebookStylePath),
-          ),
-          const Divider(),
-          ListTile(
-            leading: const Icon(Icons.auto_awesome_outlined),
-            title: const Text('Jotswift Pro'),
-            subtitle: Text(
-              ref.watch(entitlementsProvider).pro
-                  ? 'You have Pro'
-                  : 'Unlimited notebooks and everything marked Pro',
-            ),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => showPaywall(context, ref),
-          ),
-          ListTile(
-            leading: const Icon(Icons.storefront_outlined),
-            title: const Text('Templates'),
-            subtitle: const Text('Planners, covers, papers and stickers'),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => context.push(storePath),
-          ),
-          if (ref.watch(purchasesClientProvider).isAvailable)
-            ListTile(
-              leading: const Icon(Icons.restore),
-              title: const Text('Restore purchases'),
-              onTap: () => restorePurchases(context, ref),
-            ),
-          const Divider(),
-          ListTile(
-            leading: const Icon(Icons.logout),
-            title: const Text('Sign out'),
-            onTap: () => ref.read(authRepositoryProvider).signOut(),
-          ),
-          ListTile(
-            leading: Icon(
-              Icons.delete_forever_outlined,
-              color: Theme.of(context).colorScheme.error,
-            ),
-            title: const Text('Delete account'),
-            onTap: () => _confirmDelete(context, ref),
+          Material(
+            color: theme.colorScheme.surfaceContainer,
+            borderRadius: BorderRadius.circular(Radii.md),
+            clipBehavior: Clip.antiAlias,
+            child: Column(children: children),
           ),
         ],
       ),
@@ -251,14 +334,14 @@ class _PencilGestureTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final action = ref.watch(pencilActionProvider(gesture));
+    // The current choice on the right, as a menu, like iOS Settings.
     return ListTile(
-      contentPadding: const EdgeInsets.fromLTRB(72, 0, 16, 0),
+      leading: const SizedBox(width: 24),
       title: Text(
         gesture == PencilGesture.tap
             ? 'Pencil double-tap'
             : 'Pencil squeeze (Apple Pencil Pro)',
       ),
-      subtitle: Text(label(action)),
       trailing: PopupMenuButton<PencilAction>(
         tooltip: 'Change',
         initialValue: action,
@@ -267,6 +350,21 @@ class _PencilGestureTile extends ConsumerWidget {
           for (final a in PencilAction.values)
             PopupMenuItem(value: a, child: Text(label(a))),
         ],
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              label(action),
+              style: Theme.of(context).textTheme.bodyMedium
+                  ?.copyWith(color: Theme.of(context).colorScheme.primary),
+            ),
+            Icon(
+              Icons.unfold_more,
+              size: 18,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ],
+        ),
       ),
     );
   }
