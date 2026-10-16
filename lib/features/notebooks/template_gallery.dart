@@ -324,3 +324,29 @@ class _PageThumb extends ConsumerWidget {
     );
   }
 }
+
+/// A template's first pages in a row, for a store item: what's inside
+/// before choosing it. Shows nothing until the pages can be read (an item
+/// that isn't unlocked can't be downloaded).
+class TemplatePageStrip extends ConsumerWidget {
+  const TemplatePageStrip({required this.item, this.max = 12, super.key});
+
+  final CatalogItem item;
+  final int max;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final spec = ref.watch(templateSpecProvider(item)).value;
+    if (spec == null || spec.pages.isEmpty) return const SizedBox.shrink();
+    final pages = spec.pages.take(max).toList();
+    return SizedBox(
+      height: 230,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: pages.length,
+        separatorBuilder: (_, _) => const SizedBox(width: Insets.md),
+        itemBuilder: (context, i) => _PageThumb(item: item, page: pages[i]),
+      ),
+    );
+  }
+}

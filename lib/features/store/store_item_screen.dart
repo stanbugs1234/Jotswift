@@ -1,3 +1,8 @@
+import '../canvas/templates.dart' show templateImageProvider, templatePage;
+import '../notebooks/template_filter.dart' show categoryLabel;
+import '../notebooks/template_gallery.dart'
+    show TemplatePageStrip, showTemplatePages;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -55,7 +60,12 @@ class StoreItemScreen extends ConsumerWidget {
       aspectRatio: 3 / 4,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
-        child: ItemPreview(item: item),
+        child:
+            item.kind == CatalogKind.template &&
+                accessOf(ref.watch(entitlementsProvider), item) !=
+                    ItemAccess.locked
+            ? _SharpPreview(item: item)
+            : ItemPreview(item: item),
       ),
     );
     final details = Column(
@@ -84,13 +94,12 @@ class StoreItemScreen extends ConsumerWidget {
         if (item.tags.isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(top: 12),
-            child: Wrap(
-              spacing: 6,
-              runSpacing: 6,
-              children: [
-                for (final t in item.tags)
-                  Chip(label: Text(t), visualDensity: VisualDensity.compact),
-              ],
+            // Quiet words for what it's for, not buttons.
+            child: Text(
+              item.tags.join(' · '),
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
             ),
           ),
         const SizedBox(height: 24),
@@ -112,7 +121,8 @@ class StoreItemScreen extends ConsumerWidget {
     );
 
     return Scaffold(
-      appBar: AppBar(title: Text(item.name)),
+      // The name is the page's heading; the bar stays clear.
+      appBar: AppBar(),
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
@@ -134,6 +144,29 @@ class StoreItemScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 24),
             details,
+          ],
+          if (item.kind == CatalogKind.template &&
+              accessOf(ref.watch(entitlementsProvider), item) !=
+                  ItemAccess.locked) ...[
+            Padding(
+              padding: const EdgeInsets.only(top: 32, bottom: 12),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      "What's inside",
+                      style: theme.textTheme.titleMedium,
+                    ),
+                  ),
+                  TextButton.icon(
+                    icon: const Icon(Icons.visibility_outlined),
+                    label: const Text('Look inside'),
+                    onPressed: () => showTemplatePages(context, item),
+                  ),
+                ],
+              ),
+            ),
+            TemplatePageStrip(item: item),
           ],
           if (contents.isNotEmpty) ...[
             Padding(
@@ -271,8 +304,8 @@ class _GetOrUseState extends ConsumerState<_GetOrUse> {
       ],
       CatalogKind.template => [
         hint(
-          'In a notebook, choose New page from template in the ••• menu '
-          'to add these pages.',
+          'Open any notebook and tap New page: these pages are under '
+          '${categoryLabel(item.category ?? 'pages')}.',
         ),
       ],
       CatalogKind.stickers => [
@@ -324,5 +357,43 @@ class _BuyButton extends ConsumerWidget {
     return primary
         ? FilledButton(onPressed: offer == null ? null : onBuy, child: child)
         : OutlinedButton(onPressed: offer == null ? null : onBuy, child: child);
+  }
+}
+
+/// A template's first page drawn at full size, instead of the small store
+/// picture; the picture until it's ready (or if it can't be).
+class _SharpPreview extends ConsumerWidget {
+  const _SharpPreview({required this.item});
+
+  final CatalogItem item;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final image = ref
+        .watch(
+          templateImageProvider((template: templatePage(item, 1), width: 900)),
+        )
+        .value;
+    if (image == null) return ItemPreview(item: item);
+    return ColoredBox(
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Center(
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.18),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: RawImage(image: image, fit: BoxFit.contain),
+          ),
+        ),
+      ),
+    );
   }
 }
