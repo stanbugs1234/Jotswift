@@ -22,7 +22,7 @@ Competitors only offer these as PDF planners.
 | **Pencil** | Double-tap and squeeze actions, hover preview, laser pointer | Palm rejection, finger toggle |
 | **Import** | Import a PDF, Word or PowerPoint file, or images, and write on it | Store templates only |
 | **Export** | Export a page or notebook as PDF or image; print; share sheet | None |
-| **Pages** | Thumbnail grid with drag-to-reorder; duplicate; copy to another notebook; bookmarks; outlines and links; vertical scrolling | Add, delete and rename pages, sections, page by page |
+| **Pages** | Thumbnail grid with drag-to-reorder; duplicate; copy to another notebook; bookmarks; outlines and links; vertical scrolling | Add, delete and rename pages, sections, page by page; bookmarks, a Go to page list, and planners open on today or where you left off |
 | **Search** | Search inside handwriting and PDFs; convert handwriting to text | Notebook titles only |
 | **Organising** | Tags, favourites, recents | Categories, groups, Trash |
 | **Privacy** | Passcode or Face ID lock per notebook | None |
@@ -57,7 +57,7 @@ Each phase ships as its own TestFlight build. Sizes are rough: S is days, M is a
 |---|---|
 | Import a PDF or images as a new notebook, or insert pages into a notebook; files picker and share-sheet "Open in Jotswift" | L |
 | Export a page, section or notebook as PDF or PNG; share and print | M |
-| Page manager: thumbnail grid, drag to reorder, duplicate, move or copy to another notebook, bookmarks | M |
+| Page manager: thumbnail grid, drag to reorder, duplicate, move or copy to another notebook (bookmarks are done) | M |
 | Vertical scrolling as an option beside page-by-page | M |
 | Your own links and outline entries within a notebook | S |
 
