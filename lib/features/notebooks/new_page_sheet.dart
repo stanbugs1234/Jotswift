@@ -12,6 +12,7 @@ import '../canvas/templates.dart';
 import '../store/store_item.dart';
 import '../store/store_screen.dart';
 import 'data/notes_repository.dart';
+import 'template_filter.dart';
 
 /// What the New page sheet chose.
 sealed class NewPageChoice {
@@ -68,21 +69,30 @@ class _Locked extends _Row {
   final CatalogItem item;
 }
 
-class _NewPageSheet extends ConsumerWidget {
+class _NewPageSheet extends ConsumerStatefulWidget {
   const _NewPageSheet({required this.paper});
 
   final PaperStyle paper;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_NewPageSheet> createState() => _NewPageSheetState();
+}
+
+class _NewPageSheetState extends ConsumerState<_NewPageSheet> {
+  var _filter = const TemplateFilter();
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final paper = widget.paper;
     final entitlements = ref.watch(entitlementsProvider);
     final templates = [
       for (final t in ref.watch(storeCatalogProvider))
         if (t.kind == CatalogKind.template && t.templateMode != null) t,
     ];
-    final usable = templates.where(entitlements.canUseCatalogItem).toList();
-    final locked = templates.where((t) => !usable.contains(t)).toList();
+    final shown = templates.where(_filter.matches).toList();
+    final usable = shown.where(entitlements.canUseCatalogItem).toList();
+    final locked = shown.where((t) => !usable.contains(t)).toList();
     // Page packs first, then the pages of planners.
     usable.sort(
       (a, b) =>
@@ -98,61 +108,92 @@ class _NewPageSheet extends ConsumerWidget {
     return SafeArea(
       child: SizedBox(
         height: MediaQuery.sizeOf(context).height * 0.85,
-        child: ListView.builder(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-          itemCount: rows.length + 1,
-          itemBuilder: (context, i) {
-            if (i == 0) {
-              return Column(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('New page', style: theme.textTheme.titleLarge),
-                  const SizedBox(height: 12),
-                  Wrap(
-                    spacing: 12,
-                    runSpacing: 12,
-                    children: [
-                      _Tile(
-                        label: 'Blank page',
-                        onTap: () =>
-                            Navigator.pop(context, const BlankPageChoice()),
-                        child: CustomPaint(
-                          painter: PaperPainter(paper, scale: 0.18),
-                          child: const SizedBox.expand(),
-                        ),
-                      ),
-                      _Tile(
-                        label: 'Other paper…',
-                        onTap: () =>
-                            Navigator.pop(context, const OtherPaperChoice()),
-                        child: Icon(
-                          Icons.palette_outlined,
-                          size: 36,
-                          color: theme.colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
-                  ),
-                  if (templates.isEmpty)
-                    const Padding(
-                      padding: EdgeInsets.only(top: 24),
-                      child: Text(
-                        'Templates appear here once they download. Check '
-                        'your connection.',
-                      ),
+                  if (templates.isNotEmpty) ...[
+                    const SizedBox(height: 12),
+                    TemplateFilterBar(
+                      templates: templates,
+                      filter: _filter,
+                      onChanged: (f) => setState(() => _filter = f),
                     ),
+                  ],
                 ],
-              );
-            }
-            return switch (rows[i - 1]) {
-              _Heading(:final text) => Padding(
-                padding: const EdgeInsets.only(top: 28, bottom: 4),
-                child: Text(text, style: theme.textTheme.titleMedium),
               ),
-              _Usable(:final item) => _TemplateRow(item: item),
-              _Locked(:final item) => _LockedRow(item: item),
-            };
-          },
+            ),
+            Expanded(
+              child: ListView.builder(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                itemCount: rows.length + 1,
+                itemBuilder: (context, i) {
+                  if (i == 0) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Wrap(
+                          spacing: 12,
+                          runSpacing: 12,
+                          children: [
+                            _Tile(
+                              label: 'Blank page',
+                              onTap: () => Navigator.pop(
+                                context,
+                                const BlankPageChoice(),
+                              ),
+                              child: CustomPaint(
+                                painter: PaperPainter(paper, scale: 0.18),
+                                child: const SizedBox.expand(),
+                              ),
+                            ),
+                            _Tile(
+                              label: 'Other paper…',
+                              onTap: () => Navigator.pop(
+                                context,
+                                const OtherPaperChoice(),
+                              ),
+                              child: Icon(
+                                Icons.palette_outlined,
+                                size: 36,
+                                color: theme.colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                          ],
+                        ),
+                        if (templates.isEmpty)
+                          const Padding(
+                            padding: EdgeInsets.only(top: 24),
+                            child: Text(
+                              'Templates appear here once they download. Check '
+                              'your connection.',
+                            ),
+                          )
+                        else if (shown.isEmpty)
+                          const Padding(
+                            padding: EdgeInsets.only(top: 24),
+                            child: Text('No templates match.'),
+                          ),
+                      ],
+                    );
+                  }
+                  return switch (rows[i - 1]) {
+                    _Heading(:final text) => Padding(
+                      padding: const EdgeInsets.only(top: 28, bottom: 4),
+                      child: Text(text, style: theme.textTheme.titleMedium),
+                    ),
+                    _Usable(:final item) => _TemplateRow(item: item),
+                    _Locked(:final item) => _LockedRow(item: item),
+                  };
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );

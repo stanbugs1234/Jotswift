@@ -108,6 +108,8 @@ CatalogItem template(
   List<String> extraPdfs = const [],
   bool free = true,
   String? name,
+  String? category,
+  List<String> tags = const [],
 }) {
   final pack = zip({
     'template.pdf': utf8.encode('%PDF-$version'),
@@ -123,6 +125,8 @@ CatalogItem template(
     'visibility': 'public',
     'unlock': free ? {'free': true} : {'pro': true},
     'templateMode': spec['mode'],
+    'category': ?category,
+    'tags': tags,
     'pageCount': 3,
     'files': {
       'pack': path,
@@ -523,6 +527,58 @@ void main() {
       expect(nb.title, '2027 Weekly Planner');
     });
 
+    testWidgets('New notebook planners can be searched by name and tag', (
+      tester,
+    ) async {
+      final auth = await pumpApp(
+        tester,
+        skins,
+        size: const Size(900, 1600),
+        overrides: overrides([
+          for (final (id, name, category) in [
+            ('p1', 'Kawaii Planner', 'planners'),
+            ('p2', 'Ocean Planner', 'planners'),
+            ('p3', 'Classic Diary', 'diaries'),
+            ('p4', 'Modern Diary', 'diaries'),
+            ('p5', 'Budget Planner', 'lifestyle'),
+          ])
+            template(
+              downloader,
+              id,
+              plannerJson,
+              name: name,
+              category: category,
+              tags: [if (id == 'p5') 'money'],
+            ),
+        ]),
+      );
+      uid = auth.currentUser!.uid;
+
+      await tester.tap(find.text('New notebook').last);
+      await settle(tester);
+      await tester.tap(find.widgetWithText(ChoiceChip, 'Diaries'));
+      await settle(tester);
+      expect(find.text('Classic Diary'), findsOneWidget);
+      expect(find.text('Modern Diary'), findsOneWidget);
+      expect(find.text('Kawaii Planner'), findsNothing);
+
+      await tester.tap(find.widgetWithText(ChoiceChip, 'All'));
+      await tester.enterText(
+        find.widgetWithText(TextField, 'Search templates'),
+        'money',
+      );
+      await settle(tester);
+      expect(find.text('Budget Planner'), findsOneWidget);
+      expect(find.text('Ocean Planner'), findsNothing);
+
+      await tester.tap(find.text('Budget Planner'));
+      await settle(tester);
+      await tester.tap(find.text('Create'));
+      await settle(tester);
+      final nb = (await backend.notebooks(uid).watchNotebooks().first).single;
+      expect(nb.title, 'Budget Planner');
+    });
+
     testWidgets('pages keep the template version they were made with', (
       tester,
     ) async {
@@ -621,6 +677,37 @@ void main() {
           .watchNotebookPages(notebookId)
           .first;
       expect(pages.single.template, isNull);
+    });
+
+    testWidgets('New page templates can be searched and filtered', (
+      tester,
+    ) async {
+      await pumpNewPageSheet(tester, [
+        template(downloader, 'essentials', pagesJson, category: 'pages'),
+        template(
+          downloader,
+          'planner',
+          plannerJson,
+          category: 'planners',
+          tags: ['weekly', '2027'],
+        ),
+      ]);
+
+      await tester.tap(find.widgetWithText(ChoiceChip, 'Planners'));
+      await settle(tester);
+      expect(find.text('2027 Weekly Planner'), findsOneWidget);
+      expect(find.text('Essentials'), findsNothing);
+
+      await tester.tap(find.widgetWithText(ChoiceChip, 'All'));
+      await tester.enterText(find.byType(TextField), 'essen');
+      await settle(tester);
+      expect(find.text('Essentials'), findsOneWidget);
+      expect(find.text('2027 Weekly Planner'), findsNothing);
+      expect(find.bySemanticsLabel('Blank page'), findsOneWidget);
+
+      await tester.enterText(find.byType(TextField), 'nothing like it');
+      await settle(tester);
+      expect(find.text('No templates match.'), findsOneWidget);
     });
 
     testWidgets('a planner section opens to pick any of its pages', (

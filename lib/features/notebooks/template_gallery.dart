@@ -5,10 +5,12 @@ import '../../core/catalog/catalog_item.dart';
 import '../../core/catalog/template_spec.dart';
 import '../canvas/templates.dart';
 import '../store/store_item.dart';
+import 'template_filter.dart';
 
 /// Planners to start a notebook with, as cards showing what each looks
 /// like. Tap a card to choose it; "Look inside" shows every page first.
-class TemplateGallery extends StatelessWidget {
+/// With more than a few, a search and category chips narrow them down.
+class TemplateGallery extends StatefulWidget {
   const TemplateGallery({
     required this.templates,
     required this.selected,
@@ -20,26 +22,55 @@ class TemplateGallery extends StatelessWidget {
   final CatalogItem? selected;
   final ValueChanged<CatalogItem> onSelected;
 
+  /// How many templates it takes to show the search.
+  static const searchFrom = 5;
+
+  @override
+  State<TemplateGallery> createState() => _TemplateGalleryState();
+}
+
+class _TemplateGalleryState extends State<TemplateGallery> {
+  var _filter = const TemplateFilter();
+
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 286,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: templates.length,
-        separatorBuilder: (_, _) => const SizedBox(width: 12),
-        itemBuilder: (context, i) {
-          final t = templates[i];
-          return _TemplateCard(
-            item: t,
-            selected: t.id == selected?.id,
-            onTap: () => onSelected(t),
-            onLookInside: () async {
-              if (await showTemplatePages(context, t) == true) onSelected(t);
-            },
-          );
-        },
-      ),
+    final templates = widget.templates.where(_filter.matches).toList();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (widget.templates.length >= TemplateGallery.searchFrom) ...[
+          TemplateFilterBar(
+            templates: widget.templates,
+            filter: _filter,
+            onChanged: (f) => setState(() => _filter = f),
+          ),
+          const SizedBox(height: 12),
+        ],
+        SizedBox(
+          height: 286,
+          child: templates.isEmpty
+              ? const Center(child: Text('No templates match.'))
+              : ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: templates.length,
+                  separatorBuilder: (_, _) => const SizedBox(width: 12),
+                  itemBuilder: (context, i) {
+                    final t = templates[i];
+                    return _TemplateCard(
+                      item: t,
+                      selected: t.id == widget.selected?.id,
+                      onTap: () => widget.onSelected(t),
+                      onLookInside: () async {
+                        if (await showTemplatePages(context, t) == true) {
+                          widget.onSelected(t);
+                        }
+                      },
+                    );
+                  },
+                ),
+        ),
+      ],
     );
   }
 }
