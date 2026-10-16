@@ -296,22 +296,38 @@ class _QuickActions extends ConsumerWidget {
               (constraints.maxWidth - 12 * (actions.length - 1)) /
               actions.length;
           final stacked = perCard < 172;
-          return Row(
-            children: [
-              for (final (i, a) in actions.indexed) ...[
-                if (i > 0) const SizedBox(width: 12),
-                Expanded(
-                  child: _QuickActionCard(
-                    label: a.label,
-                    icon: a.icon,
-                    color: a.color,
-                    stacked: stacked,
-                    onTap: a.onTap,
-                  ),
-                ),
-              ],
-            ],
+          Widget card(int i, {required bool stacked}) => _QuickActionCard(
+            label: actions[i].label,
+            icon: actions[i].icon,
+            color: actions[i].color,
+            stacked: stacked,
+            onTap: actions[i].onTap,
           );
+          // Cards in a row share the tallest one's height.
+          Widget row(List<int> indexes, {required bool stacked}) =>
+              IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    for (final (n, i) in indexes.indexed) ...[
+                      if (n > 0) const SizedBox(width: Insets.md),
+                      Expanded(child: card(i, stacked: stacked)),
+                    ],
+                  ],
+                ),
+              );
+          // Too narrow for four across even with the icon above the label
+          // (phones): two rows of two, side by side.
+          if (perCard < 110) {
+            return Column(
+              children: [
+                row([0, 1], stacked: false),
+                const SizedBox(height: Insets.md),
+                row([2, 3], stacked: false),
+              ],
+            );
+          }
+          return row([0, 1, 2, 3], stacked: stacked);
         },
       ),
     );
@@ -366,7 +382,10 @@ class _QuickActionCard extends StatelessWidget {
             vertical: 12,
           ),
           child: stacked
-              ? Column(children: [badge, const SizedBox(height: 6), text])
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [badge, const SizedBox(height: 6), text],
+                )
               : Row(
                   children: [
                     badge,
