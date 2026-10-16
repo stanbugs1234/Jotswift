@@ -172,6 +172,33 @@ Future<Notebook> createNotebookFromTemplate(
   Set<String> skip = const {},
   void Function(int done, int total)? onProgress,
 }) async {
+  final created = await ref
+      .read(notebookRepositoryProvider)
+      .createNotebook(notebook);
+  await addPlannerPages(
+    ref,
+    created.id,
+    item,
+    file: file,
+    skip: skip,
+    onProgress: onProgress,
+  );
+  return created;
+}
+
+/// Adds every page of the planner [item] to [notebookId], as the planner's
+/// sections after the notebook's own (or in place of its only section if
+/// that is empty, as in a new notebook). [file], [skip] and [onProgress]
+/// as for [createNotebookFromTemplate]. Returns the first page added, or
+/// null if none were.
+Future<String?> addPlannerPages(
+  Ref ref,
+  String notebookId,
+  CatalogItem item, {
+  String file = PageTemplate.defaultFile,
+  Set<String> skip = const {},
+  void Function(int done, int total)? onProgress,
+}) async {
   final spec = await ref.read(
     templateFileSpecProvider(templatePage(item, 1, file: file).fileKey).future,
   );
@@ -187,17 +214,26 @@ Future<Notebook> createNotebookFromTemplate(
   ].where((s) => s.pages.isNotEmpty).toList();
   final total = sections.fold(0, (n, s) => n + s.pages.length);
   final repo = ref.read(notebookRepositoryProvider);
-  final created = await repo.createNotebook(notebook);
-  final first = (await repo.watchSections(created.id).first).first;
+  final existing = await repo.watchSections(notebookId).first;
+  String? empty;
+  if (existing.length == 1) {
+    final pages = await repo.watchPages(notebookId, existing.single.id).first;
+    if (pages.isEmpty) empty = existing.single.id;
+  }
   var done = 0;
+  String? firstSection;
   onProgress?.call(done, total);
   for (final (i, section) in sections.indexed) {
-    final sectionId = i == 0
-        ? first.id
-        : (await repo.createSection(created.id, section.title)).id;
-    if (i == 0) await repo.renameSection(created.id, sectionId, section.title);
+    final String sectionId;
+    if (i == 0 && empty != null) {
+      sectionId = empty;
+      await repo.renameSection(notebookId, sectionId, section.title);
+    } else {
+      sectionId = (await repo.createSection(notebookId, section.title)).id;
+    }
+    firstSection ??= sectionId;
     await repo.createPages(
-      created.id,
+      notebookId,
       sectionId,
       [
         for (final p in section.pages)
@@ -212,8 +248,40 @@ Future<Notebook> createNotebookFromTemplate(
     done += section.pages.length;
     onProgress?.call(done, total);
   }
-  return created;
+  if (firstSection == null) return null;
+  final pages = await repo.watchPages(notebookId, firstSection).first;
+  return (pages.toList()..sort((a, b) => a.order.compareTo(b.order)))
+      .firstOrNull
+      ?.id;
 }
+
+/// [addPlannerPages], for widgets.
+final addPlannerPagesProvider =
+    Provider<
+      Future<String?> Function(
+        String notebookId,
+        CatalogItem item, {
+        String file,
+        Set<String> skip,
+        void Function(int done, int total)? onProgress,
+      })
+    >(
+      (ref) =>
+          (
+            notebookId,
+            item, {
+            file = PageTemplate.defaultFile,
+            skip = const {},
+            onProgress,
+          }) => addPlannerPages(
+            ref,
+            notebookId,
+            item,
+            file: file,
+            skip: skip,
+            onProgress: onProgress,
+          ),
+    );
 
 /// What [createNotebookFromTemplate] needs, so widgets can call it.
 final createFromTemplateProvider =

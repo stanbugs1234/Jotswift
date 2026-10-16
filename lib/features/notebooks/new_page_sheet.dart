@@ -36,6 +36,13 @@ class TemplatePageChoice extends NewPageChoice {
   final NewPage page;
 }
 
+/// A whole planner: all its pages, as new sections.
+class WholePlannerChoice extends NewPageChoice {
+  const WholePlannerChoice(this.item);
+
+  final CatalogItem item;
+}
+
 /// Asks what kind of page to add: blank, another paper, or any page of any
 /// template. Templates the user doesn't have yet are listed too and open
 /// their store page. Returns null if cancelled.
@@ -219,6 +226,20 @@ class _TemplateRow extends ConsumerWidget {
               if (item.linked) ...[
                 const SizedBox(width: 8),
                 const LinkedPagesBadge(size: 12),
+              ],
+              if (item.templateMode == TemplateMode.notebook) ...[
+                const Spacer(),
+                const SizedBox(width: 8),
+                FilledButton.tonalIcon(
+                  icon: const Icon(Icons.library_add_outlined, size: 18),
+                  label: Text(
+                    item.pageCount == null
+                        ? 'Add whole planner'
+                        : 'Add whole planner · ${item.pageCount} pages',
+                  ),
+                  onPressed: () =>
+                      Navigator.pop(context, WholePlannerChoice(item)),
+                ),
               ],
             ],
           ),

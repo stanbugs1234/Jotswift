@@ -995,6 +995,71 @@ void main() {
       return (await repo.watchNotebooks().first).single.id;
     }
 
+    testWidgets('a whole planner can be added from New page', (tester) async {
+      final notebookId = await pumpNewPageSheet(tester, [
+        template(downloader, 'planner', plannerJson),
+      ]);
+
+      await tester.tap(find.text('Add whole planner · 3 pages'));
+      await settle(tester);
+      expect(find.text('Add 2027 Weekly Planner'), findsOneWidget);
+      await tester.tap(find.text('Add 3 pages'));
+      await settle(tester);
+
+      // The new notebook's empty section becomes the planner's first.
+      final repo = backend.notebooks(uid);
+      final sections = await repo.watchSections(notebookId).first;
+      expect(sections.map((s) => s.title), ['2027', 'Months']);
+      final pages = sortPages(
+        sections,
+        await repo.watchNotebookPages(notebookId).first,
+      );
+      expect(pages.map((p) => p.template!.pdfPage), [1, 2, 3]);
+      expect(pages.map((p) => p.title), ['2027', 'January', 'February']);
+    });
+
+    testWidgets('a whole planner joins a notebook after its own pages', (
+      tester,
+    ) async {
+      final notebookId = await pumpNewPageSheet(tester, [
+        template(
+          downloader,
+          'focus',
+          builderJson,
+          name: 'Focus Planner',
+          extraPdfs: [
+            'template_sunday.pdf',
+            'template_portrait.pdf',
+            'template_portrait_sunday.pdf',
+          ],
+          extraJson: {'template_portrait_sunday.json': portraitSundayJson},
+        ),
+      ]);
+      final repo = backend.notebooks(uid);
+      final own = (await repo.watchSections(notebookId).first).single;
+      await repo.createPage(notebookId, own.id, title: 'My notes');
+
+      await tester.tap(find.textContaining('Add whole planner'));
+      await settle(tester);
+      await tester.tap(find.text('Portrait'));
+      await tester.pump();
+      await tester.tap(find.text('Daily check-ins'));
+      await settle(tester);
+      await tester.tap(find.text('Add 2 pages'));
+      await settle(tester);
+
+      final sections = await repo.watchSections(notebookId).first;
+      expect(sections.map((s) => s.title), [own.title, 'Start', 'January']);
+      final pages = sortPages(
+        sections,
+        await repo.watchNotebookPages(notebookId).first,
+      );
+      expect(pages.map((p) => p.title), ['My notes', 'Home', 'January']);
+      expect(pages.skip(1).map((p) => p.template!.file).toSet(), {
+        'template_portrait.pdf',
+      });
+    });
+
     testWidgets('New page offers a blank page and every template', (
       tester,
     ) async {

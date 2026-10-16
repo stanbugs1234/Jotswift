@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -124,4 +126,163 @@ class PlannerBuilder extends ConsumerWidget {
         ('layout', 'portrait') => const Icon(Icons.crop_portrait),
         _ => null,
       };
+}
+
+/// Runs [work] (which makes a planner's pages) behind a "Setting up your
+/// planner..." dialog with its progress. Says so and returns null if it
+/// fails.
+Future<T?> withPlannerProgress<T>(
+  BuildContext context,
+  Future<T> Function(void Function(int done, int total) onProgress) work,
+) async {
+  final progress = ValueNotifier<(int, int)>((0, 0));
+  final navigator = Navigator.of(context, rootNavigator: true);
+  final messenger = ScaffoldMessenger.maybeOf(context);
+  var showing = true;
+  unawaited(
+    showDialog<void>(
+      context: context,
+      useRootNavigator: true,
+      barrierDismissible: false,
+      builder: (context) => PopScope(
+        canPop: false,
+        child: AlertDialog(
+          content: ValueListenableBuilder(
+            valueListenable: progress,
+            builder: (context, value, _) {
+              final (done, total) = value;
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Setting up your planner…'),
+                  const SizedBox(height: 16),
+                  LinearProgressIndicator(
+                    value: total == 0 ? null : done / total,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    total == 0 ? '' : '$done of $total pages',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+      ),
+    ).whenComplete(() => showing = false),
+  );
+  try {
+    return await work((done, total) => progress.value = (done, total));
+  } on Object catch (e) {
+    debugPrint('Could not set up a planner: $e');
+    messenger?.showSnackBar(
+      const SnackBar(
+        content: Text(
+          'Could not set up the planner. Check your connection and try '
+          'again.',
+        ),
+      ),
+    );
+    return null;
+  } finally {
+    if (showing) navigator.pop();
+    progress.dispose();
+  }
+}
+
+/// What to add of a planner: its PDF and the page groups to leave out.
+typedef PlannerChoice = ({String file, Set<String> skip});
+
+/// Asks how to add the whole planner [item] to a notebook: its layout,
+/// week start and which pages, as when making a notebook from it. Returns
+/// null if cancelled.
+Future<PlannerChoice?> showAddPlannerSheet(
+  BuildContext context,
+  CatalogItem item,
+) => showModalBottomSheet<PlannerChoice>(
+  context: context,
+  isScrollControlled: true,
+  showDragHandle: true,
+  builder: (context) => _AddPlannerSheet(item: item),
+);
+
+class _AddPlannerSheet extends ConsumerStatefulWidget {
+  const _AddPlannerSheet({required this.item});
+
+  final CatalogItem item;
+
+  @override
+  ConsumerState<_AddPlannerSheet> createState() => _AddPlannerSheetState();
+}
+
+class _AddPlannerSheetState extends ConsumerState<_AddPlannerSheet> {
+  Map<String, String> _options = const {};
+  String _file = PageTemplate.defaultFile;
+  Set<String>? _skip;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final spec = ref.watch(templateSpecProvider(widget.item)).value;
+    final skip = _skip ?? spec?.defaultSkipped ?? const <String>{};
+    final count = spec?.pageCount(skip: skip);
+    return SafeArea(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('Add ${widget.item.name}', style: theme.textTheme.titleLarge),
+            const SizedBox(height: 4),
+            Text(
+              'Every page goes into this notebook as new sections, with '
+              'the links between them.',
+              style: theme.textTheme.bodyMedium,
+            ),
+            if (spec == null)
+              const Padding(
+                padding: EdgeInsets.all(24),
+                child: Center(child: CircularProgressIndicator()),
+              )
+            else
+              PlannerBuilder(
+                template: widget.item,
+                options: _options,
+                skip: _skip,
+                onOptions: (options, file) => setState(() {
+                  _options = options;
+                  _file = file;
+                }),
+                onSkip: (skip) => setState(() => _skip = skip),
+              ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Cancel'),
+                ),
+                const SizedBox(width: 8),
+                FilledButton.icon(
+                  icon: const Icon(Icons.library_add_outlined),
+                  label: Text(
+                    count == null
+                        ? 'Add planner'
+                        : 'Add ${PlannerBuilder._pages(count)}',
+                  ),
+                  onPressed: spec == null
+                      ? null
+                      : () => Navigator.pop(context, (file: _file, skip: skip)),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
