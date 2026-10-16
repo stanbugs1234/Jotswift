@@ -76,21 +76,27 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('a planner opens on this week, and Back returns Home', (
-    tester,
-  ) async {
-    await pumpApp(tester, skins, size: tablet);
-    await makePlanner(tester);
+  testWidgets(
+    'a planner opens on this week; Back shows its sections, then Home',
+    (tester) async {
+      await pumpApp(tester, skins, size: tablet);
+      await makePlanner(tester);
 
-    await openFromHome(tester);
-    expect(find.byType(PageScreen), findsOneWidget);
-    expect(openTitle(tester), 'This week');
+      await openFromHome(tester);
+      expect(find.byType(PageScreen), findsOneWidget);
+      expect(openTitle(tester), 'This week');
 
-    await tester.pageBack();
-    await tester.pumpAndSettle();
-    expect(find.byType(PageScreen), findsNothing);
-    expect(find.byType(NotebookScreen), findsNothing);
-  });
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+      expect(find.byType(PageScreen), findsNothing);
+      expect(find.byType(NotebookScreen), findsOneWidget);
+      expect(find.byTooltip('Add a section'), findsOneWidget);
+
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+      expect(find.byType(NotebookScreen), findsNothing);
+    },
+  );
 
   testWidgets('the same day, it reopens where you left off', (tester) async {
     await pumpApp(tester, skins, size: tablet);
@@ -99,13 +105,16 @@ void main() {
     await openFromHome(tester);
     await goTo(tester, 'Notes');
     expect(openTitle(tester), 'Notes');
-    // Moving between pages keeps Back going Home.
+    // Moving between pages keeps Back going to the sections, then Home.
     await tester.tap(find.byTooltip('Previous page'));
     await tester.pumpAndSettle();
     expect(openTitle(tester), 'This week');
     await tester.tap(find.byTooltip('Next page'));
     await tester.pumpAndSettle();
 
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    expect(find.byType(NotebookScreen), findsOneWidget);
     await tester.pageBack();
     await tester.pumpAndSettle();
     expect(find.text('Continue · Notes'), findsOneWidget);

@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:notely/app/app.dart';
 import 'package:notely/core/skins/skin_manifest.dart';
 import 'package:notely/features/canvas/ink_toolbar.dart';
+import 'package:notely/features/notebooks/notebook_screen.dart';
 import 'package:notely/features/notebooks/notes_providers.dart';
 import 'package:notely/features/notebooks/page_screen.dart';
 import 'package:notely/features/shelf/cover_view.dart';
@@ -200,10 +201,13 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(PageScreen), findsOneWidget);
-    // Back goes straight to Home.
+    // Back shows the notebook's sections, then Home.
     await tester.pageBack();
     await tester.pumpAndSettle();
     expect(find.byType(PageScreen), findsNothing);
+    expect(find.byType(NotebookScreen), findsOneWidget);
+    await tester.pageBack();
+    await tester.pumpAndSettle();
     expect(find.text('Quick note'), findsWidgets);
     expect(find.byType(CoverView), findsOneWidget);
   });

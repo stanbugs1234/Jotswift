@@ -152,9 +152,16 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
       );
     }
 
+    // Until a tab is picked, the section of the page open last.
+    final lastPageId = notebook.value?.lastPageId;
+    final lastSectionId = lastPageId == null
+        ? null
+        : ref.watch(pageProvider(lastPageId)).value?.sectionId;
     final current = sections == null || sections.isEmpty
         ? null
-        : sections.where((s) => s.id == _sectionId).firstOrNull ??
+        : sections
+                  .where((s) => s.id == (_sectionId ?? lastSectionId))
+                  .firstOrNull ??
               sections.first;
 
     return Scaffold(

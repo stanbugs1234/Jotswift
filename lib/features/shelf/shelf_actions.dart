@@ -99,8 +99,8 @@ Future<void> importNotebookAt(
 
 /// Opens [notebook] on the page it should open to (see [pageToOpen]):
 /// today's page in a planner on a new day, otherwise where the user left
-/// off. Back from it returns here. A notebook with no pages opens on its
-/// page list.
+/// off. Back from it shows the notebook's sections and pages, then returns
+/// here. A notebook with no pages opens on its page list.
 Future<void> openNotebook(
   BuildContext context,
   WidgetRef ref,
@@ -116,11 +116,22 @@ Future<void> openNotebook(
   if (page == null) {
     await context.push('/notebooks/${notebook.id}');
   } else {
-    await context.push(
-      '/notebooks/${notebook.id}/pages/${page.id}',
-      extra: openedFromShelf,
-    );
+    _openFromShelf(context, notebook.id, page.id);
   }
+}
+
+/// Opens a page like a book, with its notebook's page list beneath it, so
+/// Back goes to the sections and then to the shelf as it was (the shelf's
+/// query, e.g. `view=starred`, is kept).
+void _openFromShelf(BuildContext context, String notebookId, String pageId) {
+  final query = GoRouterState.of(context).uri.queryParameters;
+  context.go(
+    Uri(
+      path: '/notebooks/$notebookId/pages/$pageId',
+      queryParameters: query.isEmpty ? null : query,
+    ).toString(),
+    extra: openedFromShelf,
+  );
 }
 
 /// Free accounts at the notebook limit see the Pro paywall. True when a
@@ -156,12 +167,7 @@ Future<void> createQuickNote(
   );
   final sections = await repo.watchSections(notebook.id).first;
   final page = await repo.createPage(notebook.id, sections.first.id);
-  if (context.mounted) {
-    await context.push(
-      '/notebooks/${notebook.id}/pages/${page.id}',
-      extra: openedFromShelf,
-    );
-  }
+  if (context.mounted) _openFromShelf(context, notebook.id, page.id);
 }
 
 /// Changes a notebook's title, cover, paper and style.
