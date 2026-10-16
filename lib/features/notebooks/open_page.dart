@@ -44,7 +44,9 @@ bool _sameDay(DateTime a, DateTime b) =>
 ///
 /// - a planner opened on a new day: today's page;
 /// - otherwise the page open last time, if it still exists;
-/// - otherwise today's page, the dated page nearest today, or the first.
+/// - otherwise today's page, or for a planner that hasn't started yet its
+///   first page (its Home, not whichever week starts soonest), or the dated
+///   page nearest today, or the first.
 ///
 /// Null when the notebook has no pages.
 NotePage? pageToOpen(Notebook notebook, List<NotePage> pages, DateTime now) {
@@ -56,5 +58,9 @@ NotePage? pageToOpen(Notebook notebook, List<NotePage> pages, DateTime now) {
       !_sameDay(DateTime.fromMillisecondsSinceEpoch(lastAt), now);
   if (today != null && newDay) return today;
   final last = pages.where((p) => p.id == notebook.lastPageId).firstOrNull;
-  return last ?? today ?? nearestDatedPage(pages, now) ?? pages.first;
+  if (last ?? today case final page?) return page;
+  final nearest = nearestDatedPage(pages, now);
+  final start = nearest?.period?.from;
+  if (start != null && start.isAfter(now)) return pages.first;
+  return nearest ?? pages.first;
 }

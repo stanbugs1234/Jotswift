@@ -187,6 +187,23 @@ void main() {
       expect(pageToOpen(notebook(), planner, DateTime(2026, 10, 15)), year);
     });
 
+    test('a planner that has not started opens on its first page', () {
+      // Its Home, not Week 1 (which starts in late December).
+      final home = page('Home');
+      final week1 = page(
+        'Week 1',
+        period: span(DateTime(2026, 12, 28), DateTime(2027, 1, 3)),
+      );
+      final january = page(
+        'January',
+        period: span(DateTime(2027), DateTime(2027, 1, 31)),
+      );
+      expect(
+        pageToOpen(notebook(), [home, january, week1], DateTime(2026, 10, 16)),
+        home,
+      );
+    });
+
     test('a notebook without dates opens where you left off, or first', () {
       final plain = [page('a'), page('b'), page('c')];
       final nb = notebook(
