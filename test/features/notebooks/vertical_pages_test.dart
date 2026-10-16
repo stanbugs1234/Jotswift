@@ -112,7 +112,7 @@ void main() {
     expect(appBarTitle(tester), 'Two');
   });
 
-  for (final fingers in ['on', 'off'])
+  for (final fingers in ['on', 'off']) {
     testWidgets('a link scrolls to the page it points to (fingers $fingers)', (
       tester,
     ) async {
@@ -147,6 +147,7 @@ void main() {
 
       expect(appBarTitle(tester), 'Four');
     });
+  }
 
   testWidgets('a link to a page far down goes there, not back to the start', (
     tester,
