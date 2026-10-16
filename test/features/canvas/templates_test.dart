@@ -16,11 +16,13 @@ import 'package:notely/core/catalog/catalog_repository.dart';
 import 'package:notely/core/catalog/pack_cache.dart';
 import 'package:notely/core/catalog/pack_disk_memory.dart';
 import 'package:notely/core/catalog/template_spec.dart';
+import 'package:notely/app/router.dart';
 import 'package:notely/core/paper/paper_style.dart';
 import 'package:notely/core/pdf/pdf_renderer.dart';
 import 'package:notely/core/skins/skin_manifest.dart';
 import 'package:notely/core/skins/widgets/paper.dart';
 import 'package:notely/features/auth/auth_repository.dart';
+import 'package:notely/core/motion/page_turn.dart';
 import 'package:notely/features/canvas/page_canvas.dart';
 import 'package:notely/features/canvas/templates.dart';
 import 'package:notely/features/notebooks/data/firestore_notes_backend.dart';
@@ -33,29 +35,38 @@ import '../../core/catalog/catalog_test.dart' show FakeDownloader, zip;
 import '../../helpers.dart';
 
 /// A PDF of [pageCount] Letter pages. Page 1 links its top-left quarter to
-/// page 2.
+/// page 2, and a tab on its right edge to page 3.
 class FakePdfFile implements PdfFile {
-  FakePdfFile(this.pageCount);
+  FakePdfFile(this.pageCount, {this.landscape = false});
 
   @override
   final int pageCount;
 
+  /// Landscape Letter pages, like the spread planners.
+  final bool landscape;
+
   @override
-  ui.Size pageSize(int page) => const ui.Size(612, 792);
+  ui.Size pageSize(int page) =>
+      landscape ? const ui.Size(792, 612) : const ui.Size(612, 792);
 
   @override
   Future<List<PdfPageLink>> links(int page) async => page == 1
-      ? const [PdfPageLink(ui.Rect.fromLTRB(0, 0, 0.5, 0.5), 2)]
+      ? const [
+          PdfPageLink(ui.Rect.fromLTRB(0, 0, 0.5, 0.5), 2),
+          PdfPageLink(ui.Rect.fromLTRB(0.95, 0.6, 1.01, 0.7), 3),
+        ]
       : const [];
 
   @override
   Future<ui.Image> render(int page, {required int width}) {
     final recorder = ui.PictureRecorder();
     Canvas(recorder).drawRect(
-      const Rect.fromLTWH(0, 0, 20, 26),
+      const Rect.fromLTWH(0, 0, 26, 26),
       Paint()..color = const Color(0xFF2C4A7C),
     );
-    return recorder.endRecording().toImage(20, 26);
+    return landscape
+        ? recorder.endRecording().toImage(26, 20)
+        : recorder.endRecording().toImage(20, 26);
   }
 
   @override
@@ -63,12 +74,15 @@ class FakePdfFile implements PdfFile {
 }
 
 class FakePdfRenderer implements PdfRenderer {
+  FakePdfRenderer({this.landscape = false});
+
   final opened = <String>[];
+  final bool landscape;
 
   @override
   Future<PdfFile> open(Uint8List bytes, {required String name}) async {
     opened.add(name);
-    return FakePdfFile(3);
+    return FakePdfFile(3, landscape: landscape);
   }
 }
 
@@ -395,6 +409,8 @@ void main() {
       required CatalogItem made,
       List<CatalogItem>? published,
       ValueChanged<String>? onOpenPage,
+      Map<String, Object> prefs = const {},
+      bool turnable = false,
     }) async {
       tester.view
         ..physicalSize = const Size(800, 1000)
@@ -418,17 +434,28 @@ void main() {
       };
       final container = await makeContainer(
         skins,
+        prefs: prefs,
         overrides: [
           authRepositoryProvider.overrideWithValue(auth),
           ...overrides(published ?? [made]),
         ],
       );
+      final canvas = PageCanvas(pageId: pages[1]!, onOpenPage: onOpenPage);
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
           child: themed(
             skinById(skins, 'classic'),
-            PageCanvas(pageId: pages[1]!, onOpenPage: onOpenPage),
+            turnable
+                // As in a notebook: the screen's edges turn the page.
+                ? PageTurnSwitcher(
+                    pageKey: pages[1]!,
+                    order: [pages[1]!, pages[2]!, pages[3]!],
+                    pageBuilder: (id) => PageCanvas(pageId: id as String),
+                    onTurned: (_) {},
+                    child: canvas,
+                  )
+                : canvas,
           ),
         ),
       );
@@ -472,6 +499,110 @@ void main() {
       await tester.tapAt(canvas.topLeft + const Offset(700, 900));
       await settle(tester);
       expect(opened, isNull);
+    });
+
+    testWidgets('a finger tap on a link at the screen edge opens it', (
+      tester,
+    ) async {
+      String? opened;
+      final (_, _, pages) = await pumpPlannerPage(
+        tester,
+        made: template(downloader, 'planner', plannerJson),
+        onOpenPage: (id) => opened = id,
+        prefs: {'fingerDrawing': 'off'},
+        turnable: true,
+      );
+
+      // The tab's link runs to the page's right edge, in the strip that
+      // turns pages when dragged.
+      final link = tester.getRect(find.byType(RawImage));
+      final y = link.top + link.height * 0.65;
+      for (final x in [
+        link.right - 4,
+        link.right - 14,
+        link.left + link.width * 0.96,
+      ]) {
+        opened = null;
+        await tester.tapAt(Offset(x, y));
+        await settle(tester);
+        expect(opened, pages[3], reason: 'tap at x = $x');
+      }
+    });
+
+    testWidgets('on an iPad, a finger tap on a side tab opens its page', (
+      tester,
+    ) async {
+      renderer = FakePdfRenderer(landscape: true);
+      final made = template(downloader, 'planner', plannerJson);
+      final auth = await pumpApp(
+        tester,
+        skins,
+        size: const Size(1180, 820),
+        prefs: {'fingerDrawing': 'off'},
+        overrides: overrides([made]),
+      );
+      final repo = backend.notebooks(auth.currentUser!.uid);
+      final nb = await repo.createNotebook(
+        const NewNotebook(
+          title: 'Precon',
+          cover: NotebookCover.color(1),
+          orientation: PaperOrientation.landscape,
+        ),
+      );
+      final section = (await repo.watchSections(nb.id).first).single;
+      await repo.createPages(nb.id, section.id, [
+        for (var n = 1; n <= 3; n++)
+          (title: 'Page $n', paper: null, template: templatePage(made, n)),
+      ]);
+      final pages = {
+        for (final p in await repo.watchPages(nb.id, section.id).first)
+          p.template!.pdfPage: p.id,
+      };
+      final router = ProviderScope.containerOf(
+        tester.element(find.byType(Navigator).first),
+      ).read(routerProvider);
+      router.go('/notebooks/${nb.id}/pages/${pages[1]}');
+      await settle(tester);
+
+      final link = tester.getRect(find.byType(RawImage));
+      await tester.tapAt(
+        Offset(link.left + link.width * 0.975, link.top + link.height * 0.65),
+      );
+      await settle(tester);
+      expect(router.state.uri.path, endsWith(pages[3]!));
+    });
+
+    testWidgets('a link waits for its page when the list is still loading', (
+      tester,
+    ) async {
+      String? opened;
+      final (_, _, pages) = await pumpPlannerPage(
+        tester,
+        made: template(downloader, 'planner', plannerJson),
+        onOpenPage: (id) => opened = id,
+        prefs: {'fingerDrawing': 'off'},
+      );
+      // As if the device's cache didn't have page 3 yet.
+      final repo = backend.notebooks(uid);
+      final page3 = (await repo.watchPage(pages[3]!).first)!;
+      await repo.deletePage(page3.id);
+      await settle(tester);
+
+      final link = tester.getRect(find.byType(RawImage));
+      await tester.tapAt(
+        Offset(link.left + link.width * 0.97, link.top + link.height * 0.65),
+      );
+      await settle(tester);
+      expect(opened, isNull);
+
+      // The full list arrives with it.
+      await repo.createPages(page3.notebookId, page3.sectionId, [
+        (title: 'Page 3', paper: null, template: page3.template),
+      ]);
+      await settle(tester);
+      final arrived = (await repo.watchNotebookPages(page3.notebookId).first)
+          .firstWhere((p) => p.template?.pdfPage == 3);
+      expect(opened, arrived.id);
     });
 
     testWidgets('a pencil tap on a link writes instead of jumping', (

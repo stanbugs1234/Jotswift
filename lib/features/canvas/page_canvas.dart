@@ -702,15 +702,43 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     );
     for (final link in links) {
       if (!link.area.contains(at)) continue;
+      final key = (template.itemId, link.targetPage);
       final target = ref
           .read(notebookTemplatePagesProvider(page.notebookId))
-          .value?[(template.itemId, link.targetPage)];
-      if (target != null && target != widget.pageId) {
-        widget.onOpenPage?.call(target);
+          .value?[key];
+      if (target != null) {
+        if (target != widget.pageId) widget.onOpenPage?.call(target);
+      } else {
+        _openWhenFound(page.notebookId, key);
       }
       return true;
     }
     return false;
+  }
+
+  /// Just after the app starts, the notebook's list of pages can come from
+  /// the device's cache and miss pages not opened before. Waits a moment
+  /// for the full list, then opens the page a link points to.
+  Future<void> _openWhenFound(String notebookId, (String, int) key) async {
+    String? found(List<NotePage> pages) => pages
+        .where(
+          (p) => (p.template?.itemId, p.template?.pdfPage) == (key.$1, key.$2),
+        )
+        .firstOrNull
+        ?.id;
+    try {
+      final pages = await ref
+          .read(notebookRepositoryProvider)
+          .watchNotebookPages(notebookId)
+          .firstWhere((pages) => found(pages) != null)
+          .timeout(const Duration(seconds: 4));
+      final target = found(pages);
+      if (mounted && target != null && target != widget.pageId) {
+        widget.onOpenPage?.call(target);
+      }
+    } on Object {
+      // Not in this notebook (the page was deleted): nothing to open.
+    }
   }
 
   ui.Image? _templateImage(PageTemplate template) => ref
