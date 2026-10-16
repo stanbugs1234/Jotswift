@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:notely/features/canvas/ruler.dart';
 import 'package:notely/features/canvas/shapes.dart';
 
 /// [outline] traced by hand: evenly spaced points with a little wobble.
@@ -131,5 +132,36 @@ void main() {
       ),
       isNull,
     );
+  });
+
+  group('Ruler', () {
+    const ruler = Ruler(center: Offset(500, 500), angle: math.pi / 4);
+
+    test('local and page coordinates round-trip', () {
+      const p = Offset(530, 610);
+      final back = ruler.toPage(ruler.toLocal(p));
+      expect(back.dx, closeTo(p.dx, 1e-9));
+      expect(back.dy, closeTo(p.dy, 1e-9));
+    });
+
+    test('a point by an edge follows it; others do not', () {
+      final nearBottom = ruler.toPage(
+        const Offset(100, Ruler.thickness / 2 + 10),
+      );
+      expect(ruler.edgeNear(nearBottom), 1);
+      final farAway = ruler.toPage(const Offset(100, 300));
+      expect(ruler.edgeNear(farAway), isNull);
+      final projected = ruler.project(nearBottom, 1, 6);
+      expect(
+        ruler.toLocal(projected).dy,
+        closeTo(Ruler.thickness / 2 + 3 + 2, 1e-9),
+      );
+    });
+
+    test('shows its angle in degrees, and snaps to 45s', () {
+      expect(ruler.degrees, 45);
+      expect(snapRulerAngle(math.pi / 4 + 0.02), math.pi / 4);
+      expect(snapRulerAngle(0.3), 0.3);
+    });
   });
 }

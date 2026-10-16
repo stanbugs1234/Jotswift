@@ -130,6 +130,19 @@ class Stroke {
     style: style,
   );
 
+  /// The same stroke with other [points] (while it's being drawn).
+  Stroke withPoints(List<InkPoint> points) => Stroke(
+    id: id,
+    tool: tool,
+    color: color,
+    width: width,
+    points: points,
+    createdAt: createdAt,
+    pressureSensitive: pressureSensitive,
+    deleted: deleted,
+    style: style,
+  );
+
   late final Rect bounds = _computeBounds();
 
   Rect _computeBounds() {

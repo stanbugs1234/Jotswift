@@ -22,6 +22,7 @@ import 'domain/stroke.dart';
 import 'ink_tools.dart';
 import 'lasso.dart';
 import 'page_items.dart';
+import 'ruler.dart';
 import 'shapes.dart';
 import 'stickers.dart';
 import 'stroke_painter.dart';
@@ -162,6 +163,13 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
 
   /// Handles are this many screen pixels across at any zoom.
   static const _handleSize = 28.0;
+
+  // Ruler: where it is, the fingers moving it (screen positions), its
+  // angle before snapping while it turns, and which edge the pen follows.
+  Ruler? _ruler;
+  final _rulerPointers = <int, Offset>{};
+  double _rulerTurn = 0;
+  int? _rulerSide;
 
   // Laser pointer: recent points (page units) with when they were added.
   final _laser = ValueNotifier<List<(Offset, Duration)>>(const []);
@@ -307,6 +315,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
       return;
     }
 
+    if (_rulerWith(e)) return;
     if (_lassoWith(e)) return;
     if (_selectWith(e)) return;
 
@@ -385,6 +394,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
   }
 
   void _onPointerMove(PointerMoveEvent e) {
+    if (_rulerPointers.containsKey(e.pointer)) return _moveRuler(e);
     if (e.pointer == _laserPointer) return _addLaserPoint(e.localPosition);
     if (e.pointer == _lassoPointer) {
       _lassoPoints.value = [..._lassoPoints.value, _toPage(e.localPosition)];
@@ -490,6 +500,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
 
   void _onPointerUp(PointerEvent e) {
     _holdTimer?.cancel();
+    if (_rulerPointers.remove(e.pointer) != null) return;
     if (e.pointer == _laserPointer) {
       _laserPointer = null;
       return;
@@ -592,6 +603,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
 
   void _onPointerCancel(PointerEvent e) {
     _holdTimer?.cancel();
+    if (_rulerPointers.remove(e.pointer) != null) return;
     if (e.pointer == _laserPointer) _laserPointer = null;
     if (e.pointer == _lassoPointer) {
       _lassoPointer = null;
@@ -659,6 +671,13 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
           : tool.penStyle,
     );
     _snapped = null;
+    final ruler = _ruler;
+    final first = _live.value!.points.first;
+    _rulerSide = ruler?.edgeNear(first.offset);
+    if (_rulerSide != null) {
+      _live.value = _live.value!.withPoints([_guided(first)]);
+      return; // Following the ruler: no shapes.
+    }
     _waitForHold(e.localPosition);
   }
 
@@ -706,9 +725,22 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     style: stroke.style,
   );
 
+  /// [p] moved onto the ruler edge the stroke follows.
+  InkPoint _guided(InkPoint p) {
+    final q = _ruler!.project(p.offset, _rulerSide!, _live.value!.width);
+    return InkPoint(q.dx, q.dy, p.pressure);
+  }
+
   void _extendStroke(PointerMoveEvent e) {
     final stroke = _live.value;
     if (stroke == null) return;
+    if (_rulerSide != null && _ruler != null) {
+      _live.value = stroke.withPoints([
+        ...stroke.points,
+        _guided(_inkPoint(e)),
+      ]);
+      return;
+    }
     switch (_snapped) {
       case null:
         _waitForHold(e.localPosition);
@@ -738,6 +770,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     final stroke = _live.value;
     final kind = _drawKind;
     _drawPointer = null;
+    _rulerSide = null;
     _stopWaitingForHold();
     if (stroke == null) return;
     // A quick finger or mouse tap on a template link follows the link
@@ -759,6 +792,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
 
   void _cancelDrawing() {
     _drawPointer = null;
+    _rulerSide = null;
     _stopWaitingForHold();
     _live.value = null;
     final undo = {..._erased, ..._cutStrokes, ..._cutPieces};
@@ -841,6 +875,55 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     if (_drawKind != PointerDeviceKind.invertedStylus) {
       ref.read(inkToolProvider.notifier).erased();
     }
+  }
+
+  // Ruler
+
+  /// Fingers (or the mouse) on the ruler move it; two turn it. Returns
+  /// whether the pointer was used.
+  bool _rulerWith(PointerDownEvent e) {
+    final ruler = _ruler;
+    if (ruler == null ||
+        widget.readOnly ||
+        _isStylus(e.kind) ||
+        _drawPointer != null) {
+      return false;
+    }
+    final onRuler = ruler.contains(_toPage(e.localPosition));
+    // A second finger anywhere turns a ruler that's being held.
+    if (!onRuler && _rulerPointers.isEmpty) return false;
+    if (_rulerPointers.length >= 2) return true;
+    _stopCoasting();
+    _rulerPointers[e.pointer] = e.localPosition;
+    _rulerTurn = ruler.angle;
+    return true;
+  }
+
+  void _moveRuler(PointerMoveEvent e) {
+    final ruler = _ruler;
+    if (ruler == null) return;
+    final before = Map.of(_rulerPointers);
+    _rulerPointers[e.pointer] = e.localPosition;
+    setState(() {
+      if (_rulerPointers.length == 1) {
+        _ruler = ruler.copyWith(
+          center:
+              ruler.center + (e.localPosition - before[e.pointer]!) / _scale,
+        );
+        return;
+      }
+      final ids = _rulerPointers.keys.take(2).toList();
+      final a0 = before[ids[0]]!, b0 = before[ids[1]]!;
+      final a1 = _rulerPointers[ids[0]]!, b1 = _rulerPointers[ids[1]]!;
+      final turn =
+          math.atan2(b1.dy - a1.dy, b1.dx - a1.dx) -
+          math.atan2(b0.dy - a0.dy, b0.dx - a0.dx);
+      _rulerTurn += turn;
+      _ruler = ruler.copyWith(
+        center: ruler.center + ((a1 + b1) / 2 - (a0 + b0) / 2) / _scale,
+        angle: snapRulerAngle(_rulerTurn),
+      );
+    });
   }
 
   // Laser pointer
@@ -1507,6 +1590,11 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
       }
     });
     ref.listen(pasteRequestProvider(widget.pageId), (_, _) => _paste());
+    final rulerOut = ref.watch(rulerVisibleProvider) && widget.inkEnabled;
+    if (!rulerOut) {
+      _ruler = null;
+      _rulerPointers.clear();
+    }
     // Keep the history notifier alive while the page is open.
     ref.watch(inkHistoryProvider(widget.pageId));
 
@@ -1550,6 +1638,9 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
         final viewport = constraints.biggest;
         if (_viewport == null) _fitWidth(viewport);
         _viewport = viewport;
+        if (rulerOut) {
+          _ruler ??= Ruler(center: _toPage(viewport.center(Offset.zero)));
+        }
 
         final history = ref.read(inkHistoryProvider(widget.pageId).notifier);
         return CallbackShortcuts(
@@ -1650,6 +1741,15 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
                                               .colorScheme
                                               .primary,
                                           unit: 1 / _scale,
+                                        ),
+                                      ),
+                                    ),
+                                  if (_ruler case final ruler?)
+                                    IgnorePointer(
+                                      child: CustomPaint(
+                                        painter: RulerPainter(
+                                          ruler,
+                                          Theme.of(context).colorScheme.primary,
                                         ),
                                       ),
                                     ),

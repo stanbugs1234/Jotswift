@@ -7,6 +7,7 @@ import 'domain/stroke.dart';
 import 'ink_tools.dart';
 import 'lasso.dart';
 import 'pencil_actions.dart';
+import 'ruler.dart';
 import 'page_items.dart';
 import 'stickers.dart';
 
@@ -78,6 +79,12 @@ class InkToolbar extends ConsumerWidget {
                   ),
                   toolButton(InkToolKind.lasso, Icons.highlight_alt, 'Lasso'),
                   toolButton(InkToolKind.laser, Icons.flare, 'Laser pointer'),
+                  _ToolButton(
+                    tooltip: 'Ruler',
+                    icon: Icons.straighten,
+                    selected: ref.watch(rulerVisibleProvider),
+                    onPressed: ref.read(rulerVisibleProvider.notifier).toggle,
+                  ),
                   if (canPaste)
                     _ToolButton(
                       tooltip: 'Paste',

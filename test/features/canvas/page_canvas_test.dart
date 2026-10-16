@@ -823,6 +823,57 @@ void main() {
     });
   });
 
+  group('ruler', () {
+    Future<void> wobblyLine(WidgetTester tester, double y) async {
+      final c = canvasCenter(tester);
+      final gesture = await tester.startGesture(
+        c + Offset(-200, y),
+        kind: PointerDeviceKind.stylus,
+      );
+      for (var i = 1; i <= 10; i++) {
+        await gesture.moveTo(
+          c + Offset(-200 + i * 40, y + (i.isEven ? 6 : -6)),
+        );
+      }
+      await gesture.up();
+      await tester.pumpAndSettle();
+    }
+
+    double spread(Stroke s) {
+      final ys = s.points.map((p) => p.y);
+      return ys.reduce(math.max) - ys.reduce(math.min);
+    }
+
+    testWidgets('a stroke along the edge is drawn straight', (tester) async {
+      final page = await pumpPage(tester);
+      await tester.ensureVisible(find.byTooltip('Ruler'));
+      await tester.tap(find.byTooltip('Ruler'));
+      await tester.pump();
+
+      // The ruler's top edge is 55 page units (30 px) above the middle.
+      await wobblyLine(tester, -36);
+      // Away from the ruler, a line stays as drawn.
+      await wobblyLine(tester, 200);
+
+      final strokes = await page.visibleStrokes();
+      expect(spread(strokes[0]), lessThan(0.5));
+      expect(spread(strokes[1]), greaterThan(10));
+    });
+
+    testWidgets('a finger moves the ruler', (tester) async {
+      final page = await pumpPage(tester);
+      await tester.ensureVisible(find.byTooltip('Ruler'));
+      await tester.tap(find.byTooltip('Ruler'));
+      await tester.pump();
+
+      await drag(tester, PointerDeviceKind.touch, by: const Offset(0, 100));
+      expect(await page.strokes(), isEmpty);
+
+      await wobblyLine(tester, 64);
+      expect(spread((await page.visibleStrokes()).single), lessThan(0.5));
+    });
+  });
+
   testWidgets('view-only pages have no tools and ignore drawing', (
     tester,
   ) async {
