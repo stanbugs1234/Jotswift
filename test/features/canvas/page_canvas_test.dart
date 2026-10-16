@@ -5,6 +5,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:notely/core/paper/basic_papers.dart';
 import 'package:notely/core/paper/paper_style.dart';
@@ -19,6 +20,8 @@ import 'package:notely/features/canvas/page_canvas.dart';
 import 'package:notely/features/canvas/pen_rail.dart';
 import 'package:notely/features/canvas/stroke_painter.dart';
 import 'package:notely/features/canvas/tape.dart';
+import 'package:notely/features/canvas/handwriting.dart';
+import 'package:notely/features/exports/export_sheet.dart';
 import 'package:notely/features/canvas/zoom_window.dart';
 import 'package:notely/features/notebooks/data/in_memory_notes_backend.dart';
 import 'package:notely/features/notebooks/domain/notebook_models.dart';
@@ -60,6 +63,7 @@ void main() {
     bool readOnly = false,
     bool inkEnabled = true,
     String penPanel = 'toolbar',
+    List<Override> overrides = const [],
   }) async {
     tester.view
       ..physicalSize = const Size(800, 1000)
@@ -83,6 +87,7 @@ void main() {
       overrides: [
         authRepositoryProvider.overrideWithValue(auth),
         notesBackendProvider.overrideWithValue(backend),
+        ...overrides,
       ],
     );
     await tester.pumpWidget(
@@ -374,6 +379,113 @@ void main() {
       await tester.tap(find.byTooltip(label));
       await tester.pumpAndSettle();
     }
+
+    testWidgets('a selection moves to another page, and back with Undo', (
+      tester,
+    ) async {
+      final page = await pumpPage(tester);
+      final repo = page.backend.notebooks(page.uid);
+      final here = (await repo.watchPage(page.pageId).first)!;
+      final other = await repo.createPage(
+        here.notebookId,
+        here.sectionId,
+        title: 'Answers',
+      );
+      await drag(tester, PointerDeviceKind.stylus);
+      await chooseLasso(tester);
+      await loop(tester);
+
+      await tapAction(tester, 'More');
+      await tester.tap(find.text('Move to page…'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.widgetWithText(ListTile, 'Answers').last);
+      await tester.pumpAndSettle();
+
+      Future<int> inkOn(String id) async =>
+          (await page.backend.strokes(page.uid).watchStrokes(id).first)
+              .where((s) => !s.deleted)
+              .length;
+      expect(await inkOn(page.pageId), 0);
+      expect(await inkOn(other.id), 1);
+      expect(find.text('Moved to Answers.'), findsOneWidget);
+
+      await tester.tap(find.text('Undo').last);
+      await tester.pumpAndSettle();
+      expect(await inkOn(page.pageId), 1);
+      expect(await inkOn(other.id), 0);
+    });
+
+    testWidgets('a selection can be shared as a picture', (tester) async {
+      final shared = <String>[];
+      await pumpPage(
+        tester,
+        overrides: [
+          shareFilesProvider.overrideWithValue((files, _) async {
+            shared.addAll(files.map((f) => f.mimeType));
+          }),
+        ],
+      );
+      await drag(tester, PointerDeviceKind.stylus);
+      await chooseLasso(tester);
+      await loop(tester);
+      await tapAction(tester, 'More');
+      await tester.tap(find.text('Share as picture'));
+      // Drawn off screen: let it finish.
+      for (var i = 0; i < 30 && shared.isEmpty; i++) {
+        await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 50)),
+        );
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+      expect(shared, ['image/png']);
+    });
+
+    testWidgets('handwriting converts to a text box in its place', (
+      tester,
+    ) async {
+      final page = await pumpPage(
+        tester,
+        overrides: [
+          handwritingReaderProvider.overrideWithValue(
+            (_) async => ['Hello there'],
+          ),
+        ],
+      );
+      await drag(tester, PointerDeviceKind.stylus);
+      final ink = (await page.visibleStrokes()).single;
+      await chooseLasso(tester);
+      await loop(tester);
+      await tapAction(tester, 'More');
+      await tester.tap(find.text('Convert to text'));
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 200)),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Hello there'), findsOneWidget);
+      await tester.tap(find.text('Replace handwriting'));
+      await tester.pumpAndSettle();
+
+      expect(await page.visibleStrokes(), isEmpty);
+      final texts = [
+        for (final e
+            in await page.backend
+                .elements(page.uid)
+                .watchElements(page.pageId)
+                .first)
+          if (!e.deleted && e.content is TextContent) e,
+      ];
+      expect((texts.single.content as TextContent).text, 'Hello there');
+      expect(
+        texts.single.frame.center.dx - texts.single.frame.width / 2,
+        closeTo(ink.bounds.left, 1),
+      );
+
+      // One undo brings the handwriting back.
+      await tester.ensureVisible(find.byTooltip('Undo'));
+      await tester.tap(find.byTooltip('Undo'));
+      await tester.pumpAndSettle();
+      expect(await page.visibleStrokes(), hasLength(1));
+    });
 
     testWidgets('a loop takes handwriting, and dragging moves it', (
       tester,

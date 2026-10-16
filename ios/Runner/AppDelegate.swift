@@ -1,6 +1,7 @@
 import Flutter
 import UIKit
 import UserNotifications
+import Vision
 
 @main
 @objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
@@ -20,6 +21,44 @@ import UserNotifications
     }
     if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "NotelyOpenIn") {
       OpenIn.shared.register(with: registrar.messenger())
+    }
+    if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "NotelyHandwriting") {
+      Handwriting.register(with: registrar.messenger())
+    }
+  }
+}
+
+/// Reads handwriting, on the device, with Vision: "recognize" takes a PNG
+/// of dark ink on white ("png") and answers its lines of text, top to
+/// bottom (empty when there's nothing it can read).
+enum Handwriting {
+  static func register(with messenger: FlutterBinaryMessenger) {
+    let channel = FlutterMethodChannel(name: "notely/handwriting", binaryMessenger: messenger)
+    channel.setMethodCallHandler { call, result in
+      guard call.method == "recognize",
+        let args = call.arguments as? [String: Any],
+        let png = args["png"] as? FlutterStandardTypedData,
+        let image = UIImage(data: png.data)?.cgImage
+      else {
+        result(FlutterMethodNotImplemented)
+        return
+      }
+      DispatchQueue.global(qos: .userInitiated).async {
+        let request = VNRecognizeTextRequest()
+        request.recognitionLevel = .accurate
+        request.usesLanguageCorrection = true
+        var lines: [String] = []
+        do {
+          try VNImageRequestHandler(cgImage: image).perform([request])
+          let found = (request.results ?? [])
+            // Vision's y runs up the image: the top line has the largest.
+            .sorted { $0.boundingBox.midY > $1.boundingBox.midY }
+          lines = found.compactMap { $0.topCandidates(1).first?.string }
+        } catch {
+          lines = []
+        }
+        DispatchQueue.main.async { result(lines) }
+      }
     }
   }
 }

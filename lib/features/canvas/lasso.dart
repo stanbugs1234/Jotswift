@@ -343,20 +343,40 @@ class LassoSelectionPainter extends CustomPainter {
 }
 
 /// What can be done with a lasso selection.
-enum LassoAction { color, cut, copy, duplicate, link, delete }
+enum LassoAction {
+  color,
+  cut,
+  copy,
+  duplicate,
+  link,
+  delete,
+
+  /// To another page of the notebook.
+  move,
+
+  /// A picture of the selection, to share.
+  screenshot,
+
+  /// Handwriting read and turned into a text box.
+  convertToText,
+}
 
 /// The bar over a lasso selection: color, cut, copy, duplicate, link,
-/// delete.
+/// delete, and under More, move, screenshot and convert to text.
 class LassoActionBar extends StatelessWidget {
   const LassoActionBar({
     required this.colors,
     required this.canRecolor,
     required this.onAction,
     required this.onColor,
+    this.canConvert = false,
     super.key,
   });
 
   final List<Color> colors;
+
+  /// Whether handwriting can be read here (and some is selected).
+  final bool canConvert;
 
   /// Whether any handwriting is selected (only handwriting takes a color).
   final bool canRecolor;
@@ -429,6 +449,39 @@ class LassoActionBar extends StatelessWidget {
             ),
             button(LassoAction.link, Icons.link, 'Link to a page'),
             button(LassoAction.delete, Icons.delete_outline, 'Delete'),
+            PopupMenuButton<LassoAction>(
+              tooltip: 'More',
+              icon: Icon(
+                Icons.more_horiz,
+                size: 20,
+                color: scheme.onInverseSurface,
+              ),
+              onSelected: onAction,
+              itemBuilder: (context) => [
+                if (canConvert)
+                  const PopupMenuItem(
+                    value: LassoAction.convertToText,
+                    child: ListTile(
+                      leading: Icon(Icons.text_fields),
+                      title: Text('Convert to text'),
+                    ),
+                  ),
+                const PopupMenuItem(
+                  value: LassoAction.move,
+                  child: ListTile(
+                    leading: Icon(Icons.drive_file_move_outline),
+                    title: Text('Move to page…'),
+                  ),
+                ),
+                const PopupMenuItem(
+                  value: LassoAction.screenshot,
+                  child: ListTile(
+                    leading: Icon(Icons.screenshot_outlined),
+                    title: Text('Share as picture'),
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),

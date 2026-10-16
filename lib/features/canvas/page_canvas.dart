@@ -30,6 +30,9 @@ import 'stickers.dart';
 import 'stroke_painter.dart';
 import 'tape.dart';
 import 'templates.dart';
+import 'handwriting.dart';
+import '../exports/export_sheet.dart' show shareFilesProvider;
+import '../exports/page_export.dart' show PageRenderer;
 import 'zoom_window.dart';
 import '../notebooks/page_jumper.dart';
 import '../../core/motion/motion.dart';
@@ -1829,9 +1832,202 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
         );
       case LassoAction.link:
         _linkSelection(selectionBounds(strokes, elements));
+      case LassoAction.move:
+        _moveSelection(strokes, elements);
+      case LassoAction.screenshot:
+        _shareSelection(selectionBounds(strokes, elements));
+      case LassoAction.convertToText:
+        _convertSelection(strokes);
       case LassoAction.color:
         break;
     }
+  }
+
+  /// Moves the selection to another page of the notebook, where it was on
+  /// this one. Undone from the message that says so.
+  Future<void> _moveSelection(
+    List<Stroke> strokes,
+    List<PageElement> elements,
+  ) async {
+    final page = ref.read(pageProvider(widget.pageId)).value;
+    if (page == null) return;
+    final to = await showPageJumper(
+      context,
+      notebookId: page.notebookId,
+      currentPageId: widget.pageId,
+      title: 'Move to page',
+      choosing: true,
+    );
+    if (to is! JumpToPage || to.pageId == widget.pageId || !mounted) return;
+    final target = to.pageId;
+    final strokeRepo = ref.read(strokeRepositoryProvider);
+    final elementRepo = ref.read(elementRepositoryProvider);
+    final now = DateTime.now().millisecondsSinceEpoch;
+    const identity = LassoTransform(pivot: Offset.zero);
+    final moved = [
+      for (final (i, s) in strokes.indexed)
+        identity.applyToStroke(s, strokeRepo.newStrokeId(), createdAt: now + i),
+    ];
+    final there = await elementRepo.watchElements(target).first;
+    final top = there.fold(0.0, (z, e) => math.max(z, e.z));
+    final movedElements = [
+      for (final (i, e) in elements.indexed)
+        PageElement(
+          id: elementRepo.newElementId(),
+          content: e.content,
+          frame: e.frame,
+          z: top + 1 + i,
+          createdAt: now + i,
+        ),
+    ];
+    await strokeRepo.replaceStrokes(target, remove: const [], add: moved);
+    for (final e in movedElements) {
+      await elementRepo.addElement(target, e);
+    }
+    if (!mounted) return;
+    setState(() {
+      _pendingErase.addAll(strokes.map((s) => s.id));
+      _lasso = null;
+    });
+    final strokeIds = [for (final s in strokes) s.id];
+    final elementIds = [for (final e in elements) e.id];
+    await strokeRepo.setDeleted(widget.pageId, strokeIds, true);
+    for (final id in elementIds) {
+      await elementRepo.setElementDeleted(widget.pageId, id, deleted: true);
+    }
+    final name = ref.read(pageProvider(target)).value?.title;
+    if (!mounted) return;
+    ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+      SnackBar(
+        content: Text(
+          name == null || name.isEmpty ? 'Moved.' : 'Moved to $name.',
+        ),
+        action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () async {
+            await strokeRepo.setDeleted(target, [
+              for (final s in moved) s.id,
+            ], true);
+            for (final e in movedElements) {
+              await elementRepo.setElementDeleted(target, e.id, deleted: true);
+            }
+            await strokeRepo.setDeleted(widget.pageId, strokeIds, false);
+            for (final id in elementIds) {
+              await elementRepo.setElementDeleted(
+                widget.pageId,
+                id,
+                deleted: false,
+              );
+            }
+          },
+        ),
+      ),
+    );
+  }
+
+  /// Shares a picture of [box] (page units) as it looks on the page.
+  Future<void> _shareSelection(Rect box) async {
+    final origin = _lassoOrigin();
+    final renderer = PageRenderer(context);
+    const ratio = 2.0;
+    final page = await renderer.render(widget.pageId, pixelRatio: ratio);
+    try {
+      final area = box.inflate(16).intersect(Offset.zero & _pageSize);
+      final recorder = ui.PictureRecorder();
+      Canvas(recorder).drawImageRect(
+        page,
+        Rect.fromLTWH(
+          area.left * ratio,
+          area.top * ratio,
+          area.width * ratio,
+          area.height * ratio,
+        ),
+        Rect.fromLTWH(0, 0, area.width * ratio, area.height * ratio),
+        Paint(),
+      );
+      final cropped = await recorder.endRecording().toImage(
+        (area.width * ratio).round(),
+        (area.height * ratio).round(),
+      );
+      final png = await cropped.toByteData(format: ui.ImageByteFormat.png);
+      cropped.dispose();
+      if (png == null || !mounted) return;
+      await ref.read(shareFilesProvider)([
+        (
+          name: 'Jotswift selection.png',
+          bytes: png.buffer.asUint8List(),
+          mimeType: 'image/png',
+        ),
+      ], origin);
+    } finally {
+      page.dispose();
+    }
+  }
+
+  /// Where the lasso's bar is on the screen, for the iPad's share popover.
+  Rect? _lassoOrigin() {
+    final box = context.findRenderObject() as RenderBox?;
+    final lasso = _lasso;
+    if (box == null || lasso == null) return null;
+    final r = lasso.box;
+    final topLeft = box.localToGlobal(r.topLeft * _scale + _offset);
+    return topLeft & (r.size * _scale);
+  }
+
+  /// Reads the selected handwriting and offers it as text: to copy, or to
+  /// put in a text box in its place.
+  Future<void> _convertSelection(List<Stroke> strokes) async {
+    final read = ref.read(handwritingReaderProvider);
+    final ink = [
+      for (final s in strokes)
+        if (s.tool == InkTool.pen) s,
+    ];
+    if (read == null || ink.isEmpty) return;
+    final lines = await read(await inkToPng(ink));
+    if (!mounted) return;
+    final messenger = ScaffoldMessenger.maybeOf(context);
+    if (lines.isEmpty) {
+      messenger?.showSnackBar(
+        const SnackBar(content: Text('Couldn\'t read that handwriting.')),
+      );
+      return;
+    }
+    final text = await showConvertedText(context, lines.join('\n'));
+    if (text == null || text.trim().isEmpty || !mounted) return;
+    // In the writing's place, at about its size, in its color.
+    final box = ink.map((s) => s.bounds).reduce((a, b) => a.expandToInclude(b));
+    final lineHeight = box.height / lines.length;
+    final content = fitTextWidth(
+      TextContent(
+        text: text.trim(),
+        fontSize: (lineHeight / 1.3 * 0.85).clamp(20.0, 120.0),
+        color: Color(ink.first.color).withValues(alpha: 1).toARGB32(),
+      ),
+    );
+    final size = textNaturalSize(content);
+    final top = _shownElements().fold(0.0, (z, e) => math.max(z, e.z));
+    setState(() {
+      _pendingErase.addAll(ink.map((s) => s.id));
+      _lasso = null;
+    });
+    await ref
+        .read(inkHistoryProvider(widget.pageId).notifier)
+        .lassoEdit(
+          removeStrokes: [for (final s in ink) s.id],
+          addElements: [
+            PageElement(
+              id: ref.read(elementRepositoryProvider).newElementId(),
+              content: content,
+              frame: ElementFrame(
+                center: box.topLeft + Offset(size.width / 2, size.height / 2),
+                width: size.width,
+                height: size.height,
+              ),
+              z: top + 1,
+              createdAt: DateTime.now().millisecondsSinceEpoch,
+            ),
+          ],
+        );
   }
 
   /// Asks for a page of this notebook and makes [box] a link to it.
@@ -1944,7 +2140,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
     final y = top - gap - barHeight >= 8
         ? top - gap - barHeight
         : math.min(bottom + 28, viewport.height - barHeight - 8);
-    const width = 300.0;
+    const width = 350.0;
     final x = (middle - width / 2)
         .clamp(8.0, math.max(8.0, viewport.width - width - 8))
         .toDouble();
@@ -1957,6 +2153,7 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
         child: LassoActionBar(
           colors: NotelySkin.of(context).inkColors,
           canRecolor: hasInk,
+          canConvert: hasInk && ref.read(handwritingReaderProvider) != null,
           onAction: _lassoAction,
           onColor: _recolor,
         ),
