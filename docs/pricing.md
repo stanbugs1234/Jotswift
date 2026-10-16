@@ -57,6 +57,23 @@ it doesn't sell templates one at a time.
 | `pack_undated_weekly` | Undated Weekly Planner | undated_weekly | $2.99 |
 | `pack_undated_daily` | Undated Daily Planner | undated_daily | $2.99 |
 
+## Bestseller planners
+
+| Product id | Name | Unlocks | Price |
+|---|---|---|---|
+| `planner_focus_2027` | Focus Planner 2027 | focus_planner_2027 | $7.99 |
+| `pack_focus_undated` | Focus Planner (undated) | focus_planner_undated | $7.99 |
+| `planner_wellness_2027` | Wellness Planner 2027 | wellness_planner_2027 | $7.99 |
+| `pack_wellness_undated` | Wellness Planner (undated) | wellness_planner_undated | $7.99 |
+| `planner_life_2027` | Life Planner 2027 | life_planner_2027 | $7.99 |
+| `pack_life_undated` | Life Planner (undated) | life_planner_undated | $7.99 |
+| `planner_goals_2027` | Goals & Projects 2027 | goals_planner_2027 | $6.99 |
+| `pack_goals_undated` | Goals & Projects (undated) | goals_planner_undated | $6.99 |
+| `planner_student_2026` | Student Planner 2026-27 | student_planner_2026_27 | $6.99 |
+| `pack_student_undated` | Student Planner (undated) | student_planner_undated | $6.99 |
+| `planner_business_2027` | Business Planner 2027 | business_planner_2027 | $7.99 |
+| `pack_business_undated` | Business Planner (undated) | business_planner_undated | $7.99 |
+
 ## Stickers
 
 | Product id | Name | Unlocks | Price |
@@ -132,5 +149,6 @@ it doesn't sell templates one at a time.
 | `bundle_stickers` | Every sticker pack | stickers_planner_icons, stickers_washi, stickers_labels, stickers_study, stickers_seasonal, stickers_emoji, stickers_weather | $5.99 |
 | `bundle_calendar_templates` | Every calendar template | calendar_paper, calendar_wall, calendar_botanical, calendar_pastel, calendar_bold, calendar_chalkboard, calendar_seasons | $4.99 |
 | `planner_life_all_in_one` | All-in-One Life Planner (every spread planner) | spread_life, spread_weekly, spread_daily, spread_budget, spread_habits, spread_goals, spread_health, spread_home, spread_student, spread_selfcare, spread_work | $9.99 |
+| `bundle_life_planners` | Every bestseller planner (Focus, Wellness, Life, Goals & Projects, Student, Business) | focus_planner_2027, focus_planner_undated, wellness_planner_2027, wellness_planner_undated, life_planner_2027, life_planner_undated, goals_planner_2027, goals_planner_undated, student_planner_2026_27, student_planner_undated, business_planner_2027, business_planner_undated | $24.99 |
 
-73 products in all.
+86 products in all.

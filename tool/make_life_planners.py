@@ -27,6 +27,13 @@ ROOT = Path(__file__).resolve().parent.parent
 CATALOG = ROOT / "catalog"
 YEAR = 2027
 
+# Suggested US prices (see docs/pricing.md). Etsy sells planners like
+# these for $10-34 list, often $4-15 on sale; ours undercut that and stay
+# well under Pro ($19.99/year), which includes them all.
+PRICES = {"focus": "7.99", "wellness": "7.99", "life": "7.99", "business": "7.99",
+          "goals": "6.99", "student": "6.99"}
+# All twelve are also in bundle_life_planners (tool/bundles.json).
+
 LAYOUTS = [("landscape", "Landscape", (792, 612)), ("portrait", "Portrait", (612, 792))]
 WEEK_STARTS = [("monday", "Monday", 0), ("sunday", "Sunday", 6)]
 
@@ -314,10 +321,18 @@ def write(key, dated):
     mp.use_size(*LAYOUTS[0][2])
     mp.use_style(cfg["style"])
     mp.write_preview(folder / "template.pdf", folder / "preview.webp")
-    write_listing(folder, cfg, dated)
+    write_listing(folder, cfg, dated, key)
 
 
-def write_listing(folder, cfg, dated):
+def product_id(key, dated):
+    """planner_focus_2027 (planner_student_2026 for 2026-27), or
+    pack_focus_undated."""
+    if not dated:
+        return f"pack_{key}_undated"
+    return f"planner_{key}_{YEAR - 1 if PLANNERS[key]().get('academic') else YEAR}"
+
+
+def write_listing(folder, cfg, dated, key):
     path = folder / "listing.json"
     old = json.loads(path.read_text()) if path.exists() else {}
     name = f"{cfg['title']} {book_year(cfg)}" if dated else f"{cfg['title']} (undated)"
@@ -325,7 +340,7 @@ def write_listing(folder, cfg, dated):
         "kind": "template",
         "name": name,
         "version": old.get("version", 1),
-        "unlock": old.get("unlock", {"pro": True, "products": [f"planner_{folder.name}"]}),
+        "unlock": {"pro": True, "products": [product_id(key, dated)]},
         "category": "planners",
         "tags": [*cfg["tags"], *(["dated", book_year(cfg)] if dated else ["undated"]),
                  "landscape", "portrait"],
@@ -369,8 +384,19 @@ def sample(key, out):
     print(f"samples in {out}")
 
 
+def listings_only():
+    """Rewrites every listing.json without rebuilding the PDFs."""
+    for key in PLANNERS:
+        for dated in (True, False):
+            cfg = PLANNERS[key]()
+            write_listing(CATALOG / item_id(key, dated), cfg, dated, key)
+
+
 def main():
     args = sys.argv[1:]
+    if args == ["--listings"]:
+        listings_only()
+        return
     if "--sample" in args:
         i = args.index("--sample")
         sample(args[0], args[i + 1])

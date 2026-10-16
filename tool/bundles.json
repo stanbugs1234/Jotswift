@@ -45,6 +45,14 @@
       "price": "9.99",
       "items": ["spread_life", "spread_weekly", "spread_daily", "spread_budget", "spread_habits", "spread_goals",
                 "spread_health", "spread_home", "spread_student", "spread_selfcare", "spread_work"]
+    },
+    "bundle_life_planners": {
+      "name": "Every bestseller planner (Focus, Wellness, Life, Goals & Projects, Student, Business)",
+      "price": "24.99",
+      "items": ["focus_planner_2027", "focus_planner_undated", "wellness_planner_2027", "wellness_planner_undated",
+                "life_planner_2027", "life_planner_undated", "goals_planner_2027", "goals_planner_undated",
+                "student_planner_2026_27", "student_planner_undated", "business_planner_2027",
+                "business_planner_undated"]
     }
   }
 }

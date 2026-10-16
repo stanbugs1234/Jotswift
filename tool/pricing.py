@@ -21,6 +21,7 @@ sys.path.insert(0, str(ROOT / "tool"))
 import make_calendar_listings  # noqa: E402
 import make_covers  # noqa: E402
 import make_diary  # noqa: E402
+import make_life_planners  # noqa: E402
 import make_stickers  # noqa: E402
 
 COLLECTION_PRICE = "2.99"
@@ -50,6 +51,13 @@ def rows():
         product = f"planner_{key}_{year}" if book.get("dated", True) else f"pack_{key}"
         name = book["name"] + (f" {item.split('_', 2)[-1].replace('_', '-')}" if book.get("dated", True) else "")
         out.append(("Diaries & planners", product, name, item, book["price"]))
+    for key, make in make_life_planners.PLANNERS.items():
+        cfg = make()
+        for dated in (True, False):
+            item = make_life_planners.item_id(key, dated)
+            name = f"{cfg['title']} {make_life_planners.book_year(cfg)}" if dated else f"{cfg['title']} (undated)"
+            out.append(("Bestseller planners", make_life_planners.product_id(key, dated), name, item,
+                        make_life_planners.PRICES[key]))
     for pid, (name, _, price) in make_stickers.PACKS.items():
         out.append(("Stickers", f"pack_{pid}", name, pid, price))
     for pid, (name, _, _) in make_covers.PACKS.items():
@@ -63,7 +71,7 @@ def rows():
     for item, planner in spread_planners.items():
         if planner["unlock"].get("free"):
             continue
-        for product in planner["unlock"]["products"]:
+        for product in planner["unlock"].get("products", []):  # Pro-only items have none
             if product not in bundle_ids:  # the Life Planner is listed with the bundles
                 out.append(("Spread planners", product, planner["name"], item, planner["price"]))
     calendar_products = make_calendar_listings.products()
