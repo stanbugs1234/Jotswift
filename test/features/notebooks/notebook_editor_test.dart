@@ -205,13 +205,17 @@ void main() {
           .single;
     }
 
-    await tester.tap(find.byTooltip('Page paper'));
+    await tester.tap(find.byTooltip('Page options'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Page paper'));
     await tester.pumpAndSettle();
     await tapLabel(tester, 'Dot paper');
     await tapText(tester, 'Use this paper');
     expect((await page()).paper!.pattern, PaperPattern.dot);
 
-    await tester.tap(find.byTooltip('Page paper'));
+    await tester.tap(find.byTooltip('Page options'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Page paper'));
     await tester.pumpAndSettle();
     await tapText(tester, "Use the notebook's paper");
     expect((await page()).paper, isNull);

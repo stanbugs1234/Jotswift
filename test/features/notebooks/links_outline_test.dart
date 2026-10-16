@@ -74,13 +74,22 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  String appBarTitle(WidgetTester tester) => tester
-      .widget<Text>(
-        find
-            .descendant(of: find.byType(AppBar), matching: find.byType(Text))
-            .first,
-      )
-      .data!;
+  // A page shows its notebook above its title; other screens just a title.
+  String appBarTitle(WidgetTester tester) {
+    final page = find.byKey(const Key('page-title'));
+    return tester
+        .widget<Text>(
+          page.evaluate().isNotEmpty
+              ? page
+              : find
+                    .descendant(
+                      of: find.byType(AppBar),
+                      matching: find.byType(Text),
+                    )
+                    .first,
+        )
+        .data!;
+  }
 
   Future<void> penPath(WidgetTester tester, List<Offset> points) async {
     final pen = await tester.startGesture(

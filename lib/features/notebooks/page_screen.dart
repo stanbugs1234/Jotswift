@@ -158,6 +158,14 @@ class PageScreen extends ConsumerWidget {
       }
     }
 
+    void toggleBookmark() => ref
+        .read(notebookRepositoryProvider)
+        .setPageBookmarked(pageId, !bookmarked);
+    final theme = Theme.of(context);
+    final notebookTitle = notebookId == null
+        ? ''
+        : ref.watch(notebookProvider(notebookId)).value?.title ?? '';
+
     Future<void> jump() async {
       if (notebookId == null) return;
       final to = await showPageJumper(
@@ -179,34 +187,68 @@ class PageScreen extends ConsumerWidget {
       style: ref.watch(pageStyleProvider(pageId)),
       child: Scaffold(
         appBar: AppBar(
-          title: InkWell(
-            onTap: () => _rename(context, ref, pageId, title),
-            child: Text(page.value?.displayTitle ?? ''),
+          titleSpacing: 0,
+          // The notebook, with the page under it. Tapping it opens Go to
+          // page, as the title does in most notebook apps.
+          title: Semantics(
+            button: true,
+            hint: 'Go to page',
+            child: InkWell(
+              borderRadius: BorderRadius.circular(8),
+              onTap: jump,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      notebookTitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.titleMedium,
+                    ),
+                    Text(
+                      page.value?.displayTitle ?? '',
+                      key: const Key('page-title'),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
           actions: [
             const SyncIndicator(),
-            if (notebookId != null)
-              ExportButton(notebookId: notebookId, pageId: pageId),
-            if (dated)
+            // Finding a page.
+            if (wide) ...[
+              if (dated)
+                IconButton(
+                  tooltip: 'Today',
+                  icon: const Icon(Icons.today),
+                  onPressed: openToday,
+                ),
               IconButton(
-                tooltip: 'Today',
-                icon: const Icon(Icons.today),
-                onPressed: openToday,
+                tooltip: 'Go to page',
+                icon: const Icon(Icons.auto_stories_outlined),
+                onPressed: jump,
               ),
-            IconButton(
-              tooltip: 'Go to page',
-              icon: const Icon(Icons.auto_stories_outlined),
-              onPressed: jump,
-            ),
-            if (wide && !readOnly && page.value != null)
-              IconButton(
-                tooltip: bookmarked ? 'Remove bookmark' : 'Bookmark page',
-                isSelected: bookmarked,
-                icon: Icon(bookmarked ? Icons.bookmark : Icons.bookmark_border),
-                onPressed: () => ref
-                    .read(notebookRepositoryProvider)
-                    .setPageBookmarked(pageId, !bookmarked),
-              ),
+              if (!readOnly && page.value != null)
+                IconButton(
+                  tooltip: bookmarked ? 'Remove bookmark' : 'Bookmark page',
+                  isSelected: bookmarked,
+                  icon: Icon(
+                    bookmarked ? Icons.bookmark : Icons.bookmark_border,
+                  ),
+                  onPressed: toggleBookmark,
+                ),
+              const SizedBox(width: 12),
+            ],
+            // Turning pages.
             IconButton(
               tooltip: 'Previous page',
               icon: const Icon(Icons.chevron_left),
@@ -221,81 +263,69 @@ class PageScreen extends ConsumerWidget {
                   ? null
                   : () => openPage(adjacent.next!),
             ),
-            if (wide) ...[
-              IconButton(
-                tooltip: vertical ? 'Show page by page' : 'Scroll vertically',
-                icon: Icon(
-                  vertical
-                      ? Icons.auto_stories_outlined
-                      : Icons.view_day_outlined,
-                ),
-                onPressed: () => ref
-                    .read(pageScrollProvider.notifier)
-                    .set(vertical ? PageScroll.pages : PageScroll.vertical),
-              ),
-              if (!readOnly && page.value != null)
-                IconButton(
-                  tooltip: 'Page paper',
-                  icon: const Icon(Icons.texture),
-                  onPressed: choosePaper,
-                ),
-              IconButton(
-                tooltip: 'Rename page',
-                icon: const Icon(Icons.edit_note),
-                onPressed: () => _rename(context, ref, pageId, title),
-              ),
-            ] else
-              // Phones have room for fewer buttons.
-              PopupMenuButton<VoidCallback>(
-                tooltip: 'More',
-                onSelected: (action) => action(),
-                itemBuilder: (context) => [
-                  if (!readOnly && page.value != null)
-                    PopupMenuItem(
-                      value: () => ref
-                          .read(notebookRepositoryProvider)
-                          .setPageBookmarked(pageId, !bookmarked),
-                      child: ListTile(
-                        leading: Icon(
-                          bookmarked ? Icons.bookmark : Icons.bookmark_border,
-                        ),
-                        title: Text(
-                          bookmarked ? 'Remove bookmark' : 'Bookmark page',
-                        ),
-                      ),
-                    ),
-                  if (!readOnly && page.value != null)
-                    PopupMenuItem(
-                      value: choosePaper,
-                      child: const ListTile(
-                        leading: Icon(Icons.texture),
-                        title: Text('Page paper'),
-                      ),
-                    ),
+            if (wide) const SizedBox(width: 12),
+            // The page itself.
+            if (notebookId != null)
+              ExportButton(notebookId: notebookId, pageId: pageId),
+            PopupMenuButton<VoidCallback>(
+              tooltip: 'Page options',
+              icon: const Icon(Icons.more_horiz),
+              onSelected: (action) => action(),
+              itemBuilder: (context) => [
+                // Phones have room for fewer buttons.
+                if (!wide && dated)
                   PopupMenuItem(
-                    value: () => ref
-                        .read(pageScrollProvider.notifier)
-                        .set(vertical ? PageScroll.pages : PageScroll.vertical),
+                    value: openToday,
+                    child: const ListTile(
+                      leading: Icon(Icons.today),
+                      title: Text('Today'),
+                    ),
+                  ),
+                if (!wide && !readOnly && page.value != null)
+                  PopupMenuItem(
+                    value: toggleBookmark,
                     child: ListTile(
                       leading: Icon(
-                        vertical
-                            ? Icons.auto_stories_outlined
-                            : Icons.view_day_outlined,
+                        bookmarked ? Icons.bookmark : Icons.bookmark_border,
                       ),
                       title: Text(
-                        vertical ? 'Show page by page' : 'Scroll vertically',
+                        bookmarked ? 'Remove bookmark' : 'Bookmark page',
                       ),
                     ),
                   ),
+                if (!readOnly && page.value != null)
                   PopupMenuItem(
                     value: () => _rename(context, ref, pageId, title),
                     child: const ListTile(
-                      leading: Icon(Icons.edit_note),
+                      leading: Icon(Icons.edit_outlined),
                       title: Text('Rename page'),
                     ),
                   ),
-                ],
-              ),
+                if (!readOnly && page.value != null)
+                  PopupMenuItem(
+                    value: choosePaper,
+                    child: const ListTile(
+                      leading: Icon(Icons.texture),
+                      title: Text('Page paper'),
+                    ),
+                  ),
+                PopupMenuItem(
+                  value: () => ref
+                      .read(pageScrollProvider.notifier)
+                      .set(vertical ? PageScroll.pages : PageScroll.vertical),
+                  child: ListTile(
+                    leading: Icon(
+                      vertical
+                          ? Icons.auto_stories_outlined
+                          : Icons.view_day_outlined,
+                    ),
+                    title: Text(
+                      vertical ? 'Show page by page' : 'Scroll vertically',
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
         body: Column(

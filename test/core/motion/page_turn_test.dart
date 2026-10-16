@@ -117,11 +117,8 @@ void main() {
       await tester.pumpAndSettle();
     }
 
-    String title(WidgetTester tester) => tester
-        .widget<Text>(
-          find.descendant(of: find.byType(AppBar), matching: find.byType(Text)),
-        )
-        .data!;
+    String title(WidgetTester tester) =>
+        tester.widget<Text>(find.byKey(const Key('page-title'))).data!;
 
     testWidgets('Next and Previous move through the notebook', (tester) async {
       await openFirstPage(tester);

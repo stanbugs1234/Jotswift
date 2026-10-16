@@ -56,19 +56,16 @@ void main() {
     return container;
   }
 
-  String appBarTitle(WidgetTester tester) => tester
-      .widget<Text>(
-        find
-            .descendant(of: find.byType(AppBar), matching: find.byType(Text))
-            .first,
-      )
-      .data!;
+  String appBarTitle(WidgetTester tester) =>
+      tester.widget<Text>(find.byKey(const Key('page-title'))).data!;
 
   testWidgets('pages can be scrolled one under another', (tester) async {
     final container = await pumpPages(tester);
     expect(find.byType(PageCanvas), findsOneWidget);
 
-    await tester.tap(find.byTooltip('Scroll vertically'));
+    await tester.tap(find.byTooltip('Page options'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Scroll vertically'));
     await tester.pumpAndSettle();
 
     expect(container.read(pageScrollProvider), PageScroll.vertical);
@@ -89,7 +86,9 @@ void main() {
     await tester.pumpAndSettle();
     expect(appBarTitle(tester), isNot('One'));
 
-    await tester.tap(find.byTooltip('Show page by page'));
+    await tester.tap(find.byTooltip('Page options'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Show page by page'));
     await tester.pumpAndSettle();
     expect(find.byType(VerticalPages), findsNothing);
   });
