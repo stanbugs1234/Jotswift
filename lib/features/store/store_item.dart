@@ -1,3 +1,5 @@
+import '../../shared/ui/skeleton.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -118,20 +120,48 @@ class ItemPreview extends ConsumerWidget {
         ),
       );
     }
-    final image = ref.watch(catalogPreviewProvider(item)).value;
+    final preview = ref.watch(catalogPreviewProvider(item));
+    final image = preview.value;
+    if (item.kind == CatalogKind.cover) {
+      return ColoredBox(
+        color: item.color == null
+            ? theme.colorScheme.surfaceContainerHighest
+            : Color(item.color!),
+        child: image == null
+            ? const SizedBox.expand()
+            : Image(
+                image: image,
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: double.infinity,
+              ),
+      );
+    }
+    // Pages sit on a soft surface with a shadow, like paper on a desk, so a
+    // landscape planner in a portrait card looks placed, not letterboxed.
     return ColoredBox(
-      color: item.color == null
-          ? theme.colorScheme.surfaceContainerHighest
-          : Color(item.color!),
+      color: theme.colorScheme.surfaceContainerHighest,
       child: image == null
-          ? const SizedBox.expand()
-          : Image(
-              image: image,
-              fit: item.kind == CatalogKind.cover
-                  ? BoxFit.cover
-                  : BoxFit.contain,
-              width: double.infinity,
-              height: double.infinity,
+          // Pulses while loading; a preview that failed stays plain.
+          ? (preview.isLoading ? const Skeleton(radius: 0) : null)
+          : Padding(
+              padding: const EdgeInsets.all(8),
+              child: Center(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.18),
+                        blurRadius: 6,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  // Loose constraints: the image keeps its shape, and the
+                  // shadow hugs it.
+                  child: Image(image: image, fit: BoxFit.contain),
+                ),
+              ),
             ),
     );
   }
