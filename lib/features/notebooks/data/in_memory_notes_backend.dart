@@ -536,6 +536,22 @@ class _InMemoryUserData
   }
 
   @override
+  Future<void> setPageBackground(
+    String pageId, {
+    PageTemplate? template,
+    PaperStyle? paper,
+  }) async {
+    final p = _pages[pageId];
+    if (p == null) return;
+    _pages[pageId] = p.copyWith(
+      template: () => template,
+      paper: () => paper,
+      updatedAt: nowMillis(),
+    );
+    _changed();
+  }
+
+  @override
   Future<void> deletePage(String pageId) async {
     _removePage(pageId);
     _changed();

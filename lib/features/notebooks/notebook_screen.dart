@@ -5,16 +5,15 @@ import 'package:go_router/go_router.dart';
 import '../../core/catalog/catalog_item.dart';
 import '../../core/paper/paper_style.dart';
 import '../../shared/dialogs.dart';
-import '../canvas/templates.dart';
 import '../exports/export_sheet.dart';
 import '../imports/import_actions.dart';
 import '../shelf/shelf_actions.dart';
 import 'domain/notebook_models.dart';
 import 'new_page_sheet.dart';
 import 'notes_providers.dart';
+import 'page_actions.dart';
 import 'page_grid.dart';
 import 'paper_picker.dart';
-import 'planner_builder.dart';
 import 'my_templates.dart';
 
 /// One notebook: its sections as tabs, and the pages in the chosen section.
@@ -161,19 +160,7 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
   /// Adds every page of the planner [item], as new sections, after asking
   /// its layout and which pages; then opens its first page.
   Future<void> _addWholePlanner(CatalogItem item) async {
-    final choice = await showAddPlannerSheet(context, item);
-    if (choice == null || !mounted) return;
-    final add = ref.read(addPlannerPagesProvider);
-    final first = await withPlannerProgress(
-      context,
-      (onProgress) => add(
-        widget.notebookId,
-        item,
-        file: choice.file,
-        skip: choice.skip,
-        onProgress: onProgress,
-      ),
-    );
+    final first = await addWholePlanner(context, ref, widget.notebookId, item);
     if (first != null && mounted) _openPage(first);
   }
 

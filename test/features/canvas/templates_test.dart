@@ -815,7 +815,7 @@ void main() {
 
       await tester.tap(find.byTooltip('Page options'));
       await settle(tester);
-      await tester.tap(find.text('Page paper'));
+      await tester.tap(find.text('Paper color'));
       await settle(tester);
       expect(find.textContaining('only the paper color shows'), findsOneWidget);
       await tester.tap(find.text('Use on every template page'));

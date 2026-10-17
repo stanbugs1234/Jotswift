@@ -563,6 +563,17 @@ class _FirestoreUserNotes
       }).ignore();
 
   @override
+  Future<void> setPageBackground(
+    String pageId, {
+    PageTemplate? template,
+    PaperStyle? paper,
+  }) async => _pages.doc(pageId).update({
+    'template': template?.toMap() ?? FieldValue.delete(),
+    'paper': paper?.toMap() ?? FieldValue.delete(),
+    'updatedAt': nowMillis(),
+  }).ignore();
+
+  @override
   Future<void> deletePage(String pageId) async {
     _pages.doc(pageId).delete().ignore();
     final (strokes, elements) = await (

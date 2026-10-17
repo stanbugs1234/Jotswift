@@ -101,6 +101,15 @@ abstract interface class NotebookRepository {
   /// Gives one page its own paper, or (with null) goes back to the
   /// notebook's paper.
   Future<void> setPagePaper(String pageId, PaperStyle? paper);
+
+  /// Changes what a page is drawn on: a template page (with [paper] behind
+  /// it, or white), or with no [template] a paper (null: the notebook's).
+  /// Its ink and items stay.
+  Future<void> setPageBackground(
+    String pageId, {
+    PageTemplate? template,
+    PaperStyle? paper,
+  });
   Future<void> deletePage(String pageId);
 
   /// Moves a page to [order] in a section, which may be in another

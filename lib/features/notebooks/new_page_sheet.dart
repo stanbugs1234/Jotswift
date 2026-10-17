@@ -48,16 +48,25 @@ class WholePlannerChoice extends NewPageChoice {
 /// Asks what kind of page to add: blank, another paper, or any page of any
 /// template. Templates the user doesn't have yet are listed too and open
 /// their store page. [search] starts the search with those words (e.g. a
-/// template's name). Returns null if cancelled.
+/// template's name). [same] offers a page like the one being written on
+/// first. [changing] asks for a page's new background instead of a new
+/// page (so whole planners aren't offered). Returns null if cancelled.
 Future<NewPageChoice?> showNewPageSheet(
   BuildContext context, {
   required PaperStyle paper,
   String? search,
+  NewPage? same,
+  bool changing = false,
 }) => showModalBottomSheet<NewPageChoice>(
   context: context,
   isScrollControlled: true,
   showDragHandle: true,
-  builder: (context) => _NewPageSheet(paper: paper, search: search),
+  builder: (context) => _NewPageSheet(
+    paper: paper,
+    search: search,
+    same: same,
+    changing: changing,
+  ),
 );
 
 /// One row of the sheet.
@@ -81,10 +90,17 @@ class _Locked extends _Row {
 }
 
 class _NewPageSheet extends ConsumerStatefulWidget {
-  const _NewPageSheet({required this.paper, this.search});
+  const _NewPageSheet({
+    required this.paper,
+    this.search,
+    this.same,
+    this.changing = false,
+  });
 
   final PaperStyle paper;
   final String? search;
+  final NewPage? same;
+  final bool changing;
 
   @override
   ConsumerState<_NewPageSheet> createState() => _NewPageSheetState();
@@ -128,7 +144,10 @@ class _NewPageSheetState extends ConsumerState<_NewPageSheet> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('New page', style: theme.textTheme.titleLarge),
+                  Text(
+                    widget.changing ? 'Change template' : 'New page',
+                    style: theme.textTheme.titleLarge,
+                  ),
                   if (templates.isNotEmpty) ...[
                     const SizedBox(height: 12),
                     TemplateFilterBar(
@@ -153,8 +172,19 @@ class _NewPageSheetState extends ConsumerState<_NewPageSheet> {
                           spacing: 12,
                           runSpacing: 12,
                           children: [
+                            if (widget.same case final same?)
+                              _Tile(
+                                label: 'Same as this page',
+                                onTap: () => Navigator.pop(
+                                  context,
+                                  TemplatePageChoice(same),
+                                ),
+                                child: _PagePicture(page: same, paper: paper),
+                              ),
                             _Tile(
-                              label: 'Blank page',
+                              label: widget.changing
+                                  ? 'Plain paper'
+                                  : 'Blank page',
                               onTap: () => Navigator.pop(
                                 context,
                                 const BlankPageChoice(),
@@ -195,7 +225,10 @@ class _NewPageSheetState extends ConsumerState<_NewPageSheet> {
                       padding: const EdgeInsets.only(top: 28, bottom: 4),
                       child: Text(text, style: theme.textTheme.titleMedium),
                     ),
-                    _Usable(:final item) => _TemplateRow(item: item),
+                    _Usable(:final item) => _TemplateRow(
+                      item: item,
+                      wholePlanner: !widget.changing,
+                    ),
                     _Locked(:final item) => _LockedRow(item: item),
                   };
                 },
@@ -211,9 +244,12 @@ class _NewPageSheetState extends ConsumerState<_NewPageSheet> {
 /// A template the user has: its pages, or for a planner, one tile per
 /// section that opens the section's pages.
 class _TemplateRow extends ConsumerWidget {
-  const _TemplateRow({required this.item});
+  const _TemplateRow({required this.item, this.wholePlanner = true});
 
   final CatalogItem item;
+
+  /// Offers to add every page of a planner.
+  final bool wholePlanner;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -232,7 +268,8 @@ class _TemplateRow extends ConsumerWidget {
                 const SizedBox(width: 8),
                 const LinkedPagesBadge(size: 12),
               ],
-              if (item.templateMode == TemplateMode.notebook) ...[
+              if (wholePlanner &&
+                  item.templateMode == TemplateMode.notebook) ...[
                 const Spacer(),
                 const SizedBox(width: 8),
                 FilledButton.tonalIcon(
@@ -423,6 +460,31 @@ class _TemplatePageTile extends ConsumerWidget {
       child: image == null
           ? const Skeleton(radius: 2)
           : RawImage(image: image, fit: BoxFit.contain),
+    );
+  }
+}
+
+/// What [page] is drawn on: its template page, else its paper (or the
+/// notebook's [paper]).
+class _PagePicture extends ConsumerWidget {
+  const _PagePicture({required this.page, required this.paper});
+
+  final NewPage page;
+  final PaperStyle paper;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (page.template case final template?) {
+      final image = ref
+          .watch(templateImageProvider((template: template, width: 240)))
+          .value;
+      return image == null
+          ? const Skeleton(radius: 2)
+          : RawImage(image: image, fit: BoxFit.contain);
+    }
+    return CustomPaint(
+      painter: PaperPainter(page.paper ?? paper, scale: 0.18),
+      child: const SizedBox.expand(),
     );
   }
 }

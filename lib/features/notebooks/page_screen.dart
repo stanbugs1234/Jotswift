@@ -19,6 +19,7 @@ import '../canvas/zoom_window.dart';
 import '../canvas/templates.dart' show templateImageProvider;
 import '../exports/export_sheet.dart';
 import '../shelf/tag_editor.dart';
+import 'page_actions.dart';
 import '../tasks/task_providers.dart' show todayProvider;
 import 'domain/notebook_models.dart';
 import 'notes_providers.dart';
@@ -174,6 +175,12 @@ class PageScreen extends ConsumerWidget {
 
     final wide = MediaQuery.sizeOf(context).width >= Breakpoints.medium;
     Future<void> choosePaper() => choosePagePaper(context, ref, page.value!);
+    Future<void> changeTemplate() =>
+        changePageTemplate(context, ref, page.value!);
+    Future<void> addPage() async {
+      final id = await addPageAfter(context, ref, page.value!);
+      if (id != null && context.mounted) openPage(id);
+    }
 
     void toggleBookmark() => ref
         .read(notebookRepositoryProvider)
@@ -290,6 +297,12 @@ class PageScreen extends ConsumerWidget {
                   ? null
                   : () => openPage(adjacent.next!),
             ),
+            if (!readOnly && page.value != null)
+              IconButton(
+                tooltip: 'Add page after this',
+                icon: const Icon(Icons.note_add_outlined),
+                onPressed: addPage,
+              ),
             if (wide) const SizedBox(width: 12),
             // The page itself.
             if (notebookId != null)
@@ -338,10 +351,22 @@ class PageScreen extends ConsumerWidget {
                   ),
                 if (!readOnly && page.value != null)
                   PopupMenuItem(
-                    value: choosePaper,
+                    value: changeTemplate,
                     child: const ListTile(
-                      leading: Icon(Icons.texture),
-                      title: Text('Page paper'),
+                      leading: Icon(Icons.dashboard_customize_outlined),
+                      title: Text('Change template…'),
+                    ),
+                  ),
+                if (!readOnly && page.value != null)
+                  PopupMenuItem(
+                    value: choosePaper,
+                    child: ListTile(
+                      leading: const Icon(Icons.texture),
+                      title: Text(
+                        page.value?.template != null
+                            ? 'Paper color'
+                            : 'Page paper',
+                      ),
                     ),
                   ),
                 PopupMenuItem(
