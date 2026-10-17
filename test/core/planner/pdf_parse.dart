@@ -16,9 +16,12 @@ Map<int, String> pdfObjects(Uint8List bytes) {
     final s = body.indexOf('stream\n');
     if (s >= 0) {
       final dict = body.substring(0, s);
-      final len = int.parse(RegExp(r'/Length (\d+)').firstMatch(dict)!.group(1)!);
+      final len = int.parse(
+        RegExp(r'/Length (\d+)').firstMatch(dict)!.group(1)!,
+      );
       final data = bytes.sublist(start + s + 7, start + s + 7 + len);
-      body = '${dict.replaceFirst(RegExp(r'/Length \d+ '), '')}stream\n'
+      body =
+          '${dict.replaceFirst(RegExp(r'/Length \d+ '), '')}stream\n'
           '${latin1.decode(ZLibDecoder().convert(data))}';
     }
     out[id] = body;
