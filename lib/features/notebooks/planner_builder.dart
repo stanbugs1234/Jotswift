@@ -58,9 +58,14 @@ class PlannerBuilder extends ConsumerWidget {
     final skipped = skip ?? spec.defaultSkipped;
     final start = from ?? spec.startFor(DateTime.now()) ?? months.firstOrNull;
     final counts = <String, int>{};
+    final firstPage = <String, int>{};
     for (final p in spec.pages) {
-      if (p.group case final g?) counts[g] = (counts[g] ?? 0) + 1;
+      if (p.group case final g?) {
+        counts[g] = (counts[g] ?? 0) + 1;
+        firstPage[g] ??= p.pdfPage;
+      }
     }
+    final file = spec.variantFor(options)?.file ?? PageTemplate.defaultFile;
     final total = spec.pageCount(skip: skipped, from: start);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -135,13 +140,16 @@ class PlannerBuilder extends ConsumerWidget {
         if (spec.groups.any((g) => g.optional)) ...[
           Padding(
             padding: const EdgeInsets.only(top: 16, bottom: 4),
-            child: Text('Include', style: theme.textTheme.labelLarge),
+            child: Text("What's inside", style: theme.textTheme.labelLarge),
           ),
           for (final g in spec.groups)
             if (g.optional && (counts[g.id] ?? 0) > 0)
               SwitchListTile(
                 dense: true,
                 contentPadding: EdgeInsets.zero,
+                secondary: _GroupPage(
+                  templatePage(template, firstPage[g.id]!, file: file),
+                ),
                 title: Text(g.title),
                 subtitle: Text(_pages(counts[g.id]!)),
                 value: !skipped.contains(g.id),
@@ -338,6 +346,29 @@ class _AddPlannerSheetState extends ConsumerState<_AddPlannerSheet> {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// A small picture of a group's first page, beside its switch.
+class _GroupPage extends ConsumerWidget {
+  const _GroupPage(this.template);
+
+  final PageTemplate template;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final image = ref
+        .watch(templateImageProvider((template: template, width: 120)))
+        .value;
+    return Container(
+      width: 34,
+      height: 44,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+      ),
+      child: image == null ? null : RawImage(image: image, fit: BoxFit.contain),
     );
   }
 }

@@ -961,6 +961,7 @@ void main() {
       await tester.tap(find.text('Focus Planner'));
       await settle(tester);
       expect(find.text('Colours'), findsNothing);
+      expect(find.text("What's inside"), findsOneWidget);
       expect(find.text('Daily check-ins'), findsOneWidget);
       // Off by default, with no pages: not offered.
       expect(find.text('Extras'), findsNothing);

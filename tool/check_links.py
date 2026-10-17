@@ -128,7 +128,9 @@ def check(folder):
         missing = [i + 1 for i in range(len(graph)) if i not in reach]
         if missing:
             problems.append(f"{pdf.name}: {len(missing)} pages can't be reached, e.g. {missing[:5]}")
-        if "groups" in base:
+        # planner_nav's books (Overview first) list groups too, but some
+        # show only school days on their week pages.
+        if "groups" in base and base["sections"][0]["title"] != "Overview":
             problems += check_book(pdf, spec, graph, reach)
             continue
         sections = spec.get("sections", [])

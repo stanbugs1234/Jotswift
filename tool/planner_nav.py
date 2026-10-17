@@ -691,16 +691,20 @@ class Planner:
         return pages, self.spec()
 
     def spec(self):
-        def entry(page, title, first=None, last=None):
+        def entry(page, title, first=None, last=None, group=None):
             e = {"pdfPage": page + 1, "title": title}
             if self.dated and first is not None:
                 e.update({"from": first.isoformat(), "to": (last or first).isoformat()})
+            if group:
+                e["group"] = group
             return e
 
         end = add_months(self.start, self.n) - dt.timedelta(days=1)
         overview = [entry(self.home, "Home"), entry(self.year_page, self.year_name(), self.start, end),
-                    entry(self.goals_page, "Goals"), entry(self.pixels_page, "Year in pixels")]
-        overview += [entry(page, name) for (name, _), page in zip(self.front, self.front_pages)]
+                    entry(self.goals_page, "Goals", group="goals"),
+                    entry(self.pixels_page, "Year in pixels", group="pixels")]
+        overview += [entry(page, name, group=f"front_{k}")
+                     for k, ((name, _), page) in enumerate(zip(self.front, self.front_pages))]
         months = []
         for m in range(self.n):
             name = self.month_name(m)
@@ -708,21 +712,35 @@ class Planner:
             last = add_months(first, 1) - dt.timedelta(days=1)
             months.append(entry(self.month_page(m), name, first, last))
             for sub, kind in ((1, "goals"), (2, "habits"), (3, "notes")):
-                months.append(entry(self.month_page(m, sub), f"{self.month_name(m, short=True)} {kind}"))
+                months.append(entry(self.month_page(m, sub), f"{self.month_name(m, short=True)} {kind}",
+                                    group=f"month_{kind}"))
         weeks = [entry(page, f"Week {i + 1}", *((self.weeks[i], self.weeks[i] + dt.timedelta(days=6))
-                                                if self.dated else ()))
+                                                if self.dated else ()), group="weeks")
                  for i, page in enumerate(self.week_page)]
         if self.dated:
-            days = [entry(page, f"{MONTHS[d.month - 1][:3]} {d.day}", d) for d, page in zip(self.days, self.day_page)]
+            days = [entry(page, f"{MONTHS[d.month - 1][:3]} {d.day}", d, group="days")
+                    for d, page in zip(self.days, self.day_page)]
         else:
-            days = [entry(page, f"Month {m + 1}, day {n}") for (m, n), page in zip(self.days, self.day_page)]
-        notes = [entry(self.notes_page, "Notes")] + [entry(page, f"Note {k + 1}") for k, page in enumerate(self.note_pages)]
-        lists_ = [entry(self.lists_page, "Lists")] + [entry(page, name) for name, page in zip(LISTS, self.list_pages)]
-        return {"mode": "notebook", "sections": [
-            {"title": "Overview", "pages": overview},
-            {"title": "Months", "pages": months},
-            {"title": "Weeks", "pages": weeks},
-            {"title": "Days", "pages": days},
-            {"title": "Notes", "pages": notes},
-            {"title": "Lists", "pages": lists_},
-        ]}
+            days = [entry(page, f"Month {m + 1}, day {n}", group="days")
+                    for (m, n), page in zip(self.days, self.day_page)]
+        notes = [entry(self.notes_page, "Notes", group="notes")] + [
+            entry(page, f"Note {k + 1}", group="notes") for k, page in enumerate(self.note_pages)]
+        lists_ = [entry(self.lists_page, "Lists", group="lists")] + [
+            entry(page, name, group="lists") for name, page in zip(LISTS, self.list_pages)]
+        # Every page but Home, the year and the month calendars can be left
+        # out by the app's planner builder.
+        groups = [("goals", "Year goals"), ("pixels", "Year in pixels"),
+                  *((f"front_{k}", name) for k, (name, _) in enumerate(self.front)),
+                  ("month_goals", "Monthly goals"), ("month_habits", "Habit trackers"),
+                  ("month_notes", "Monthly notes"), ("weeks", "Week pages"), ("days", "Day pages"),
+                  ("notes", "Notes"), ("lists", "Lists")]
+        return {"mode": "notebook",
+                "groups": [{"id": g, "title": t, "optional": True, "on": True} for g, t in groups],
+                "sections": [
+                    {"title": "Overview", "pages": overview},
+                    {"title": "Months", "pages": months},
+                    {"title": "Weeks", "pages": weeks},
+                    {"title": "Days", "pages": days},
+                    {"title": "Notes", "pages": notes},
+                    {"title": "Lists", "pages": lists_},
+                ]}
