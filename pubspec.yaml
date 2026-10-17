@@ -1,7 +1,7 @@
 name: notely
 description: "Jotswift: handwritten notes, planner, calendar and to-do lists with swappable skins."
 publish_to: 'none'
-version: 0.1.0+18
+version: 0.1.0+19
 
 environment:
   sdk: ^3.13.0
