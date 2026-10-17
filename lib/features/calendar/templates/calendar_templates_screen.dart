@@ -166,7 +166,7 @@ class _CalendarTemplatesPickerState
                               entitlements.owns(calendarTemplatesBundle)
                         ? 'Owned'
                         : entitlements.pro
-                        ? 'In your Pro'
+                        ? 'Included in Pro'
                         : 'Pro',
                     onTap: () => _pick(t),
                   ),

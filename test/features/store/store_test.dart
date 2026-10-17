@@ -568,7 +568,7 @@ void main() {
       expect(store.bought, {ProProducts.yearly});
       expect(find.text('Start free trial'), findsNothing, reason: 'closed');
       expect(
-        find.bySemanticsLabel('pro_paper, Paper, In your Pro'),
+        find.bySemanticsLabel('pro_paper, Paper, Included in Pro'),
         findsOneWidget,
       );
       expect(find.text('Jotswift Pro'), findsNothing, reason: 'no banner');

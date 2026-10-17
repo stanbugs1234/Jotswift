@@ -50,7 +50,8 @@ String kindLabel(CatalogItem item) => switch (item.kind) {
   CatalogKind.unknown => '',
 };
 
-/// A short price or status for a tile: "Free", "Owned", "Pro", "$2.99".
+/// A short price or status for a tile: "Free", "Owned", "Included in Pro",
+/// "Pro", "$2.99".
 final itemBadgeProvider = Provider.family<String, CatalogItem>((ref, item) {
   final access = accessOf(ref.watch(entitlementsProvider), item);
   switch (access) {
@@ -59,7 +60,7 @@ final itemBadgeProvider = Provider.family<String, CatalogItem>((ref, item) {
     case ItemAccess.owned:
       return 'Owned';
     case ItemAccess.pro:
-      return 'In your Pro';
+      return 'Included in Pro';
     case ItemAccess.locked:
       final product = item.unlock.products.firstOrNull;
       final price = product == null
