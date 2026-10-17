@@ -838,7 +838,7 @@ class _NotebookTile extends ConsumerWidget {
         ),
         const PopupMenuItem(
           value: NotebookAction.edit,
-          child: Text('Cover, paper & style'),
+          child: Text('Cover, paper & theme'),
         ),
         const PopupMenuItem(
           value: NotebookAction.move,

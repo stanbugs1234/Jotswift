@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/catalog/catalog_item.dart';
+import '../../core/catalog/planner_series.dart';
 import '../../core/paper/paper_style.dart';
 import '../../shared/dialogs.dart';
 import '../exports/export_sheet.dart';
@@ -13,6 +14,7 @@ import 'new_page_sheet.dart';
 import 'notes_providers.dart';
 import 'page_actions.dart';
 import 'page_grid.dart';
+import 'planner_continue.dart';
 import 'paper_picker.dart';
 import 'my_templates.dart';
 
@@ -184,6 +186,13 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
     if (choice != null) await _newPage(sectionId, paper: choice.paper);
   }
 
+  /// Adds the planner's next months, then opens the first of them.
+  Future<void> _continuePlanner() async {
+    final first = await continuePlanner(context, ref, widget.notebookId);
+    ref.invalidate(plannerNextProvider(widget.notebookId));
+    if (first != null && mounted) _openPage(first);
+  }
+
   void _openPage(String pageId) =>
       context.go('/notebooks/${widget.notebookId}/pages/$pageId');
 
@@ -191,6 +200,7 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
   Widget build(BuildContext context) {
     final notebook = ref.watch(notebookProvider(widget.notebookId));
     final sections = ref.watch(sectionsProvider(widget.notebookId)).value;
+    final next = ref.watch(plannerNextProvider(widget.notebookId)).value;
 
     if (notebook case AsyncData(value: null)) {
       return Scaffold(
@@ -225,6 +235,7 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
               tooltip: 'Notebook options',
               onSelected: (action) => switch (action) {
                 'edit' => editNotebook(context, ref, nb),
+                'continue' => _continuePlanner(),
                 'save_template' => saveAsTemplate(context, ref, nb),
                 'template' when current != null => _newPageFromSheet(
                   current.id,
@@ -236,8 +247,16 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
               itemBuilder: (context) => [
                 const PopupMenuItem(
                   value: 'edit',
-                  child: Text('Cover, paper & style'),
+                  child: Text('Cover, paper & theme'),
                 ),
+                if (next != null)
+                  PopupMenuItem(
+                    value: 'continue',
+                    child: Text(
+                      'Continue to '
+                      '${monthYear(editionDates(next.edition)!.to)}…',
+                    ),
+                  ),
                 if (!nb.isTemplate)
                   const PopupMenuItem(
                     value: 'save_template',

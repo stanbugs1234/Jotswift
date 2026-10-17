@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:notely/app/router.dart';
 import 'package:notely/core/catalog/catalog_item.dart';
 import 'package:notely/core/catalog/catalog_providers.dart';
 import 'package:notely/core/catalog/catalog_repository.dart';
@@ -115,9 +117,7 @@ void main() {
     ),
   ];
 
-  testWidgets('a planner shows once, and starts on this month', (
-    tester,
-  ) async {
+  testWidgets('a planner shows once, and starts on this month', (tester) async {
     final auth = await pumpApp(
       tester,
       skins,
@@ -196,9 +196,7 @@ void main() {
     final repo = backend.notebooks(auth.currentUser!.uid);
     final nb = (await repo.watchNotebooks().first).single;
     final pages = await repo.watchNotebookPages(nb.id).first;
-    expect(pages.map((p) => p.template!.itemId).toSet(), {
-      'weekly_$nextYear',
-    });
+    expect(pages.map((p) => p.template!.itemId).toSet(), {'weekly_$nextYear'});
     expect(pages, hasLength(5));
   });
 
@@ -307,5 +305,61 @@ void main() {
     expect(nb.cover.kind, CoverKind.art);
     expect(nb.cover.coverId, 'kraft_cover');
     expect(nb.collectionId, 'kraft');
+  });
+
+  testWidgets('a dated planner continues into its next edition', (
+    tester,
+  ) async {
+    final auth = await pumpApp(
+      tester,
+      skins,
+      size: const Size(900, 2600),
+      overrides: overrides(editions()),
+    );
+    await tester.tap(find.text('New notebook').last);
+    await settle(tester);
+    await tester.tap(find.text('Weekly Planner'));
+    await settle(tester);
+    await tester.tap(find.text('Create'));
+    await settle(tester);
+    final repo = backend.notebooks(auth.currentUser!.uid);
+    final nb = (await repo.watchNotebooks().first).single;
+    ProviderScope.containerOf(tester.element(find.byType(Navigator).first))
+        .read(routerProvider)
+        .go('/notebooks/${nb.id}');
+    await settle(tester);
+
+    await tester.tap(find.byTooltip('Notebook options'));
+    await settle(tester);
+    await tester.tap(
+      // The listing runs to December.
+      find.text('Continue to ${monthYear(DateTime(nextYear, 12))}…'),
+    );
+    await settle(tester);
+    await tester.tap(find.text('Add months'));
+    await settle(tester);
+
+    final next = DateTime(months.last.year, months.last.month + 1);
+    final added = [
+      for (final m in [DateTime(nextYear), DateTime(nextYear, 2)])
+        if (!m.isBefore(next)) m,
+    ];
+    final pages = await repo.watchNotebookPages(nb.id).first;
+    expect(
+      [
+        for (final p in pages)
+          if (p.template!.itemId == 'weekly_$nextYear') p.title,
+      ],
+      unorderedEquals([
+        for (final m in added) ...[monthYear(m), '${monthYear(m)} goals'],
+      ]),
+      reason: 'its months, without another Notes section',
+    );
+    final sections = await repo.watchSections(nb.id).first;
+    expect(sections.map((s) => s.title), [
+      'Months',
+      'Notes',
+      'Months $nextYear',
+    ]);
   });
 }

@@ -173,7 +173,7 @@ void main() {
 
     await tester.tap(find.byTooltip('Notebook options'));
     await tester.pumpAndSettle();
-    await tapText(tester, 'Cover, paper & style');
+    await tapText(tester, 'Cover, paper & theme');
 
     expect(find.text('Edit notebook'), findsOneWidget);
     expect(find.text('Page size'), findsNothing);
