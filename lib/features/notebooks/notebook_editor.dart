@@ -6,7 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/catalog/catalog_item.dart';
 import '../../core/catalog/catalog_providers.dart';
-import '../../core/catalog/template_spec.dart';
+import '../../core/catalog/planner_series.dart';
+import '../../core/entitlements/entitlements.dart';
 import '../../core/paper/paper_style.dart';
 import '../../core/skins/skin_manifest.dart';
 import '../../core/skins/skin_providers.dart';
@@ -20,10 +21,11 @@ import 'planner_builder.dart';
 import 'notebook_start.dart';
 import 'template_gallery.dart';
 import '../store/store_item.dart' show ItemPreview;
+import '../store/store_item_screen.dart';
 import 'notes_providers.dart' show myTemplatesProvider;
 
 /// Makes a new notebook, or (with [editing]) changes one: title, cover,
-/// paper and style. Returns the choices, or null if cancelled.
+/// paper and theme. Returns the choices, or null if cancelled.
 ///
 /// Size and orientation can only be chosen for a new notebook: ink is saved
 /// in page units, so changing them later would move it.
@@ -84,26 +86,91 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
   /// Page groups to leave out; null for the planner's defaults.
   Set<String>? _skip;
 
+  /// The month a dated planner starts; null for this month (or all of it).
+  DateTime? _from;
+
   /// One of the user's own templates to copy, instead of a planner.
   Notebook? _mine;
   bool _saving = false;
+
+  /// Whether the user picked the cover or theme, which then stay; until
+  /// then they follow the planner's collection.
+  bool _coverChosen = false;
+  bool _styleChosen = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.editing == null) _matchPlanner(widget.template);
+  }
 
   /// On the first step, choosing what the notebook starts from. Skipped
   /// when a planner was already chosen, and when editing.
   late bool _choosing = widget.editing == null && widget.template == null;
 
-  void _start({CatalogItem? template, Notebook? mine}) => setState(() {
+  bool _usable(CatalogItem item) =>
+      ref.read(entitlementsProvider).canUseCatalogItem(item);
+
+  void _start({PlannerSeries? series, Notebook? mine}) => setState(() {
     _choosing = false;
-    _template = template;
+    _setTemplate(series?.defaultEdition(DateTime.now(), usable: _usable));
     _mine = mine;
-    _variant = PageTemplate.defaultFile;
-    _options = const {};
-    _skip = null;
     if (mine != null) {
       _cover = mine.cover;
       _styleId = mine.collectionId ?? _styleId;
     }
   });
+
+  void _setTemplate(CatalogItem? template) {
+    _template = template;
+    _variant = PageTemplate.defaultFile;
+    _options = const {};
+    _skip = null;
+    _from = null;
+    _matchPlanner(template);
+  }
+
+  /// Gives the notebook [template]'s cover and theme, from its collection,
+  /// unless the user chose their own.
+  void _matchPlanner(CatalogItem? template) {
+    final collection = template?.collectionId;
+    if (!_coverChosen) {
+      final art = collection == null
+          ? null
+          : ref
+                .read(offeredCatalogProvider(CatalogKind.cover))
+                .where((c) => c.collectionId == collection)
+                .firstOrNull;
+      _cover = art == null
+          ? widget.initial.cover
+          : NotebookCover.art(
+              art.id,
+              color: art.color ?? widget.initial.cover.color,
+            );
+    }
+    if (!_styleChosen) {
+      _styleId =
+          collection != null &&
+              ref.read(usableSkinsProvider).any((s) => s.id == collection)
+          ? collection
+          : widget.initial.collectionId;
+    }
+  }
+
+  /// Shows a locked planner in the store, and starts with it if it was
+  /// unlocked there.
+  Future<void> _unlock(CatalogItem item) async {
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute(builder: (_) => StoreItemScreen(itemId: item.id)),
+    );
+    if (mounted && _usable(item)) {
+      setState(() {
+        _choosing = false;
+        _mine = null;
+        _setTemplate(item);
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -157,7 +224,9 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
     Navigator.pop(context, (
       notebook: NewNotebook(
         title: title.isEmpty
-            ? (template?.name ?? mine?.title ?? 'Untitled notebook')
+            ? ((template == null ? null : plannerName(template)) ??
+                  mine?.title ??
+                  'Untitled notebook')
             : title,
         cover: _cover,
         paper: _paper ?? style.paper.style,
@@ -176,6 +245,13 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
                     .value
                     ?.defaultSkipped ??
                 const <String>{},
+      from: template == null
+          ? null
+          : _from ??
+                ref
+                    .read(templateSpecProvider(template))
+                    .value
+                    ?.startFor(DateTime.now()),
       mine: mine,
     ));
   }
@@ -188,15 +264,22 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
     final style = _style;
     final paper = _paper ?? style.paper.style;
     final isNew = widget.editing == null;
-    final planners = isNew
-        ? [
-            for (final t in ref.watch(
-              offeredCatalogProvider(CatalogKind.template),
-            ))
-              if (t.templateMode == TemplateMode.notebook) t,
-          ]
-        : const <CatalogItem>[];
+    ref.watch(entitlementsProvider);
+    final series = isNew
+        ? plannerSeries(ref.watch(storeCatalogProvider))
+        : const <PlannerSeries>[];
+    final loadingCatalog = isNew && !ref.watch(catalogProvider).hasValue;
     final template = _template;
+    final editions = template == null
+        ? const <CatalogItem>[]
+        : series
+                  .where((s) => s.key == seriesKey(template))
+                  .firstOrNull
+                  ?.editions ??
+              [template];
+    final spec = template == null
+        ? null
+        : ref.watch(templateSpecProvider(template)).value;
     final mine = _mine;
     final myTemplates = isNew
         ? ref.watch(myTemplatesProvider).value ?? const <Notebook>[]
@@ -208,6 +291,7 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
     );
 
     void pickStyle(SkinManifest next) => setState(() {
+      _styleChosen = true;
       // Keep a paper the user chose; follow the style otherwise.
       if (_paper == null || _paper == style.paper.style) {
         _paper = next.paper.style;
@@ -216,7 +300,9 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
     });
 
     final page = _size.dimensions(_orientation);
-    final canChoose = isNew && (planners.isNotEmpty || myTemplates.isNotEmpty);
+    final canChoose =
+        isNew &&
+        (series.isNotEmpty || myTemplates.isNotEmpty || loadingCatalog);
 
     if (_choosing && canChoose) {
       return Scaffold(
@@ -229,11 +315,15 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 1100),
               child: NotebookStartChooser(
-                templates: planners,
+                series: series,
+                usable: _usable,
+                loading: loadingCatalog,
                 myTemplates: myTemplates,
                 blankPaper: paper,
                 onBlank: _start,
-                onTemplate: (t) => _start(template: t),
+                onTemplate: (s) => _start(series: s),
+                onLocked: (s) =>
+                    _unlock(s.defaultEdition(DateTime.now(), usable: _usable)),
                 onMine: (t) => _start(mine: t),
               ),
             ),
@@ -314,10 +404,10 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
                       textCapitalization: TextCapitalization.sentences,
                       decoration: InputDecoration(
                         labelText: 'Title',
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
                         // Left empty, the notebook takes this name.
                         hintText:
-                            template?.name ??
+                            (template == null ? null : plannerName(template)) ??
                             mine?.title ??
                             'e.g. School, Work, Journal',
                       ),
@@ -331,6 +421,15 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
                         paper: paper,
                         onChange: () => setState(() => _choosing = true),
                       ),
+                      if (editions.length > 1)
+                        _EditionPicker(
+                          editions: editions,
+                          selected: template!,
+                          usable: _usable,
+                          onChanged: (e) => _usable(e)
+                              ? setState(() => _setTemplate(e))
+                              : _unlock(e),
+                        ),
                       if (template != null)
                         _ColourwayPicker(
                           template: template,
@@ -347,14 +446,14 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
                             _variant = file;
                           }),
                           onSkip: (skip) => setState(() => _skip = skip),
+                          from: _from,
+                          onFrom: (from) => setState(() => _from = from),
                         ),
                       if (template != null &&
-                          (ref
-                                  .watch(templateSpecProvider(template))
-                                  .value
-                                  ?.options
-                                  .isEmpty ??
-                              true))
+                          spec != null &&
+                          spec.options.isEmpty &&
+                          spec.groups.isEmpty &&
+                          spec.months.length < 2)
                         Padding(
                           padding: const EdgeInsets.only(top: 8),
                           child: Text(
@@ -371,7 +470,10 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
                     heading('Cover'),
                     CoverPicker(
                       selected: _cover,
-                      onChanged: (c) => setState(() => _cover = c),
+                      onChanged: (c) => setState(() {
+                        _cover = c;
+                        _coverChosen = true;
+                      }),
                     ),
                     if (template == null && mine == null)
                       PaperPicker(
@@ -387,7 +489,7 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
                           style: theme.textTheme.bodySmall,
                         ),
                       ),
-                    heading('Style (ink colors and fonts)'),
+                    heading('Theme'),
                     Wrap(
                       spacing: 8,
                       runSpacing: 8,
@@ -532,6 +634,9 @@ typedef NotebookEditorResult = ({
   /// The planner's page groups to leave out.
   Set<String> skip,
 
+  /// The month a dated planner starts, or null for all of it.
+  DateTime? from,
+
   /// One of the user's own templates to copy.
   Notebook? mine,
 });
@@ -610,4 +715,54 @@ class _ColourwayPicker extends ConsumerWidget {
       ),
     );
   }
+}
+
+/// A planner's editions, by their dates. Locked ones show a lock, and
+/// choosing one shows it in the store.
+class _EditionPicker extends StatelessWidget {
+  const _EditionPicker({
+    required this.editions,
+    required this.selected,
+    required this.usable,
+    required this.onChanged,
+  });
+
+  final List<CatalogItem> editions;
+  final CatalogItem selected;
+  final bool Function(CatalogItem) usable;
+  final ValueChanged<CatalogItem> onChanged;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(top: 16),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 110,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Text('Dates', style: Theme.of(context).textTheme.labelLarge),
+          ),
+        ),
+        Expanded(
+          child: Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final e in editions)
+                ChoiceChip(
+                  avatar: usable(e)
+                      ? null
+                      : const Icon(Icons.lock_outline, size: 16),
+                  label: Text(editionLabel(e) ?? e.name),
+                  selected: e.id == selected.id,
+                  onSelected: (_) => onChanged(e),
+                ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
 }

@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/catalog/catalog_item.dart';
+import '../../core/catalog/planner_series.dart';
+import '../../core/catalog/template_spec.dart';
 import '../canvas/templates.dart';
 import 'domain/notebook_models.dart';
 
-/// Shapes a planner before it's made: its layout and first day of the
-/// week, and which groups of pages to include. Shows nothing for planners
-/// without these choices.
+/// Shapes a planner before it's made: the month it starts, its layout and
+/// first day of the week, and which groups of pages to include. Shows
+/// nothing for planners without these choices.
 ///
 /// Leaving pages out keeps a planner from feeling overwhelming, and isn't
 /// final: a link to a page that was left out offers to add it.
@@ -20,6 +22,8 @@ class PlannerBuilder extends ConsumerWidget {
     required this.skip,
     required this.onOptions,
     required this.onSkip,
+    this.from,
+    this.onFrom,
     super.key,
   });
 
@@ -35,22 +39,62 @@ class PlannerBuilder extends ConsumerWidget {
   final void Function(Map<String, String> options, String file) onOptions;
   final ValueChanged<Set<String>> onSkip;
 
+  /// The month a dated planner starts; null for [TemplateSpec.startFor]
+  /// today. Without [onFrom] it can't be changed.
+  final DateTime? from;
+  final ValueChanged<DateTime?>? onFrom;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final spec = ref.watch(templateSpecProvider(template)).value;
-    if (spec == null || spec.options.isEmpty && spec.groups.isEmpty) {
+    final months = onFrom == null
+        ? const <DateTime>[]
+        : spec?.months ?? const <DateTime>[];
+    if (spec == null ||
+        spec.options.isEmpty && spec.groups.isEmpty && months.length < 2) {
       return const SizedBox.shrink();
     }
     final theme = Theme.of(context);
     final skipped = skip ?? spec.defaultSkipped;
+    final start = from ?? spec.startFor(DateTime.now()) ?? months.firstOrNull;
     final counts = <String, int>{};
     for (final p in spec.pages) {
       if (p.group case final g?) counts[g] = (counts[g] ?? 0) + 1;
     }
-    final total = spec.pageCount(skip: skipped);
+    final total = spec.pageCount(skip: skipped, from: start);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if (months.length > 1 && start != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 16),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 110,
+                  child: Text('Starts', style: theme.textTheme.labelLarge),
+                ),
+                DropdownButton<DateTime>(
+                  value: start,
+                  underline: const SizedBox.shrink(),
+                  items: [
+                    for (final m in months)
+                      DropdownMenuItem(value: m, child: Text(monthYear(m))),
+                  ],
+                  onChanged: (m) => onFrom!(m),
+                ),
+                const SizedBox(width: 8),
+                Flexible(
+                  child: Text(
+                    _months(months.where((m) => !m.isBefore(start)).length),
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         for (final option in spec.options)
           Padding(
             padding: const EdgeInsets.only(top: 16),
@@ -119,6 +163,8 @@ class PlannerBuilder extends ConsumerWidget {
   }
 
   static String _pages(int n) => n == 1 ? '1 page' : '$n pages';
+
+  static String _months(int n) => n == 1 ? '1 month' : '$n months';
 
   static Widget? _icon(String option, String choice) =>
       switch ((option, choice)) {
@@ -192,8 +238,9 @@ Future<T?> withPlannerProgress<T>(
   }
 }
 
-/// What to add of a planner: its PDF and the page groups to leave out.
-typedef PlannerChoice = ({String file, Set<String> skip});
+/// What to add of a planner: its PDF, the page groups to leave out, and
+/// the month it starts (null for all of it).
+typedef PlannerChoice = ({String file, Set<String> skip, DateTime? from});
 
 /// Asks how to add the whole planner [item] to a notebook: its layout,
 /// week start and which pages, as when making a notebook from it. Returns
@@ -221,13 +268,15 @@ class _AddPlannerSheetState extends ConsumerState<_AddPlannerSheet> {
   Map<String, String> _options = const {};
   String _file = PageTemplate.defaultFile;
   Set<String>? _skip;
+  DateTime? _from;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final spec = ref.watch(templateSpecProvider(widget.item)).value;
     final skip = _skip ?? spec?.defaultSkipped ?? const <String>{};
-    final count = spec?.pageCount(skip: skip);
+    final from = _from ?? spec?.startFor(DateTime.now());
+    final count = spec?.pageCount(skip: skip, from: from);
     return SafeArea(
       child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
@@ -257,6 +306,8 @@ class _AddPlannerSheetState extends ConsumerState<_AddPlannerSheet> {
                   _file = file;
                 }),
                 onSkip: (skip) => setState(() => _skip = skip),
+                from: _from,
+                onFrom: (from) => setState(() => _from = from),
               ),
             const SizedBox(height: 16),
             Row(
@@ -276,7 +327,11 @@ class _AddPlannerSheetState extends ConsumerState<_AddPlannerSheet> {
                   ),
                   onPressed: spec == null
                       ? null
-                      : () => Navigator.pop(context, (file: _file, skip: skip)),
+                      : () => Navigator.pop(context, (
+                          file: _file,
+                          skip: skip,
+                          from: from,
+                        )),
                 ),
               ],
             ),

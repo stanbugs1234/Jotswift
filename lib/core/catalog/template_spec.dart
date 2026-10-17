@@ -96,8 +96,10 @@ class TemplateSpec {
             choices: [
               for (final c
                   in (o['choices'] as List? ?? const []).whereType<Map>())
-                if ((c['id'], c['name'])
-                    case (final String id, final String name))
+                if ((c['id'], c['name']) case (
+                  final String id,
+                  final String name,
+                ))
                   (id: id, name: name),
             ],
           ),
@@ -188,9 +190,68 @@ class TemplateSpec {
       if (g.optional && !g.on) g.id,
   };
 
-  /// How many pages would be made, leaving out [skip].
-  int pageCount({Set<String> skip = const {}}) =>
-      pages.where((p) => !skip.contains(p.group)).length;
+  /// How many pages would be made (see [made]).
+  int pageCount({Set<String> skip = const {}, DateTime? from}) =>
+      made(skip: skip, from: from).fold(0, (n, s) => n + s.pages.length);
+
+  /// The sections and pages made of this planner, leaving out the groups
+  /// in [skip] and sections left empty.
+  ///
+  /// Started [from] a day, dated pages that end before it are left out (a
+  /// week that runs into it stays), with the undated pages that follow
+  /// them in their section, like a month's goals after the month.
+  /// [datedOnly] leaves out sections with no dated pages (notes, lists).
+  List<({String title, List<TemplatePage> pages})> made({
+    Set<String> skip = const {},
+    DateTime? from,
+    bool datedOnly = false,
+  }) => [
+    for (final s in sections)
+      if (!datedOnly || s.pages.any((p) => p.period?.to != null))
+        if (_from(s.pages, from) case final pages
+            when pages.any((p) => !skip.contains(p.group)))
+          (
+            title: s.title,
+            pages: [
+              for (final p in pages)
+                if (!skip.contains(p.group)) p,
+            ],
+          ),
+  ];
+
+  static List<TemplatePage> _from(List<TemplatePage> pages, DateTime? from) {
+    if (from == null) return pages;
+    final kept = <TemplatePage>[];
+    var before = false;
+    for (final p in pages) {
+      if (p.period?.to case final to?) before = to.isBefore(from);
+      if (!before) kept.add(p);
+    }
+    return kept;
+  }
+
+  /// Where a new copy of this planner starts on [today]: this month if
+  /// the planner has it, otherwise null, for all of it.
+  DateTime? startFor(DateTime today) {
+    final month = DateTime(today.year, today.month);
+    return months.contains(month) && month != months.first ? month : null;
+  }
+
+  /// The months a dated planner has a month page for, in order: where it
+  /// can start. Empty for undated planners.
+  List<DateTime> get months {
+    final found = <DateTime>{};
+    for (final p in pages) {
+      final (from, to) = (p.period?.from, p.period?.to);
+      if (from != null &&
+          to != null &&
+          from.day == 1 &&
+          to == DateTime(from.year, from.month + 1, 0)) {
+        found.add(from);
+      }
+    }
+    return found.toList()..sort();
+  }
 
   final TemplateMode mode;
   final List<({String title, List<TemplatePage> pages})> sections;

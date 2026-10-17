@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/catalog/catalog_item.dart';
+import '../../core/catalog/planner_series.dart';
 import '../../core/paper/paper_style.dart';
 import '../../core/skins/widgets/paper.dart';
 import '../../shared/ui/empty_state.dart';
 import '../../shared/ui/tokens.dart';
 import '../shelf/cover_view.dart';
+import '../store/store_item.dart' show itemBadgeProvider;
 import 'domain/notebook_models.dart';
 import 'template_filter.dart';
 import 'template_gallery.dart';
@@ -13,43 +16,68 @@ import 'template_gallery.dart';
 /// The first step of New notebook: what it starts from. Blank pages, one
 /// of the user's own templates, or a planner, in one grid with a search
 /// and the category chips. Choosing one moves on to the details.
-class NotebookStartChooser extends StatefulWidget {
+///
+/// A planner shows once, however many editions (dates) it has; the
+/// details step picks among them. Planners the user can't use yet come
+/// last, locked, and [onLocked] shows them in the store.
+class NotebookStartChooser extends ConsumerStatefulWidget {
   const NotebookStartChooser({
-    required this.templates,
+    required this.series,
+    required this.usable,
     required this.myTemplates,
     required this.blankPaper,
     required this.onBlank,
     required this.onTemplate,
+    required this.onLocked,
     required this.onMine,
+    this.loading = false,
     super.key,
   });
 
-  final List<CatalogItem> templates;
+  final List<PlannerSeries> series;
+
+  /// Whether an edition can be used now.
+  final bool Function(CatalogItem) usable;
   final List<Notebook> myTemplates;
 
   /// The paper a blank notebook gets, for its card.
   final PaperStyle blankPaper;
 
+  /// Still waiting for the catalog: shows placeholders for its planners.
+  final bool loading;
+
   final VoidCallback onBlank;
-  final ValueChanged<CatalogItem> onTemplate;
+  final ValueChanged<PlannerSeries> onTemplate;
+  final ValueChanged<PlannerSeries> onLocked;
   final ValueChanged<Notebook> onMine;
 
   @override
-  State<NotebookStartChooser> createState() => _NotebookStartChooserState();
+  ConsumerState<NotebookStartChooser> createState() =>
+      _NotebookStartChooserState();
 }
 
-class _NotebookStartChooserState extends State<NotebookStartChooser> {
+class _NotebookStartChooserState extends ConsumerState<NotebookStartChooser> {
   var _filter = const TemplateFilter();
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final gutter = gutterOf(context);
-    final templates = widget.templates.where(_filter.matches).toList();
+    final now = DateTime.now();
+    final shown = [
+      for (final s in widget.series)
+        if (s.editions.any(_filter.matches))
+          (
+            series: s,
+            item: s.defaultEdition(now, usable: widget.usable),
+            locked: !s.editions.any(widget.usable),
+          ),
+    ]..sort((a, b) => (a.locked ? 1 : 0) - (b.locked ? 1 : 0));
     // Blank and the user's own templates lead the grid until a search or a
     // category narrows it to planners.
     final mine = _filter.isEmpty ? widget.myTemplates : const <Notebook>[];
     final starters = _filter.isEmpty ? 1 + mine.length : 0;
+    final placeholders = widget.loading ? 6 : 0;
 
     Widget card(BuildContext context, int i) {
       if (i == 0 && starters > 0) {
@@ -77,21 +105,50 @@ class _NotebookStartChooserState extends State<NotebookStartChooser> {
           ),
         );
       }
-      final t = templates[i - starters];
+      if (i >= starters + shown.length) {
+        return const TemplateCard.placeholder();
+      }
+      final (:series, :item, :locked) = shown[i - starters];
+      final detail = [
+        if (locked) ref.watch(itemBadgeProvider(item)),
+        if (series.editions.length > 1)
+          series.editions.any((e) => editionDates(e) == null)
+              ? 'Dated or undated'
+              : 'Pick your dates'
+        else
+          ?editionLabel(item),
+        if (item.linked) 'linked',
+      ];
       return TemplateCard(
-        item: t,
-        title: t.name,
-        subtitle: templateSummary(t),
+        item: item,
+        title: series.name,
+        subtitle: detail.isEmpty ? templateSummary(item) : detail.join(' · '),
         selected: false,
-        onTap: () => widget.onTemplate(t),
+        locked: locked,
+        onTap: () =>
+            locked ? widget.onLocked(series) : widget.onTemplate(series),
         onLookInside: () async {
-          if (await showTemplatePages(context, t) == true) {
-            widget.onTemplate(t);
-          }
+          final chosen = await showTemplatePages(
+            context,
+            item,
+            locked: locked,
+            lockedAction: locked
+                ? FilledButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      widget.onLocked(series);
+                    },
+                    child: const Text('Get it'),
+                  )
+                : null,
+          );
+          if (chosen == true) widget.onTemplate(series);
         },
       );
     }
 
+    final all = [for (final s in widget.series) ...s.editions];
+    final count = starters + shown.length + placeholders;
     return CustomScrollView(
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       slivers: [
@@ -108,10 +165,10 @@ class _NotebookStartChooserState extends State<NotebookStartChooser> {
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
                 ),
-                if (widget.templates.length >= 5) ...[
+                if (widget.series.length >= 5) ...[
                   const SizedBox(height: Insets.lg),
                   TemplateFilterBar(
-                    templates: widget.templates,
+                    templates: all,
                     filter: _filter,
                     onChanged: (f) => setState(() => _filter = f),
                   ),
@@ -120,7 +177,7 @@ class _NotebookStartChooserState extends State<NotebookStartChooser> {
             ),
           ),
         ),
-        if (starters + templates.length == 0)
+        if (count == 0)
           const SliverFillRemaining(
             hasScrollBody: false,
             child: EmptyState(
@@ -132,10 +189,7 @@ class _NotebookStartChooserState extends State<NotebookStartChooser> {
         else
           SliverPadding(
             padding: EdgeInsets.fromLTRB(gutter, 0, gutter, Insets.xxl),
-            sliver: TemplateCardGrid(
-              itemCount: starters + templates.length,
-              itemBuilder: card,
-            ),
+            sliver: TemplateCardGrid(itemCount: count, itemBuilder: card),
           ),
       ],
     );

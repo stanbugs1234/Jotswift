@@ -83,6 +83,7 @@ Future<Notebook?> _createPlanner(
       planner,
       file: result.variant,
       skip: result.skip,
+      from: result.from,
       onProgress: onProgress,
     ),
   );

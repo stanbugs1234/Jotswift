@@ -161,15 +161,17 @@ final notebookTemplatePagesProvider =
 }
 
 /// Makes [notebook] with the pages of the planner [item] in the planner's
-/// sections, from its PDF [file], leaving out the page groups in [skip]
-/// (and sections left empty). Calls [onProgress] with pages made so far
-/// and the total. Returns the new notebook.
+/// sections, from its PDF [file], leaving out the page groups in [skip],
+/// dated pages that end before [from] (a planner started later in its
+/// year), and sections left empty. Calls [onProgress] with pages made so
+/// far and the total. Returns the new notebook.
 Future<Notebook> createNotebookFromTemplate(
   Ref ref,
   NewNotebook notebook,
   CatalogItem item, {
   String file = PageTemplate.defaultFile,
   Set<String> skip = const {},
+  DateTime? from,
   void Function(int done, int total)? onProgress,
 }) async {
   final created = await ref
@@ -181,6 +183,7 @@ Future<Notebook> createNotebookFromTemplate(
     item,
     file: file,
     skip: skip,
+    from: from,
     onProgress: onProgress,
   );
   return created;
@@ -188,33 +191,29 @@ Future<Notebook> createNotebookFromTemplate(
 
 /// Adds every page of the planner [item] to [notebookId], as the planner's
 /// sections after the notebook's own (or in place of its only section if
-/// that is empty, as in a new notebook). [file], [skip] and [onProgress]
-/// as for [createNotebookFromTemplate]. Returns the first page added, or
-/// null if none were.
+/// that is empty, as in a new notebook). [file], [skip], [from] and
+/// [onProgress] as for [createNotebookFromTemplate]; [datedOnly] leaves out
+/// sections without dates (notes, lists), as when a planner is continued
+/// into its next year. A section named like one the notebook has gets its year.
+/// Returns the first page added, or null if none were.
 Future<String?> addPlannerPages(
   Ref ref,
   String notebookId,
   CatalogItem item, {
   String file = PageTemplate.defaultFile,
   Set<String> skip = const {},
+  DateTime? from,
+  bool datedOnly = false,
   void Function(int done, int total)? onProgress,
 }) async {
   final spec = await ref.read(
     templateFileSpecProvider(templatePage(item, 1, file: file).fileKey).future,
   );
-  final sections = [
-    for (final s in spec.sections)
-      (
-        title: s.title,
-        pages: [
-          for (final p in s.pages)
-            if (!skip.contains(p.group)) p,
-        ],
-      ),
-  ].where((s) => s.pages.isNotEmpty).toList();
+  final sections = spec.made(skip: skip, from: from, datedOnly: datedOnly);
   final total = sections.fold(0, (n, s) => n + s.pages.length);
   final repo = ref.read(notebookRepositoryProvider);
   final existing = await repo.watchSections(notebookId).first;
+  final taken = {for (final s in existing) s.title};
   String? empty;
   if (existing.length == 1) {
     final pages = await repo.watchPages(notebookId, existing.single.id).first;
@@ -229,7 +228,14 @@ Future<String?> addPlannerPages(
       sectionId = empty;
       await repo.renameSection(notebookId, sectionId, section.title);
     } else {
-      sectionId = (await repo.createSection(notebookId, section.title)).id;
+      final year = section.pages
+          .map((p) => p.period?.from?.year)
+          .nonNulls
+          .firstOrNull;
+      final title = taken.contains(section.title) && year != null
+          ? '${section.title} $year'
+          : section.title;
+      sectionId = (await repo.createSection(notebookId, title)).id;
     }
     firstSection ??= sectionId;
     await repo.createPages(
@@ -263,6 +269,8 @@ final addPlannerPagesProvider =
         CatalogItem item, {
         String file,
         Set<String> skip,
+        DateTime? from,
+        bool datedOnly,
         void Function(int done, int total)? onProgress,
       })
     >(
@@ -272,6 +280,8 @@ final addPlannerPagesProvider =
             item, {
             file = PageTemplate.defaultFile,
             skip = const {},
+            from,
+            datedOnly = false,
             onProgress,
           }) => addPlannerPages(
             ref,
@@ -279,6 +289,8 @@ final addPlannerPagesProvider =
             item,
             file: file,
             skip: skip,
+            from: from,
+            datedOnly: datedOnly,
             onProgress: onProgress,
           ),
     );
@@ -291,6 +303,7 @@ final createFromTemplateProvider =
         CatalogItem, {
         String file,
         Set<String> skip,
+        DateTime? from,
         void Function(int done, int total)? onProgress,
       })
     >(
@@ -300,6 +313,7 @@ final createFromTemplateProvider =
             item, {
             file = PageTemplate.defaultFile,
             skip = const {},
+            from,
             onProgress,
           }) => createNotebookFromTemplate(
             ref,
@@ -307,6 +321,7 @@ final createFromTemplateProvider =
             item,
             file: file,
             skip: skip,
+            from: from,
             onProgress: onProgress,
           ),
     );

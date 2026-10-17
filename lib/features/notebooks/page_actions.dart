@@ -231,6 +231,7 @@ Future<String?> addWholePlanner(
       item,
       file: choice.file,
       skip: choice.skip,
+      from: choice.from,
       onProgress: onProgress,
     ),
   );

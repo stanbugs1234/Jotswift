@@ -15,7 +15,8 @@ import '../store/store_item.dart';
 /// A template as a card: its first page, name and page count, with a
 /// button to look through every page. Tap to choose it; long-press also
 /// looks inside. [preview] replaces the template's picture (for a blank
-/// notebook or one of the user's own templates).
+/// notebook or one of the user's own templates). A [locked] one shows a
+/// lock: it isn't unlocked yet.
 class TemplateCard extends StatelessWidget {
   const TemplateCard({
     required this.title,
@@ -25,8 +26,23 @@ class TemplateCard extends StatelessWidget {
     this.preview,
     this.subtitle,
     this.onLookInside,
+    this.locked = false,
     super.key,
-  });
+  }) : _placeholder = false;
+
+  /// A card still loading.
+  const TemplateCard.placeholder({super.key})
+    : title = '',
+      selected = false,
+      onTap = _none,
+      item = null,
+      preview = null,
+      subtitle = null,
+      onLookInside = null,
+      locked = false,
+      _placeholder = true;
+
+  static void _none() {}
 
   final CatalogItem? item;
   final Widget? preview;
@@ -35,16 +51,39 @@ class TemplateCard extends StatelessWidget {
   final bool selected;
   final VoidCallback onTap;
   final VoidCallback? onLookInside;
+  final bool locked;
+  final bool _placeholder;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final item = this.item;
+    if (_placeholder) {
+      return const Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(child: Skeleton(radius: Radii.md)),
+          SizedBox(height: Insets.sm),
+          SizedBox(
+            height: _textHeight,
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: FractionallySizedBox(
+                widthFactor: 0.7,
+                child: SizedBox(height: 14, child: Skeleton(radius: 4)),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
     return Semantics(
       button: true,
       selected: selected,
-      label: '$title${item?.linked ?? false ? ', linked pages' : ''}',
+      label:
+          '$title${item?.linked ?? false ? ', linked pages' : ''}'
+          '${locked ? ', locked' : ''}',
       child: InkWell(
         borderRadius: BorderRadius.circular(Radii.md),
         onTap: onTap,
@@ -77,6 +116,23 @@ class TemplateCard extends StatelessWidget {
                           top: 6,
                           right: 6,
                           child: LinkedPagesBadge(size: 13),
+                        ),
+                      if (locked)
+                        Positioned(
+                          top: 6,
+                          left: 6,
+                          child: Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: scheme.surface.withValues(alpha: 0.9),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.lock_outline,
+                              size: 14,
+                              color: scheme.onSurface,
+                            ),
+                          ),
                         ),
                       if (selected)
                         Positioned(
