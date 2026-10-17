@@ -509,6 +509,31 @@ void main() {
       );
     });
 
+    testWidgets('Yours includes the templates the user made', (tester) async {
+      await openWith(tester, [freePaper]);
+      await tester.tap(find.widgetWithText(ChoiceChip, 'Yours'));
+      await tester.pumpAndSettle();
+      expect(find.text('My templates'), findsNothing);
+
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(NotelyApp)),
+      );
+      await container
+          .read(notebookRepositoryProvider)
+          .createNotebook(
+            const NewNotebook(
+              title: 'Weekly review',
+              cover: NotebookCover.color(0),
+              isTemplate: true,
+            ),
+          );
+      await tester.pumpAndSettle();
+      expect(find.text('1 notebook saved as a template'), findsOneWidget);
+      await tester.tap(find.text('My templates'));
+      await tester.pumpAndSettle();
+      expect(find.text('Weekly review'), findsOneWidget);
+    });
+
     testWidgets('a locked template shows its sample pages', (tester) async {
       final locked = item(
         'locked_planner',

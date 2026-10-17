@@ -1,3 +1,5 @@
+import '../notebooks/my_templates.dart' show myTemplatesPath;
+import '../notebooks/notes_providers.dart' show myTemplatesProvider;
 import '../notebooks/template_filter.dart';
 import '../../shared/ui/empty_state.dart';
 import '../../shared/ui/skeleton.dart';
@@ -120,6 +122,7 @@ class _StoreScreenState extends ConsumerState<StoreScreen> {
     bool unlocked(CatalogItem i) =>
         accessOf(entitlements, i) != ItemAccess.locked;
     final items = _onePerPlanner(all, unlocked);
+    final mine = ref.watch(myTemplatesProvider).value?.length ?? 0;
     final available = ref.watch(purchasesClientProvider).isAvailable;
     final searching = _search.text.trim().isNotEmpty;
     final found = searching
@@ -183,6 +186,25 @@ class _StoreScreenState extends ConsumerState<StoreScreen> {
               ],
             ),
           ),
+          // Templates the user made, with what they own.
+          if (_filter == _Filter.owned && !searching && mine > 0)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+              child: Card(
+                margin: EdgeInsets.zero,
+                child: ListTile(
+                  leading: const Icon(Icons.bookmarks_outlined),
+                  title: const Text('My templates'),
+                  subtitle: Text(
+                    mine == 1
+                        ? '1 notebook saved as a template'
+                        : '$mine notebooks saved as templates',
+                  ),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => context.push(myTemplatesPath),
+                ),
+              ),
+            ),
           // The rows there are, to show one of them on its own.
           if (!searching && (rows.length > 1 || _category != null))
             SizedBox(
