@@ -40,10 +40,12 @@ class PaperPicker extends ConsumerWidget {
   final List<NamedPaper> stylePapers;
 
   /// [pattern] on [color] at [spacing], with ruling that suits the color.
+  /// [factor] (times the pattern's usual spacing) overrides [spacing].
   static PaperStyle make(
     PaperPattern pattern,
     Color color, {
     PaperSpacing spacing = PaperSpacing.medium,
+    double? factor,
   }) {
     final basic = BasicPaperColor.values
         .where((b) => b.color == color)
@@ -60,16 +62,29 @@ class PaperPicker extends ConsumerWidget {
       lineColor: lineColor,
       marginColor: hasMarginLine(pattern) ? margin : null,
       pattern: pattern,
-      spacing: (defaultSpacing(pattern) * spacing.factor).roundToDouble(),
+      spacing: (defaultSpacing(pattern) * (factor ?? spacing.factor))
+          .roundToDouble(),
     );
   }
 
-  PaperSpacing get _spacing {
-    final ratio = selected.spacing / defaultSpacing(selected.pattern);
-    return PaperSpacing.values.reduce(
-      (a, b) => (a.factor - ratio).abs() <= (b.factor - ratio).abs() ? a : b,
-    );
-  }
+  /// Page units in a millimetre (the same for every paper size).
+  static const unitsPerMm = 6.5;
+
+  /// The finest and widest spacing the slider offers, times the usual.
+  static const minFactor = 0.6, maxFactor = 1.8;
+
+  /// How far [selected]'s spacing is from its pattern's usual one (kept
+  /// when the pattern or color changes).
+  double get _factor => (selected.spacing / defaultSpacing(selected.pattern))
+      .clamp(minFactor, maxFactor);
+
+  /// The named spacing [selected] has, if it has one.
+  PaperSpacing? get _spacing => PaperSpacing.values
+      .where((s) => (s.factor - _factor).abs() < 0.03)
+      .firstOrNull;
+
+  /// The spacing in millimetres, e.g. "7.1 mm".
+  String get _mm => '${(selected.spacing / unitsPerMm).toStringAsFixed(1)} mm';
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -124,9 +139,8 @@ class PaperPicker extends ConsumerWidget {
                 avatar: _Swatch(color: b.color),
                 label: Text(_colorName(b)),
                 selected: selected.color == b.color,
-                onSelected: (_) => onChanged(
-                  make(selected.pattern, b.color, spacing: _spacing),
-                ),
+                onSelected: (_) =>
+                    onChanged(make(selected.pattern, b.color, factor: _factor)),
               ),
             ChoiceChip(
               avatar: isBasicColor
@@ -137,7 +151,7 @@ class PaperPicker extends ConsumerWidget {
               onSelected: (_) async {
                 final color = await pickColor(context, selected.color);
                 if (color != null) {
-                  onChanged(make(selected.pattern, color, spacing: _spacing));
+                  onChanged(make(selected.pattern, color, factor: _factor));
                 }
               },
             ),
@@ -149,7 +163,7 @@ class PaperPicker extends ConsumerWidget {
             for (final pattern in PaperPattern.values)
               (
                 name: _patternName(pattern),
-                paper: make(pattern, selected.color, spacing: _spacing),
+                paper: make(pattern, selected.color, factor: _factor),
               ),
           ],
           selected: selected,
@@ -159,15 +173,45 @@ class PaperPicker extends ConsumerWidget {
         const SizedBox(height: 12),
         SegmentedButton<PaperSpacing>(
           showSelectedIcon: false,
+          emptySelectionAllowed: true,
           segments: [
             for (final s in PaperSpacing.values)
               ButtonSegment(value: s, label: Text(s.label)),
           ],
-          selected: {_spacing},
-          onSelectionChanged: (s) => onChanged(
-            make(selected.pattern, selected.color, spacing: s.first),
-          ),
+          selected: {?_spacing},
+          onSelectionChanged: (s) {
+            if (s.isEmpty) return;
+            onChanged(make(selected.pattern, selected.color, spacing: s.first));
+          },
         ),
+        // Finer steps between and beyond the three.
+        if (selected.pattern != PaperPattern.blank)
+          Row(
+            children: [
+              Expanded(
+                child: Slider(
+                  min: minFactor,
+                  max: maxFactor,
+                  divisions: ((maxFactor - minFactor) / 0.05).round(),
+                  value: _factor,
+                  semanticFormatterCallback: (_) => _mm,
+                  onChanged: (f) => onChanged(
+                    make(selected.pattern, selected.color, factor: f),
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 64,
+                child: Text(
+                  _mm,
+                  textAlign: TextAlign.end,
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    fontFeatures: const [FontFeature.tabularFigures()],
+                  ),
+                ),
+              ),
+            ],
+          ),
         if (catalogPapers.isNotEmpty) ...[
           heading('More papers'),
           _PaperRow(

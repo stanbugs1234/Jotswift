@@ -262,7 +262,15 @@ void main() {
     await tapText(tester, 'New notebook');
 
     await tapText(tester, 'Custom');
-    await tester.drag(find.byType(Slider).at(2), const Offset(-60, 0));
+    await tester.drag(
+      find
+          .descendant(
+            of: find.byType(AlertDialog),
+            matching: find.byType(Slider),
+          )
+          .at(2),
+      const Offset(-60, 0),
+    );
     await tester.pumpAndSettle();
     await tapText(tester, 'Use color');
     await tapText(tester, 'Create');

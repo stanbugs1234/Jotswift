@@ -159,6 +159,12 @@ void main() {
         spacing: PaperSpacing.narrow,
       );
       expect(narrow.spacing, lessThan(defaultSpacing(PaperPattern.grid)));
+      final fine = PaperPicker.make(
+        PaperPattern.lined,
+        BasicPaperColor.white.color,
+        factor: 1.5,
+      );
+      expect(fine.spacing, (defaultSpacing(PaperPattern.lined) * 1.5).round());
     });
   });
 

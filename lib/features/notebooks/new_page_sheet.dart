@@ -15,6 +15,7 @@ import '../store/store_item.dart';
 import '../store/store_screen.dart';
 import 'data/notes_repository.dart';
 import 'template_filter.dart';
+import 'template_picks.dart';
 
 /// What the New page sheet chose.
 sealed class NewPageChoice {
@@ -113,6 +114,9 @@ class _NewPageSheetState extends ConsumerState<_NewPageSheet> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final paper = widget.paper;
+    ref
+      ..watch(favoriteTemplatePagesProvider)
+      ..watch(recentTemplatePagesProvider);
     final entitlements = ref.watch(entitlementsProvider);
     final templates = [
       for (final t in ref.watch(storeCatalogProvider))
@@ -204,6 +208,20 @@ class _NewPageSheetState extends ConsumerState<_NewPageSheet> {
                             ),
                           ],
                         ),
+                        if (_filter.isEmpty) ...[
+                          _PicksRow(
+                            title: 'Favorites',
+                            picks: ref
+                                .read(favoriteTemplatePagesProvider.notifier)
+                                .picks,
+                          ),
+                          _PicksRow(
+                            title: 'Recent',
+                            picks: ref
+                                .read(recentTemplatePagesProvider.notifier)
+                                .picks,
+                          ),
+                        ],
                         if (templates.isEmpty)
                           const Padding(
                             padding: EdgeInsets.only(top: 24),
@@ -421,8 +439,9 @@ class _LockedRow extends ConsumerWidget {
   }
 }
 
-/// A template page's picture and title. Picks the page unless [onTap]
-/// says otherwise.
+/// A template page's picture and title, with a star to keep it under
+/// Favorites. Picks the page (and remembers it under Recent) unless
+/// [onTap] says otherwise.
 class _TemplatePageTile extends ConsumerWidget {
   const _TemplatePageTile({
     required this.item,
@@ -448,18 +467,96 @@ class _TemplatePageTile extends ConsumerWidget {
           )),
         )
         .value;
-    return _Tile(
-      label: label ?? page.title,
-      semantics: semantics ?? '${page.title} template',
-      onTap:
-          onTap ??
-          () => Navigator.pop(
-            context,
-            TemplatePageChoice(templateNewPage(item, page)),
+    final pick = TemplatePick(
+      itemId: item.id,
+      pdfPage: page.pdfPage,
+      title: page.title,
+    );
+    ref.watch(favoriteTemplatePagesProvider);
+    final favorites = ref.read(favoriteTemplatePagesProvider.notifier);
+    final starred = favorites.isFavorite(pick);
+    return Stack(
+      children: [
+        _Tile(
+          label: label ?? page.title,
+          semantics: semantics ?? '${page.title} template',
+          onTap:
+              onTap ??
+              () {
+                ref.read(recentTemplatePagesProvider.notifier).add(pick);
+                Navigator.pop(
+                  context,
+                  TemplatePageChoice(templateNewPage(item, page)),
+                );
+              },
+          child: image == null
+              ? const Skeleton(radius: 2)
+              : RawImage(image: image, fit: BoxFit.contain),
+        ),
+        // A section tile opens the section; its pages have stars.
+        if (onTap == null)
+          Positioned(
+            top: 0,
+            right: 0,
+            child: IconButton(
+              tooltip: starred
+                  ? 'Remove ${page.title} from Favorites'
+                  : 'Add ${page.title} to Favorites',
+              visualDensity: VisualDensity.compact,
+              iconSize: 20,
+              icon: Icon(
+                starred ? Icons.star : Icons.star_outline,
+                color: starred ? const Color(0xFFC79A2E) : Colors.black54,
+              ),
+              onPressed: () => favorites.toggle(pick),
+            ),
           ),
-      child: image == null
-          ? const Skeleton(radius: 2)
-          : RawImage(image: image, fit: BoxFit.contain),
+      ],
+    );
+  }
+}
+
+/// Favorite or recent template pages in a row, leaving out any whose
+/// template can't be used any more.
+class _PicksRow extends ConsumerWidget {
+  const _PicksRow({required this.title, required this.picks});
+
+  final String title;
+  final List<TemplatePick> picks;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final entitlements = ref.watch(entitlementsProvider);
+    final tiles = [
+      for (final pick in picks)
+        if (ref.watch(catalogItemProvider(pick.itemId)) case final item?
+            when item.files != null && entitlements.canUseCatalogItem(item))
+          Padding(
+            padding: const EdgeInsets.only(right: 12),
+            child: _TemplatePageTile(
+              item: item,
+              page: (
+                pdfPage: pick.pdfPage,
+                title: pick.title,
+                period: null,
+                group: null,
+              ),
+            ),
+          ),
+    ];
+    if (tiles.isEmpty) return const SizedBox.shrink();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 20, bottom: 8),
+          child: Text(title, style: Theme.of(context).textTheme.titleSmall),
+        ),
+        SizedBox(
+          height: 190,
+          child: ListView(scrollDirection: Axis.horizontal, children: tiles),
+        ),
+      ],
     );
   }
 }
