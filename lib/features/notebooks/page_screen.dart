@@ -20,6 +20,7 @@ import '../canvas/templates.dart' show templateImageProvider;
 import '../exports/export_sheet.dart';
 import '../shelf/tag_editor.dart';
 import 'page_actions.dart';
+import 'page_templates.dart';
 import '../tasks/task_providers.dart' show todayProvider;
 import 'domain/notebook_models.dart';
 import 'notes_providers.dart';
@@ -355,6 +356,14 @@ class PageScreen extends ConsumerWidget {
                     child: const ListTile(
                       leading: Icon(Icons.dashboard_customize_outlined),
                       title: Text('Change template…'),
+                    ),
+                  ),
+                if (!readOnly && page.value != null)
+                  PopupMenuItem(
+                    value: () => savePageAsTemplate(context, ref, page.value!),
+                    child: const ListTile(
+                      leading: Icon(Icons.bookmark_add_outlined),
+                      title: Text('Save page as template…'),
                     ),
                   ),
                 if (!readOnly && page.value != null)

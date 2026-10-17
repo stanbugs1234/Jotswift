@@ -8,6 +8,7 @@ import 'data/notes_repository.dart';
 import 'domain/notebook_models.dart';
 import 'new_page_sheet.dart';
 import 'notes_providers.dart';
+import 'page_templates.dart';
 import 'paper_picker.dart';
 import 'planner_builder.dart';
 
@@ -42,6 +43,9 @@ Future<void> changePageTemplate(
       if (picked == null) return;
       background = (template: null, paper: picked.paper);
     case TemplatePageChoice(page: final p):
+      background = (template: p.template, paper: p.paper);
+    // Just its background: the page's own writing stays.
+    case MyPageChoice(page: final p):
       background = (template: p.template, paper: p.paper);
     case WholePlannerChoice():
       return;
@@ -184,6 +188,14 @@ Future<String?> addPageAfter(
       add = (title: '', paper: picked.paper, template: null);
     case TemplatePageChoice(page: final p):
       add = p;
+    case MyPageChoice(page: final p):
+      return addPageTemplate(
+        ref,
+        p,
+        notebookId: page.notebookId,
+        sectionId: page.sectionId,
+        order: await _orderAfter(ref, page),
+      );
     case WholePlannerChoice(:final item):
       return addWholePlanner(context, ref, page.notebookId, item);
   }
@@ -196,21 +208,34 @@ Future<String?> addPageAfter(
     template: add.template,
     title: add.title,
   );
-  // Right after this page: halfway to the next one.
-  final pages = await repo.watchPages(page.notebookId, page.sectionId).first;
-  final after = pages
-      .where((p) => p.id != created.id && p.order > page.order)
-      .map((p) => p.order)
-      .fold<double?>(null, (a, b) => a == null || b < a ? b : a);
-  if (after != null) {
+  final order = await _orderAfter(ref, page, except: created.id);
+  if (order != null) {
     await repo.movePage(
       created.id,
       notebookId: page.notebookId,
       sectionId: page.sectionId,
-      order: (page.order + after) / 2,
+      order: order,
     );
   }
   return created.id;
+}
+
+/// The order right after [page] in its section (halfway to the next page,
+/// leaving out [except]), or null if it's the last.
+Future<double?> _orderAfter(
+  WidgetRef ref,
+  NotePage page, {
+  String? except,
+}) async {
+  final pages = await ref
+      .read(notebookRepositoryProvider)
+      .watchPages(page.notebookId, page.sectionId)
+      .first;
+  final after = pages
+      .where((p) => p.id != except && p.order > page.order)
+      .map((p) => p.order)
+      .fold<double?>(null, (a, b) => a == null || b < a ? b : a);
+  return after == null ? null : (page.order + after) / 2;
 }
 
 /// Adds every page of the planner [item] to [notebookId], as new sections,

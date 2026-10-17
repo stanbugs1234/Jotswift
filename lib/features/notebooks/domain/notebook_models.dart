@@ -35,6 +35,7 @@ class Notebook {
     this.tags = const [],
     this.trashedAt,
     this.isTemplate = false,
+    this.pageTemplates = false,
   });
 
   factory Notebook.fromMap(String id, Map<String, dynamic> map) => Notebook(
@@ -67,6 +68,7 @@ class Notebook {
     tags: [for (final t in map['tags'] as List? ?? const []) ?(t as String?)],
     trashedAt: map['trashedAt'] as int?,
     isTemplate: map['isTemplate'] as bool? ?? false,
+    pageTemplates: map['pageTemplates'] as bool? ?? false,
     createdAt: map['createdAt'] as int? ?? 0,
     updatedAt: map['updatedAt'] as int? ?? 0,
   );
@@ -133,6 +135,11 @@ class Notebook {
   /// shelf, and copied to start new notebooks.
   final bool isTemplate;
 
+  /// The template that holds the user's own page templates ("Save page as
+  /// template"), offered one at a time by New page rather than as a
+  /// notebook to start from.
+  final bool pageTemplates;
+
   double get sortOrder => order ?? createdAt.toDouble();
 
   Map<String, dynamic> toMap() => {
@@ -155,6 +162,7 @@ class Notebook {
     if (tags.isNotEmpty) 'tags': tags,
     'trashedAt': ?trashedAt,
     if (isTemplate) 'isTemplate': true,
+    if (pageTemplates) 'pageTemplates': true,
     'createdAt': createdAt,
     'updatedAt': updatedAt,
   };
@@ -194,6 +202,7 @@ class Notebook {
     tags: tags ?? this.tags,
     trashedAt: restore ? null : trashedAt ?? this.trashedAt,
     isTemplate: isTemplate,
+    pageTemplates: pageTemplates,
     createdAt: createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );
@@ -211,6 +220,7 @@ class NewNotebook {
     this.collectionId,
     this.place = unfiled,
     this.isTemplate = false,
+    this.pageTemplates = false,
   });
 
   final String title;
@@ -226,6 +236,9 @@ class NewNotebook {
   /// Made as one of the user's own templates.
   final bool isTemplate;
 
+  /// Made to hold the user's page templates (see [Notebook.pageTemplates]).
+  final bool pageTemplates;
+
   Notebook build(String id, int now) => Notebook(
     id: id,
     title: title,
@@ -238,6 +251,7 @@ class NewNotebook {
     groupId: place.groupId,
     order: now.toDouble(),
     isTemplate: isTemplate,
+    pageTemplates: pageTemplates,
     createdAt: now,
     updatedAt: now,
   );

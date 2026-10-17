@@ -6,6 +6,7 @@ import '../canvas/page_canvas.dart';
 import 'domain/notebook_models.dart';
 import 'notes_providers.dart';
 import 'page_actions.dart';
+import 'page_templates.dart';
 import 'paper_picker.dart';
 import '../../core/motion/motion.dart';
 
@@ -220,7 +221,16 @@ class _Thumbnail extends StatelessWidget {
   );
 }
 
-enum _PageAction { rename, template, paper, duplicate, move, copy, delete }
+enum _PageAction {
+  rename,
+  template,
+  paper,
+  saveTemplate,
+  duplicate,
+  move,
+  copy,
+  delete,
+}
 
 class _PageMenu extends ConsumerWidget {
   const _PageMenu({
@@ -253,6 +263,8 @@ class _PageMenu extends ConsumerWidget {
         await changePageTemplate(context, ref, page);
       case _PageAction.paper:
         await choosePagePaper(context, ref, page);
+      case _PageAction.saveTemplate:
+        await savePageAsTemplate(context, ref, page);
       case _PageAction.duplicate:
         final i = pages.indexWhere((p) => p.id == page.id);
         await repo.copyPage(
@@ -320,6 +332,10 @@ class _PageMenu extends ConsumerWidget {
             child: Text('Change template…'),
           ),
           PopupMenuItem(value: _PageAction.paper, child: Text('Change paper')),
+          PopupMenuItem(
+            value: _PageAction.saveTemplate,
+            child: Text('Save as template…'),
+          ),
           PopupMenuItem(value: _PageAction.duplicate, child: Text('Duplicate')),
           PopupMenuItem(value: _PageAction.move, child: Text('Move to…')),
           PopupMenuItem(value: _PageAction.copy, child: Text('Copy to…')),

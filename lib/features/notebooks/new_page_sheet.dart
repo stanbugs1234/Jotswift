@@ -10,10 +10,13 @@ import '../../core/catalog/template_spec.dart';
 import '../../core/entitlements/entitlements.dart';
 import '../../core/paper/paper_style.dart';
 import '../../core/skins/widgets/paper.dart';
+import '../canvas/page_canvas.dart' show PagePrint;
 import '../canvas/templates.dart';
 import '../store/store_item.dart';
 import '../store/store_screen.dart';
 import 'data/notes_repository.dart';
+import 'domain/notebook_models.dart';
+import 'notes_providers.dart' show myPageTemplatesProvider;
 import 'template_filter.dart';
 import 'template_picks.dart';
 
@@ -37,6 +40,13 @@ class TemplatePageChoice extends NewPageChoice {
   const TemplatePageChoice(this.page);
 
   final NewPage page;
+}
+
+/// One of the user's own page templates: a copy of it, writing and all.
+class MyPageChoice extends NewPageChoice {
+  const MyPageChoice(this.page);
+
+  final NotePage page;
 }
 
 /// A whole planner: all its pages, as new sections.
@@ -208,6 +218,7 @@ class _NewPageSheetState extends ConsumerState<_NewPageSheet> {
                             ),
                           ],
                         ),
+                        _MyPagesRow(query: _filter.query),
                         if (_filter.isEmpty) ...[
                           _PicksRow(
                             title: 'Favorites',
@@ -555,6 +566,56 @@ class _PicksRow extends ConsumerWidget {
         SizedBox(
           height: 190,
           child: ListView(scrollDirection: Axis.horizontal, children: tiles),
+        ),
+      ],
+    );
+  }
+}
+
+/// The user's own page templates, matching [query]: each a small print of
+/// the page.
+class _MyPagesRow extends ConsumerWidget {
+  const _MyPagesRow({required this.query});
+
+  final String query;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final words = query.toLowerCase().split(RegExp(r'\s+'))
+      ..removeWhere((w) => w.isEmpty);
+    final pages = [
+      for (final p in ref.watch(myPageTemplatesProvider).value ?? const [])
+        if (words.every(p.displayTitle.toLowerCase().contains)) p,
+    ];
+    if (pages.isEmpty) return const SizedBox.shrink();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 20, bottom: 8),
+          child: Text(
+            'My pages',
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
+        ),
+        SizedBox(
+          height: 190,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            children: [
+              for (final page in pages)
+                Padding(
+                  padding: const EdgeInsets.only(right: 12),
+                  child: _Tile(
+                    label: page.displayTitle,
+                    onTap: () => Navigator.pop(context, MyPageChoice(page)),
+                    child: FittedBox(
+                      child: PagePrint(pageId: page.id, templateWidth: 240),
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ),
       ],
     );

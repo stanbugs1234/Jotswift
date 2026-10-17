@@ -14,6 +14,7 @@ import 'new_page_sheet.dart';
 import 'notes_providers.dart';
 import 'page_actions.dart';
 import 'page_grid.dart';
+import 'page_templates.dart';
 import 'planner_continue.dart';
 import 'paper_picker.dart';
 import 'my_templates.dart';
@@ -154,6 +155,14 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
               title: page.title,
             );
         if (mounted) _openPage(created.id);
+      case MyPageChoice(:final page):
+        final created = await addPageTemplate(
+          ref,
+          page,
+          notebookId: widget.notebookId,
+          sectionId: sectionId,
+        );
+        if (mounted) _openPage(created);
       case WholePlannerChoice(:final item):
         await _addWholePlanner(item);
     }

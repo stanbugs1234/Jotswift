@@ -7,9 +7,9 @@ import '../../core/paper/paper_style.dart';
 import '../../core/skins/widgets/paper.dart';
 import '../../shared/ui/empty_state.dart';
 import '../../shared/ui/tokens.dart';
-import '../shelf/cover_view.dart';
 import '../store/store_item.dart' show itemBadgeProvider;
 import 'domain/notebook_models.dart';
+import 'my_templates.dart' show TemplateFirstPage;
 import 'template_filter.dart';
 import 'template_gallery.dart';
 
@@ -100,7 +100,9 @@ class _NotebookStartChooserState extends ConsumerState<NotebookStartChooser> {
             color: theme.colorScheme.surfaceContainerHighest,
             child: Padding(
               padding: const EdgeInsets.all(Insets.lg),
-              child: Center(child: CoverView(cover: t.cover)),
+              child: Center(
+                child: TemplateFirstPage(notebookId: t.id, cover: t.cover),
+              ),
             ),
           ),
         );

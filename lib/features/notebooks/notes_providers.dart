@@ -67,6 +67,47 @@ final notebooksProvider = StreamProvider<List<Notebook>>(
       ),
 );
 
+/// The id of [notebookId]'s first page, or null while it has none.
+final firstPageProvider = Provider.family<AsyncValue<String?>, String>((
+  ref,
+  notebookId,
+) {
+  final sections = ref.watch(sectionsProvider(notebookId)).value;
+  if (sections == null) return const AsyncLoading();
+  if (sections.isEmpty) return const AsyncData(null);
+  return ref
+      .watch(
+        pagesProvider((notebookId: notebookId, sectionId: sections.first.id)),
+      )
+      .whenData(
+        (pages) => pages.isEmpty
+            ? null
+            : pages.reduce((a, b) => a.order <= b.order ? a : b).id,
+      );
+});
+
+/// The notebook holding the user's page templates, once they've saved one.
+final pageTemplatesNotebookProvider = StreamProvider<Notebook?>(
+  (ref) => ref
+      .watch(notebookRepositoryProvider)
+      .watchNotebooks()
+      .map(
+        (all) => all.where((n) => n.pageTemplates && !n.inTrash).firstOrNull,
+      ),
+);
+
+/// The user's page templates ("Save page as template"), in the order saved.
+final myPageTemplatesProvider = StreamProvider<List<NotePage>>((ref) {
+  final notebook = ref.watch(pageTemplatesNotebookProvider).value;
+  if (notebook == null) return Stream.value(const []);
+  return ref
+      .watch(notebookRepositoryProvider)
+      .watchNotebookPages(notebook.id)
+      .map(
+        (pages) => pages.toList()..sort((a, b) => a.order.compareTo(b.order)),
+      );
+});
+
 /// The user's own templates ("Save as template"), by name.
 final myTemplatesProvider = StreamProvider<List<Notebook>>(
   (ref) => ref
@@ -76,7 +117,7 @@ final myTemplatesProvider = StreamProvider<List<Notebook>>(
         (all) =>
             [
               for (final n in all)
-                if (n.isTemplate && !n.inTrash) n,
+                if (n.isTemplate && !n.pageTemplates && !n.inTrash) n,
             ]..sort(
               (a, b) => a.title.toLowerCase().compareTo(b.title.toLowerCase()),
             ),
