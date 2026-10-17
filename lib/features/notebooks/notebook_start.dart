@@ -111,8 +111,8 @@ class _NotebookStartChooserState extends ConsumerState<NotebookStartChooser> {
       final (:series, :item, :locked) = shown[i - starters];
       final detail = [
         if (locked) ref.watch(itemBadgeProvider(item)),
+        // (The picture's badge says it's linked.)
         ?datesSummary(series.editions),
-        if (item.linked) 'linked',
       ];
       return TemplateCard(
         item: item,

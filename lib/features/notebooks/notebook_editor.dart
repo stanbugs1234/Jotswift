@@ -567,7 +567,7 @@ class _StartSummary extends StatelessWidget {
     final template = this.template;
     final mine = this.mine;
     final (title, subtitle) = switch ((template, mine)) {
-      (final t?, _) => (t.name, templateSummary(t) ?? 'Planner'),
+      (final t?, _) => (plannerName(t), templateSummary(t) ?? 'Planner'),
       (_, final m?) => (
         m.title,
         'A copy of your template: its sections, pages and everything on '
