@@ -18,6 +18,7 @@ import '../audio/audio_bar.dart';
 import '../canvas/zoom_window.dart';
 import '../canvas/templates.dart' show templateImageProvider;
 import '../exports/export_sheet.dart';
+import '../shelf/tag_editor.dart';
 import '../tasks/task_providers.dart' show todayProvider;
 import 'domain/notebook_models.dart';
 import 'notes_providers.dart';
@@ -172,27 +173,18 @@ class PageScreen extends ConsumerWidget {
           );
 
     final wide = MediaQuery.sizeOf(context).width >= Breakpoints.medium;
-    Future<void> choosePaper() async {
-      final p = page.value!;
-      final choice = await showPagePaperSheet(
-        context,
-        current: p.paper ?? notebookPaper(ref, p.notebookId),
-        offerNotebookPaper: true,
-      );
-      if (choice != null) {
-        await ref
-            .read(notebookRepositoryProvider)
-            .setPagePaper(pageId, choice.paper);
-      }
-    }
+    Future<void> choosePaper() => choosePagePaper(context, ref, page.value!);
 
     void toggleBookmark() => ref
         .read(notebookRepositoryProvider)
         .setPageBookmarked(pageId, !bookmarked);
     final theme = Theme.of(context);
-    final notebookTitle = notebookId == null
-        ? ''
-        : ref.watch(notebookProvider(notebookId)).value?.title ?? '';
+    final notebook = notebookId == null
+        ? null
+        : ref.watch(notebookProvider(notebookId)).value;
+    final notebookTitle = notebook?.title ?? '';
+    final tagged = notebook?.tags.isNotEmpty ?? false;
+    void tags() => editTags(context, notebookId!);
 
     Future<void> jump() async {
       if (notebookId == null) return;
@@ -274,6 +266,13 @@ class PageScreen extends ConsumerWidget {
                   ),
                   onPressed: toggleBookmark,
                 ),
+              if (!readOnly && notebookId != null)
+                IconButton(
+                  tooltip: 'Tags',
+                  isSelected: tagged,
+                  icon: Icon(tagged ? Icons.sell : Icons.sell_outlined),
+                  onPressed: tags,
+                ),
               const SizedBox(width: 12),
             ],
             // Turning pages.
@@ -319,6 +318,14 @@ class PageScreen extends ConsumerWidget {
                       title: Text(
                         bookmarked ? 'Remove bookmark' : 'Bookmark page',
                       ),
+                    ),
+                  ),
+                if (!wide && !readOnly && notebookId != null)
+                  PopupMenuItem(
+                    value: tags,
+                    child: ListTile(
+                      leading: Icon(tagged ? Icons.sell : Icons.sell_outlined),
+                      title: const Text('Tags…'),
                     ),
                   ),
                 if (!readOnly && page.value != null)

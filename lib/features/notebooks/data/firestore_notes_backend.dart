@@ -349,6 +349,12 @@ class _FirestoreUserNotes
       .ignore();
 
   @override
+  Future<void> setTags(String notebookId, List<String> tags) async => _notebooks
+      .doc(notebookId)
+      .update({'tags': tags.isEmpty ? FieldValue.delete() : tags})
+      .ignore();
+
+  @override
   Future<void> setTrashed(String notebookId, bool trashed) async => _notebooks
       .doc(notebookId)
       .update({'trashedAt': trashed ? nowMillis() : FieldValue.delete()})

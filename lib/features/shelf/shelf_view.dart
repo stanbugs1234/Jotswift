@@ -13,6 +13,7 @@ sealed class ShelfLocation {
   factory ShelfLocation.fromQuery(Map<String, String> query) {
     if (query['group'] case final id?) return InGroup(id);
     if (query['category'] case final id?) return InCategory(id);
+    if (query['tag'] case final tag?) return TaggedNotebooks(tag);
     return switch (query['view']) {
       'recent' => const RecentNotebooks(),
       'starred' => const StarredNotebooks(),
@@ -30,6 +31,8 @@ sealed class ShelfLocation {
     TrashedNotebooks() => '/notebooks?view=trash',
     InCategory(:final id) => '/notebooks?category=$id',
     InGroup(:final id) => '/notebooks?group=$id',
+    TaggedNotebooks(:final tag) =>
+      '/notebooks?tag=${Uri.encodeQueryComponent(tag)}',
   };
 
   /// Where a notebook or group made here goes.
@@ -40,13 +43,17 @@ sealed class ShelfLocation {
     RecentNotebooks() ||
     StarredNotebooks() ||
     UnfiledNotebooks() ||
-    TrashedNotebooks() => unfiled,
+    TrashedNotebooks() ||
+    TaggedNotebooks() => unfiled,
   };
 
   /// Whether notebooks and groups can be made here. The lists that are
   /// picked out of the rest (recent, starred, trash) can't.
   bool get canCreate => switch (this) {
-    RecentNotebooks() || StarredNotebooks() || TrashedNotebooks() => false,
+    RecentNotebooks() ||
+    StarredNotebooks() ||
+    TrashedNotebooks() ||
+    TaggedNotebooks() => false,
     _ => true,
   };
 }
@@ -129,6 +136,21 @@ final class InGroup extends ShelfLocation {
   int get hashCode => Object.hash(4, id);
 }
 
+/// Every notebook with a tag, wherever it is. The tag is compared
+/// ignoring case.
+final class TaggedNotebooks extends ShelfLocation {
+  const TaggedNotebooks(this.tag);
+
+  final String tag;
+
+  @override
+  bool operator ==(Object other) =>
+      other is TaggedNotebooks && other.tag.toLowerCase() == tag.toLowerCase();
+
+  @override
+  int get hashCode => Object.hash(8, tag.toLowerCase());
+}
+
 enum ShelfSort {
   custom('Custom'),
   lastOpened('Last opened'),
@@ -182,6 +204,22 @@ class Shelf {
 
   int get starredCount => _notebooks.where((n) => n.starred).length;
 
+  /// Each tag on a notebook (not in the Trash) and how many have it, by
+  /// name. Tags that differ only in case count as one, spelled as first
+  /// seen.
+  Map<String, int> get tagCounts {
+    final names = <String, String>{};
+    final counts = <String, int>{};
+    for (final n in _notebooks) {
+      for (final t in {for (final t in n.tags) t.toLowerCase(): t}.entries) {
+        names.putIfAbsent(t.key, () => t.value);
+        counts[t.key] = (counts[t.key] ?? 0) + 1;
+      }
+    }
+    final keys = names.keys.toList()..sort();
+    return {for (final k in keys) names[k]!: counts[k]!};
+  }
+
   NotebookGroup? group(String id) => _groups[id];
 
   /// The category a notebook is in, directly or through its group.
@@ -206,6 +244,8 @@ class Shelf {
         return ShelfContents(const [], opened.take(recentLimit).toList());
       case StarredNotebooks():
         return _sorted(const [], _notebooks.where((n) => n.starred), sort);
+      case TaggedNotebooks(:final tag):
+        return _sorted(const [], _notebooks.where((n) => n.hasTag(tag)), sort);
       case TrashedNotebooks():
         return ShelfContents(const [], _trashed);
       case UnfiledNotebooks():
@@ -237,10 +277,20 @@ class Shelf {
     }
   }
 
-  /// Notebooks (not in the Trash) whose title contains [query].
+  /// Notebooks (not in the Trash) whose title or a tag contains [query].
   List<Notebook> search(String query) {
-    final q = query.trim().toLowerCase();
-    return _notebooks.where((n) => n.title.toLowerCase().contains(q)).toList()
+    var q = query.trim().toLowerCase();
+    // "#idea" looks only in tags.
+    final tagsOnly = q.startsWith('#');
+    if (tagsOnly) q = normalizeTag(q).toLowerCase();
+    bool tagged(Notebook n) => n.tags.any((t) => t.toLowerCase().contains(q));
+    return _notebooks
+        .where(
+          (n) => tagsOnly
+              ? tagged(n)
+              : n.title.toLowerCase().contains(q) || tagged(n),
+        )
+        .toList()
       ..sort(
         (a, b) => (b.lastOpenedAt ?? b.updatedAt).compareTo(
           a.lastOpenedAt ?? a.updatedAt,

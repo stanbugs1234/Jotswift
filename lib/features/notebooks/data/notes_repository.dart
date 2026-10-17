@@ -151,6 +151,9 @@ abstract interface class ShelfRepository {
 
   Future<void> setStarred(String notebookId, bool starred);
 
+  /// Replaces a notebook's tags (none removes them).
+  Future<void> setTags(String notebookId, List<String> tags);
+
   /// Moves a notebook to the Trash, or ([trashed] false) back out of it.
   /// Deleting it for good is [NotebookRepository.deleteNotebook].
   Future<void> setTrashed(String notebookId, bool trashed);

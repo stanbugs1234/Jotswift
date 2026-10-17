@@ -18,6 +18,7 @@ import '../notebooks/page_order.dart';
 import '../notebooks/planner_builder.dart';
 import '../store/paywall.dart';
 import 'shelf_view.dart';
+import 'tag_editor.dart';
 import '../notebooks/my_templates.dart' show copyNotebookProvider;
 
 /// The shelf as it is now (empty while loading).
@@ -308,7 +309,7 @@ Future<void> showCategoryMenu(
   }
 }
 
-enum NotebookAction { rename, edit, move, star, trash }
+enum NotebookAction { rename, edit, move, tags, star, trash }
 
 Future<void> onNotebookAction(
   BuildContext context,
@@ -342,6 +343,8 @@ Future<void> onNotebookAction(
             .read(shelfRepositoryProvider)
             .moveNotebook(notebook.id, place);
       }
+    case NotebookAction.tags:
+      await editTags(context, notebook.id);
     case NotebookAction.star:
       await ref
           .read(shelfRepositoryProvider)

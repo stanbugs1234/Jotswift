@@ -32,6 +32,7 @@ class Notebook {
     this.lastPageTitle,
     this.lastPageAt,
     this.starred = false,
+    this.tags = const [],
     this.trashedAt,
     this.isTemplate = false,
   });
@@ -63,6 +64,7 @@ class Notebook {
     lastPageTitle: map['lastPageTitle'] as String?,
     lastPageAt: map['lastPageAt'] as int?,
     starred: map['starred'] as bool? ?? false,
+    tags: [for (final t in map['tags'] as List? ?? const []) ?(t as String?)],
     trashedAt: map['trashedAt'] as int?,
     isTemplate: map['isTemplate'] as bool? ?? false,
     createdAt: map['createdAt'] as int? ?? 0,
@@ -111,6 +113,16 @@ class Notebook {
   /// Shown under Starred on the shelf.
   final bool starred;
 
+  /// The user's own labels, e.g. "meeting", shown under Tags in the
+  /// sidebar. Kept as typed; compared ignoring case.
+  final List<String> tags;
+
+  /// Whether it has [tag], ignoring case.
+  bool hasTag(String tag) {
+    final t = tag.toLowerCase();
+    return tags.any((x) => x.toLowerCase() == t);
+  }
+
   /// When it was moved to the Trash (milliseconds since epoch), or null
   /// when it isn't in the Trash.
   final int? trashedAt;
@@ -140,6 +152,7 @@ class Notebook {
     'lastPageTitle': ?lastPageTitle,
     'lastPageAt': ?lastPageAt,
     if (starred) 'starred': true,
+    if (tags.isNotEmpty) 'tags': tags,
     'trashedAt': ?trashedAt,
     if (isTemplate) 'isTemplate': true,
     'createdAt': createdAt,
@@ -157,6 +170,7 @@ class Notebook {
     ({String id, String title, int at})? lastPage,
     int? updatedAt,
     bool? starred,
+    List<String>? tags,
     int? trashedAt,
     bool restore = false,
   }) => Notebook(
@@ -177,6 +191,7 @@ class Notebook {
     lastPageTitle: lastPage?.title ?? lastPageTitle,
     lastPageAt: lastPage?.at ?? lastPageAt,
     starred: starred ?? this.starred,
+    tags: tags ?? this.tags,
     trashedAt: restore ? null : trashedAt ?? this.trashedAt,
     isTemplate: isTemplate,
     createdAt: createdAt,
@@ -226,6 +241,16 @@ class NewNotebook {
     createdAt: now,
     updatedAt: now,
   );
+}
+
+/// A tag as it's kept: trimmed, single spaces, without a leading "#",
+/// and at most 30 characters. Empty when there's nothing left.
+String normalizeTag(String tag) {
+  var t = tag.trim().replaceAll(RegExp(r'\s+'), ' ');
+  while (t.startsWith('#')) {
+    t = t.substring(1).trimLeft();
+  }
+  return t.length > 30 ? t.substring(0, 30).trimRight() : t;
 }
 
 T _enumByName<T extends Enum>(List<T> values, Object? name, T fallback) =>

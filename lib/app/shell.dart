@@ -193,6 +193,8 @@ class _Sidebar extends ConsumerWidget {
       const [],
     );
 
+    final tagCounts = counts.tagCounts;
+
     bool isOpen(ShelfLocation to) => branch == 0 && shelf == to;
 
     Widget tile(
@@ -371,6 +373,35 @@ class _Sidebar extends ConsumerWidget {
                           selected: false,
                           onTap: () => createCategory(context, ref),
                         ),
+                      ],
+                    ),
+                    _SidebarSection(
+                      title: 'Tags',
+                      children: [
+                        for (final MapEntry(key: tag, value: count)
+                            in tagCounts.entries)
+                          item(
+                            '#$tag',
+                            Icons.sell_outlined,
+                            selected: isOpen(TaggedNotebooks(tag)),
+                            onTap: () => context.go(TaggedNotebooks(tag).path),
+                            trailing: Text(
+                              '$count',
+                              style: theme.textTheme.labelMedium?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                          ),
+                        if (tagCounts.isEmpty)
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(24, 4, 16, 8),
+                            child: Text(
+                              'Tag a notebook from its ⋯ menu to find it here.',
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                          ),
                       ],
                     ),
                     _SidebarSection(

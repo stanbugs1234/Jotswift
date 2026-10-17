@@ -322,6 +322,10 @@ class _InMemoryUserData
       _updateNotebook(notebookId, (n) => n.copyWith(starred: starred));
 
   @override
+  Future<void> setTags(String notebookId, List<String> tags) async =>
+      _updateNotebook(notebookId, (n) => n.copyWith(tags: List.of(tags)));
+
+  @override
   Future<void> setTrashed(String notebookId, bool trashed) async =>
       _updateNotebook(
         notebookId,

@@ -85,6 +85,7 @@ class _ShelfScreenState extends ConsumerState<ShelfScreen> {
       InCategory(:final id) =>
         categories.where((c) => c.id == id).firstOrNull?.title ?? 'Category',
       InGroup(:final id) => shelf.group(id)?.title ?? 'Group',
+      TaggedNotebooks(:final tag) => '#$tag',
     };
 
     String placeOf(Notebook n) {
@@ -197,7 +198,8 @@ class _ShelfScreenState extends ConsumerState<ShelfScreen> {
                     _ when searching => placeOf,
                     AllNotebooks() ||
                     RecentNotebooks() ||
-                    StarredNotebooks() => placeOf,
+                    StarredNotebooks() ||
+                    TaggedNotebooks() => placeOf,
                     _ => null,
                   },
                 ),
@@ -841,6 +843,7 @@ class _NotebookTile extends ConsumerWidget {
           value: NotebookAction.move,
           child: Text('Move to…'),
         ),
+        const PopupMenuItem(value: NotebookAction.tags, child: Text('Tags…')),
         PopupMenuItem(
           value: NotebookAction.star,
           child: Text(notebook.starred ? 'Unstar' : 'Star'),
@@ -857,6 +860,7 @@ class _NotebookTile extends ConsumerWidget {
       subtitle: date,
       place: place,
       starred: notebook.starred,
+      tags: notebook.tags,
       cover: CoverView(cover: notebook.cover, title: notebook.title),
       menu: menu,
       list: list,
@@ -918,6 +922,7 @@ class _Tile extends StatelessWidget {
     required this.onTap,
     this.place,
     this.starred = false,
+    this.tags = const [],
   });
 
   final String label;
@@ -927,6 +932,9 @@ class _Tile extends StatelessWidget {
   /// A third line: where it is on the shelf.
   final String? place;
   final bool starred;
+
+  /// Shown as "#a #b" in one line.
+  final List<String> tags;
   final Widget cover;
   final Widget menu;
   final bool list;
@@ -955,6 +963,8 @@ class _Tile extends StatelessWidget {
       ),
     );
 
+    final tagLine = tags.map((t) => '#$t').join(' ');
+
     if (list) {
       return Semantics(
         button: true,
@@ -975,7 +985,11 @@ class _Tile extends StatelessWidget {
                 if (starred) star,
               ],
             ),
-            subtitle: Text(place == null ? subtitle : '$subtitle · $place'),
+            subtitle: Text(
+              [subtitle, ?place, if (tags.isNotEmpty) tagLine].join(' · '),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
             trailing: menu,
             onTap: onTap,
           ),
@@ -1032,6 +1046,15 @@ class _Tile extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                               style: theme.textTheme.bodySmall?.copyWith(
                                 color: theme.colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                          if (tags.isNotEmpty)
+                            Text(
+                              tagLine,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: theme.colorScheme.primary,
                               ),
                             ),
                         ],
@@ -1131,6 +1154,11 @@ class _EmptyShelf extends ConsumerWidget {
         Icons.star_outline,
         'No starred notebooks',
         'Star a notebook from its ⋯ menu to find it here.',
+      ),
+      TaggedNotebooks(:final tag) => (
+        Icons.sell_outlined,
+        'No notebooks tagged #$tag',
+        'Add tags from a notebook\'s ⋯ menu, or the tag button on a page.',
       ),
       TrashedNotebooks() => (
         Icons.delete_outline,
