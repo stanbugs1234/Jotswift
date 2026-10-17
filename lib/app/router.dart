@@ -83,12 +83,13 @@ final routerProvider = Provider<GoRouter>((ref) {
                 routes: [
                   GoRoute(
                     path: ':notebookId',
-                    // Opens like a book: its cover swings open.
+                    // Grows from its cover on the shelf.
                     pageBuilder: (context, state) {
                       final id = state.pathParameters['notebookId']!;
                       return bookOpenPage(
                         context: context,
                         key: state.pageKey,
+                        id: id,
                         cover: _NotebookCoverFor(id),
                         child: NotebookScreen(notebookId: id),
                       );
@@ -101,8 +102,8 @@ final routerProvider = Provider<GoRouter>((ref) {
                         // One key per notebook, not per page: moving to
                         // another page updates this screen in place, so it
                         // can turn the page instead of replacing the screen.
-                        // Opened straight from the shelf, it opens like a
-                        // book; otherwise it fades through (neither has a
+                        // Opened straight from the shelf, it grows from the
+                        // notebook's cover; otherwise it fades through (neither has a
                         // swipe-back, as the left edge turns back a page).
                         // Moves between pages keep that page type.
                         pageBuilder: (context, state) {
@@ -115,7 +116,10 @@ final routerProvider = Provider<GoRouter>((ref) {
                               ? bookOpenPage(
                                   context: context,
                                   key: key,
+                                  id: id,
                                   cover: _NotebookCoverFor(id),
+                                  // Back goes to the notebook's pages.
+                                  closeInPlace: true,
                                   child: screen,
                                 )
                               : fadeThroughPage(

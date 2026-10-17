@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/motion/book_open.dart';
 import '../../app/shell.dart';
 import '../notebooks/domain/notebook_models.dart';
 import '../notebooks/notes_providers.dart';
@@ -861,7 +862,10 @@ class _NotebookTile extends ConsumerWidget {
       place: place,
       starred: notebook.starred,
       tags: notebook.tags,
-      cover: CoverView(cover: notebook.cover, title: notebook.title),
+      cover: CoverAnchor(
+        id: notebook.id,
+        child: CoverView(cover: notebook.cover, title: notebook.title),
+      ),
       menu: menu,
       list: list,
       highlight: highlight,
