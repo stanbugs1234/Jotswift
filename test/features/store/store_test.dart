@@ -458,6 +458,57 @@ void main() {
       expect(find.bySemanticsLabel(RegExp('^work_pages')), findsOneWidget);
     });
 
+    testWidgets("a planner's editions show once, and switch on its page", (
+      tester,
+    ) async {
+      CatalogItem edition(
+        String id,
+        String name,
+        Map<String, Object?> unlock,
+      ) => CatalogItem.fromMap(id, {
+        'kind': 'template',
+        'name': name,
+        'version': 1,
+        'visibility': 'public',
+        'unlock': unlock,
+        'category': 'planners',
+        'templateMode': 'notebook',
+        ..._templateFiles,
+      })!;
+      final year = DateTime.now().year;
+      await openWith(tester, [
+        edition('ocean_planner_$year', 'Ocean $year Planner', {'pro': true}),
+        edition('ocean_planner_${year + 1}', 'Ocean ${year + 1} Planner', {
+          'pro': true,
+        }),
+        edition('ocean_planner_undated', 'Ocean Planner (undated)', {
+          'pro': true,
+        }),
+      ]);
+      expect(find.bySemanticsLabel(RegExp('^Ocean Planner, ')), findsOneWidget);
+
+      await tester.tap(find.bySemanticsLabel(RegExp('^Ocean Planner, ')));
+      await tester.pumpAndSettle();
+      expect(find.text('Ocean $year Planner'), findsOneWidget);
+      expect(find.widgetWithText(ChoiceChip, 'Undated'), findsOneWidget);
+      // Locked until bought.
+      expect(
+        find.descendant(
+          of: find.widgetWithText(ChoiceChip, '${year + 1}'),
+          matching: find.byIcon(Icons.lock_outline),
+        ),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.widgetWithText(ChoiceChip, 'Undated'));
+      await tester.pumpAndSettle();
+      expect(find.text('Ocean Planner (undated)'), findsOneWidget);
+      expect(
+        find.text('Start it on any month when you make your notebook.'),
+        findsNothing,
+      );
+    });
+
     testWidgets('a locked template shows its sample pages', (tester) async {
       final locked = item(
         'locked_planner',

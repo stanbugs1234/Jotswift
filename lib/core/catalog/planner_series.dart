@@ -109,6 +109,14 @@ String? editionLabel(CatalogItem item) {
   return m.group(3) == null ? m.group(2) : '${m.group(2)}–${m.group(3)}';
 }
 
+/// A planner's dates in a few words, for a card: its edition's dates, or
+/// that there are several to pick from; null for a planner without dates.
+String? datesSummary(List<CatalogItem> editions) => editions.length > 1
+    ? editions.any((e) => editionDates(e) == null)
+          ? 'Dated or undated'
+          : 'Pick your dates'
+    : editionLabel(editions.single);
+
 /// Planners (templates made as whole notebooks) grouped by design, in the
 /// order each design first appears in [items]. Other items are left out.
 List<PlannerSeries> plannerSeries(Iterable<CatalogItem> items) {

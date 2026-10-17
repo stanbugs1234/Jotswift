@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/catalog/catalog_item.dart';
 import '../../core/catalog/catalog_providers.dart';
+import '../../core/catalog/planner_series.dart';
 import '../../core/catalog/template_spec.dart';
 import '../../core/entitlements/entitlements.dart';
 import '../../core/purchases/purchases_providers.dart';
@@ -25,16 +26,28 @@ import 'store_item.dart';
 import 'store_screen.dart';
 
 /// One item of the store: a large preview, what it is, and how to get or
-/// use it.
-class StoreItemScreen extends ConsumerWidget {
-  const StoreItemScreen({required this.itemId, super.key});
+/// use it. A planner's other editions (its other dates) can be switched to
+/// in place.
+class StoreItemScreen extends ConsumerStatefulWidget {
+  const StoreItemScreen({required this.itemId, this.heroTag, super.key});
 
   final String itemId;
 
+  /// The tile it was opened from, whose picture grows into this one.
+  final Object? heroTag;
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<StoreItemScreen> createState() => _StoreItemScreenState();
+}
+
+class _StoreItemScreenState extends ConsumerState<StoreItemScreen> {
+  /// The edition shown.
+  late String _itemId = widget.itemId;
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final item = ref.watch(catalogItemProvider(itemId));
+    final item = ref.watch(catalogItemProvider(_itemId));
     if (item == null) {
       return Scaffold(
         appBar: AppBar(),
@@ -57,22 +70,28 @@ class StoreItemScreen extends ConsumerWidget {
         : const <CatalogItem>[];
     final wide = MediaQuery.sizeOf(context).width >= 700;
     final isTemplate = item.kind == CatalogKind.template;
-    final locked =
-        accessOf(ref.watch(entitlementsProvider), item) == ItemAccess.locked;
+    final entitlements = ref.watch(entitlementsProvider);
+    final locked = accessOf(entitlements, item) == ItemAccess.locked;
+    final editions = ref.watch(editionsProvider(item));
 
+    final tag = _itemId == widget.itemId ? widget.heroTag : null;
+    Widget flies(Widget child) =>
+        tag == null ? child : Hero(tag: tag, child: child);
     final preview = AspectRatio(
       aspectRatio: 3 / 4,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
-        child: switch ((isTemplate, locked, item.samples)) {
-          (true, false, _) => _SharpPreview(item: item),
-          // Not unlocked yet: its first page, published to look at.
-          (true, true, [final first, ...]) => _SharpPreview(
-            item: item,
-            sample: first,
-          ),
-          _ => ItemPreview(item: item),
-        },
+      child: flies(
+        ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: switch ((isTemplate, locked, item.samples)) {
+            (true, false, _) => _SharpPreview(item: item),
+            // Not unlocked yet: its first page, published to look at.
+            (true, true, [final first, ...]) => _SharpPreview(
+              item: item,
+              sample: first,
+            ),
+            _ => ItemPreview(item: item),
+          },
+        ),
       ),
     );
 
@@ -126,8 +145,34 @@ class StoreItemScreen extends ConsumerWidget {
               ),
             ),
           ),
+        if (editions.length > 1) ...[
+          const SizedBox(height: 16),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final e in editions)
+                ChoiceChip(
+                  avatar: accessOf(entitlements, e) == ItemAccess.locked
+                      ? const Icon(Icons.lock_outline, size: 16)
+                      : null,
+                  label: Text(editionLabel(e) ?? e.name),
+                  selected: e.id == item.id,
+                  onSelected: (_) => setState(() => _itemId = e.id),
+                ),
+            ],
+          ),
+          if (editionDates(item) != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(
+                'Start it on any month when you make your notebook.',
+                style: theme.textTheme.bodySmall,
+              ),
+            ),
+        ],
         const SizedBox(height: 24),
-        _GetOrUse(item: item),
+        _GetOrUse(key: ValueKey(item.id), item: item),
         if (collection != null &&
             collection.visibility != CatalogVisibility.retired)
           Padding(
@@ -212,7 +257,7 @@ class StoreItemScreen extends ConsumerWidget {
 
 /// Buy buttons for a locked item; what to do with it otherwise.
 class _GetOrUse extends ConsumerStatefulWidget {
-  const _GetOrUse({required this.item});
+  const _GetOrUse({required this.item, super.key});
 
   final CatalogItem item;
 

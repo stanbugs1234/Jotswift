@@ -143,8 +143,17 @@ class ItemPreview extends ConsumerWidget {
     return ColoredBox(
       color: theme.colorScheme.surfaceContainerHighest,
       child: image == null
-          // Pulses while loading; a preview that failed stays plain.
-          ? (preview.isLoading ? const Skeleton(radius: 0) : null)
+          // Pulses while loading; a preview that failed offers to try again.
+          ? (preview.isLoading
+                ? const Skeleton(radius: 0)
+                : preview.hasError
+                ? Center(
+                    child: TryAgainButton(
+                      onPressed: () =>
+                          ref.invalidate(catalogPreviewProvider(item)),
+                    ),
+                  )
+                : null)
           : Padding(
               padding: const EdgeInsets.all(8),
               child: Center(
@@ -166,4 +175,18 @@ class ItemPreview extends ConsumerWidget {
             ),
     );
   }
+}
+
+/// A small "Try again" for a picture that couldn't be downloaded.
+class TryAgainButton extends StatelessWidget {
+  const TryAgainButton({required this.onPressed, super.key});
+
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) => IconButton(
+    tooltip: 'Try again',
+    icon: const Icon(Icons.refresh),
+    onPressed: onPressed,
+  );
 }

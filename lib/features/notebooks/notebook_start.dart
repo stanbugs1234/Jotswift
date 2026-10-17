@@ -111,12 +111,7 @@ class _NotebookStartChooserState extends ConsumerState<NotebookStartChooser> {
       final (:series, :item, :locked) = shown[i - starters];
       final detail = [
         if (locked) ref.watch(itemBadgeProvider(item)),
-        if (series.editions.length > 1)
-          series.editions.any((e) => editionDates(e) == null)
-              ? 'Dated or undated'
-              : 'Pick your dates'
-        else
-          ?editionLabel(item),
+        ?datesSummary(series.editions),
         if (item.linked) 'linked',
       ];
       return TemplateCard(

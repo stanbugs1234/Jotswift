@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/catalog/catalog_item.dart';
 import '../../core/catalog/catalog_providers.dart';
+import '../../core/catalog/planner_series.dart';
 import '../../core/catalog/template_spec.dart';
 import '../../core/entitlements/entitlements.dart';
 import '../../core/motion/rise_in.dart';
@@ -112,14 +113,17 @@ class _StoreScreenState extends ConsumerState<StoreScreen> {
     final theme = Theme.of(context);
     final entitlements = ref.watch(entitlementsProvider);
     final catalog = ref.watch(catalogProvider);
-    final items = [
+    final all = [
       for (final i in ref.watch(storeCatalogProvider))
         if (_matches(entitlements, i)) i,
     ];
+    bool unlocked(CatalogItem i) =>
+        accessOf(entitlements, i) != ItemAccess.locked;
+    final items = _onePerPlanner(all, unlocked);
     final available = ref.watch(purchasesClientProvider).isAvailable;
     final searching = _search.text.trim().isNotEmpty;
     final found = searching
-        ? items.where(_found).toList()
+        ? _onePerPlanner(all.where(_found).toList(), unlocked)
         : const <CatalogItem>[];
     final rows = _rowsOf(items);
     final chosen = rows.where((r) => r.$1 == _category).firstOrNull?.$2;
@@ -300,7 +304,10 @@ class _StoreScreenState extends ConsumerState<StoreScreen> {
                     // Cards arrive one after another.
                     itemBuilder: (context, i) => RiseIn(
                       index: i,
-                      child: StoreTile(item: row[i]),
+                      child: StoreTile(
+                        item: row[i],
+                        heroTag: '$title/${row[i].id}',
+                      ),
                     ),
                   ),
                 ),
@@ -310,6 +317,30 @@ class _StoreScreenState extends ConsumerState<StoreScreen> {
       ),
     );
   }
+}
+
+/// [items] with each planner once: the edition to start today stands for
+/// its others (2026, 2027, undated...), which its page offers.
+List<CatalogItem> _onePerPlanner(
+  List<CatalogItem> items,
+  bool Function(CatalogItem) unlocked,
+) {
+  final now = DateTime.now();
+  final series = {
+    for (final s in plannerSeries(items))
+      for (final e in s.editions) e.id: s,
+  };
+  final shown = <String>{};
+  final one = <CatalogItem>[];
+  for (final i in items) {
+    final s = series[i.id];
+    if (s == null) {
+      one.add(i);
+    } else if (shown.add(s.key)) {
+      one.add(s.defaultEdition(now, usable: unlocked));
+    }
+  }
+  return one;
 }
 
 /// The store's rows with something in them. Categories of their own with
@@ -387,13 +418,19 @@ class _Featured extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(Radii.lg),
                 clipBehavior: Clip.antiAlias,
                 child: InkWell(
-                  onTap: () => context.push('$storePath/${item.id}'),
+                  onTap: () => context.push(
+                    '$storePath/${item.id}',
+                    extra: 'featured/${item.id}',
+                  ),
                   child: Row(
                     children: [
                       SizedBox(
                         width: 150,
                         height: double.infinity,
-                        child: ItemPreview(item: item),
+                        child: Hero(
+                          tag: 'featured/${item.id}',
+                          child: ItemPreview(item: item),
+                        ),
                       ),
                       Expanded(
                         child: Padding(
@@ -411,7 +448,9 @@ class _Featured extends ConsumerWidget {
                               ),
                               const SizedBox(height: Insets.xs),
                               Text(
-                                item.name,
+                                editionLabel(item) == null
+                                    ? item.name
+                                    : plannerName(item),
                                 maxLines: 3,
                                 overflow: TextOverflow.ellipsis,
                                 style: theme.textTheme.titleLarge?.copyWith(
@@ -420,7 +459,10 @@ class _Featured extends ConsumerWidget {
                               ),
                               const SizedBox(height: Insets.xs),
                               Text(
-                                kindLabel(item),
+                                [
+                                  ?editionLabel(item),
+                                  kindLabel(item),
+                                ].join(' · '),
                                 style: theme.textTheme.bodySmall?.copyWith(
                                   color: theme.colorScheme.onPrimaryContainer,
                                 ),
@@ -466,7 +508,8 @@ class _Grid extends StatelessWidget {
       mainAxisSpacing: Insets.lg,
     ),
     itemCount: items.length,
-    itemBuilder: (context, i) => StoreTile(item: items[i]),
+    itemBuilder: (context, i) =>
+        StoreTile(item: items[i], heroTag: 'grid/${items[i].id}'),
   );
 }
 
@@ -499,18 +542,26 @@ class _ProBanner extends ConsumerWidget {
 
 /// One item in a row: its preview, name and price or status.
 class StoreTile extends ConsumerWidget {
-  const StoreTile({required this.item, super.key});
+  const StoreTile({required this.item, this.heroTag, super.key});
 
   final CatalogItem item;
+
+  /// Unique on the screen: the picture grows from here into the item's
+  /// page.
+  final Object? heroTag;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final badge = ref.watch(itemBadgeProvider(item));
+    // A planner goes by its name, with its dates below it.
+    final dates = datesSummary(ref.watch(editionsProvider(item)));
+    final name = dates == null ? item.name : plannerName(item);
     return Semantics(
       button: true,
       label: [
-        item.name,
+        name,
+        ?dates,
         kindLabel(item),
         if (item.linked) 'linked pages',
         badge,
@@ -518,7 +569,7 @@ class StoreTile extends ConsumerWidget {
       excludeSemantics: true,
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        onTap: () => context.push('$storePath/${item.id}'),
+        onTap: () => context.push('$storePath/${item.id}', extra: heroTag),
         child: SizedBox(
           width: 140,
           child: Column(
@@ -532,7 +583,13 @@ class StoreTile extends ConsumerWidget {
                   child: Stack(
                     fit: StackFit.expand,
                     children: [
-                      ItemPreview(item: item),
+                      if (heroTag case final tag?)
+                        Hero(
+                          tag: tag,
+                          child: ItemPreview(item: item),
+                        )
+                      else
+                        ItemPreview(item: item),
                       if (item.linked)
                         const Positioned(
                           top: 6,
@@ -546,11 +603,25 @@ class StoreTile extends ConsumerWidget {
               const SizedBox(height: 6),
               SizedBox(
                 height: 40,
-                child: Text(
-                  item.name,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.titleSmall?.copyWith(height: 1.25),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      name,
+                      maxLines: dates == null ? 2 : 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.titleSmall?.copyWith(height: 1.25),
+                    ),
+                    if (dates != null)
+                      Text(
+                        dates,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                  ],
                 ),
               ),
               Text(

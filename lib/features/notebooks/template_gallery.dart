@@ -339,7 +339,11 @@ class _SampleThumb extends ConsumerWidget {
       ),
       child: switch (image) {
         AsyncData(:final value) => Image(image: value, fit: BoxFit.contain),
-        AsyncError() => const SizedBox.expand(),
+        AsyncError() => Center(
+          child: TryAgainButton(
+            onPressed: () => ref.invalidate(catalogImageProvider(sample.path)),
+          ),
+        ),
         _ => const Skeleton(radius: 0),
       },
     );
@@ -433,12 +437,22 @@ class TemplatePagesScreen extends ConsumerWidget {
               ],
           ],
         ),
-        AsyncError() => const Center(
+        AsyncError() => Center(
           child: Padding(
-            padding: EdgeInsets.all(24),
-            child: Text(
-              'Could not download this template. Check your connection.',
-              textAlign: TextAlign.center,
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Could not download this template. Check your connection.',
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 12),
+                OutlinedButton(
+                  onPressed: () => ref.invalidate(templateSpecProvider(item)),
+                  child: const Text('Try again'),
+                ),
+              ],
             ),
           ),
         ),
@@ -457,14 +471,8 @@ class _PageThumb extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final image = ref
-        .watch(
-          templateImageProvider((
-            template: templatePage(item, page.pdfPage),
-            width: 300,
-          )),
-        )
-        .value;
+    final key = (template: templatePage(item, page.pdfPage), width: 300);
+    final image = ref.watch(templateImageProvider(key));
     return SizedBox(
       width: 150,
       child: Column(
@@ -475,9 +483,18 @@ class _PageThumb extends ConsumerWidget {
               color: Colors.white,
               border: Border.all(color: theme.colorScheme.outlineVariant),
             ),
-            child: image == null
-                ? const Skeleton(radius: 0)
-                : RawImage(image: image, fit: BoxFit.contain),
+            child: switch (image) {
+              AsyncData(:final value) => RawImage(
+                image: value,
+                fit: BoxFit.contain,
+              ),
+              AsyncError() => Center(
+                child: TryAgainButton(
+                  onPressed: () => ref.invalidate(templateImageProvider(key)),
+                ),
+              ),
+              _ => const Skeleton(radius: 0),
+            },
           ),
           const SizedBox(height: 4),
           Text(

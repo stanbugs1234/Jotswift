@@ -8,6 +8,7 @@ import 'catalog_item.dart';
 import 'catalog_repository.dart';
 import 'pack_cache.dart';
 import 'pack_disk_memory.dart' show MemoryPackDisk;
+import 'planner_series.dart';
 
 /// Overridden in `main()` with Firestore when Firebase is set up.
 final catalogRepositoryProvider = Provider<CatalogRepository>(
@@ -98,3 +99,20 @@ final catalogPreviewProvider =
       final bytes = await ref.watch(packCacheProvider).preview(item);
       return bytes == null ? null : MemoryImage(bytes);
     });
+
+/// Every planner offered, once each, with its editions.
+final plannerSeriesProvider = Provider<List<PlannerSeries>>(
+  (ref) => plannerSeries(ref.watch(storeCatalogProvider)),
+);
+
+/// The editions of [item]'s planner, in date order; [item] alone if it
+/// has no others.
+final editionsProvider = Provider.family<List<CatalogItem>, CatalogItem>(
+  (ref, item) =>
+      ref
+          .watch(plannerSeriesProvider)
+          .where((s) => s.editions.any((e) => e.id == item.id))
+          .firstOrNull
+          ?.editions ??
+      [item],
+);

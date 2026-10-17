@@ -38,6 +38,17 @@ String _safeReturn(String? from) =>
     ? from
     : homePath;
 
+/// A screen opened on top of another: it slides in (and on iOS, swipes
+/// back) as the platform does. go_router would choose this page itself
+/// if it could find the MaterialApp, which it can't on this Flutter, and
+/// falls back to no transition at all.
+Page<void> _pushed(GoRouterState state, Widget child) => MaterialPage<void>(
+  key: state.pageKey,
+  name: state.path,
+  restorationId: state.pageKey.value,
+  child: child,
+);
+
 final routerProvider = Provider<GoRouter>((ref) {
   // Re-run the redirect whenever the user signs in or out.
   final authChanged = ValueNotifier(0);
@@ -170,8 +181,13 @@ final routerProvider = Provider<GoRouter>((ref) {
         routes: [
           GoRoute(
             path: ':id',
-            builder: (context, state) =>
-                StoreItemScreen(itemId: state.pathParameters['id']!),
+            pageBuilder: (context, state) => _pushed(
+              state,
+              StoreItemScreen(
+                itemId: state.pathParameters['id']!,
+                heroTag: state.extra,
+              ),
+            ),
           ),
         ],
       ),
@@ -181,11 +197,13 @@ final routerProvider = Provider<GoRouter>((ref) {
         routes: [
           GoRoute(
             path: 'style',
-            builder: (context, state) => const NotebookStyleScreen(),
+            pageBuilder: (context, state) =>
+                _pushed(state, const NotebookStyleScreen()),
           ),
           GoRoute(
             path: 'templates',
-            builder: (context, state) => const MyTemplatesScreen(),
+            pageBuilder: (context, state) =>
+                _pushed(state, const MyTemplatesScreen()),
           ),
         ],
       ),
