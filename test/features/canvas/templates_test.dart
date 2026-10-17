@@ -762,6 +762,72 @@ void main() {
       expect(opened, arrived.id);
     });
 
+    testWidgets('a template page shows on the paper colour chosen for it', (
+      tester,
+    ) async {
+      final (_, pageId, _) = await pumpPlannerPage(
+        tester,
+        made: template(downloader, 'planner', plannerJson),
+      );
+      Color background() =>
+          tester.widget<TemplateImage>(find.byType(TemplateImage)).background;
+      expect(background(), Colors.white);
+      expect(find.byType(RawImage), findsOneWidget);
+
+      const cream = PaperStyle(
+        pattern: PaperPattern.blank,
+        color: Color(0xFFFFF4D6),
+        lineColor: Color(0xFFCCCCCC),
+        spacing: 24,
+      );
+      await backend.notebooks(uid).setPagePaper(pageId, cream);
+      await settle(tester);
+      expect(background(), const Color(0xFFFFF4D6));
+      // Printed onto the paper, so the template's white takes its colour.
+      expect(find.byType(RawImage), findsNothing);
+    });
+
+    testWidgets('a paper colour can go on every template page at once', (
+      tester,
+    ) async {
+      final made = template(downloader, 'planner', plannerJson);
+      final auth = await pumpApp(
+        tester,
+        skins,
+        size: const Size(1180, 820),
+        overrides: overrides([made]),
+      );
+      final repo = backend.notebooks(auth.currentUser!.uid);
+      final nb = await repo.createNotebook(
+        const NewNotebook(title: 'Precon', cover: NotebookCover.color(1)),
+      );
+      final section = (await repo.watchSections(nb.id).first).single;
+      await repo.createPages(nb.id, section.id, [
+        for (var n = 1; n <= 3; n++)
+          (title: 'Page $n', paper: null, template: templatePage(made, n)),
+        (title: 'Blank', paper: null, template: null),
+      ]);
+      final first = (await repo.watchPages(nb.id, section.id).first).first;
+      ProviderScope.containerOf(tester.element(find.byType(Navigator).first))
+          .read(routerProvider)
+          .go('/notebooks/${nb.id}/pages/${first.id}');
+      await settle(tester);
+
+      await tester.tap(find.byTooltip('Page options'));
+      await settle(tester);
+      await tester.tap(find.text('Page paper'));
+      await settle(tester);
+      expect(find.textContaining('only the paper color shows'), findsOneWidget);
+      await tester.tap(find.text('Use on every template page'));
+      await settle(tester);
+
+      final pages = await repo.watchNotebookPages(nb.id).first;
+      expect(
+        [for (final p in pages) p.paper != null],
+        [true, true, true, false],
+      );
+    });
+
     testWidgets('a pencil tap on a link writes instead of jumping', (
       tester,
     ) async {

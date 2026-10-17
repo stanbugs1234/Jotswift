@@ -2851,6 +2851,9 @@ class _PageCanvasState extends ConsumerState<PageCanvas>
                               scale: _scale,
                               alignment: Alignment.topLeft,
                               child: _PageSurface(
+                                templateBackground: ref.watch(
+                                  templateBackgroundProvider(widget.pageId),
+                                ),
                                 size: _pageSize,
                                 paper: paper,
                                 hasTemplate: template != null,
@@ -2991,6 +2994,7 @@ class _PageSurface extends StatelessWidget {
     required this.size,
     required this.paper,
     required this.hasTemplate,
+    this.templateBackground = Colors.white,
     required this.templateImage,
     required this.templateRect,
     required this.elements,
@@ -3012,6 +3016,9 @@ class _PageSurface extends StatelessWidget {
 
   /// The page shows a template page instead of paper.
   final bool hasTemplate;
+
+  /// What shows behind a template page (see [templateBackgroundProvider]).
+  final Color templateBackground;
 
   /// The template page's image (null while it loads) and where it goes.
   final ui.Image? templateImage;
@@ -3069,11 +3076,11 @@ class _PageSurface extends StatelessWidget {
               ),
             )
           else ...[
-            const ColoredBox(color: Colors.white),
+            ColoredBox(color: templateBackground),
             if ((templateImage, templateRect) case (final image?, final rect?))
               Positioned.fromRect(
                 rect: rect,
-                child: RawImage(image: image, fit: BoxFit.fill),
+                child: TemplateImage(image, background: templateBackground),
               )
             else
               const Center(child: CircularProgressIndicator()),
@@ -3251,6 +3258,52 @@ class _ZoomBadge extends StatelessWidget {
 /// How wide (in pixels) template pages are drawn, on screen and in print.
 const templateDrawWidth = _PageCanvasState._templateWidth;
 
+/// A template page's image. On coloured paper it's printed onto the paper
+/// (multiplied), so its white shows the paper's colour and its lines and
+/// text stay as they are: templates draw their own white background.
+class TemplateImage extends StatelessWidget {
+  const TemplateImage(this.image, {required this.background, super.key});
+
+  final ui.Image image;
+  final Color background;
+
+  @override
+  Widget build(BuildContext context) {
+    if (background.toARGB32() == 0xFFFFFFFF) {
+      return RawImage(image: image, fit: BoxFit.fill);
+    }
+    return CustomPaint(painter: _MultipliedImage(image), size: Size.infinite);
+  }
+}
+
+class _MultipliedImage extends CustomPainter {
+  _MultipliedImage(this.image);
+
+  final ui.Image image;
+
+  @override
+  void paint(Canvas canvas, Size size) => paintImage(
+    canvas: canvas,
+    rect: Offset.zero & size,
+    image: image,
+    fit: BoxFit.fill,
+    filterQuality: FilterQuality.medium,
+    blendMode: BlendMode.multiply,
+  );
+
+  @override
+  bool shouldRepaint(_MultipliedImage old) => old.image != image;
+}
+
+/// What shows behind a template page: the colour of the paper chosen for
+/// that page (Page paper), or white. Templates draw their own lines, so only
+/// the paper's colour is used.
+final templateBackgroundProvider = Provider.family<Color, String>(
+  (ref, pageId) =>
+      ref.watch(pageProvider(pageId).select((p) => p.value?.paper?.color)) ??
+      Colors.white,
+);
+
 /// A page as it's exported or printed: its paper or template, items and
 /// ink, with nothing to edit. Laid out in page units.
 class PagePrint extends ConsumerWidget {
@@ -3305,7 +3358,7 @@ class PagePrint extends ConsumerWidget {
           if (template == null)
             CustomPaint(painter: PaperPainter(paper, scale: _paperScale))
           else ...[
-            const ColoredBox(color: Colors.white),
+            ColoredBox(color: ref.watch(templateBackgroundProvider(pageId))),
             if (image != null)
               Positioned.fromRect(
                 rect: Alignment.center.inscribe(
@@ -3316,7 +3369,10 @@ class PagePrint extends ConsumerWidget {
                   ).destination,
                   Offset.zero & size,
                 ),
-                child: RawImage(image: image, fit: BoxFit.fill),
+                child: TemplateImage(
+                  image,
+                  background: ref.watch(templateBackgroundProvider(pageId)),
+                ),
               ),
           ],
           for (final e in elements)

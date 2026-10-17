@@ -7,6 +7,7 @@ import '../../core/paper/basic_papers.dart';
 import '../../core/paper/paper_style.dart';
 import '../../core/skins/skin_providers.dart';
 import '../../core/skins/widgets/paper.dart';
+import 'domain/notebook_models.dart';
 import 'notes_providers.dart';
 
 /// A paper offered by a notebook style, shown with the style's name.
@@ -385,7 +386,9 @@ final stylePapersProvider = Provider<List<NamedPaper>>(
 
 /// The result of [showPagePaperSheet]: the page's own paper, or null to use
 /// the notebook's paper.
-typedef PagePaperChoice = ({PaperStyle? paper});
+/// The paper chosen (null for the notebook's), and whether it's for every
+/// template page of the notebook rather than just this one.
+typedef PagePaperChoice = ({PaperStyle? paper, bool everyPage});
 
 /// Asks for a page's paper, starting from [current]. With [notebookPaper]
 /// the sheet also offers going back to the notebook's paper. Returns null
@@ -394,6 +397,7 @@ Future<PagePaperChoice?> showPagePaperSheet(
   BuildContext context, {
   required PaperStyle current,
   bool offerNotebookPaper = false,
+  bool templatePage = false,
   String title = 'Page paper',
   String confirmLabel = 'Use this paper',
 }) => showModalBottomSheet<PagePaperChoice>(
@@ -403,6 +407,7 @@ Future<PagePaperChoice?> showPagePaperSheet(
   builder: (context) => _PagePaperSheet(
     initial: current,
     offerNotebookPaper: offerNotebookPaper,
+    templatePage: templatePage,
     title: title,
     confirmLabel: confirmLabel,
   ),
@@ -412,12 +417,17 @@ class _PagePaperSheet extends ConsumerStatefulWidget {
   const _PagePaperSheet({
     required this.initial,
     required this.offerNotebookPaper,
+    required this.templatePage,
     required this.title,
     required this.confirmLabel,
   });
 
   final PaperStyle initial;
   final bool offerNotebookPaper;
+
+  /// The page shows a template, which draws its own lines: only the paper's
+  /// colour shows, and it can go on every template page at once.
+  final bool templatePage;
   final String title;
   final String confirmLabel;
 
@@ -437,6 +447,15 @@ class _PagePaperSheetState extends ConsumerState<_PagePaperSheet> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(widget.title, style: Theme.of(context).textTheme.titleLarge),
+            if (widget.templatePage)
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  'This page is a template, so it keeps its own lines: '
+                  'only the paper color shows behind it.',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ),
             PaperPicker(
               selected: _paper,
               onChanged: (p) => setState(() => _paper = p),
@@ -444,19 +463,57 @@ class _PagePaperSheetState extends ConsumerState<_PagePaperSheet> {
             ),
             const SizedBox(height: 20),
             FilledButton(
-              onPressed: () => Navigator.pop(context, (paper: _paper)),
-              child: Text(widget.confirmLabel),
+              onPressed: () =>
+                  Navigator.pop(context, (paper: _paper, everyPage: false)),
+              child: Text(
+                widget.templatePage ? 'Use on this page' : widget.confirmLabel,
+              ),
             ),
+            if (widget.templatePage)
+              OutlinedButton(
+                onPressed: () =>
+                    Navigator.pop(context, (paper: _paper, everyPage: true)),
+                child: const Text('Use on every template page'),
+              ),
             if (widget.offerNotebookPaper)
               TextButton(
-                onPressed: () => Navigator.pop(context, (paper: null)),
-                child: const Text("Use the notebook's paper"),
+                onPressed: () =>
+                    Navigator.pop(context, (paper: null, everyPage: false)),
+                child: Text(
+                  widget.templatePage
+                      ? 'Back to white'
+                      : "Use the notebook's paper",
+                ),
               ),
           ],
         ),
       ),
     );
   }
+}
+
+/// Asks for [page]'s paper and saves it. On a template page the choice can
+/// go on every template page of the notebook.
+Future<void> choosePagePaper(
+  BuildContext context,
+  WidgetRef ref,
+  NotePage page,
+) async {
+  final template = page.template != null;
+  final choice = await showPagePaperSheet(
+    context,
+    current: page.paper ?? notebookPaper(ref, page.notebookId),
+    offerNotebookPaper: true,
+    templatePage: template,
+  );
+  if (choice == null) return;
+  final repo = ref.read(notebookRepositoryProvider);
+  if (!choice.everyPage) return repo.setPagePaper(page.id, choice.paper);
+  final pages = await repo.watchNotebookPages(page.notebookId).first;
+  await Future.wait([
+    for (final p in pages)
+      if (p.template != null) repo.setPagePaper(p.id, choice.paper),
+  ]);
 }
 
 /// The paper new pages in a notebook get: its own, else its style's.

@@ -249,12 +249,7 @@ class _PageMenu extends ConsumerWidget {
         );
         if (title != null) await repo.renamePage(page.id, title);
       case _PageAction.paper:
-        final choice = await showPagePaperSheet(
-          context,
-          current: page.paper ?? notebookPaper(ref, notebookId),
-          offerNotebookPaper: true,
-        );
-        if (choice != null) await repo.setPagePaper(page.id, choice.paper);
+        await choosePagePaper(context, ref, page);
       case _PageAction.duplicate:
         final i = pages.indexWhere((p) => p.id == page.id);
         await repo.copyPage(
