@@ -19,9 +19,17 @@ import 'my_templates.dart';
 
 /// One notebook: its sections as tabs, and the pages in the chosen section.
 class NotebookScreen extends ConsumerStatefulWidget {
-  const NotebookScreen({required this.notebookId, super.key});
+  const NotebookScreen({
+    required this.notebookId,
+    this.newPageSearch,
+    super.key,
+  });
 
   final String notebookId;
+
+  /// Opens the New page sheet straight away, searching for these words: a
+  /// template's name, when it was chosen in the store.
+  final String? newPageSearch;
 
   @override
   ConsumerState<NotebookScreen> createState() => _NotebookScreenState();
@@ -34,6 +42,19 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
   void initState() {
     super.initState();
     ref.read(notebookRepositoryProvider).markNotebookOpened(widget.notebookId);
+    if (widget.newPageSearch case final search?) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        final sections = await ref
+            .read(notebookRepositoryProvider)
+            .watchSections(widget.notebookId)
+            .first;
+        if (!mounted || sections.isEmpty) return;
+        await _newPageFromSheet(
+          (_sectionId ?? sections.last.id),
+          search: search,
+        );
+      });
+    }
   }
 
   Future<void> _addSection() async {
@@ -108,10 +129,11 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
   }
 
   /// Asks what to add: a blank page, another paper or a template page.
-  Future<void> _newPageFromSheet(String sectionId) async {
+  Future<void> _newPageFromSheet(String sectionId, {String? search}) async {
     final choice = await showNewPageSheet(
       context,
       paper: notebookPaper(ref, widget.notebookId),
+      search: search,
     );
     if (!mounted) return;
     switch (choice) {

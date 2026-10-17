@@ -421,6 +421,108 @@ void main() {
       );
     });
 
+    Future<void> openWith(WidgetTester tester, List<CatalogItem> items) async {
+      await pumpApp(
+        tester,
+        skins,
+        size: const Size(800, 1000),
+        overrides: [
+          purchasesClientProvider.overrideWithValue(FakePurchases()),
+          catalogRepositoryProvider.overrideWithValue(
+            InMemoryCatalogRepository(items),
+          ),
+        ],
+      );
+      await tester.tap(find.text('Templates').first);
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('search finds items by name, kind and tags', (tester) async {
+      await openWith(tester, [freePaper, workPages, goalsPlanner]);
+      await tester.enterText(find.byType(TextField).first, 'goals');
+      await tester.pumpAndSettle();
+      expect(find.bySemanticsLabel(RegExp('^goals_planner')), findsOneWidget);
+      expect(find.bySemanticsLabel(RegExp('^work_pages')), findsNothing);
+      expect(find.bySemanticsLabel(RegExp('^free_paper')), findsNothing);
+
+      await tester.enterText(find.byType(TextField).first, 'paper');
+      await tester.pumpAndSettle();
+      expect(find.bySemanticsLabel(RegExp('^free_paper')), findsOneWidget);
+
+      await tester.enterText(find.byType(TextField).first, 'zebra');
+      await tester.pumpAndSettle();
+      expect(find.text('Nothing matches "zebra"'), findsOneWidget);
+
+      await tester.tap(find.byTooltip('Clear search'));
+      await tester.pumpAndSettle();
+      expect(find.bySemanticsLabel(RegExp('^work_pages')), findsOneWidget);
+    });
+
+    testWidgets('a locked template shows its sample pages', (tester) async {
+      final locked = item(
+        'locked_planner',
+        'template',
+        {'pro': true},
+        extra: {
+          'category': 'planners',
+          'templateMode': 'notebook',
+          'pageCount': 40,
+          'samples': [
+            {'title': 'Home', 'path': 'catalog/locked_planner/1/pages/1.webp'},
+            {
+              'title': 'Week 1',
+              'path': 'catalog/locked_planner/1/pages/9.webp',
+            },
+          ],
+          ..._templateFiles,
+        },
+      );
+      await openWith(tester, [locked]);
+      await tester.tap(find.bySemanticsLabel(RegExp('^locked_planner')));
+      await tester.pumpAndSettle();
+      expect(find.text("What's inside"), findsOneWidget);
+      expect(find.text('Week 1'), findsOneWidget);
+
+      await tester.tap(find.text('Look inside'));
+      await tester.pumpAndSettle();
+      expect(
+        find.text('2 of its 40 pages. Unlock it to use them all.'),
+        findsOneWidget,
+      );
+      expect(find.text('Get with Pro'), findsOneWidget);
+      expect(find.text('Use this'), findsNothing);
+    });
+
+    testWidgets('page templates can be added to a notebook from the store', (
+      tester,
+    ) async {
+      await openWith(tester, [starterPages]);
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(NotelyApp)),
+      );
+      await container
+          .read(notebookRepositoryProvider)
+          .createNotebook(
+            const NewNotebook(title: 'Physics', cover: NotebookCover.color(0)),
+          );
+      await tester.pumpAndSettle();
+      await tester.tap(find.bySemanticsLabel(RegExp('^starter_pages')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Add pages to a notebook…'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Physics'));
+      await tester.pumpAndSettle();
+      // The notebook opens with New page, searching for these pages.
+      expect(find.text('New page'), findsWidgets);
+      final search = tester.widget<TextField>(
+        find.descendant(
+          of: find.byType(BottomSheet),
+          matching: find.byType(TextField),
+        ),
+      );
+      expect(search.controller!.text, 'starter_pages');
+    });
+
     testWidgets('buying an item unlocks it', (tester) async {
       final store = await open(tester);
       await tester.tap(find.bySemanticsLabel(RegExp('^sold_paper')));

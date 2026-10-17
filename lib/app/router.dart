@@ -91,7 +91,10 @@ final routerProvider = Provider<GoRouter>((ref) {
                         key: state.pageKey,
                         id: id,
                         cover: _NotebookCoverFor(id),
-                        child: NotebookScreen(notebookId: id),
+                        child: NotebookScreen(
+                          notebookId: id,
+                          newPageSearch: state.uri.queryParameters['newPage'],
+                        ),
                       );
                     },
                     routes: [

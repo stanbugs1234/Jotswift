@@ -47,15 +47,17 @@ class WholePlannerChoice extends NewPageChoice {
 
 /// Asks what kind of page to add: blank, another paper, or any page of any
 /// template. Templates the user doesn't have yet are listed too and open
-/// their store page. Returns null if cancelled.
+/// their store page. [search] starts the search with those words (e.g. a
+/// template's name). Returns null if cancelled.
 Future<NewPageChoice?> showNewPageSheet(
   BuildContext context, {
   required PaperStyle paper,
+  String? search,
 }) => showModalBottomSheet<NewPageChoice>(
   context: context,
   isScrollControlled: true,
   showDragHandle: true,
-  builder: (context) => _NewPageSheet(paper: paper),
+  builder: (context) => _NewPageSheet(paper: paper, search: search),
 );
 
 /// One row of the sheet.
@@ -79,16 +81,17 @@ class _Locked extends _Row {
 }
 
 class _NewPageSheet extends ConsumerStatefulWidget {
-  const _NewPageSheet({required this.paper});
+  const _NewPageSheet({required this.paper, this.search});
 
   final PaperStyle paper;
+  final String? search;
 
   @override
   ConsumerState<_NewPageSheet> createState() => _NewPageSheetState();
 }
 
 class _NewPageSheetState extends ConsumerState<_NewPageSheet> {
-  var _filter = const TemplateFilter();
+  late var _filter = TemplateFilter(query: widget.search ?? '');
 
   @override
   Widget build(BuildContext context) {

@@ -20,6 +20,7 @@ import 'store_actions.dart';
 import '../calendar/templates/calendar_look.dart'
     show calendarTemplateSettingProvider;
 import '../calendar/templates/calendar_template.dart';
+import 'notebook_picker.dart';
 import 'store_item.dart';
 import 'store_screen.dart';
 
@@ -55,19 +56,42 @@ class StoreItemScreen extends ConsumerWidget {
           ]
         : const <CatalogItem>[];
     final wide = MediaQuery.sizeOf(context).width >= 700;
+    final isTemplate = item.kind == CatalogKind.template;
+    final locked =
+        accessOf(ref.watch(entitlementsProvider), item) == ItemAccess.locked;
 
     final preview = AspectRatio(
       aspectRatio: 3 / 4,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
-        child:
-            item.kind == CatalogKind.template &&
-                accessOf(ref.watch(entitlementsProvider), item) !=
-                    ItemAccess.locked
-            ? _SharpPreview(item: item)
-            : ItemPreview(item: item),
+        child: switch ((isTemplate, locked, item.samples)) {
+          (true, false, _) => _SharpPreview(item: item),
+          // Not unlocked yet: its first page, published to look at.
+          (true, true, [final first, ...]) => _SharpPreview(
+            item: item,
+            sample: first,
+          ),
+          _ => ItemPreview(item: item),
+        },
       ),
     );
+
+    Future<void> lookInside() async {
+      final use = useItemAction(context, ref, item);
+      final chosen = await showTemplatePages(
+        context,
+        item,
+        locked: locked,
+        lockedAction: locked && item.unlock.pro
+            ? FilledButton(
+                onPressed: () => showPaywall(context, ref),
+                child: const Text('Get with Pro'),
+              )
+            : null,
+      );
+      if (chosen == true && context.mounted) await use?.run();
+    }
+
     final details = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -145,9 +169,7 @@ class StoreItemScreen extends ConsumerWidget {
             const SizedBox(height: 24),
             details,
           ],
-          if (item.kind == CatalogKind.template &&
-              accessOf(ref.watch(entitlementsProvider), item) !=
-                  ItemAccess.locked) ...[
+          if (isTemplate && (!locked || item.samples.isNotEmpty)) ...[
             Padding(
               padding: const EdgeInsets.only(top: 32, bottom: 12),
               child: Row(
@@ -161,12 +183,12 @@ class StoreItemScreen extends ConsumerWidget {
                   TextButton.icon(
                     icon: const Icon(Icons.visibility_outlined),
                     label: const Text('Look inside'),
-                    onPressed: () => showTemplatePages(context, item),
+                    onPressed: lookInside,
                   ),
                 ],
               ),
             ),
-            TemplatePageStrip(item: item),
+            TemplatePageStrip(item: item, locked: locked),
           ],
           if (contents.isNotEmpty) ...[
             Padding(
@@ -265,69 +287,111 @@ class _GetOrUseState extends ConsumerState<_GetOrUse> {
 
   /// How to use an unlocked item.
   List<Widget> _use(BuildContext context, CatalogItem item) {
-    Future<void> startNotebook({
-      NotebookCover? cover,
-      CatalogItem? template,
-      bool paper = false,
-    }) => createNotebookAt(
-      context,
-      ref,
-      const AllNotebooks(),
-      cover: cover,
-      paper: paper ? item.paper : null,
-      template: template,
-    );
-
-    Widget hint(String text) =>
-        Text(text, style: Theme.of(context).textTheme.bodyMedium);
-
-    return switch (item.kind) {
-      CatalogKind.template when item.templateMode == TemplateMode.notebook => [
-        FilledButton(
-          onPressed: () => startNotebook(template: item),
-          child: const Text('New notebook from this planner'),
+    final theme = Theme.of(context);
+    final use = useItemAction(context, ref, item);
+    return [
+      if (use != null) FilledButton(onPressed: use.run, child: Text(use.label)),
+      if (use?.hint ?? _hint(item) case final hint?)
+        Padding(
+          padding: EdgeInsets.only(top: use == null ? 0 : 8),
+          child: Text(hint, style: theme.textTheme.bodyMedium),
         ),
-      ],
-      CatalogKind.cover => [
-        FilledButton(
-          onPressed: () => startNotebook(
-            cover: NotebookCover.art(item.id, color: item.color ?? 0xFF455A64),
-          ),
-          child: const Text('New notebook with this cover'),
-        ),
-      ],
-      CatalogKind.paper => [
-        FilledButton(
-          onPressed: () => startNotebook(paper: true),
-          child: const Text('New notebook with this paper'),
-        ),
-      ],
-      CatalogKind.template => [
-        hint(
-          'Open any notebook and tap New page: these pages are under '
-          '${categoryLabel(item.category ?? 'pages')}.',
-        ),
-      ],
-      CatalogKind.stickers => [
-        hint('Open a page and tap Stickers in the toolbar.'),
-      ],
-      CatalogKind.collection => [
-        hint('Everything in this collection is ready in your pickers.'),
-      ],
-      CatalogKind.calendar => [
-        FilledButton(
-          onPressed: () async {
-            await ref
-                .read(calendarTemplateSettingProvider.notifier)
-                .select(calendarTemplateById(item.templateId ?? ''));
-            if (context.mounted) context.go('/calendar');
-          },
-          child: const Text('Use this calendar template'),
-        ),
-      ],
-      CatalogKind.unknown => const [],
-    };
+    ];
   }
+
+  String? _hint(CatalogItem item) => switch (item.kind) {
+    CatalogKind.collection =>
+      'Everything in this collection is ready in your pickers.',
+    _ => null,
+  };
+}
+
+/// What an unlocked item's main button does.
+typedef ItemUse = ({String label, Future<void> Function() run, String? hint});
+
+/// The main way to use [item] once it's unlocked, or null if there's
+/// nothing to start (a collection).
+ItemUse? useItemAction(BuildContext context, WidgetRef ref, CatalogItem item) {
+  Future<void> startNotebook({
+    NotebookCover? cover,
+    CatalogItem? template,
+    bool paper = false,
+  }) => createNotebookAt(
+    context,
+    ref,
+    const AllNotebooks(),
+    cover: cover,
+    paper: paper ? item.paper : null,
+    template: template,
+  );
+
+  /// Asks which notebook, then opens it ready to add [item]'s pages.
+  Future<void> addPages() async {
+    final notebook = await pickNotebook(
+      context,
+      title: 'Add ${item.name} pages to…',
+    );
+    if (notebook == null || !context.mounted) return;
+    context.go(
+      Uri(
+        path: '/notebooks/${notebook.id}',
+        queryParameters: {'newPage': item.name},
+      ).toString(),
+    );
+  }
+
+  /// Asks which notebook, then opens it where it was left.
+  Future<void> openNotebookToUse() async {
+    final notebook = await pickNotebook(context, title: 'Use in…');
+    if (notebook == null || !context.mounted) return;
+    context.go(switch (notebook.lastPageId) {
+      final page? => '/notebooks/${notebook.id}/pages/$page',
+      null => '/notebooks/${notebook.id}',
+    });
+  }
+
+  return switch (item.kind) {
+    CatalogKind.template when item.templateMode == TemplateMode.notebook => (
+      label: 'New notebook from this planner',
+      run: () => startNotebook(template: item),
+      hint: null,
+    ),
+    CatalogKind.template => (
+      label: 'Add pages to a notebook…',
+      run: addPages,
+      hint:
+          'They\'re also in New page in any notebook, under '
+          '${categoryLabel(item.category ?? 'pages')}.',
+    ),
+    CatalogKind.cover => (
+      label: 'New notebook with this cover',
+      run: () => startNotebook(
+        cover: NotebookCover.art(item.id, color: item.color ?? 0xFF455A64),
+      ),
+      hint: null,
+    ),
+    CatalogKind.paper => (
+      label: 'New notebook with this paper',
+      run: () => startNotebook(paper: true),
+      hint: null,
+    ),
+    CatalogKind.stickers => (
+      label: 'Use in a notebook…',
+      run: openNotebookToUse,
+      hint: 'Tap Stickers in the page toolbar to place them.',
+    ),
+    CatalogKind.calendar => (
+      label: 'Use this calendar template',
+      run: () async {
+        await ref
+            .read(calendarTemplateSettingProvider.notifier)
+            .select(calendarTemplateById(item.templateId ?? ''));
+        if (context.mounted) context.go('/calendar');
+      },
+      hint: null,
+    ),
+    CatalogKind.collection || CatalogKind.unknown => null,
+  };
 }
 
 class _BuyButton extends ConsumerWidget {
@@ -363,18 +427,33 @@ class _BuyButton extends ConsumerWidget {
 /// A template's first page drawn at full size, instead of the small store
 /// picture; the picture until it's ready (or if it can't be).
 class _SharpPreview extends ConsumerWidget {
-  const _SharpPreview({required this.item});
+  const _SharpPreview({required this.item, this.sample});
 
   final CatalogItem item;
 
+  /// A published page to show instead, for an item that isn't unlocked.
+  final CatalogSample? sample;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final image = ref
-        .watch(
-          templateImageProvider((template: templatePage(item, 1), width: 900)),
-        )
-        .value;
-    if (image == null) return ItemPreview(item: item);
+    final Widget? picture = switch (sample) {
+      final s? => switch (ref.watch(catalogImageProvider(s.path)).value) {
+        final image? => Image(image: image, fit: BoxFit.contain),
+        null => null,
+      },
+      null => switch (ref
+          .watch(
+            templateImageProvider((
+              template: templatePage(item, 1),
+              width: 900,
+            )),
+          )
+          .value) {
+        final image? => RawImage(image: image, fit: BoxFit.contain),
+        null => null,
+      },
+    };
+    if (picture == null) return ItemPreview(item: item);
     return ColoredBox(
       color: Theme.of(context).colorScheme.surfaceContainerHighest,
       child: Padding(
@@ -390,7 +469,7 @@ class _SharpPreview extends ConsumerWidget {
                 ),
               ],
             ),
-            child: RawImage(image: image, fit: BoxFit.contain),
+            child: picture,
           ),
         ),
       ),

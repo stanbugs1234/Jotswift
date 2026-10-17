@@ -116,11 +116,23 @@ class PackCache {
   Future<Uint8List?> preview(CatalogItem item) async {
     final path = item.previewPath;
     if (path == null) return null;
-    return _previews[path] ??= _download
-        .download(path, maxBytes: maxPreviewBytes)
-        .catchError((Object e) {
-          _previews.remove(path);
-          throw e;
-        });
+    return image(path);
+  }
+
+  /// A small picture from the catalog (a preview or sample page), kept on
+  /// the device: catalog files never change at a path, as each version has
+  /// its own.
+  Future<Uint8List> image(String path) =>
+      _previews[path] ??= _image(path).catchError((Object e) {
+        _previews.remove(path);
+        throw e;
+      });
+
+  Future<Uint8List> _image(String path) async {
+    final id = 'image-${path.replaceAll(RegExp('[^A-Za-z0-9._-]'), '_')}';
+    if (await _disk.read(id, 0) case {'image': final saved}) return saved;
+    final bytes = await _download.download(path, maxBytes: maxPreviewBytes);
+    unawaited(_disk.write(id, 0, {'image': bytes}).catchError((_) {}));
+    return bytes;
   }
 }

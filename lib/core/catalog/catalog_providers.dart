@@ -85,6 +85,13 @@ final catalogCoverProvider = FutureProvider.family<ImageProvider?, String>((
   return image == null ? null : MemoryImage(image);
 });
 
+/// A picture from the catalog by its storage path (a template's sample
+/// page), kept on the device once downloaded.
+final catalogImageProvider = FutureProvider.family<ImageProvider, String>(
+  (ref, path) async =>
+      MemoryImage(await ref.watch(packCacheProvider).image(path)),
+);
+
 /// An item's small preview image, for pickers and the store.
 final catalogPreviewProvider =
     FutureProvider.family<ImageProvider?, CatalogItem>((ref, item) async {

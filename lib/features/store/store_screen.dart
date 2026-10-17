@@ -66,11 +66,28 @@ class _StoreScreenState extends ConsumerState<StoreScreen> {
   String? _category;
 
   final _scroll = ScrollController();
+  final _search = TextEditingController();
 
   @override
   void dispose() {
     _scroll.dispose();
+    _search.dispose();
     super.dispose();
+  }
+
+  /// Whether every word typed is in [item]'s name, kind, category or tags.
+  bool _found(CatalogItem item) {
+    final words = _search.text
+        .toLowerCase()
+        .split(RegExp(r'\s+'))
+        .where((w) => w.isNotEmpty);
+    final text = [
+      item.name,
+      kindLabel(item),
+      if (item.category case final c?) ...[c, categoryLabel(c)],
+      ...item.tags,
+    ].join(' ').toLowerCase();
+    return words.every(text.contains);
   }
 
   /// Shows one category, or all of them, from the top.
@@ -100,11 +117,11 @@ class _StoreScreenState extends ConsumerState<StoreScreen> {
         if (_matches(entitlements, i)) i,
     ];
     final available = ref.watch(purchasesClientProvider).isAvailable;
-    final rows = [
-      for (final (title, belongs) in _sections)
-        if (items.where(belongs).toList() case final row when row.isNotEmpty)
-          (title, row),
-    ];
+    final searching = _search.text.trim().isNotEmpty;
+    final found = searching
+        ? items.where(_found).toList()
+        : const <CatalogItem>[];
+    final rows = _rowsOf(items);
     final chosen = rows.where((r) => r.$1 == _category).firstOrNull?.$2;
 
     return Scaffold(
@@ -122,6 +139,27 @@ class _StoreScreenState extends ConsumerState<StoreScreen> {
         controller: _scroll,
         padding: const EdgeInsets.only(bottom: 32),
         children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+            child: TextField(
+              controller: _search,
+              textInputAction: TextInputAction.search,
+              decoration: InputDecoration(
+                hintText: 'Search planners, pages, covers and stickers',
+                prefixIcon: const Icon(Icons.search),
+                suffixIcon: searching
+                    ? IconButton(
+                        tooltip: 'Clear search',
+                        icon: const Icon(Icons.close),
+                        onPressed: () => setState(_search.clear),
+                      )
+                    : null,
+                border: const OutlineInputBorder(),
+                isDense: true,
+              ),
+              onChanged: (_) => setState(() {}),
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
             child: Wrap(
@@ -142,7 +180,7 @@ class _StoreScreenState extends ConsumerState<StoreScreen> {
             ),
           ),
           // The rows there are, to show one of them on its own.
-          if (rows.length > 1 || _category != null)
+          if (!searching && (rows.length > 1 || _category != null))
             SizedBox(
               height: 48,
               child: ListView(
@@ -161,98 +199,146 @@ class _StoreScreenState extends ConsumerState<StoreScreen> {
                 ],
               ),
             ),
-          if (_category == null &&
-              !catalog.isLoading &&
-              _featured(items).isNotEmpty)
-            _Featured(items: _featured(items)),
-          if (_category == null && !entitlements.pro) const _ProBanner(),
-          if (catalog.isLoading)
-            // Rows of cards stand in until the catalog arrives.
-            for (var row = 0; row < 2; row++)
+          if (searching)
+            if (found.isEmpty)
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Skeleton(width: 140, height: 18),
-                    const SizedBox(height: Insets.md),
-                    Row(
-                      children: [
-                        for (var i = 0; i < 4; i++) ...[
-                          if (i > 0) const SizedBox(width: Insets.lg),
-                          const Expanded(child: Skeleton(height: 200)),
-                        ],
-                      ],
-                    ),
-                  ],
-                ),
-              )
-          else if (items.isEmpty && _category == null)
-            Padding(
-              padding: const EdgeInsets.only(top: Insets.xxxl),
-              child: catalog.hasError
-                  ? const EmptyState(
-                      icon: Icons.cloud_off_outlined,
-                      title: 'Couldn\'t load the templates',
-                      message: 'Check your connection and try again.',
-                    )
-                  : const EmptyState(
-                      icon: Icons.storefront_outlined,
-                      title: 'Nothing here yet.',
-                    ),
-            ),
-          if (_category != null) ...[
-            // One category: all of it at once, as a grid.
-            if (chosen != null)
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
-                child: _Grid(items: chosen),
-              )
-            else if (!catalog.isLoading)
-              const Padding(
-                padding: EdgeInsets.only(top: Insets.xxxl),
+                padding: const EdgeInsets.only(top: Insets.xxxl),
                 child: EmptyState(
                   icon: Icons.search_off,
-                  title: 'Nothing here.',
-                  message: 'Try All, or another category.',
+                  title: 'Nothing matches "${_search.text.trim()}"',
+                  message: _filter == _Filter.all
+                      ? 'Try another word, like "weekly" or "budget".'
+                      : 'Try another word, or All.',
                 ),
-              ),
-          ] else
-            for (final (title, row) in rows) ...[
+              )
+            else
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 24, 8, 4),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(title, style: theme.textTheme.titleMedium),
-                    ),
-                    TextButton(
-                      // The same as choosing its category.
-                      onPressed: () => _show(title),
-                      child: Text('See all ${row.length}'),
-                    ),
-                  ],
-                ),
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                child: _Grid(items: found),
+              )
+          else ...[
+            if (_category == null &&
+                !catalog.isLoading &&
+                _featured(items).isNotEmpty)
+              _Featured(items: _featured(items)),
+            if (_category == null && !entitlements.pro) const _ProBanner(),
+            if (catalog.isLoading)
+              // Rows of cards stand in until the catalog arrives.
+              for (var row = 0; row < 2; row++)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Skeleton(width: 140, height: 18),
+                      const SizedBox(height: Insets.md),
+                      Row(
+                        children: [
+                          for (var i = 0; i < 4; i++) ...[
+                            if (i > 0) const SizedBox(width: Insets.lg),
+                            const Expanded(child: Skeleton(height: 200)),
+                          ],
+                        ],
+                      ),
+                    ],
+                  ),
+                )
+            else if (items.isEmpty && _category == null)
+              Padding(
+                padding: const EdgeInsets.only(top: Insets.xxxl),
+                child: catalog.hasError
+                    ? const EmptyState(
+                        icon: Icons.cloud_off_outlined,
+                        title: 'Couldn\'t load the templates',
+                        message: 'Check your connection and try again.',
+                      )
+                    : const EmptyState(
+                        icon: Icons.storefront_outlined,
+                        title: 'Nothing here yet.',
+                      ),
               ),
-              SizedBox(
-                height: 262,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: row.length,
-                  separatorBuilder: (_, _) => const SizedBox(width: 16),
-                  // Cards arrive one after another.
-                  itemBuilder: (context, i) => RiseIn(
-                    index: i,
-                    child: StoreTile(item: row[i]),
+            if (_category != null) ...[
+              // One category: all of it at once, as a grid.
+              if (chosen != null)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
+                  child: _Grid(items: chosen),
+                )
+              else if (!catalog.isLoading)
+                const Padding(
+                  padding: EdgeInsets.only(top: Insets.xxxl),
+                  child: EmptyState(
+                    icon: Icons.search_off,
+                    title: 'Nothing here.',
+                    message: 'Try All, or another category.',
                   ),
                 ),
-              ),
-            ],
+            ] else
+              for (final (title, row) in rows) ...[
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 24, 8, 4),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(title, style: theme.textTheme.titleMedium),
+                      ),
+                      TextButton(
+                        // The same as choosing its category.
+                        onPressed: () => _show(title),
+                        child: Text('See all ${row.length}'),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 262,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    itemCount: row.length,
+                    separatorBuilder: (_, _) => const SizedBox(width: 16),
+                    // Cards arrive one after another.
+                    itemBuilder: (context, i) => RiseIn(
+                      index: i,
+                      child: StoreTile(item: row[i]),
+                    ),
+                  ),
+                ),
+              ],
+          ],
         ],
       ),
     );
   }
+}
+
+/// The store's rows with something in them. Categories of their own with
+/// just one item share one "More templates" row instead.
+List<(String, List<CatalogItem>)> _rowsOf(List<CatalogItem> items) {
+  final own = {for (final (_, title) in _categoryRows) title};
+  final rows = <(String, List<CatalogItem>)>[];
+  final more = <CatalogItem>[];
+  for (final (title, belongs) in _sections) {
+    final row = items.where(belongs).toList();
+    if (row.isEmpty) continue;
+    if (own.contains(title) && row.length < 2) {
+      more.addAll(row);
+      continue;
+    }
+    // "More templates" goes after the template rows, before calendars.
+    if (title == 'Calendars' && more.isNotEmpty) {
+      rows.add(('More templates', [...more]));
+      more.clear();
+    }
+    rows.add((title, row));
+  }
+  if (more.isNotEmpty) {
+    final at = rows.indexWhere(
+      (r) => !own.contains(r.$1) && r.$1 != 'Planners',
+    );
+    rows.insert(at < 0 ? rows.length : at, ('More templates', more));
+  }
+  return rows;
 }
 
 /// What the top of the store features: items tagged "featured", or else

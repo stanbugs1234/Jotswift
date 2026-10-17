@@ -160,6 +160,12 @@ describe('catalog files', () => {
       await seedFile(pack(id));
       await seedFile(`catalog/${id}/1/preview.webp`);
     }
+    await seedFile('catalog/sold_cover/1/pages/3.webp');
+  });
+
+  test('sample pages are open to anyone signed in, not to visitors', async () => {
+    await assertSucceeds(getBytes(ref(sam(), 'catalog/sold_cover/1/pages/3.webp')));
+    await assertFails(getBytes(ref(guest(), 'catalog/sold_cover/1/pages/3.webp')));
   });
 
   test('previews are open to anyone signed in, not to visitors', async () => {

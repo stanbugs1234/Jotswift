@@ -45,6 +45,11 @@ service firebase.storage {
       allow read: if request.auth != null;
     }
 
+    // A template's sample pages, to look inside before unlocking it.
+    match /catalog/{itemId}/{version}/pages/{page} {
+      allow read: if request.auth != null;
+    }
+
     match /catalog/{itemId}/{version}/pack.zip {
       allow read: if request.auth != null && canUseItem(itemId);
     }

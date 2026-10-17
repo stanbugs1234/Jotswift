@@ -96,6 +96,24 @@ class CatalogFiles {
   final String? preview;
 }
 
+/// A page of a template shown before it's unlocked: its picture in Cloud
+/// Storage, open to anyone signed in, unlike the template's pack.
+@immutable
+class CatalogSample {
+  const CatalogSample({required this.title, required this.path});
+
+  static CatalogSample? fromMap(Object? map) => switch (map) {
+    {'title': final String title, 'path': final String path} => CatalogSample(
+      title: title,
+      path: path,
+    ),
+    _ => null,
+  };
+
+  final String title;
+  final String path;
+}
+
 /// One item in the catalog (Firestore `catalog/{id}`): what it is and how
 /// it's offered. See docs/skins-plan.md §5.
 @immutable
@@ -118,6 +136,7 @@ class CatalogItem {
     this.pageCount,
     this.linked = false,
     this.templateId,
+    this.samples = const [],
     this._previewPath,
   });
 
@@ -154,6 +173,10 @@ class CatalogItem {
       pageCount: map['pageCount'] as int?,
       linked: map['linked'] == true,
       templateId: map['templateId'] as String?,
+      samples: [
+        for (final s in map['samples'] as List? ?? const [])
+          ?CatalogSample.fromMap(s),
+      ],
       // Collections have a preview but no pack.
       previewPath: switch (map['files']) {
         {'preview': final String path} => path,
@@ -198,6 +221,9 @@ class CatalogItem {
 
   /// Calendar listings: the template's id in the app.
   final String? templateId;
+
+  /// Templates: some of the pages, to look at before unlocking it.
+  final List<CatalogSample> samples;
 
   final String? _previewPath;
 

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/catalog/catalog_item.dart';
+import '../../core/catalog/catalog_providers.dart';
 import '../../core/catalog/template_spec.dart';
 import '../canvas/templates.dart';
 import '../store/store_item.dart';
@@ -191,11 +192,121 @@ class TemplateCardGrid extends StatelessWidget {
 }
 
 /// Shows every page of [item], by section. Returns true if the user chose
-/// to use it.
-Future<bool?> showTemplatePages(BuildContext context, CatalogItem item) =>
-    Navigator.of(context).push<bool>(
-      MaterialPageRoute(builder: (_) => TemplatePagesScreen(item: item)),
+/// to use it. A [locked] item can't be downloaded yet, so it shows its
+/// sample pages instead, with [lockedAction] (e.g. "Get with Pro") in place
+/// of "Use this".
+Future<bool?> showTemplatePages(
+  BuildContext context,
+  CatalogItem item, {
+  bool locked = false,
+  Widget? lockedAction,
+}) => Navigator.of(context).push<bool>(
+  MaterialPageRoute(
+    builder: (_) => locked
+        ? _SamplePagesScreen(item: item, action: lockedAction)
+        : TemplatePagesScreen(item: item),
+  ),
+);
+
+/// A locked template's sample pages, in a grid.
+class _SamplePagesScreen extends StatelessWidget {
+  const _SamplePagesScreen({required this.item, this.action});
+
+  final CatalogItem item;
+  final Widget? action;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final shown = item.samples.length;
+    final total = item.pageCount;
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(item.name),
+        actions: [
+          if (action case final a?)
+            Padding(padding: const EdgeInsets.only(right: 8), child: a),
+        ],
+      ),
+      body: CustomScrollView(
+        slivers: [
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            sliver: SliverToBoxAdapter(
+              child: Text(
+                total != null && total > shown
+                    ? '$shown of its $total pages. Unlock it to use them all.'
+                    : 'Unlock it to use these pages.',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.all(16),
+            sliver: SliverGrid.builder(
+              itemCount: shown,
+              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 240,
+                mainAxisSpacing: 20,
+                crossAxisSpacing: 16,
+                childAspectRatio: 0.66,
+              ),
+              itemBuilder: (context, i) =>
+                  _SampleThumb(sample: item.samples[i], expand: true),
+            ),
+          ),
+        ],
+      ),
     );
+  }
+}
+
+/// A sample page's picture and title.
+class _SampleThumb extends ConsumerWidget {
+  const _SampleThumb({required this.sample, this.expand = false});
+
+  final CatalogSample sample;
+
+  /// Fills its cell instead of the strip's fixed size.
+  final bool expand;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final image = ref.watch(catalogImageProvider(sample.path));
+    final picture = Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: theme.colorScheme.outlineVariant),
+      ),
+      child: switch (image) {
+        AsyncData(:final value) => Image(image: value, fit: BoxFit.contain),
+        AsyncError() => const SizedBox.expand(),
+        _ => const Skeleton(radius: 0),
+      },
+    );
+    return SizedBox(
+      width: expand ? null : 150,
+      child: Column(
+        children: [
+          if (expand)
+            Expanded(child: picture)
+          else
+            SizedBox(height: 194, child: picture),
+          const SizedBox(height: 4),
+          Text(
+            sample.title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.labelSmall,
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 /// A template's pages, section by section, to look through before
 /// choosing it.
@@ -326,16 +437,36 @@ class _PageThumb extends ConsumerWidget {
 }
 
 /// A template's first pages in a row, for a store item: what's inside
-/// before choosing it. Shows nothing until the pages can be read (an item
-/// that isn't unlocked can't be downloaded).
+/// before choosing it. A [locked] item (which can't be downloaded yet)
+/// shows its sample pages; otherwise nothing shows until the pages can be
+/// read.
 class TemplatePageStrip extends ConsumerWidget {
-  const TemplatePageStrip({required this.item, this.max = 12, super.key});
+  const TemplatePageStrip({
+    required this.item,
+    this.locked = false,
+    this.max = 12,
+    super.key,
+  });
 
   final CatalogItem item;
+  final bool locked;
   final int max;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (locked) {
+      final samples = item.samples.take(max).toList();
+      if (samples.isEmpty) return const SizedBox.shrink();
+      return SizedBox(
+        height: 230,
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          itemCount: samples.length,
+          separatorBuilder: (_, _) => const SizedBox(width: Insets.md),
+          itemBuilder: (context, i) => _SampleThumb(sample: samples[i]),
+        ),
+      );
+    }
     final spec = ref.watch(templateSpecProvider(item)).value;
     if (spec == null || spec.pages.isEmpty) return const SizedBox.shrink();
     final pages = spec.pages.take(max).toList();

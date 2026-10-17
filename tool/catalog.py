@@ -14,10 +14,16 @@ Each item lives in catalog/<id>/:
 Usage, from the repo root:
   python3 tool/catalog.py check [id ...]
   python3 tool/catalog.py publish <id> --testers | --public | --hidden | --retired [--dry-run]
+  python3 tool/catalog.py samples <id ...> [--dry-run]
   python3 tool/catalog.py set-tester <uid> on|off
 
+Templates also get sample pages: a few pages drawn as WebP images, open
+to anyone signed in, so people can look inside before unlocking one.
+publish adds them; samples adds them to items already published.
+
 publish and set-tester use your gcloud login (`gcloud auth login`) and
-write past the security rules, as a server would. Needs Pillow.
+write past the security rules, as a server would. Needs Pillow, and
+pypdfium2 for sample pages.
 """
 
 import argparse
@@ -63,6 +69,9 @@ DEFAULT_MAX_PACK_BYTES = 5 * 1024 * 1024
 
 MAX_STICKER_SIZE = 1024
 
+MAX_SAMPLES = 12
+SAMPLE_WIDTH = 600
+
 
 def pack_files(folder, kind):
     """The files of an item that go into its pack.zip, in a fixed order."""
@@ -104,6 +113,77 @@ def template_spec(folder):
     else:
         pages = spec.get("pages", [])
     return spec, pages
+
+
+def sample_pages(folder):
+    """Which pages a template shows before it's unlocked: the first page
+    of each section, then the pages after them, up to MAX_SAMPLES, in the
+    template's order. Returns [(pdf page, title)]."""
+    spec, pages = template_spec(folder)
+    firsts = [s["pages"][0] for s in spec.get("sections", []) if s.get("pages")]
+    chosen = firsts[:MAX_SAMPLES]
+    for p in pages:
+        if len(chosen) >= MAX_SAMPLES:
+            break
+        if p not in chosen:
+            chosen.append(p)
+    order = {id(p): i for i, p in enumerate(pages)}
+    chosen.sort(key=lambda p: order[id(p)])
+    return [(p["pdfPage"], p.get("title") or f"Page {p['pdfPage']}") for p in chosen]
+
+
+def render_samples(folder, base):
+    """Draws a template's sample pages. Returns (samples for the listing,
+    uploads)."""
+    import pypdfium2
+    from PIL import Image
+
+    pdf = pypdfium2.PdfDocument(str(folder / "template.pdf"))
+    samples, uploads = [], []
+    try:
+        for number, title in sample_pages(folder):
+            page = pdf[number - 1]
+            width, _ = page.get_size()
+            bitmap = page.render(scale=SAMPLE_WIDTH / width)
+            im = bitmap.to_pil()
+            # Pages without a paper colour are transparent; show them on white.
+            if im.mode in ("RGBA", "LA"):
+                bg = Image.new("RGB", im.size, (255, 255, 255))
+                bg.paste(im, (0, 0), im)
+                im = bg
+            out = io.BytesIO()
+            im.convert("RGB").save(out, "WEBP", quality=80)
+            path = f"{base}/pages/{number}.webp"
+            samples.append({"title": title, "path": path})
+            uploads.append((path, out.getvalue(), "image/webp"))
+    finally:
+        pdf.close()
+    return samples, uploads
+
+
+def add_samples(item_id, dry_run):
+    """Adds sample pages to a template that's already published, leaving
+    the rest of its listing as it is."""
+    listing = check(item_id)
+    if listing["kind"] != "template":
+        sys.exit(f"{item_id}: only templates have sample pages")
+    existing = None if dry_run else request("GET", firestore_url(f"catalog/{item_id}"))
+    if not dry_run and existing is None:
+        sys.exit(f"{item_id}: not published yet; use publish")
+    version = (
+        int(existing["fields"]["version"]["integerValue"]) if existing else listing["version"]
+    )
+    samples, uploads = render_samples(CATALOG / item_id, f"catalog/{item_id}/{version}")
+    print(f"{item_id}: {len(samples)} sample pages for v{version}")
+    for path, data, _ in uploads:
+        print(f"  upload {path} ({len(data)} bytes)")
+    if dry_run:
+        print("  (dry run: nothing was changed)")
+        return
+    for path, data, content_type in uploads:
+        upload(path, data, content_type)
+    url = firestore_url(f"catalog/{item_id}") + "?updateMask.fieldPaths=samples"
+    request("PATCH", url, {"fields": {"samples": to_value(samples)}})
 
 
 class CheckError(Exception):
@@ -477,6 +557,9 @@ def publish(item_id, visibility, dry_run):
             (f"{base}/pack.zip", pack, "application/zip"),
             (f"{base}/preview.webp", (folder / "preview.webp").read_bytes(), "image/webp"),
         ]
+        if kind == "template":
+            doc["samples"], pages = render_samples(folder, base)
+            uploads += pages
 
     existing = request("GET", firestore_url(f"catalog/{item_id}")) if not dry_run else None
     if existing:
@@ -520,6 +603,9 @@ def main():
     who.add_argument("--hidden", action="store_true", help="nobody sees it")
     who.add_argument("--retired", action="store_true", help="no longer offered; notebooks using it keep it")
     p.add_argument("--dry-run", action="store_true")
+    sm = sub.add_parser("samples", help="add sample pages to published templates")
+    sm.add_argument("ids", nargs="+")
+    sm.add_argument("--dry-run", action="store_true")
     t = sub.add_parser("set-tester", help="mark an account as a tester")
     t.add_argument("uid")
     t.add_argument("state", choices=["on", "off"])
@@ -551,6 +637,12 @@ def main():
             publish(args.id, visibility, args.dry_run)
         except CheckError as e:
             sys.exit(f"Not published.\n{e}")
+    elif args.command == "samples":
+        for item_id in args.ids:
+            try:
+                add_samples(item_id, args.dry_run)
+            except CheckError as e:
+                sys.exit(f"Stopped at {item_id}.\n{e}")
     else:
         set_tester(args.uid, args.state == "on")
 
