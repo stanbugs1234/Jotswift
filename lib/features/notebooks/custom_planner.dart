@@ -17,7 +17,10 @@ import '../../core/planner/recipe.dart';
 import '../canvas/templates.dart';
 import '../imports/document_import.dart';
 import '../store/paywall.dart';
+import '../../core/paper/paper_style.dart';
 import 'domain/notebook_models.dart';
+import 'notes_providers.dart';
+import 'page_grid.dart' show orderBetween;
 
 /// Whether making a planner of your own needs Jotswift Pro. Building one
 /// to look at doesn't.
@@ -86,12 +89,50 @@ Future<Notebook> createCustomPlanner(
 }) async {
   onProgress?.call(0, 0);
   final item = await makeAndKeepPlanner(ref, recipe);
-  return createNotebookFromTemplate(
+  final made = await createNotebookFromTemplate(
     ref,
     notebook,
     item,
     onProgress: onProgress,
   );
+  await addExtraSections(ref, made.id, recipe.extras);
+  return made;
+}
+
+/// Adds [extras] to [notebookId] as sections after its own: copies of
+/// template pages, of the user's saved pages, or blank pages.
+Future<void> addExtraSections(
+  Ref ref,
+  String notebookId,
+  List<ExtraSection> extras,
+) async {
+  final repo = ref.read(notebookRepositoryProvider);
+  for (final extra in extras) {
+    final sectionId = (await repo.createSection(notebookId, extra.title)).id;
+    for (final run in extra.runs) {
+      if (run.myPage case final id?) {
+        for (var k = 0; k < run.count; k++) {
+          final last = (await repo.watchPages(notebookId, sectionId).first)
+              .map((p) => p.order)
+              .fold<double?>(null, (a, b) => a == null || b > a ? b : a);
+          final copy = await repo.copyPage(
+            id,
+            notebookId: notebookId,
+            sectionId: sectionId,
+            order: orderBetween(last, null),
+          );
+          await repo.renamePage(copy, run.names[k]);
+        }
+      } else {
+        final template = PageTemplate.fromMap(run.template);
+        final paper = PaperStyle.fromMap(run.paper);
+        await repo.createPages(notebookId, sectionId, [
+          for (final name in run.names)
+            (title: name, paper: paper, template: template),
+        ]);
+      }
+    }
+  }
 }
 
 /// [createCustomPlanner], for widgets.

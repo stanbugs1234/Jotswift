@@ -9,7 +9,9 @@ import '../../core/planner/presets.dart';
 import '../../core/planner/recipe.dart';
 import '../../shared/ui/skeleton.dart';
 import '../../shared/ui/tokens.dart';
+import '../../core/skins/skin_providers.dart';
 import 'custom_planner.dart';
+import 'new_page_sheet.dart';
 
 /// Builds a planner exactly as wanted: its dates, look, the pages under
 /// each month, week and day, and its sections, with a picture of each
@@ -157,6 +159,45 @@ class _CustomPlannerScreenState extends ConsumerState<CustomPlannerScreen> {
         ],
       ),
     );
+  }
+
+  /// Adds a section of pages from the user's templates or the store's.
+  Future<void> _addExtra() async {
+    final choice = await showNewPageSheet(
+      context,
+      paper: ref.read(activeSkinProvider).paper.style,
+      changing: true,
+    );
+    if (!mounted) return;
+    final run = switch (choice) {
+      TemplatePageChoice(:final page) => ExtraRun(
+        page.title,
+        template: page.template?.toMap(),
+        paper: page.paper?.toMap(),
+      ),
+      MyPageChoice(:final page) => ExtraRun(page.title, myPage: page.id),
+      BlankPageChoice() => const ExtraRun('Page', count: 10),
+      _ => null,
+    };
+    if (run == null) return;
+    _set(
+      _recipe.copyWith(
+        extras: [
+          ..._recipe.extras,
+          ExtraSection(run.title, [run]),
+        ],
+      ),
+    );
+  }
+
+  void _setExtra(int i, ExtraSection? extra) {
+    final extras = [..._recipe.extras];
+    if (extra == null) {
+      extras.removeAt(i);
+    } else {
+      extras[i] = extra;
+    }
+    _set(_recipe.copyWith(extras: extras));
   }
 
   static int _defaultCount(PageKindInfo k) =>
@@ -567,6 +608,71 @@ class _CustomPlannerScreenState extends ConsumerState<CustomPlannerScreen> {
             label: const Text('Add a section'),
           ),
         ),
+        heading('Your own pages', 'Saved pages and the store\'s templates'),
+        for (final (i, extra) in _recipe.extras.indexed)
+          Card.outlined(
+            margin: const EdgeInsets.only(bottom: Insets.md),
+            child: ListTile(
+              title: Text(extra.title),
+              subtitle: Text(
+                extra.pageCount == 1 ? '1 page' : '${extra.pageCount} pages',
+              ),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    tooltip: 'Fewer',
+                    onPressed: () {
+                      final run = extra.runs.first;
+                      _setExtra(
+                        i,
+                        run.count > 1
+                            ? extra.copyWith(
+                                runs: [run.copyWith(count: run.count - 1)],
+                              )
+                            : null,
+                      );
+                    },
+                    icon: const Icon(Icons.remove),
+                  ),
+                  IconButton(
+                    tooltip: 'More',
+                    onPressed: () {
+                      final run = extra.runs.first;
+                      _setExtra(
+                        i,
+                        extra.copyWith(
+                          runs: [run.copyWith(count: run.count + 1)],
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.add),
+                  ),
+                  IconButton(
+                    tooltip: 'Rename ${extra.title}',
+                    onPressed: () => _rename(
+                      extra.title,
+                      (t) => _setExtra(i, extra.copyWith(title: t)),
+                    ),
+                    icon: const Icon(Icons.edit_outlined),
+                  ),
+                  IconButton(
+                    tooltip: 'Remove ${extra.title}',
+                    onPressed: () => _setExtra(i, null),
+                    icon: const Icon(Icons.close),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: TextButton.icon(
+            onPressed: _addExtra,
+            icon: const Icon(Icons.add),
+            label: const Text('Add pages from templates'),
+          ),
+        ),
       ],
     );
 
@@ -588,7 +694,8 @@ class _CustomPlannerScreenState extends ConsumerState<CustomPlannerScreen> {
             vertical: Insets.md,
           ),
           child: Text(
-            '${book.pageCount} pages, with links between them.',
+            '${book.pageCount + _recipe.extras.fold(0, (n, e) => n + e.pageCount)}'
+            ' pages, with links between them.',
             style: theme.textTheme.bodyMedium,
           ),
         ),

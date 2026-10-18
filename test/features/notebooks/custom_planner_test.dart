@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:notely/core/catalog/catalog_item.dart';
@@ -11,7 +12,10 @@ import 'package:notely/core/pdf/pdf_renderer.dart';
 import 'package:notely/core/skins/skin_manifest.dart';
 import 'package:notely/features/imports/document_import.dart';
 import 'package:notely/features/notebooks/data/in_memory_notes_backend.dart';
-import 'package:notely/features/notebooks/domain/page_template.dart';
+import 'package:notely/core/planner/presets.dart';
+import 'package:notely/core/planner/recipe.dart';
+import 'package:notely/features/notebooks/custom_planner.dart';
+import 'package:notely/features/notebooks/domain/notebook_models.dart';
 import 'package:notely/features/notebooks/notes_providers.dart';
 
 import '../../core/catalog/catalog_test.dart' show FakeDownloader;
@@ -210,5 +214,48 @@ void main() {
     await tester.tap(schedule);
     await settle(tester);
     expect(tester.widget<SwitchListTile>(schedule).value, isFalse);
+  });
+
+  testWidgets('sections of your own pages follow the planner', (tester) async {
+    final auth = await pumpApp(
+      tester,
+      skins,
+      size: const Size(1200, 1600),
+      overrides: overrides(),
+    );
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(Navigator).first),
+    );
+    final repo = backend.notebooks(auth.currentUser!.uid);
+    final holder = await repo.createNotebook(
+      const NewNotebook(title: 'Holder', cover: NotebookCover.color(1)),
+    );
+    final hs = (await repo.watchSections(holder.id).first).single;
+    final saved = await repo.createPage(holder.id, hs.id, title: 'Lab report');
+
+    final recipe = sectionsRecipe().copyWith(
+      front: [],
+      sections: [],
+      extras: [
+        ExtraSection('Labs', [
+          ExtraRun('Lab report', count: 2, myPage: saved.id),
+        ]),
+        const ExtraSection('Sketches', [ExtraRun('Sketch', count: 3)]),
+      ],
+    );
+    late Notebook made;
+    await tester.runAsync(() async {
+      made = await container.read(createCustomPlannerProvider)(
+        const NewNotebook(title: 'Mine', cover: NotebookCover.color(2)),
+        recipe,
+      );
+    });
+    final sections = await repo.watchSections(made.id).first;
+    expect(sections.map((s) => s.title), containsAll(['Labs', 'Sketches']));
+    final pages = await repo.watchNotebookPages(made.id).first;
+    expect(
+      pages.map((p) => p.title),
+      containsAll(['Lab report 1', 'Lab report 2', 'Sketch 1', 'Sketch 3']),
+    );
   });
 }

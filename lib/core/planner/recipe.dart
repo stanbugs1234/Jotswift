@@ -140,6 +140,78 @@ class SectionRecipe {
   };
 }
 
+/// Pages the app adds after the planner's own, not drawn by the engine:
+/// [count] copies of a template page ([template], a PageTemplate's map),
+/// of one of the user's saved pages ([myPage], its id), or blank pages on
+/// [paper] (a PaperStyle's map; the notebook's if null).
+class ExtraRun {
+  const ExtraRun(
+    this.title, {
+    this.count = 1,
+    this.template,
+    this.myPage,
+    this.paper,
+  });
+
+  factory ExtraRun.fromMap(Map<String, Object?> m) => ExtraRun(
+    m['title'] as String? ?? 'Page',
+    count: (m['count'] as num?)?.toInt() ?? 1,
+    template: (m['template'] as Map?)?.cast(),
+    myPage: m['myPage'] as String?,
+    paper: (m['paper'] as Map?)?.cast(),
+  );
+
+  final String title;
+  final int count;
+  final Map<String, Object?>? template;
+  final String? myPage;
+  final Map<String, Object?>? paper;
+
+  ExtraRun copyWith({int? count}) => ExtraRun(
+    title,
+    count: count ?? this.count,
+    template: template,
+    myPage: myPage,
+    paper: paper,
+  );
+
+  List<String> get names => count == 1
+      ? [title]
+      : [for (var k = 0; k < count; k++) '$title ${k + 1}'];
+
+  Map<String, Object?> toMap() => {
+    'title': title,
+    'count': count,
+    'template': ?template,
+    'myPage': ?myPage,
+    'paper': ?paper,
+  };
+}
+
+/// A section of [ExtraRun]s, after the planner's sections.
+class ExtraSection {
+  const ExtraSection(this.title, this.runs);
+
+  factory ExtraSection.fromMap(Map<String, Object?> m) =>
+      ExtraSection(m['title'] as String? ?? 'Pages', [
+        for (final r in (m['runs'] as List? ?? const []).whereType<Map>())
+          ExtraRun.fromMap(r.cast()),
+      ]);
+
+  final String title;
+  final List<ExtraRun> runs;
+
+  int get pageCount => runs.fold(0, (n, r) => n + r.count);
+
+  ExtraSection copyWith({String? title, List<ExtraRun>? runs}) =>
+      ExtraSection(title ?? this.title, runs ?? this.runs);
+
+  Map<String, Object?> toMap() => {
+    'title': title,
+    'runs': [for (final r in runs) r.toMap()],
+  };
+}
+
 /// Everything that makes a planner: its look, dates and pages. The planner
 /// builder edits one; the engine turns it into a PDF.
 class PlannerRecipe {
@@ -157,6 +229,7 @@ class PlannerRecipe {
     this.week = const [],
     this.day = const [],
     this.sections = const [],
+    this.extras = const [],
   });
 
   factory PlannerRecipe.fromMap(Map<String, Object?> m) {
@@ -184,6 +257,10 @@ class PlannerRecipe {
         for (final s in (m['sections'] as List? ?? const []).whereType<Map>())
           SectionRecipe.fromMap(s.cast()),
       ],
+      extras: [
+        for (final s in (m['extras'] as List? ?? const []).whereType<Map>())
+          ExtraSection.fromMap(s.cast()),
+      ],
     );
   }
 
@@ -203,6 +280,9 @@ class PlannerRecipe {
   final List<KindRef> front, month, week, day;
   final List<SectionRecipe> sections;
 
+  /// Sections of the user's own pages and the store's, after the rest.
+  final List<ExtraSection> extras;
+
   bool get dated => start != null;
 
   PlannerRecipe copyWith({
@@ -219,6 +299,7 @@ class PlannerRecipe {
     List<KindRef>? week,
     List<KindRef>? day,
     List<SectionRecipe>? sections,
+    List<ExtraSection>? extras,
   }) => PlannerRecipe(
     title: title ?? this.title,
     subtitle: subtitle ?? this.subtitle,
@@ -233,6 +314,7 @@ class PlannerRecipe {
     week: week ?? this.week,
     day: day ?? this.day,
     sections: sections ?? this.sections,
+    extras: extras ?? this.extras,
   );
 
   Map<String, Object?> toMap() => {
@@ -249,6 +331,7 @@ class PlannerRecipe {
     'week': [for (final r in week) r.toMap()],
     'day': [for (final r in day) r.toMap()],
     'sections': [for (final s in sections) s.toMap()],
+    if (extras.isNotEmpty) 'extras': [for (final s in extras) s.toMap()],
   };
 
   /// The book this recipe makes.
