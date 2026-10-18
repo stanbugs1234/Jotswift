@@ -174,6 +174,74 @@ class _CustomPlannerScreenState extends ConsumerState<CustomPlannerScreen> {
     _set(_recipe.copyWith(sections: sections));
   }
 
+  /// Lets the user switch parts of kind [i] of [place] on and off, with
+  /// the page shown as they do.
+  Future<void> _editParts(_Place place, int i) async {
+    final group = _groupOf(place, i);
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setSheet) {
+          final r = _refs(place)[i];
+          return SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(
+                Insets.xl,
+                0,
+                Insets.xl,
+                Insets.xl,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    "What's on ${r.title}",
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: Insets.md),
+                  SizedBox(
+                    height: 280,
+                    child: Center(
+                      child: RecipePage(
+                        recipeKey: recipeKey(_recipe),
+                        group: group,
+                        landscape: _recipe.landscape,
+                        width: 700,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: Insets.sm),
+                  for (final (id, name) in r.info.parts)
+                    SwitchListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(name),
+                      value: !r.off.contains(id),
+                      onChanged: (on) {
+                        final off = on
+                            ? ({...r.off}..remove(id))
+                            : {...r.off, id};
+                        _setRefs(place, [
+                          for (final (j, x) in _refs(place).indexed)
+                            j == i ? x.copyWith(off: off) : x,
+                        ]);
+                        setSheet(() {});
+                      },
+                    ),
+                  Text(
+                    'The parts left on grow to fill the page.',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   Future<void> _rename(String current, ValueChanged<String> onDone) async {
     final controller = TextEditingController(text: current);
     final name = await showDialog<String>(
@@ -292,6 +360,12 @@ class _CustomPlannerScreenState extends ConsumerState<CustomPlannerScreen> {
                     ]);
                   }),
                   onRemove: () => _setRefs(place, [...refs]..removeAt(i)),
+                  onParts: r.info.parts.isEmpty
+                      ? null
+                      : () {
+                          _show(_groupOf(place, i), r.title);
+                          _editParts(place, i);
+                        },
                 ),
             ],
           ),
@@ -720,8 +794,12 @@ class _KindRow extends StatelessWidget {
     required this.onTap,
     required this.onRename,
     required this.onRemove,
+    this.onParts,
     super.key,
   });
+
+  /// Opens the switches for the page's parts; null if it has none.
+  final VoidCallback? onParts;
 
   final int index;
   final String recipeKey, group, name, detail;
@@ -748,6 +826,12 @@ class _KindRow extends StatelessWidget {
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
+          if (onParts case final onParts?)
+            IconButton(
+              tooltip: "Choose what's on $name",
+              onPressed: onParts,
+              icon: const Icon(Icons.tune),
+            ),
           PopupMenuButton<String>(
             tooltip: 'More',
             onSelected: (v) => v == 'rename' ? onRename() : onRemove(),

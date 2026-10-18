@@ -340,7 +340,12 @@ void rewardsMenu(Ctx c) {
 
 /// The month: a big grid; dates open days, the W column opens weeks.
 /// [side]: the Focus and Notes boxes beside (or under) it.
-void monthCalendar(Ctx c, {bool side = true}) {
+void monthCalendar(Ctx c, {bool side = true, Set<String> off = const {}}) {
+  final boxes = [
+    for (final b in const ['focus', 'notes'])
+      if (!off.contains(b)) b,
+  ];
+  side = side && boxes.isNotEmpty;
   final (book, p) = (c.book, c.p);
   final beside = c.landscape;
   final right = c.right - (side && beside ? 170 : 0);
@@ -403,35 +408,24 @@ void monthCalendar(Ctx c, {bool side = true}) {
   if (!side) return;
   if (beside) {
     final x0 = right + 16;
-    final [t, b] = rows(c.top, c.bottom, [1, 1.4], 12);
-    promptBox(c, x0, c.right, t.$1, t.$2, 'Focus', null, 'target', 'checks');
-    promptBox(c, x0, c.right, b.$1, b.$2, 'Notes', null, null, 'lines');
+    final rws = rows(c.top, c.bottom, [
+      for (final b in boxes) b == 'focus' ? 1 : 1.4,
+    ], 12);
+    for (final (i, b) in boxes.indexed) {
+      _calendarBox(c, b, x0, c.right, rws[i].$1, rws[i].$2);
+    }
   } else {
-    final cols = columns(c.left, c.right, 2, 16);
-    promptBox(
-      c,
-      cols[0].$1,
-      cols[0].$2,
-      c.bottom + 136,
-      c.bottom,
-      'Focus',
-      null,
-      'target',
-      'checks',
-    );
-    promptBox(
-      c,
-      cols[1].$1,
-      cols[1].$2,
-      c.bottom + 136,
-      c.bottom,
-      'Notes',
-      null,
-      null,
-      'lines',
-    );
+    final cols = columns(c.left, c.right, boxes.length, 16);
+    for (final (i, b) in boxes.indexed) {
+      _calendarBox(c, b, cols[i].$1, cols[i].$2, c.bottom + 136, c.bottom);
+    }
   }
 }
+
+void _calendarBox(Ctx c, String box, num x0, num x1, num top, num bottom) =>
+    box == 'focus'
+    ? promptBox(c, x0, x1, top, bottom, 'Focus', null, 'target', 'checks')
+    : promptBox(c, x0, x1, top, bottom, 'Notes', null, null, 'lines');
 
 /// A habit per row, a box per day; each day number opens that day.
 void monthHabits(Ctx c) {
@@ -752,12 +746,16 @@ void wins(Ctx c) {
 // Week pages
 
 /// The week's days as linked boxes, with priorities and a focus.
-void weekPlan(Ctx c) {
+void weekPlan(Ctx c, [Set<String> off = const {}]) {
   final p = c.p;
+  final boxes = [
+    for (final b in const ['priorities', 'focus', 'calendar'])
+      if (!off.contains(b)) b,
+  ];
   if (c.landscape) {
-    const side = 180;
+    final num side = boxes.isEmpty ? 0 : 180;
     final days = c.book.weekDayPages(c.w!);
-    final gridR = c.right - side - 14;
+    final gridR = boxes.isEmpty ? c.right : c.right - side - 14;
     final cols = columns(c.left, gridR, 4, 8);
     final rws = rows(c.top, c.bottom, [1, 1], 8);
     for (var k = 0; k < 8; k++) {
@@ -781,54 +779,72 @@ void weekPlan(Ctx c) {
       }
     }
     final x0 = c.right - side;
-    final [t1, t2, t3] = rows(c.top, c.bottom, [1.1, 0.8, 1], 10);
-    promptBox(
-      c,
-      x0,
-      c.right,
-      t1.$1,
-      t1.$2,
-      'Top 3 priorities',
-      null,
-      'target',
-      'checks',
-    );
-    promptBox(
-      c,
-      x0,
-      c.right,
-      t2.$1,
-      t2.$2,
-      'One focus',
-      'If only one thing gets done...',
-      'star',
-    );
-    miniCal(c, x0 + 4, c.right - 4, t3.$1 - 6);
+    const weights = {'priorities': 1.1, 'focus': 0.8, 'calendar': 1};
+    final rs = rows(c.top, c.bottom, [for (final b in boxes) weights[b]!], 10);
+    for (final (i, b) in boxes.indexed) {
+      final (t, bt) = rs[i];
+      switch (b) {
+        case 'priorities':
+          promptBox(
+            c,
+            x0,
+            c.right,
+            t,
+            bt,
+            'Top 3 priorities',
+            null,
+            'target',
+            'checks',
+          );
+        case 'focus':
+          promptBox(
+            c,
+            x0,
+            c.right,
+            t,
+            bt,
+            'One focus',
+            'If only one thing gets done...',
+            'star',
+          );
+        default:
+          miniCal(c, x0 + 4, c.right - 4, t - 6);
+      }
+    }
   } else {
-    final bottom = weekStripTall(c);
-    final cols = columns(c.left, c.right, 3, 10);
-    promptBox(
-      c,
-      cols[0].$1,
-      cols[0].$2,
-      bottom - 12,
-      c.bottom,
-      'Top 3 priorities',
-      null,
-      'target',
-      'checks',
-    );
-    promptBox(
-      c,
-      cols[1].$1,
-      cols[1].$2,
-      bottom - 12,
-      c.bottom,
-      'One focus',
-      null,
-      'star',
-    );
-    miniCal(c, cols[2].$1, cols[2].$2, bottom - 18);
+    final bottom = weekStripTall(c, reserve: boxes.isEmpty ? 0 : 150);
+    if (boxes.isEmpty) return;
+    final cols = columns(c.left, c.right, boxes.length, 10);
+    for (final (i, b) in boxes.indexed) {
+      final (x0, x1) = cols[i];
+      switch (b) {
+        case 'priorities':
+          promptBox(
+            c,
+            x0,
+            x1,
+            bottom - 12,
+            c.bottom,
+            'Top 3 priorities',
+            null,
+            'target',
+            'checks',
+          );
+        case 'focus':
+          promptBox(
+            c,
+            x0,
+            x1,
+            bottom - 12,
+            c.bottom,
+            'One focus',
+            null,
+            'star',
+          );
+        default:
+          miniCal(c, x0, x1, bottom - 18);
+      }
+    }
   }
 }
 
@@ -933,39 +949,101 @@ void mealsMovement(Ctx c) {
 
 // Day pages
 
-/// ADHD-friendly day: time blocks, Top 3, one thing, to-do and a reward.
-void dayFocus(Ctx c) {
-  final p = c.p;
+/// A day: a schedule down the left (unless [off]), and [boxes] (id,
+/// weight, draw) stacked on the right, those [off] left out so the rest
+/// grow.
+void _dayLayout(
+  Ctx c,
+  Set<String> off, {
+  required int start,
+  required int end,
+  required String scheduleTitle,
+  required List<(String, num, void Function(num x0, num x1, num t, num b))>
+  boxes,
+}) {
   final [(a0, a1), (b0, b1)] = columns(c.left, c.right, 2, 18);
-  timeBlocks(c, a0, a1, c.top, c.bottom, 7, c.landscape ? 21 : 22);
-  final [t1, t2, t3, t4] = rows(c.top, c.bottom, [0.75, 1.15, 1.6, 0.6], 10);
-  promptBox(
-    c,
-    b0,
-    b1,
-    t1.$1,
-    t1.$2,
-    'The one thing',
-    'If only this gets done, today counts.',
-    'star',
-  );
-  final y = card(
-    p,
-    b0,
-    t2.$2,
-    b1 - b0,
-    t2.$1 - t2.$2,
-    title: 'Top 3',
-    iconKind: 'target',
-  );
-  final h = (y - t2.$2 - 10 - 12) / 3;
-  for (var k = 0; k < 3; k++) {
-    final ty = y - (k + 1) * h - k * 6 + 2;
-    circle(p, b0 + 18, ty + h / 2, 7, c.s.accent, fill: false, width: 1.1);
-    p.line(b0 + 32, ty + h / 2 - 7, b1 - 10, ty + h / 2 - 7);
+  final schedule = !off.contains('schedule');
+  if (schedule) {
+    timeBlocks(c, a0, a1, c.top, c.bottom, start, end, scheduleTitle);
   }
-  promptBox(c, b0, b1, t3.$1, t3.$2, 'To-do', null, 'list', 'checks');
-  promptBox(c, b0, b1, t4.$1, t4.$2, 'Reward', null, 'gift');
+  final shown = [
+    for (final b in boxes)
+      if (!off.contains(b.$1)) b,
+  ];
+  if (shown.isEmpty) return;
+  final (x0, x1) = schedule ? (b0, b1) : (c.left, c.right);
+  final rs = rows(c.top, c.bottom, [for (final b in shown) b.$2], 10);
+  for (final (i, (_, _, draw)) in shown.indexed) {
+    draw(x0, x1, rs[i].$1, rs[i].$2);
+  }
+}
+
+/// ADHD-friendly day: time blocks, Top 3, one thing, to-do and a reward.
+void dayFocus(Ctx c, [Set<String> off = const {}]) {
+  final p = c.p;
+  _dayLayout(
+    c,
+    off,
+    start: 7,
+    end: c.landscape ? 21 : 22,
+    scheduleTitle: 'Time blocks',
+    boxes: [
+      (
+        'one_thing',
+        0.75,
+        (x0, x1, t, b) => promptBox(
+          c,
+          x0,
+          x1,
+          t,
+          b,
+          'The one thing',
+          'If only this gets done, today counts.',
+          'star',
+        ),
+      ),
+      (
+        'top3',
+        1.15,
+        (x0, x1, t, b) {
+          final y = card(
+            p,
+            x0,
+            b,
+            x1 - x0,
+            t - b,
+            title: 'Top 3',
+            iconKind: 'target',
+          );
+          final h = (y - b - 10 - 12) / 3;
+          for (var k = 0; k < 3; k++) {
+            final ty = y - (k + 1) * h - k * 6 + 2;
+            circle(
+              p,
+              x0 + 18,
+              ty + h / 2,
+              7,
+              c.s.accent,
+              fill: false,
+              width: 1.1,
+            );
+            p.line(x0 + 32, ty + h / 2 - 7, x1 - 10, ty + h / 2 - 7);
+          }
+        },
+      ),
+      (
+        'todo',
+        1.6,
+        (x0, x1, t, b) =>
+            promptBox(c, x0, x1, t, b, 'To-do', null, 'list', 'checks'),
+      ),
+      (
+        'reward',
+        0.6,
+        (x0, x1, t, b) => promptBox(c, x0, x1, t, b, 'Reward', null, 'gift'),
+      ),
+    ],
+  );
 }
 
 /// How today feels: energy, mood, body, and a place to empty your head.
@@ -1195,41 +1273,91 @@ void dayJournal(Ctx c) {
 }
 
 /// Life planner day: schedule, Top 3, to-do, gratitude, affirmation.
-void dayLife(Ctx c) {
-  final [(a0, a1), (b0, b1)] = columns(c.left, c.right, 2, 18);
-  timeBlocks(c, a0, a1, c.top, c.bottom, 6, 22, 'Schedule');
-  final [t1, t2, t3, t4] = rows(c.top, c.bottom, [0.9, 1.6, 0.8, 0.55], 10);
-  promptBox(c, b0, b1, t1.$1, t1.$2, 'Top 3', null, 'target', 'checks');
-  promptBox(c, b0, b1, t2.$1, t2.$2, 'To-do', null, 'list', 'checks');
-  promptBox(c, b0, b1, t3.$1, t3.$2, 'Grateful for', null, 'heart');
-  promptBox(c, b0, b1, t4.$1, t4.$2, 'Affirmation', null, 'star');
-}
+void dayLife(Ctx c, [Set<String> off = const {}]) => _dayLayout(
+  c,
+  off,
+  start: 6,
+  end: 22,
+  scheduleTitle: 'Schedule',
+  boxes: [
+    (
+      'top3',
+      0.9,
+      (x0, x1, t, b) =>
+          promptBox(c, x0, x1, t, b, 'Top 3', null, 'target', 'checks'),
+    ),
+    (
+      'todo',
+      1.6,
+      (x0, x1, t, b) =>
+          promptBox(c, x0, x1, t, b, 'To-do', null, 'list', 'checks'),
+    ),
+    (
+      'grateful',
+      0.8,
+      (x0, x1, t, b) =>
+          promptBox(c, x0, x1, t, b, 'Grateful for', null, 'heart'),
+    ),
+    (
+      'affirmation',
+      0.55,
+      (x0, x1, t, b) => promptBox(c, x0, x1, t, b, 'Affirmation', null, 'star'),
+    ),
+  ],
+);
 
 /// Goals planner day: priorities tied to goals, schedule, notes.
-void dayGoals(Ctx c) {
-  final [(a0, a1), (b0, b1)] = columns(c.left, c.right, 2, 18);
-  timeBlocks(c, a0, a1, c.top, c.bottom, 6, 22, 'Schedule');
-  final [t1, t2, t3] = rows(c.top, c.bottom, [1.2, 1.2, 1], 10);
-  final y = card(
-    c.p,
-    b0,
-    t1.$2,
-    b1 - b0,
-    t1.$1 - t1.$2,
-    title: 'Top 3 for my goals',
-    iconKind: 'target',
-  );
-  final h = (y - t1.$2 - 8) / 3;
-  for (var k = 0; k < 3; k++) {
-    final ty = y - (k + 1) * h;
-    c.p.text(b0 + 10, ty + h / 2, '${k + 1}', 11, rgb: c.s.accent, bold: true);
-    c.p.line(b0 + 26, ty + h / 2 - 2, b1 - 90, ty + h / 2 - 2);
-    c.p.text(b1 - 84, ty + h / 2, 'Goal #', 7.5, rgb: c.s.soft);
-    c.p.line(b1 - 54, ty + h / 2 - 2, b1 - 10, ty + h / 2 - 2);
-  }
-  promptBox(c, b0, b1, t2.$1, t2.$2, 'Other tasks', null, 'list', 'checks');
-  promptBox(c, b0, b1, t3.$1, t3.$2, 'Notes & wins', null, 'star');
-}
+void dayGoals(Ctx c, [Set<String> off = const {}]) => _dayLayout(
+  c,
+  off,
+  start: 6,
+  end: 22,
+  scheduleTitle: 'Schedule',
+  boxes: [
+    (
+      'top3',
+      1.2,
+      (b0, b1, t, b) {
+        final y = card(
+          c.p,
+          b0,
+          b,
+          b1 - b0,
+          t - b,
+          title: 'Top 3 for my goals',
+          iconKind: 'target',
+        );
+        final h = (y - b - 8) / 3;
+        for (var k = 0; k < 3; k++) {
+          final ty = y - (k + 1) * h;
+          c.p.text(
+            b0 + 10,
+            ty + h / 2,
+            '${k + 1}',
+            11,
+            rgb: c.s.accent,
+            bold: true,
+          );
+          c.p.line(b0 + 26, ty + h / 2 - 2, b1 - 90, ty + h / 2 - 2);
+          c.p.text(b1 - 84, ty + h / 2, 'Goal #', 7.5, rgb: c.s.soft);
+          c.p.line(b1 - 54, ty + h / 2 - 2, b1 - 10, ty + h / 2 - 2);
+        }
+      },
+    ),
+    (
+      'tasks',
+      1.2,
+      (x0, x1, t, b) =>
+          promptBox(c, x0, x1, t, b, 'Other tasks', null, 'list', 'checks'),
+    ),
+    (
+      'notes',
+      1,
+      (x0, x1, t, b) =>
+          promptBox(c, x0, x1, t, b, 'Notes & wins', null, 'star'),
+    ),
+  ],
+);
 
 /// Student day: classes, due today, study block and to-do.
 void dayStudent(Ctx c) {
@@ -1272,35 +1400,59 @@ void dayStudent(Ctx c) {
 }
 
 /// Business day: 3 priorities, time blocks, health and habits.
-void dayBusiness(Ctx c) {
-  final [(a0, a1), (b0, b1)] = columns(c.left, c.right, 2, 18);
-  timeBlocks(c, a0, a1, c.top, c.bottom, 7, 20, 'Time blocks');
-  final [t1, t2, t3, t4] = rows(c.top, c.bottom, [1, 1.3, 0.75, 0.75], 10);
-  promptBox(c, b0, b1, t1.$1, t1.$2, '3 priorities', null, 'target', 'checks');
-  promptBox(
-    c,
-    b0,
-    b1,
-    t2.$1,
-    t2.$2,
-    'Calls, emails & admin',
-    null,
-    'briefcase',
-    'checks',
-  );
-  final y = card(
-    c.p,
-    b0,
-    t3.$2,
-    b1 - b0,
-    t3.$1 - t3.$2,
-    title: 'Health & habits',
-    iconKind: 'leaf',
-  );
-  trackerRow(c, b0 + 10, b1 - 10, y - 12, 'Water', 8, 'drop', 'circles');
-  trackerRow(c, b0 + 10, b1 - 10, y - 34, 'Habits', 6);
-  promptBox(c, b0, b1, t4.$1, t4.$2, 'Grateful for', null, 'heart');
-}
+void dayBusiness(Ctx c, [Set<String> off = const {}]) => _dayLayout(
+  c,
+  off,
+  start: 7,
+  end: 20,
+  scheduleTitle: 'Time blocks',
+  boxes: [
+    (
+      'priorities',
+      1,
+      (x0, x1, t, b) =>
+          promptBox(c, x0, x1, t, b, '3 priorities', null, 'target', 'checks'),
+    ),
+    (
+      'admin',
+      1.3,
+      (x0, x1, t, b) => promptBox(
+        c,
+        x0,
+        x1,
+        t,
+        b,
+        'Calls, emails & admin',
+        null,
+        'briefcase',
+        'checks',
+      ),
+    ),
+    (
+      'habits',
+      0.75,
+      (b0, b1, t, b) {
+        final y = card(
+          c.p,
+          b0,
+          b,
+          b1 - b0,
+          t - b,
+          title: 'Health & habits',
+          iconKind: 'leaf',
+        );
+        trackerRow(c, b0 + 10, b1 - 10, y - 12, 'Water', 8, 'drop', 'circles');
+        trackerRow(c, b0 + 10, b1 - 10, y - 34, 'Habits', 6);
+      },
+    ),
+    (
+      'grateful',
+      0.75,
+      (x0, x1, t, b) =>
+          promptBox(c, x0, x1, t, b, 'Grateful for', null, 'heart'),
+    ),
+  ],
+);
 
 // Collection pages
 

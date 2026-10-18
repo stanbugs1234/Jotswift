@@ -98,4 +98,22 @@ void main() {
       expect(pdfObjects(previewPage(recipe, g)).length, greaterThan(4));
     }
   });
+
+  test('parts of a page can be left off, and the rest fill it', () {
+    final recipe = standardRecipe(start: day(2027, 1, 1));
+    String dayPage(PlannerRecipe r) =>
+        pdfObjects(previewPage(r, 'day_life')).values.join('\n');
+    expect(dayPage(recipe), contains('(6am)'));
+    final noSchedule = recipe.copyWith(
+      day: [const KindRef('day_life', off: {'schedule', 'affirmation'})],
+    );
+    final page = dayPage(noSchedule);
+    expect(page, isNot(contains('(6am)')));
+    expect(page, isNot(contains('(Affirmation)')));
+    expect(page, contains('(To-do)'));
+    final again = PlannerRecipe.fromMap(
+      jsonDecode(jsonEncode(noSchedule.toMap())) as Map<String, Object?>,
+    );
+    expect(again.day.single.off, {'schedule', 'affirmation'});
+  });
 }

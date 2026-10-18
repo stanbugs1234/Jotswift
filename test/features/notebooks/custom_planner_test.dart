@@ -190,4 +190,25 @@ void main() {
       isEmpty,
     );
   });
+
+  testWidgets("a page's parts can be switched off", (tester) async {
+    await pumpApp(
+      tester,
+      skins,
+      size: const Size(1200, 1600),
+      overrides: overrides(),
+    );
+    await openBuilder(tester);
+    final tune = find.byTooltip("Choose what's on Day");
+    await tester.ensureVisible(tune);
+    await tester.pumpAndSettle();
+    await tester.tap(tune);
+    await settle(tester);
+    expect(find.text("What's on Day"), findsOneWidget);
+    final schedule = find.widgetWithText(SwitchListTile, 'Schedule');
+    expect(tester.widget<SwitchListTile>(schedule).value, isTrue);
+    await tester.tap(schedule);
+    await settle(tester);
+    expect(tester.widget<SwitchListTile>(schedule).value, isFalse);
+  });
 }

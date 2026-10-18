@@ -21,6 +21,8 @@ class PageKindInfo {
     this.plural,
     this.about = '',
     this.prompts,
+    this.parts = const [],
+    this.drawParts,
   });
 
   final String id;
@@ -42,13 +44,24 @@ class PageKindInfo {
 
   final PageBody draw;
 
+  /// The parts that can be left off it: (id, name).
+  final List<(String, String)> parts;
+
+  /// Draws it without the parts in its set.
+  final void Function(Ctx c, Set<String> off)? drawParts;
+
   String get groupTitle => plural ?? name;
 
-  /// Draws it, with its prompts changed to [prompts] if it takes them.
-  PageBody body([List<Prompt>? prompts]) =>
-      prompts != null && this.prompts != null
-      ? (c) => monthReview(c, prompts)
-      : draw;
+  /// Draws it, with its prompts changed to [prompts] if it takes them,
+  /// and without the parts in [off].
+  PageBody body([List<Prompt>? prompts, Set<String> off = const {}]) {
+    if (prompts != null && this.prompts != null) {
+      return (c) => monthReview(c, prompts);
+    }
+    final drawParts = this.drawParts;
+    if (off.isNotEmpty && drawParts != null) return (c) => drawParts(c, off);
+    return draw;
+  }
 
   bool fits(KindPlace at) => switch (needs) {
     KindNeeds.nothing => true,
@@ -152,7 +165,7 @@ final pageKinds = {
       about: 'Channels, content and campaigns.',
     ),
     // Months
-    const PageKindInfo(
+    PageKindInfo(
       'month_calendar',
       'Calendar',
       'calendar',
@@ -161,6 +174,8 @@ final pageKinds = {
       needs: KindNeeds.month,
       plural: 'Month calendars',
       about: 'The month, with Focus and Notes boxes.',
+      parts: [('focus', 'Focus box'), ('notes', 'Notes box')],
+      drawParts: (c, off) => monthCalendar(c, off: off),
     ),
     PageKindInfo(
       'month_calendar_full',
@@ -275,6 +290,12 @@ final pageKinds = {
       needs: KindNeeds.week,
       plural: 'Week pages',
       about: 'Each day linked, Top 3 and a focus.',
+      parts: [
+        ('priorities', 'Top 3 priorities'),
+        ('focus', 'One focus'),
+        ('calendar', 'Month calendar'),
+      ],
+      drawParts: weekPlan,
     ),
     const PageKindInfo(
       'meals_movement',
@@ -305,6 +326,14 @@ final pageKinds = {
       dayFocus,
       plural: 'Day plans',
       about: 'Time blocks, the one thing, Top 3, to-do.',
+      parts: [
+        ('schedule', 'Time blocks'),
+        ('one_thing', 'The one thing'),
+        ('top3', 'Top 3'),
+        ('todo', 'To-do'),
+        ('reward', 'Reward'),
+      ],
+      drawParts: dayFocus,
     ),
     const PageKindInfo(
       'day_life',
@@ -314,6 +343,14 @@ final pageKinds = {
       dayLife,
       plural: 'Day pages',
       about: 'Schedule, Top 3, to-do, gratitude.',
+      parts: [
+        ('schedule', 'Schedule'),
+        ('top3', 'Top 3'),
+        ('todo', 'To-do'),
+        ('grateful', 'Grateful for'),
+        ('affirmation', 'Affirmation'),
+      ],
+      drawParts: dayLife,
     ),
     const PageKindInfo(
       'day_goals',
@@ -323,6 +360,13 @@ final pageKinds = {
       dayGoals,
       plural: 'Day pages',
       about: 'Schedule and priorities for your goals.',
+      parts: [
+        ('schedule', 'Schedule'),
+        ('top3', 'Top 3 for my goals'),
+        ('tasks', 'Other tasks'),
+        ('notes', 'Notes & wins'),
+      ],
+      drawParts: dayGoals,
     ),
     const PageKindInfo(
       'day_student',
@@ -341,6 +385,14 @@ final pageKinds = {
       dayBusiness,
       plural: 'Day pages',
       about: 'Priorities, calls and admin, habits.',
+      parts: [
+        ('schedule', 'Time blocks'),
+        ('priorities', '3 priorities'),
+        ('admin', 'Calls, emails & admin'),
+        ('habits', 'Health & habits'),
+        ('grateful', 'Grateful for'),
+      ],
+      drawParts: dayBusiness,
     ),
     const PageKindInfo(
       'day_journal',

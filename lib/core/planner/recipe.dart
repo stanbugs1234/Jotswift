@@ -9,13 +9,20 @@ import 'pdf_ops.dart';
 /// A kind of page in a planner: under each month, week or day, or at the
 /// front. [name] overrides the kind's own (on chips and titles).
 class KindRef {
-  const KindRef(this.kind, {this.name, this.group, this.prompts});
+  const KindRef(
+    this.kind, {
+    this.name,
+    this.group,
+    this.prompts,
+    this.off = const {},
+  });
 
   factory KindRef.fromMap(Map<String, Object?> m) => KindRef(
     m['kind'] as String? ?? 'lined',
     name: m['name'] as String?,
     group: m['group'] as String?,
     prompts: _prompts(m['prompts']),
+    off: {...(m['off'] as List? ?? const []).whereType<String>()},
   );
 
   final String kind;
@@ -27,12 +34,20 @@ class KindRef {
   /// The boxes on a review page, if not the kind's own.
   final List<Prompt>? prompts;
 
+  /// Parts of the page left off (see [PageKindInfo.parts]).
+  final Set<String> off;
+
   PageKindInfo get info => kindOf(kind);
   String get title => name ?? info.name;
   String get groupId => group ?? kind;
 
-  KindRef copyWith({String? name}) =>
-      KindRef(kind, name: name ?? this.name, group: group, prompts: prompts);
+  KindRef copyWith({String? name, Set<String>? off}) => KindRef(
+    kind,
+    name: name ?? this.name,
+    group: group,
+    prompts: prompts,
+    off: off ?? this.off,
+  );
 
   Map<String, Object?> toMap() => {
     'kind': kind,
@@ -42,6 +57,7 @@ class KindRef {
       'prompts': [
         for (final (n, i, h) in p) [n, i, h],
       ],
+    if (off.isNotEmpty) 'off': [...off]..sort(),
   };
 }
 
@@ -247,18 +263,19 @@ class PlannerRecipe {
     months: months,
     front: [
       for (final r in front)
-        (r.title, r.info.icon, r.info.body(r.prompts), r.groupId),
+        (r.title, r.info.icon, r.info.body(r.prompts, r.off), r.groupId),
     ],
     monthKinds: [
       for (final r in month)
-        PageKind(r.title, r.info.body(r.prompts), r.groupId),
+        PageKind(r.title, r.info.body(r.prompts, r.off), r.groupId),
     ],
     weekKinds: [
       for (final r in week)
-        PageKind(r.title, r.info.body(r.prompts), r.groupId),
+        PageKind(r.title, r.info.body(r.prompts, r.off), r.groupId),
     ],
     dayKinds: [
-      for (final r in day) PageKind(r.title, r.info.body(r.prompts), r.groupId),
+      for (final r in day)
+        PageKind(r.title, r.info.body(r.prompts, r.off), r.groupId),
     ],
     collections: [
       for (final s in sections)
