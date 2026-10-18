@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 import 'dart:ui' as ui;
 
@@ -60,6 +61,9 @@ class ImportException implements Exception {
 abstract interface class DocumentStore {
   /// Saves [zip] for [uid] and returns its path.
   Future<String> upload(String uid, String id, Uint8List zip);
+
+  /// Where [upload] saves document [id].
+  String pathOf(String uid, String id);
 }
 
 class FirebaseDocumentStore implements DocumentStore {
@@ -68,8 +72,11 @@ class FirebaseDocumentStore implements DocumentStore {
   final FirebaseStorage _storage;
 
   @override
+  String pathOf(String uid, String id) => 'users/$uid/documents/$id.zip';
+
+  @override
   Future<String> upload(String uid, String id, Uint8List zip) async {
-    final path = 'users/$uid/documents/$id.zip';
+    final path = pathOf(uid, id);
     await _storage
         .ref(path)
         .putData(zip, SettableMetadata(contentType: 'application/zip'));
@@ -82,8 +89,11 @@ class InMemoryDocumentStore implements DocumentStore {
   final documents = <String, Uint8List>{};
 
   @override
+  String pathOf(String uid, String id) => 'users/$uid/documents/$id.zip';
+
+  @override
   Future<String> upload(String uid, String id, Uint8List zip) async {
-    final path = 'users/$uid/documents/$id.zip';
+    final path = pathOf(uid, id);
     documents[path] = zip;
     return path;
   }
@@ -216,6 +226,51 @@ class DocumentImporter {
     }
     await flushImages();
     return documents;
+  }
+
+  /// Keeps a planner the app made: its [pdf] and [spec] (template.json),
+  /// as a template only this user has, synced like an import. Saving it
+  /// online carries on in the background, so it works offline. Returns its
+  /// listing, to make a notebook from.
+  Future<CatalogItem> keepPlanner(
+    String title,
+    Uint8List pdf,
+    Uint8List spec,
+  ) async {
+    final id =
+        '${DateTime.now().millisecondsSinceEpoch.toRadixString(36)}'
+        '${_random.nextInt(1 << 30).toRadixString(36)}';
+    final files = {PageTemplate.defaultFile: pdf, 'template.json': spec};
+    final archive = Archive();
+    for (final MapEntry(:key, :value) in files.entries) {
+      archive.add(ArchiveFile.bytes(key, value));
+    }
+    final zip = Uint8List.fromList(ZipEncoder().encode(archive));
+    final path = store.pathOf(uid, id);
+    unawaited(
+      store
+          .upload(uid, id, zip)
+          .then<void>(
+            (_) {},
+            onError: (Object e) =>
+                debugPrint('Could not save $title online: $e'),
+          ),
+    );
+    final item = CatalogItem(
+      id: '${PageTemplate.importPrefix}$id',
+      kind: CatalogKind.template,
+      name: title,
+      version: 1,
+      unlock: const CatalogUnlock(),
+      visibility: CatalogVisibility.retired,
+      files: CatalogFiles(
+        pack: path,
+        sha256: sha256.convert(zip).toString(),
+        bytes: zip.length,
+      ),
+    );
+    await packs.put(item, files);
+    return item;
   }
 
   /// Checks [pdf] opens, then saves it and keeps it on this device.

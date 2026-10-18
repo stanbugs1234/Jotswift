@@ -318,6 +318,13 @@ Uint8List previewPage(PlannerRecipe recipe, String group) {
     'home' => book.home,
     'year' => book.yearPage,
     'months' => book.monthMain(0) ?? book.home,
+    _ when group.startsWith('section:') =>
+      book.collections
+              .where((c) => 'section:${c.key}' == group)
+              .firstOrNull
+              ?.pageIds
+              .firstOrNull ??
+          book.home,
     _ => book.firstPageIn(group) ?? book.home,
   };
   final page = book.drawPage(i)..links.clear();

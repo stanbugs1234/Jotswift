@@ -20,6 +20,7 @@ import '../store/paywall.dart';
 import 'shelf_view.dart';
 import 'tag_editor.dart';
 import '../notebooks/my_templates.dart' show copyNotebookProvider;
+import '../notebooks/custom_planner.dart' show createCustomPlannerProvider;
 
 /// The shelf as it is now (empty while loading).
 Shelf currentShelf(WidgetRef ref) => Shelf(
@@ -56,8 +57,18 @@ Future<void> createNotebookAt(
   if (result == null || !context.mounted) return;
   final planner = result.template;
   final mine = result.mine;
+  final recipe = result.recipe;
   final notebook = mine != null
       ? await ref.read(copyNotebookProvider)(mine.id, result.notebook)
+      : recipe != null
+      ? await withPlannerProgress(
+          context,
+          (onProgress) => ref.read(createCustomPlannerProvider)(
+            result.notebook,
+            recipe,
+            onProgress: onProgress,
+          ),
+        )
       : planner == null
       ? await ref
             .read(notebookRepositoryProvider)

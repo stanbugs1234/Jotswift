@@ -27,6 +27,7 @@ class NotebookStartChooser extends ConsumerStatefulWidget {
     required this.myTemplates,
     required this.blankPaper,
     required this.onBlank,
+    required this.onBuild,
     required this.onTemplate,
     required this.onLocked,
     required this.onMine,
@@ -47,6 +48,9 @@ class NotebookStartChooser extends ConsumerStatefulWidget {
   final bool loading;
 
   final VoidCallback onBlank;
+
+  /// Build your own planner.
+  final VoidCallback onBuild;
   final ValueChanged<PlannerSeries> onTemplate;
   final ValueChanged<PlannerSeries> onLocked;
   final ValueChanged<Notebook> onMine;
@@ -76,7 +80,7 @@ class _NotebookStartChooserState extends ConsumerState<NotebookStartChooser> {
     // Blank and the user's own templates lead the grid until a search or a
     // category narrows it to planners.
     final mine = _filter.isEmpty ? widget.myTemplates : const <Notebook>[];
-    final starters = _filter.isEmpty ? 1 + mine.length : 0;
+    final starters = _filter.isEmpty ? 2 + mine.length : 0;
     final placeholders = widget.loading ? 6 : 0;
 
     Widget card(BuildContext context, int i) {
@@ -89,8 +93,26 @@ class _NotebookStartChooserState extends ConsumerState<NotebookStartChooser> {
           preview: _PaperPreview(paper: widget.blankPaper),
         );
       }
+      if (i == 1 && starters > 0) {
+        return TemplateCard(
+          title: 'Build your own',
+          subtitle: 'Choose every page',
+          selected: false,
+          onTap: widget.onBuild,
+          preview: ColoredBox(
+            color: theme.colorScheme.surfaceContainerHighest,
+            child: Center(
+              child: Icon(
+                Icons.dashboard_customize_outlined,
+                size: 48,
+                color: theme.colorScheme.primary,
+              ),
+            ),
+          ),
+        );
+      }
       if (i < starters) {
-        final t = mine[i - 1];
+        final t = mine[i - 2];
         return TemplateCard(
           title: t.title,
           subtitle: 'My template',

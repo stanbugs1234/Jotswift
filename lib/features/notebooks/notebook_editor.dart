@@ -23,6 +23,9 @@ import 'template_gallery.dart';
 import '../store/store_item.dart' show ItemPreview;
 import '../store/store_item_screen.dart';
 import 'notes_providers.dart' show myTemplatesProvider;
+import '../../core/planner/recipe.dart';
+import 'custom_planner.dart';
+import 'custom_planner_screen.dart';
 
 /// Makes a new notebook, or (with [editing]) changes one: title, cover,
 /// paper and theme. Returns the choices, or null if cancelled.
@@ -91,6 +94,9 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
 
   /// One of the user's own templates to copy, instead of a planner.
   Notebook? _mine;
+
+  /// A planner the user built, instead of a catalog one.
+  PlannerRecipe? _recipe;
   bool _saving = false;
 
   /// Whether the user picked the cover or theme, which then stay; until
@@ -113,6 +119,7 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
 
   void _start({PlannerSeries? series, Notebook? mine}) => setState(() {
     _choosing = false;
+    _recipe = null;
     _setTemplate(series?.defaultEdition(DateTime.now(), usable: _usable));
     _mine = mine;
     if (mine != null) {
@@ -130,10 +137,26 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
     _matchPlanner(template);
   }
 
-  /// Gives the notebook [template]'s cover and theme, from its collection,
-  /// unless the user chose their own.
-  void _matchPlanner(CatalogItem? template) {
-    final collection = template?.collectionId;
+  /// Builds a planner (from [from], else from scratch) and starts with it.
+  Future<void> _build({PlannerRecipe? from}) async {
+    final recipe = await CustomPlannerScreen.show(
+      context,
+      from ?? _recipe ?? newPlannerRecipe(),
+    );
+    if (recipe == null || !mounted) return;
+    setState(() {
+      _choosing = false;
+      _mine = null;
+      _setTemplate(null);
+      _recipe = recipe;
+      _matchPlanner(null, collection: recipe.collectionId);
+    });
+  }
+
+  /// Gives the notebook [template]'s cover and theme, from its collection
+  /// (or [collection]), unless the user chose their own.
+  void _matchPlanner(CatalogItem? template, {String? collection}) {
+    collection ??= template?.collectionId;
     if (!_coverChosen) {
       final art = collection == null
           ? null
@@ -193,6 +216,11 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
     final template = _template;
     var (size, orientation) = (_size, _orientation);
     final mine = _mine;
+    final recipe = _recipe;
+    if (recipe != null) {
+      if (!await mayMakeCustomPlanner(context, ref) || !mounted) return;
+      (size, orientation) = closestPaperSize(recipePageSize(recipe));
+    }
     if (mine != null) (size, orientation) = (mine.paperSize, mine.orientation);
     if (template != null) {
       // A planner's pages are sized to fit its PDF.
@@ -225,6 +253,7 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
       notebook: NewNotebook(
         title: title.isEmpty
             ? ((template == null ? null : plannerName(template)) ??
+                  recipe?.title ??
                   mine?.title ??
                   'Untitled notebook')
             : title,
@@ -253,6 +282,7 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
                     .value
                     ?.startFor(DateTime.now()),
       mine: mine,
+      recipe: recipe,
     ));
   }
 
@@ -321,6 +351,7 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
                 myTemplates: myTemplates,
                 blankPaper: paper,
                 onBlank: _start,
+                onBuild: _build,
                 onTemplate: (s) => _start(series: s),
                 onLocked: (s) =>
                     _unlock(s.defaultEdition(DateTime.now(), usable: _usable)),
@@ -375,6 +406,13 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
                           const SizedBox(width: 20),
                           if (template != null)
                             _TemplatePreview(template: template, file: _variant)
+                          else if (_recipe case final r?)
+                            RecipePage(
+                              recipeKey: recipeKey(r),
+                              group: 'home',
+                              landscape: r.landscape,
+                              width: 400,
+                            )
                           else
                             AspectRatio(
                               aspectRatio: page.width / page.height,
@@ -408,6 +446,7 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
                         // Left empty, the notebook takes this name.
                         hintText:
                             (template == null ? null : plannerName(template)) ??
+                            _recipe?.title ??
                             mine?.title ??
                             'e.g. School, Work, Journal',
                       ),
@@ -418,9 +457,19 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
                       _StartSummary(
                         template: template,
                         mine: mine,
+                        recipe: _recipe,
                         paper: paper,
                         onChange: () => setState(() => _choosing = true),
                       ),
+                      if (_recipe != null)
+                        Align(
+                          alignment: AlignmentDirectional.centerStart,
+                          child: TextButton.icon(
+                            onPressed: _build,
+                            icon: const Icon(Icons.tune),
+                            label: const Text('Change what\'s inside'),
+                          ),
+                        ),
                       if (editions.length > 1)
                         _EditionPicker(
                           editions: editions,
@@ -449,6 +498,20 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
                           from: _from,
                           onFrom: (from) => setState(() => _from = from),
                         ),
+                      if (template != null)
+                        Align(
+                          alignment: AlignmentDirectional.centerStart,
+                          child: TextButton.icon(
+                            onPressed: () => _build(
+                              from: recipeForPlanner(
+                                template,
+                                from: _from ?? spec?.startFor(DateTime.now()),
+                              ),
+                            ),
+                            icon: const Icon(Icons.tune),
+                            label: const Text('Customize: choose every page'),
+                          ),
+                        ),
                       if (template != null &&
                           spec != null &&
                           spec.options.isEmpty &&
@@ -475,7 +538,7 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
                         _coverChosen = true;
                       }),
                     ),
-                    if (template == null && mine == null)
+                    if (template == null && mine == null && _recipe == null)
                       PaperPicker(
                         selected: paper,
                         onChanged: (p) => setState(() => _paper = p),
@@ -502,7 +565,7 @@ class _NotebookEditorState extends ConsumerState<NotebookEditor> {
                           ),
                       ],
                     ),
-                    if (isNew && template == null) ...[
+                    if (isNew && template == null && _recipe == null) ...[
                       heading('Page size'),
                       SegmentedButton<PaperSize>(
                         showSelectedIcon: false,
@@ -554,10 +617,12 @@ class _StartSummary extends StatelessWidget {
     required this.mine,
     required this.paper,
     required this.onChange,
+    this.recipe,
   });
 
   final CatalogItem? template;
   final Notebook? mine;
+  final PlannerRecipe? recipe;
   final PaperStyle paper;
   final VoidCallback onChange;
 
@@ -566,7 +631,13 @@ class _StartSummary extends StatelessWidget {
     final theme = Theme.of(context);
     final template = this.template;
     final mine = this.mine;
+    final recipe = this.recipe;
     final (title, subtitle) = switch ((template, mine)) {
+      _ when recipe != null => (
+        recipe.title,
+        'Your own planner: ${recipe.pageCount} pages, with links between '
+            'them.',
+      ),
       (final t?, _) => (plannerName(t), templateSummary(t) ?? 'Planner'),
       (_, final m?) => (
         m.title,
@@ -588,6 +659,11 @@ class _StartSummary extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(4),
                 child: switch ((template, mine)) {
+                  _ when recipe != null => RecipePage(
+                    recipeKey: recipeKey(recipe),
+                    group: 'home',
+                    landscape: recipe.landscape,
+                  ),
                   (final t?, _) => ItemPreview(item: t),
                   (_, final m?) => CoverView(cover: m.cover, elevation: 0),
                   _ => ColoredBox(
@@ -639,6 +715,9 @@ typedef NotebookEditorResult = ({
 
   /// One of the user's own templates to copy.
   Notebook? mine,
+
+  /// A planner the user built, to make.
+  PlannerRecipe? recipe,
 });
 
 /// The first page of a planner, as the editor's page preview.
