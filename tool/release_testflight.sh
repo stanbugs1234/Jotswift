@@ -61,7 +61,10 @@ RC_KEY_FILE="$HOME/.appstoreconnect/revenuecat_apple_key"
 if [[ -z "${REVENUECAT_APPLE_KEY:-}" && -f "$RC_KEY_FILE" ]]; then
   REVENUECAT_APPLE_KEY=$(tr -d '[:space:]' < "$RC_KEY_FILE")
 fi
-if [[ -n "${REVENUECAT_APPLE_KEY:-}" ]]; then
+if [[ "${REVENUECAT_APPLE_KEY:-}" == test_* ]]; then
+  echo "That's RevenueCat's Test Store key; TestFlight needs the appl_ key." >&2
+  exit 1
+elif [[ -n "${REVENUECAT_APPLE_KEY:-}" ]]; then
   echo "==> Store on (RevenueCat key found)"
 else
   echo "==> Store OFF: no RevenueCat key in $RC_KEY_FILE; prices show 'Coming soon'"

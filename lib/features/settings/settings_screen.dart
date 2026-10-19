@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/entitlements/entitlements.dart';
+import '../../core/purchases/purchases_client.dart';
 import '../../core/purchases/purchases_providers.dart';
 import '../../core/input/finger_drawing.dart';
 import '../../core/motion/motion.dart';
@@ -58,6 +59,18 @@ class SettingsScreen extends ConsumerWidget {
     );
     if (confirmed ?? false) {
       await ref.read(authRepositoryProvider).deleteAccount();
+    }
+  }
+
+  /// RevenueCat's Customer Center.
+  Future<void> _manageSubscription(BuildContext context, WidgetRef ref) async {
+    try {
+      await ref.read(purchasesClientProvider).presentCustomerCenter();
+    } on PurchasesException catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.message)));
+      }
     }
   }
 
@@ -312,6 +325,15 @@ class SettingsScreen extends ConsumerWidget {
                     },
                     () => context.push(myTemplatesPath),
                   ),
+                  if (purchases &&
+                      ref.watch(entitlementsProvider).pro &&
+                      ref.watch(purchasesClientProvider).hasStoreScreens)
+                    link(
+                      Icons.manage_accounts_outlined,
+                      'Manage subscription',
+                      'Change plan, cancel or ask for a refund',
+                      () => _manageSubscription(context, ref),
+                    ),
                   if (purchases)
                     ListTile(
                       leading: const Icon(Icons.restore),

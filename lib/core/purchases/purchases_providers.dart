@@ -17,3 +17,10 @@ final storeOfferProvider = FutureProvider.family<StoreOffer?, String>((
   if (!client.isAvailable) return null;
   return (await client.offers([productId]))[productId];
 });
+
+/// Jotswift Pro's plans for sale, keyed by [ProProducts] id; empty until
+/// the store is set up.
+final proOffersProvider = FutureProvider<Map<String, StoreOffer>>((ref) {
+  final client = ref.watch(purchasesClientProvider);
+  return client.isAvailable ? client.proOffers() : Future.value(const {});
+});

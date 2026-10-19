@@ -1407,15 +1407,23 @@ PODS:
     - FlutterMacOS
   - printing (1.0.0):
     - Flutter
-  - purchases_flutter (10.16.0):
+  - purchases_flutter (10.17.0):
     - Flutter
-    - PurchasesHybridCommon (= 19.12.0)
-  - PurchasesHybridCommon (19.12.0):
-    - RevenueCat (= 5.95.0)
+    - PurchasesHybridCommon (= 19.14.0)
+  - purchases_ui_flutter (10.17.0):
+    - Flutter
+    - PurchasesHybridCommonUI (= 19.14.0)
+  - PurchasesHybridCommon (19.14.0):
+    - RevenueCat (= 5.96.0)
+  - PurchasesHybridCommonUI (19.14.0):
+    - PurchasesHybridCommon (= 19.14.0)
+    - RevenueCatUI (= 5.96.0)
   - RecaptchaInterop (101.0.0)
   - record_ios (2.0.0):
     - Flutter
-  - RevenueCat (5.95.0)
+  - RevenueCat (5.96.0)
+  - RevenueCatUI (5.96.0):
+    - RevenueCat (= 5.96.0)
   - share_plus (0.0.1):
     - Flutter
   - shared_preferences_foundation (0.0.1):
@@ -1439,6 +1447,7 @@ DEPENDENCIES:
   - pdfium_flutter (from `.symlinks/plugins/pdfium_flutter/darwin`)
   - printing (from `.symlinks/plugins/printing/ios`)
   - purchases_flutter (from `.symlinks/plugins/purchases_flutter/ios`)
+  - purchases_ui_flutter (from `.symlinks/plugins/purchases_ui_flutter/ios`)
   - record_ios (from `.symlinks/plugins/record_ios/ios`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
@@ -1466,8 +1475,10 @@ SPEC REPOS:
     - leveldb-library
     - nanopb
     - PurchasesHybridCommon
+    - PurchasesHybridCommonUI
     - RecaptchaInterop
     - RevenueCat
+    - RevenueCatUI
 
 EXTERNAL SOURCES:
   audio_session:
@@ -1498,6 +1509,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/printing/ios"
   purchases_flutter:
     :path: ".symlinks/plugins/purchases_flutter/ios"
+  purchases_ui_flutter:
+    :path: ".symlinks/plugins/purchases_ui_flutter/ios"
   record_ios:
     :path: ".symlinks/plugins/record_ios/ios"
   share_plus:
@@ -1540,11 +1553,14 @@ SPEC CHECKSUMS:
   nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
   pdfium_flutter: f29beeb612293cc42df95beee223a4925ce2458e
   printing: a8960104e6c1a2b4bd3483a2f79c69be60830d08
-  purchases_flutter: ddadeb7e401f8b3804b93dc1879183dfbb3628c9
-  PurchasesHybridCommon: 7ba4a84cdd9738a936b2091f7e982952c1feb6f6
+  purchases_flutter: b9df4a9a55ec3661e60ccd5fc10d9ce94573ad02
+  purchases_ui_flutter: 3072aab90a82fe1ff127d2fede44a5b182c12509
+  PurchasesHybridCommon: 788352edd488fbae596bdacfe8ee3e0d32a65362
+  PurchasesHybridCommonUI: 9bd120586e566bfe3799e1b616270885e4c25982
   RecaptchaInterop: 11e0b637842dfb48308d242afc3f448062325aba
   record_ios: 390a30c7caaf8b5d0fb1cb1d2fd5064b48b4520c
-  RevenueCat: 431637b02e9e5dc1165c2031936947d0468e1ed4
+  RevenueCat: 8c42ebba42490dc7da8499541ab4d27187c8a480
+  RevenueCatUI: 03d28bd025c78bcf783c85d5472c656a95824add
   share_plus: eccd7beb7cea61271aeed1800e8ccb2b952c0c7f
   shared_preferences_foundation: 7036424c3d8ec98dfe75ff1667cb0cd531ec82bb
   url_launcher_ios: 7a95fa5b60cc718a708b8f2966718e93db0cef1b

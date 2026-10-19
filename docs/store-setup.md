@@ -89,13 +89,26 @@ $2,500 a month):
    - **Web Billing** (for the web app, later): connect your **Stripe** account.
 3. **Product catalog → Products:** import or add every product id.
 4. **Product catalog → Entitlements:**
-   - Create one entitlement with the identifier **`pro`**.
-   - Attach `pro_yearly`, `pro_monthly` and `pro_lifetime` to it. Without
-     `pro_lifetime`, a lifetime buyer gets Pro only on the device they bought on.
+   - Create one entitlement with the identifier **`jotswift_pro`**.
+   - Attach `pro_yearly`, `pro_monthly` and `pro_lifetime` to it (and, in the
+     Test Store, `yearly`, `monthly` and `lifetime`). Without the lifetime
+     product, a lifetime buyer gets Pro only on the device they bought on.
    - Don't attach packs. The app recognises them by their product ids.
-5. **API keys:**
+5. **Product catalog → Offerings:** make one offering, marked **Current**,
+   with three packages: **Annual** (`$rc_annual`), **Monthly**
+   (`$rc_monthly`) and **Lifetime** (`$rc_lifetime`), each holding that
+   plan's product for each store. The app reads Pro's plans and prices from
+   these packages, so the product behind a plan can change without an app
+   update.
+6. **Paywalls:** design the paywall for that offering. On iPhone and iPad
+   the app shows it wherever Pro is offered (the web app keeps its own).
+   Without a design, RevenueCat shows a plain default one.
+7. **Customer Center:** turn it on (Tools → Customer Center). Pro
+   subscribers open it from Settings → Manage subscription to change plan,
+   cancel or ask for a refund.
+8. **API keys:**
    - Copy the **public** SDK keys: `appl_…` for iOS, and later `goog_…` and `rcb_…`. These are safe to share, and they go into the app.
-   - Also create a **secret** API key (`sk_…`, API version **v1**). Keep it private; it only goes into Firebase (step 4).
+   - Also create a **secret** API key (`sk_…`, API version **v1**). Keep it private; it only goes into Firebase (section 4).
 
 **Save the public `appl_…` key on this Mac** (don't paste it into a chat):
 ```sh
@@ -104,6 +117,12 @@ pbpaste > ~/.appstoreconnect/revenuecat_apple_key   # after copying the key
 ```
 `tool/release_testflight.sh` reads it from there and says "Store on" when it
 builds.
+
+**Trying the store without real payments:** RevenueCat's **Test Store** key
+(`test_…`) sells its test products with no App Store setup. Save it in
+`~/.appstoreconnect/revenuecat_test_key` the same way, then run
+`tool/run_test_store.sh` for a debug build on a device or simulator. Release
+builds ignore a Test Store key, and the TestFlight script refuses one.
 
 ## 4. Firebase function (the webhook)
 

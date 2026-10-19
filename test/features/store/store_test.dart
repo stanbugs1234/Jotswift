@@ -22,11 +22,20 @@ import '../../helpers.dart';
 
 /// A store that sells [prices] and remembers what was bought.
 class FakePurchases implements PurchasesClient {
-  FakePurchases({this.prices = const {}, this.available = true});
+  FakePurchases({
+    this.prices = const {},
+    this.available = true,
+    this.storeScreens = false,
+  });
 
   final Map<String, String> prices;
   final bool available;
+
+  /// Whether RevenueCat's paywall and Customer Center can show.
+  final bool storeScreens;
   final bought = <String>{};
+  int paywalls = 0;
+  int customerCenters = 0;
   final _receipts = StreamController<Entitlements>.broadcast();
   String? user;
   int restores = 0;
@@ -67,6 +76,9 @@ class FakePurchases implements PurchasesClient {
   };
 
   @override
+  Future<Map<String, StoreOffer>> proOffers() => offers(ProProducts.all);
+
+  @override
   Future<PurchaseOutcome> buy(String productId) async {
     if (next == PurchaseOutcome.purchased) {
       bought.add(productId);
@@ -77,6 +89,19 @@ class FakePurchases implements PurchasesClient {
 
   @override
   Future<void> restore() async => restores++;
+
+  @override
+  bool get hasStoreScreens => storeScreens;
+
+  /// Shows "RevenueCat's paywall", where the buyer picks yearly.
+  @override
+  Future<bool> presentPaywall() async {
+    paywalls++;
+    return await buy(ProProducts.yearly) == PurchaseOutcome.purchased;
+  }
+
+  @override
+  Future<void> presentCustomerCenter() async => customerCenters++;
 }
 
 CatalogItem item(
@@ -676,6 +701,46 @@ void main() {
       await tester.pumpAndSettle();
       expect(store.bought, {ProProducts.lifetime});
       expect(find.text('Jotswift Pro'), findsNothing, reason: 'no banner');
+    });
+
+    testWidgets("RevenueCat's paywall shows where it can", (tester) async {
+      final store = await open(
+        tester,
+        store: FakePurchases(
+          prices: {ProProducts.yearly: r'$19.99'},
+          storeScreens: true,
+        ),
+      );
+      await tester.tap(find.text('Jotswift Pro'));
+      await tester.pumpAndSettle();
+      expect(store.paywalls, 1);
+      expect(find.text('Start free trial'), findsNothing, reason: 'no sheet');
+      expect(store.bought, {ProProducts.yearly});
+      expect(
+        find.bySemanticsLabel('pro_paper, Paper, Included in Pro'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('a Pro subscriber manages it in the Customer Center', (
+      tester,
+    ) async {
+      final store = FakePurchases(storeScreens: true)
+        ..bought.add(ProProducts.yearly);
+      await pumpApp(
+        tester,
+        skins,
+        size: const Size(800, 1000),
+        overrides: [purchasesClientProvider.overrideWithValue(store)],
+      );
+      await tester.tap(find.byTooltip('Settings'));
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(find.text('Manage subscription'), 200);
+      await tester.ensureVisible(find.text('Manage subscription'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Manage subscription'));
+      await tester.pumpAndSettle();
+      expect(store.customerCenters, 1);
     });
 
     testWidgets('no lifetime option until the store sells it', (tester) async {

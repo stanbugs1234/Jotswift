@@ -9,11 +9,26 @@ import 'store_actions.dart';
 
 /// Offers Jotswift Pro, yearly first. [reason] says what needed Pro, such as
 /// the notebook limit. Returns whether the user has Pro afterwards.
+///
+/// On iOS and Android with the store open, this is the paywall designed in
+/// RevenueCat; elsewhere (the web, or before the store opens) it's [Paywall].
 Future<bool> showPaywall(
   BuildContext context,
   WidgetRef ref, {
   String? reason,
 }) async {
+  final client = ref.read(purchasesClientProvider);
+  if (client.isAvailable && client.hasStoreScreens) {
+    try {
+      await client.presentPaywall();
+    } on PurchasesException catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.message)));
+      }
+    }
+    return ref.read(entitlementsProvider).pro;
+  }
   await showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
@@ -52,9 +67,10 @@ class _PaywallState extends ConsumerState<Paywall> {
     ref.listen(entitlementsProvider.select((e) => e.pro), (was, pro) {
       if (pro && !(was ?? false) && context.mounted) Navigator.pop(context);
     });
-    final yearly = ref.watch(storeOfferProvider(ProProducts.yearly)).value;
-    final monthly = ref.watch(storeOfferProvider(ProProducts.monthly)).value;
-    final lifetime = ref.watch(storeOfferProvider(ProProducts.lifetime)).value;
+    final plans = ref.watch(proOffersProvider).value ?? const {};
+    final yearly = plans[ProProducts.yearly];
+    final monthly = plans[ProProducts.monthly];
+    final lifetime = plans[ProProducts.lifetime];
     final chosen = switch (_plan) {
       ProProducts.yearly => yearly,
       ProProducts.lifetime => lifetime,

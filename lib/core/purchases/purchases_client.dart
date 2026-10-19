@@ -4,7 +4,11 @@ import 'package:flutter/foundation.dart';
 
 import '../entitlements/entitlements.dart';
 
-/// Product ids of Jotswift Pro, yearly first (the one the paywall suggests).
+/// Jotswift Pro's plans, yearly first (the one the paywall suggests). Each
+/// is also its App Store product id; with RevenueCat the plans come from the
+/// current offering's annual, monthly and lifetime packages instead, so the
+/// products behind them can change (RevenueCat's Test Store calls them
+/// "yearly", "monthly" and "lifetime").
 abstract final class ProProducts {
   static const yearly = 'pro_yearly';
   static const monthly = 'pro_monthly';
@@ -64,12 +68,27 @@ abstract interface class PurchasesClient {
   /// Prices for [productIds]. Products the store doesn't know are left out.
   Future<Map<String, StoreOffer>> offers(List<String> productIds);
 
-  /// Buys [productId] with the store's own payment sheet. Throws
-  /// [PurchasesException] if the store refuses.
+  /// Jotswift Pro's plans for sale, keyed by [ProProducts] id.
+  Future<Map<String, StoreOffer>> proOffers();
+
+  /// Buys [productId], or a [ProProducts] plan, with the store's own
+  /// payment sheet. Throws [PurchasesException] if the store refuses.
   Future<PurchaseOutcome> buy(String productId);
 
   /// Asks the store again for everything this Apple/Google account bought.
   Future<void> restore();
+
+  /// Whether [presentPaywall] and [presentCustomerCenter] work here
+  /// (RevenueCat's own screens, on iOS and Android).
+  bool get hasStoreScreens;
+
+  /// Shows the paywall designed in RevenueCat. Returns whether something
+  /// was bought or restored.
+  Future<bool> presentPaywall();
+
+  /// Shows RevenueCat's Customer Center: manage or cancel the
+  /// subscription, ask for a refund, restore.
+  Future<void> presentCustomerCenter();
 }
 
 /// Used until the store is set up: nothing can be bought.
@@ -93,10 +112,24 @@ class UnavailablePurchases implements PurchasesClient {
       const {};
 
   @override
+  Future<Map<String, StoreOffer>> proOffers() async => const {};
+
+  @override
   Future<PurchaseOutcome> buy(String productId) =>
       Future.error(PurchasesException('The store isn\'t open yet.'));
 
   @override
   Future<void> restore() =>
+      Future.error(PurchasesException('The store isn\'t open yet.'));
+
+  @override
+  bool get hasStoreScreens => false;
+
+  @override
+  Future<bool> presentPaywall() =>
+      Future.error(PurchasesException('The store isn\'t open yet.'));
+
+  @override
+  Future<void> presentCustomerCenter() =>
       Future.error(PurchasesException('The store isn\'t open yet.'));
 }

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart' as rc;
+import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
 
 import '../entitlements/entitlements.dart';
 import 'purchases_client.dart';
@@ -10,6 +11,10 @@ import 'purchases_client.dart';
 /// RevenueCat's public SDK keys, passed at build time:
 /// `--dart-define=REVENUECAT_APPLE_KEY=appl_...` (and `_GOOGLE_`, `_WEB_`).
 /// A platform without a key gets [UnavailablePurchases].
+///
+/// A Test Store key (`test_...`) sells RevenueCat's test products with no
+/// real payments, for trying the store in debug builds. A release build
+/// ignores it, since RevenueCat refuses to run one with it.
 PurchasesClient createPurchasesClient() {
   const apple = String.fromEnvironment('REVENUECAT_APPLE_KEY');
   const google = String.fromEnvironment('REVENUECAT_GOOGLE_KEY');
@@ -21,18 +26,24 @@ PurchasesClient createPurchasesClient() {
           TargetPlatform.android => google,
           _ => '',
         };
-  return key.isEmpty ? const UnavailablePurchases() : RevenueCatPurchases(key);
+  if (key.isEmpty || (kReleaseMode && key.startsWith('test_'))) {
+    return const UnavailablePurchases();
+  }
+  return RevenueCatPurchases(key);
 }
 
 class RevenueCatPurchases implements PurchasesClient {
   RevenueCatPurchases(this._apiKey);
 
   /// RevenueCat's entitlement for Jotswift Pro.
-  static const proEntitlement = 'pro';
+  static const proEntitlement = 'jotswift_pro';
 
   final String _apiKey;
   final _receipts = StreamController<Entitlements>.broadcast();
   final _products = <String, rc.StoreProduct>{};
+
+  /// The current offering's package for each [ProProducts] plan.
+  final _plans = <String, rc.Package>{};
   Entitlements? _last;
   bool _configured = false;
 
@@ -40,8 +51,17 @@ class RevenueCatPurchases implements PurchasesClient {
   bool get isAvailable => true;
 
   @override
+  bool get hasStoreScreens =>
+      !kIsWeb &&
+      (defaultTargetPlatform == TargetPlatform.iOS ||
+          defaultTargetPlatform == TargetPlatform.android);
+
+  @override
   Future<void> logIn(String uid) => _guard(() async {
     if (!_configured) {
+      await rc.Purchases.setLogLevel(
+        kDebugMode ? rc.LogLevel.debug : rc.LogLevel.warn,
+      );
       await rc.Purchases.configure(
         rc.PurchasesConfiguration(_apiKey)..appUserID = uid,
       );
@@ -106,6 +126,24 @@ class RevenueCatPurchases implements PurchasesClient {
         };
       });
 
+  @override
+  Future<Map<String, StoreOffer>> proOffers() => _guard(() async {
+    final offering = (await rc.Purchases.getOfferings()).current;
+    _plans
+      ..clear()
+      ..addAll({
+        ProProducts.yearly: ?offering?.annual,
+        ProProducts.monthly: ?offering?.monthly,
+        ProProducts.lifetime: ?offering?.lifetime,
+      });
+    // Without an offering in RevenueCat, the App Store's own products.
+    if (_plans.isEmpty) return offers(ProProducts.all);
+    return {
+      for (final MapEntry(:key, :value) in _plans.entries)
+        key: _offer(value.storeProduct),
+    };
+  });
+
   StoreOffer _offer(rc.StoreProduct p) {
     final intro = p.introductoryPrice;
     final trial = intro != null && intro.price == 0
@@ -126,16 +164,19 @@ class RevenueCatPurchases implements PurchasesClient {
 
   @override
   Future<PurchaseOutcome> buy(String productId) => _guard(() async {
-    if (!_products.containsKey(productId)) await offers([productId]);
-    final product = _products[productId];
-    if (product == null) {
-      throw PurchasesException('This item isn\'t on sale in your store yet.');
+    final rc.PurchaseParams params;
+    if (_plans[productId] case final package?) {
+      params = rc.PurchaseParams.package(package);
+    } else {
+      if (!_products.containsKey(productId)) await offers([productId]);
+      final product = _products[productId];
+      if (product == null) {
+        throw PurchasesException('This item isn\'t on sale in your store yet.');
+      }
+      params = rc.PurchaseParams.storeProduct(product);
     }
     try {
-      final result = await rc.Purchases.purchase(
-        rc.PurchaseParams.storeProduct(product),
-      );
-      _update(result.customerInfo);
+      _update((await rc.Purchases.purchase(params)).customerInfo);
       return PurchaseOutcome.purchased;
     } on PlatformException catch (e) {
       if (rc.PurchasesErrorHelper.getErrorCode(e) ==
@@ -150,12 +191,51 @@ class RevenueCatPurchases implements PurchasesClient {
   Future<void> restore() =>
       _guard(() async => _update(await rc.Purchases.restorePurchases()));
 
-  /// Turns the SDK's errors into [PurchasesException]s with its message.
+  @override
+  Future<bool> presentPaywall() => _guard(() async {
+    final result = await RevenueCatUI.presentPaywall(displayCloseButton: true);
+    _update(await rc.Purchases.getCustomerInfo());
+    return switch (result) {
+      PaywallResult.purchased || PaywallResult.restored => true,
+      _ => false,
+    };
+  });
+
+  @override
+  Future<void> presentCustomerCenter() => _guard(() async {
+    await RevenueCatUI.presentCustomerCenter();
+    _update(await rc.Purchases.getCustomerInfo());
+  });
+
+  /// Turns the SDK's errors into [PurchasesException]s someone can act on.
   Future<T> _guard<T>(Future<T> Function() body) async {
     try {
       return await body();
     } on PlatformException catch (e) {
-      throw PurchasesException(e.message ?? 'The store had a problem.');
+      throw PurchasesException(purchasesErrorMessage(e));
     }
   }
 }
+
+/// What to tell the buyer about a store error.
+@visibleForTesting
+String purchasesErrorMessage(PlatformException e) =>
+    switch (rc.PurchasesErrorHelper.getErrorCode(e)) {
+      rc.PurchasesErrorCode.networkError => 'No internet connection.',
+      rc.PurchasesErrorCode.purchaseNotAllowedError =>
+        'Purchases aren\'t allowed on this device. Check Screen Time '
+            'restrictions.',
+      rc.PurchasesErrorCode.paymentPendingError =>
+        'Your purchase is waiting for approval. It unlocks as soon as it '
+            'goes through.',
+      rc.PurchasesErrorCode.productNotAvailableForPurchaseError =>
+        'This item isn\'t on sale in your store yet.',
+      rc.PurchasesErrorCode.productAlreadyPurchasedError ||
+      rc.PurchasesErrorCode.receiptAlreadyInUseError ||
+      rc.PurchasesErrorCode.receiptInUseByOtherSubscriberError =>
+        'This was already bought with this Apple ID, perhaps on another '
+            'Jotswift account. Try Restore purchases.',
+      rc.PurchasesErrorCode.operationAlreadyInProgressError =>
+        'A purchase is already in progress.',
+      _ => e.message ?? 'The store had a problem. Please try again.',
+    };
