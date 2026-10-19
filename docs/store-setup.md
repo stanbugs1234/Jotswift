@@ -7,7 +7,7 @@ accounts below exist. Until then, the Templates screen shows prices as
 "Coming soon", Buy buttons are disabled, and there's no notebook limit.
 
 Do the steps in order. Apple's and Google's approvals can take a few days,
-so start step 1 early. Each step says what to send back to Claude.
+so start step 1 early. Each step says what Claude can do for you.
 
 **Names used below**
 
@@ -35,14 +35,25 @@ At [appstoreconnect.apple.com](https://appstoreconnect.apple.com):
 3. **Apps:** if Jotswift isn't listed, click **+ → New App**:
    - platform iOS, name *Jotswift*, bundle id `com.notelyapp.notely`
    - SKU `notely`
-4. **Jotswift → Monetization → Subscriptions:**
-   - Create a group called **Jotswift Pro**.
-   - In it, add `pro_yearly` (1 year, $19.99) and `pro_monthly` (1 month, $3.99).
-   - On `pro_yearly`, add an **Introductory Offer**: *Free*, 1 week, all countries.
-   - Give each one a display name and description, such as "Jotswift Pro (yearly)".
-5. **Jotswift → Monetization → In-App Purchases:** add each paid pack as
-   **Non-Consumable**, with the product id from its catalog listing.
-   - When creating the first one, set **Family Sharing** (recommended: **on**). Apple doesn't let you turn it off later.
+4. **Products.** Once step 2 says *Active*, Claude creates them for you with
+   the App Store Connect API (ask first; it uses the key the TestFlight script
+   already uses):
+   ```sh
+   python3 tool/asc_products.py check    # what exists, what's missing
+   python3 tool/asc_products.py create   # the 30 launch products
+   ```
+   The launch products are:
+   - the **Jotswift Pro** subscription group with `pro_yearly` ($19.99, one
+     week free) and `pro_monthly` ($3.99);
+   - `pro_lifetime` ($49.99, non-consumable);
+   - the bestseller planners and the bundles.
+
+   Everything else is included in Pro; `create --all` adds the rest of
+   [pricing.md](pricing.md) later. Family Sharing is on for all of them
+   (Apple doesn't let you turn it off later).
+5. **Review screenshots (by hand):** each product needs one screenshot for
+   Apple's reviewer under **Review Information**: a screenshot of the
+   paywall for the Pro products, and of the item's store page for the others.
 6. **Users and Access → Integrations → In-App Purchase:**
    - Click **+** to generate an **In-App Purchase key**.
    - Download the `.p8` file (you can only download it once) and note its **Key ID** and the **Issuer ID** shown above it.
@@ -79,13 +90,20 @@ $2,500 a month):
 3. **Product catalog → Products:** import or add every product id.
 4. **Product catalog → Entitlements:**
    - Create one entitlement with the identifier **`pro`**.
-   - Attach `pro_yearly` and `pro_monthly` to it.
+   - Attach `pro_yearly`, `pro_monthly` and `pro_lifetime` to it. Without
+     `pro_lifetime`, a lifetime buyer gets Pro only on the device they bought on.
    - Don't attach packs. The app recognises them by their product ids.
 5. **API keys:**
    - Copy the **public** SDK keys: `appl_…` for iOS, and later `goog_…` and `rcb_…`. These are safe to share, and they go into the app.
    - Also create a **secret** API key (`sk_…`, API version **v1**). Keep it private; it only goes into Firebase (step 4).
 
-**Send Claude:** the public `appl_…` key (and `goog_…` / `rcb_…` once you have them).
+**Save the public `appl_…` key on this Mac** (don't paste it into a chat):
+```sh
+mkdir -p ~/.appstoreconnect
+pbpaste > ~/.appstoreconnect/revenuecat_apple_key   # after copying the key
+```
+`tool/release_testflight.sh` reads it from there and says "Store on" when it
+builds.
 
 ## 4. Firebase function (the webhook)
 
@@ -115,9 +133,14 @@ appear on every device and on the web.
 
 ## 5. Things Apple checks in review
 
-- **A privacy policy URL**, and the **Terms of Use**.
-  - Apple's standard EULA is fine for Terms of Use.
-  - Both must be linked in the App Store description and on the paywall. Send Claude the URLs and they'll be added to the paywall.
+- **A privacy policy URL**, and the **Terms of Use**. They're in `web/`
+  (privacy.html, terms.html, support.html) and served by Firebase Hosting at
+  `https://notely-b1aec.web.app/privacy.html` and so on, once hosting is
+  deployed.
+  - The paywall, sign-in screen and Settings link to them.
+  - In App Store Connect, put the privacy URL under **App Privacy**, the
+    support URL under the version's **Support URL**, and add the terms link
+    to the end of the App Store description ("Terms of Use: …").
 - **Restore Purchases** is on the Templates screen, in Settings and on the paywall.
 - **Account deletion** is in Settings.
 

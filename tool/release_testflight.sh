@@ -16,6 +16,9 @@
 #     Store" installed (made with the App Store Connect API; it lasts a
 #     year, and can be downloaded again from developer.apple.com →
 #     Profiles, then opened to install).
+#   - For a build that sells things: RevenueCat's public iOS key (appl_…)
+#     in ~/.appstoreconnect/revenuecat_apple_key. Without it the store is
+#     switched off.
 #
 # Usage, from the repo root with a clean working tree:
 #   tool/release_testflight.sh
@@ -51,6 +54,18 @@ flutter test --exclude-tags golden
 
 echo "==> Bumping version: ${current_version} -> ${next_version}"
 sed -i '' "s/^version: ${current_version}\$/version: ${next_version}/" pubspec.yaml
+
+# RevenueCat's public iOS key (appl_…) switches the store on. It's kept in
+# a file outside the repo, or can be set in the environment.
+RC_KEY_FILE="$HOME/.appstoreconnect/revenuecat_apple_key"
+if [[ -z "${REVENUECAT_APPLE_KEY:-}" && -f "$RC_KEY_FILE" ]]; then
+  REVENUECAT_APPLE_KEY=$(tr -d '[:space:]' < "$RC_KEY_FILE")
+fi
+if [[ -n "${REVENUECAT_APPLE_KEY:-}" ]]; then
+  echo "==> Store on (RevenueCat key found)"
+else
+  echo "==> Store OFF: no RevenueCat key in $RC_KEY_FILE; prices show 'Coming soon'"
+fi
 
 echo "==> flutter build xcarchive"
 flutter build xcarchive --release \
