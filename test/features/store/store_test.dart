@@ -638,6 +638,9 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text(r'$19.99/year'), findsOneWidget);
       expect(find.text('7 days free'), findsOneWidget);
+      // Apple requires these next to a subscription.
+      expect(find.text('Privacy Policy'), findsOneWidget);
+      expect(find.text('Terms of Use'), findsOneWidget);
       await tester.tap(find.text('Start free trial'));
       await tester.pumpAndSettle();
 
@@ -658,8 +661,8 @@ void main() {
         store: FakePurchases(
           prices: {
             ProProducts.yearly: r'$19.99',
-            ProProducts.monthly: r'$2.99',
-            ProProducts.lifetime: r'$29.99',
+            ProProducts.monthly: r'$3.99',
+            ProProducts.lifetime: r'$49.99',
           },
         ),
       );
@@ -667,7 +670,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('Lifetime'));
       await tester.pumpAndSettle();
-      expect(find.text(r'$29.99'), findsOneWidget);
+      expect(find.text(r'$49.99'), findsOneWidget);
       expect(find.text('One payment, yours to keep'), findsOneWidget);
       await tester.tap(find.text('Buy once'));
       await tester.pumpAndSettle();

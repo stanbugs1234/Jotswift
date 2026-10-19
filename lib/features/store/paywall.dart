@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/entitlements/entitlements.dart';
 import '../../core/purchases/purchases_client.dart';
 import '../../core/purchases/purchases_providers.dart';
+import '../../shared/ui/legal_links.dart';
 import 'store_actions.dart';
 
 /// Offers Jotswift Pro, yearly first. [reason] says what needed Pro, such as
@@ -178,6 +179,7 @@ class _PaywallState extends ConsumerState<Paywall> {
                   onPressed: () => restorePurchases(context, ref),
                   child: const Text('Restore purchases'),
                 ),
+              const LegalFooter(),
             ],
           ),
         ),

@@ -1,3 +1,4 @@
+import '../../shared/ui/legal_links.dart';
 import '../../shared/ui/tokens.dart';
 
 import '../../core/catalog/catalog_providers.dart' show isTesterProvider;
@@ -317,6 +318,29 @@ class SettingsScreen extends ConsumerWidget {
                       title: const Text('Restore purchases'),
                       onTap: () => restorePurchases(context, ref),
                     ),
+                ],
+              ),
+              _Group(
+                title: 'About',
+                children: [
+                  link(
+                    Icons.help_outline,
+                    'Help & support',
+                    null,
+                    () => openLink(LegalLinks.support),
+                  ),
+                  link(
+                    Icons.privacy_tip_outlined,
+                    'Privacy Policy',
+                    null,
+                    () => openLink(LegalLinks.privacy),
+                  ),
+                  link(
+                    Icons.description_outlined,
+                    'Terms of Use',
+                    null,
+                    () => openLink(LegalLinks.terms),
+                  ),
                 ],
               ),
               _Group(

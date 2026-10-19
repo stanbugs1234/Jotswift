@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/skins/notely_skin.dart';
 import '../../core/skins/skin_manifest.dart';
 import '../../core/skins/widgets/paper.dart';
+import '../../shared/ui/legal_links.dart';
 import 'auth_repository.dart';
 
 class SignInScreen extends ConsumerStatefulWidget {
@@ -144,6 +145,14 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                             : 'New here? Create an account',
                       ),
                     ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'By continuing you agree to the Terms of Use and '
+                      'Privacy Policy.',
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.bodySmall,
+                    ),
+                    const LegalFooter(),
                   ],
                 ),
               ),
