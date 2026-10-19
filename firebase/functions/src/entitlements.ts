@@ -3,8 +3,8 @@
 
 import { FieldValue, Timestamp, type Firestore } from "firebase-admin/firestore";
 
-/** RevenueCat's entitlement for Notely Pro. */
-export const PRO = "pro";
+/** RevenueCat's entitlement for Jotswift Pro. */
+export const PRO = "jotswift_pro";
 
 /** The parts of RevenueCat's GET /v1/subscribers/{id} response we use. */
 export interface Subscriber {

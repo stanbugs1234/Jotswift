@@ -18,19 +18,19 @@ const EARLIER = "2026-10-01T12:00:00Z";
 
 describe("entitlementsOf", () => {
   test("an active Pro subscription", () => {
-    const e = entitlementsOf({ entitlements: { pro: { expires_date: LATER } } }, NOW);
+    const e = entitlementsOf({ entitlements: { jotswift_pro: { expires_date: LATER } } }, NOW);
     assert.deepEqual(e, { pro: true, proUntil: new Date(LATER), products: [] });
   });
 
   test("an expired Pro subscription", () => {
-    const e = entitlementsOf({ entitlements: { pro: { expires_date: EARLIER } } }, NOW);
+    const e = entitlementsOf({ entitlements: { jotswift_pro: { expires_date: EARLIER } } }, NOW);
     assert.equal(e.pro, false);
     assert.equal(e.proUntil, null);
   });
 
   test("Pro in its billing grace period", () => {
     const e = entitlementsOf(
-      { entitlements: { pro: { expires_date: EARLIER, grace_period_expires_date: LATER } } },
+      { entitlements: { jotswift_pro: { expires_date: EARLIER, grace_period_expires_date: LATER } } },
       NOW,
     );
     assert.equal(e.pro, true);
@@ -38,7 +38,7 @@ describe("entitlementsOf", () => {
   });
 
   test("Pro without an end date (a lifetime grant)", () => {
-    const e = entitlementsOf({ entitlements: { pro: { expires_date: null } } }, NOW);
+    const e = entitlementsOf({ entitlements: { jotswift_pro: { expires_date: null } } }, NOW);
     assert.deepEqual(e, { pro: true, proUntil: null, products: [] });
   });
 
@@ -96,7 +96,7 @@ describe("applyWebhook (Firestore emulator)", () => {
     await applyWebhook(
       db,
       event("initial_purchase_pro"),
-      revenueCat({ uid_sam: { entitlements: { pro: { expires_date: LATER } } } }),
+      revenueCat({ uid_sam: { entitlements: { jotswift_pro: { expires_date: LATER } } } }),
       () => NOW,
     );
     const e = await entitlements("uid_sam");
@@ -135,7 +135,7 @@ describe("applyWebhook (Firestore emulator)", () => {
       event("pro_expiration"),
       revenueCat({
         uid_sam: {
-          entitlements: { pro: { expires_date: EARLIER } },
+          entitlements: { jotswift_pro: { expires_date: EARLIER } },
           non_subscriptions: { pack_botanical: [{}] },
         },
       }),
