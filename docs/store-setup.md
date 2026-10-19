@@ -16,8 +16,8 @@ so start step 1 early. Each step says what to send back to Claude.
 | iOS bundle id | `com.notelyapp.notely` |
 | Android package | `com.notely.notely` |
 | Firebase project | `notely-b1aec` |
-| Pro subscriptions | `pro_yearly` ($19.99, 7-day free trial), `pro_monthly` ($2.99) |
-| Packs | `pack_<id>` ($1.99 small, $2.99 collection), `planner_<id>_<year>` ($3.99), `bundle_<id>` ($5.99) |
+| Pro subscriptions | `pro_yearly` ($19.99, 7-day free trial), `pro_monthly` ($3.99), `pro_lifetime` ($49.99, non-consumable) |
+| Packs | `pack_<id>` ($1.99 small, $4.99 collection), `planner_<id>_<year>` ($3.99), `bundle_<id>` ($5.99) |
 
 Product ids can never be reused, even after deleting them, so type them
 exactly as above.
@@ -37,7 +37,7 @@ At [appstoreconnect.apple.com](https://appstoreconnect.apple.com):
    - SKU `notely`
 4. **Jotswift → Monetization → Subscriptions:**
    - Create a group called **Jotswift Pro**.
-   - In it, add `pro_yearly` (1 year, $19.99) and `pro_monthly` (1 month, $2.99).
+   - In it, add `pro_yearly` (1 year, $19.99) and `pro_monthly` (1 month, $3.99).
    - On `pro_yearly`, add an **Introductory Offer**: *Free*, 1 week, all countries.
    - Give each one a display name and description, such as "Jotswift Pro (yearly)".
 5. **Jotswift → Monetization → In-App Purchases:** add each paid pack as

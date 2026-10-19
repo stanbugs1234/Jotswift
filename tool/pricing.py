@@ -24,14 +24,14 @@ import make_diary  # noqa: E402
 import make_life_planners  # noqa: E402
 import make_stickers  # noqa: E402
 
-COLLECTION_PRICE = "2.99"
+COLLECTION_PRICE = "4.99"
 CALENDAR_TEMPLATE_PRICE = "1.99"
 DIARY_YEAR, ACADEMIC_YEAR = 2027, 2026
 
 PRO = [
-    ("pro_monthly", "Jotswift Pro, monthly", "Auto-renewing subscription", "2.99 / month"),
+    ("pro_monthly", "Jotswift Pro, monthly", "Auto-renewing subscription", "3.99 / month"),
     ("pro_yearly", "Jotswift Pro, yearly (7-day free trial)", "Auto-renewing subscription", "19.99 / year"),
-    ("pro_lifetime", "Jotswift Pro, lifetime", "Non-consumable", "29.99"),
+    ("pro_lifetime", "Jotswift Pro, lifetime", "Non-consumable", "49.99"),
 ]
 
 
@@ -100,8 +100,10 @@ def main():
         "product to RevenueCat ([store-setup.md](store-setup.md)). All products except the two Pro",
         "subscriptions are **non-consumable** (bought once, restorable).",
         "",
-        "Noteshelf, for comparison (US App Store, 2026): $9.99/month, $29.99 to $39.99/year, $14.99 lifetime;",
-        "it doesn't sell templates one at a time.",
+        "For comparison (US, October 2026): Notability Plus $19.99/year; Goodnotes $11.99 to $35.99/year;",
+        "Noteshelf 3 $9.99/month, about $29.99/year; Zinnia (planners) $8.99/month, $34.99/year; hyperlinked",
+        "planners on Etsy mostly $3 to $15. Pro yearly matches Notability; monthly stays well under the planner",
+        "apps so yearly (58% less) is the better deal; lifetime is 2.5x yearly so it doesn't undercut it.",
         "",
         "## Jotswift Pro",
         "",
