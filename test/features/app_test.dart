@@ -80,6 +80,22 @@ void main() {
       expect(find.byType(SignInScreen), findsOneWidget);
     });
 
+    testWidgets('Forgot password emails a reset link', (tester) async {
+      final auth = await pumpApp(tester, skins, signedIn: false);
+
+      await tester.tap(find.text('Forgot password?'));
+      await tester.pumpAndSettle();
+      expect(find.textContaining('Type your email'), findsOneWidget);
+      expect(auth.passwordResets, isEmpty);
+
+      await tester.enterText(find.widgetWithText(TextField, 'Email'), 'a@b.co');
+      await tester.tap(find.text('Forgot password?'));
+      await tester.pumpAndSettle();
+      expect(auth.passwordResets, ['a@b.co']);
+      expect(find.textContaining('sent it a link'), findsOneWidget);
+      expect(find.byType(SignInScreen), findsOneWidget);
+    });
+
     testWidgets('signing out returns to sign-in', (tester) async {
       await pumpApp(tester, skins);
 

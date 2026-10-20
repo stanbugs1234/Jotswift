@@ -43,7 +43,9 @@ class SettingsScreen extends ConsumerWidget {
         title: const Text('Delete your account?'),
         content: const Text(
           'This permanently deletes your account and all your notebooks, '
-          'tasks and events. It cannot be undone.',
+          'tasks and events. It cannot be undone.\n\nA Jotswift Pro '
+          "subscription isn't cancelled by this. Cancel it in your App "
+          'Store account settings.',
         ),
         actions: [
           TextButton(
@@ -57,8 +59,12 @@ class SettingsScreen extends ConsumerWidget {
         ],
       ),
     );
-    if (confirmed ?? false) {
+    if (!(confirmed ?? false) || !context.mounted) return;
+    final messenger = ScaffoldMessenger.of(context);
+    try {
       await ref.read(authRepositoryProvider).deleteAccount();
+    } on AuthException catch (e) {
+      messenger.showSnackBar(SnackBar(content: Text(e.message)));
     }
   }
 

@@ -33,6 +33,9 @@ abstract interface class AuthRepository {
   Future<void> signInWithGoogle();
   Future<void> signOut();
 
+  /// Emails a link for choosing a new password to [email].
+  Future<void> sendPasswordReset(String email);
+
   /// Deletes the account and all its data. Apple requires apps with
   /// accounts to offer this.
   Future<void> deleteAccount();
@@ -84,6 +87,16 @@ class DevAuthRepository implements AuthRepository {
 
   @override
   Future<void> signOut() async => _set(null);
+
+  /// The emails sent a password reset link, newest last.
+  final passwordResets = <String>[];
+
+  @override
+  Future<void> sendPasswordReset(String email) async {
+    final trimmed = email.trim();
+    if (!trimmed.contains('@')) throw AuthException('Enter a valid email.');
+    passwordResets.add(trimmed);
+  }
 
   @override
   Future<void> deleteAccount() async => _set(null);

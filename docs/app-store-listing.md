@@ -24,11 +24,10 @@ trackers, and Jotswift makes it in seconds, with every link working.
 ## Keywords (100)
 
 ```
-planner,digital,notebook,notes,journal,pencil,handwriting,hyperlinked,diary,agenda,habit,goodnotes
+planner,digital,notebook,notes,journal,pencil,handwriting,hyperlinked,diary,agenda,habit,pdf,bullet
 ```
 
-Competitor names in keywords can get a listing rejected (guideline 2.3.7). If
-Apple objects, swap `goodnotes` for `pdf,bullet`.
+No competitor names: they can get a listing rejected (guideline 2.3.7).
 
 ## Description (4000)
 
@@ -118,7 +117,9 @@ Up to ten each; the first three show in search. Suggested order:
 ## App Review notes
 
 ```
-Sign in with Apple works for review. Purchases can be tested with a sandbox
+An account is needed because notebooks, tasks and events sync between the
+user's iPad, iPhone and the web, and purchases follow the account. Sign in
+with Apple works for review. Purchases can be tested with a sandbox
 account: Settings → Jotswift Pro shows the subscriptions and lifetime
 purchase; Settings → Restore purchases restores them. Account deletion is in
 Settings → Delete account. Custom planners (New notebook → Build your own)

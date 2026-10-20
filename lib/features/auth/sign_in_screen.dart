@@ -20,6 +20,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   bool _creatingAccount = false;
   bool _busy = false;
   String? _error;
+  String? _notice;
 
   @override
   void dispose() {
@@ -32,6 +33,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     setState(() {
       _busy = true;
       _error = null;
+      _notice = null;
     });
     try {
       await action(ref.read(authRepositoryProvider));
@@ -48,10 +50,33 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
         : auth.signInWithEmail(_email.text, _password.text),
   );
 
+  /// Emails a reset link to the address typed in, and says so.
+  Future<void> _forgotPassword() async {
+    final email = _email.text.trim();
+    if (email.isEmpty) {
+      setState(() {
+        _error = 'Type your email above, then tap Forgot password.';
+        _notice = null;
+      });
+      return;
+    }
+    await _run((auth) async {
+      await auth.sendPasswordReset(email);
+      if (mounted) {
+        setState(
+          () => _notice =
+              'If there is an account for $email, we sent it a link to '
+              'choose a new password. Check your email.',
+        );
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final skin = NotelySkin.of(context);
     final theme = Theme.of(context);
+    final dark = skin.paperColor.computeLuminance() < 0.5;
 
     return Scaffold(
       body: SafeArea(
@@ -78,11 +103,18 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                       style: theme.textTheme.bodyMedium,
                     ),
                     const SizedBox(height: 24),
-                    OutlinedButton.icon(
+                    // Apple's style for its button: black, or white on a
+                    // dark background, with the Apple logo.
+                    FilledButton.icon(
+                      style: FilledButton.styleFrom(
+                        backgroundColor: dark ? Colors.white : Colors.black,
+                        foregroundColor: dark ? Colors.black : Colors.white,
+                        minimumSize: const Size.fromHeight(44),
+                      ),
                       onPressed: _busy
                           ? null
                           : () => _run((a) => a.signInWithApple()),
-                      icon: const Icon(Icons.apple),
+                      icon: const Icon(Icons.apple, size: 20),
                       label: const Text('Continue with Apple'),
                     ),
                     const SizedBox(height: 8),
@@ -119,6 +151,18 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                       decoration: const InputDecoration(labelText: 'Password'),
                       onSubmitted: (_) => _submitEmail(),
                     ),
+                    if (!_creatingAccount)
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: _busy ? null : _forgotPassword,
+                          child: const Text('Forgot password?'),
+                        ),
+                      ),
+                    if (_notice case final notice?) ...[
+                      const SizedBox(height: 12),
+                      Text(notice, style: theme.textTheme.bodyMedium),
+                    ],
                     if (_error case final error?) ...[
                       const SizedBox(height: 12),
                       Text(

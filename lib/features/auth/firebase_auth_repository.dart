@@ -65,9 +65,26 @@ class FirebaseAuthRepository implements AuthRepository {
   Future<void> signOut() => _auth.signOut();
 
   @override
+  Future<void> sendPasswordReset(String email) =>
+      _guard(() => _auth.sendPasswordResetEmail(email: email.trim()));
+
+  @override
   Future<void> deleteAccount() => _guard(() async {
     final user = _auth.currentUser;
     if (user == null) return;
+    final providers = {for (final p in user.providerData) p.providerId};
+    if (!kIsWeb && providers.contains('apple.com')) {
+      // Apple requires apps to revoke their Sign in with Apple token when
+      // the account is deleted. Signing in again gives a fresh code to
+      // revoke it with, and is the recent sign-in Firebase needs to delete.
+      final again = await user.reauthenticateWithProvider(
+        fb.AppleAuthProvider(),
+      );
+      final code = again.additionalUserInfo?.authorizationCode;
+      if (code != null) await _auth.revokeTokenWithAuthorizationCode(code);
+    } else if (!kIsWeb && providers.contains('google.com')) {
+      await user.reauthenticateWithProvider(fb.GoogleAuthProvider());
+    }
     // The deleteUserData Cloud Function then erases everything the account
     // owns (firebase/functions/src/accounts.ts). Deleting the account
     // first means a "sign in again" refusal leaves the data untouched.
@@ -89,8 +106,11 @@ String authErrorMessage(String code) => switch (code) {
   'network-request-failed' => 'No internet connection.',
   'popup-closed-by-user' ||
   'cancelled-popup-request' ||
-  'web-context-canceled' => 'Sign-in was cancelled.',
+  'web-context-canceled' ||
+  'canceled' => 'Sign-in was cancelled.',
+  'user-mismatch' => 'Sign in with the account you are deleting.',
   'operation-not-allowed' => 'This sign-in method is not turned on yet.',
+  'missing-email' => 'Enter your email first.',
   'requires-recent-login' =>
     'For your security, sign out and back in, then try again.',
   _ => 'Something went wrong ($code). Please try again.',
