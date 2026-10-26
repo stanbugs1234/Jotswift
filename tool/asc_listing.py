@@ -45,6 +45,11 @@ def block(heading):
     return re.search(r"```\n(.*?)```", DOC[i:], re.S).group(1).strip()
 
 
+def field(name):
+    """A value from the App information table."""
+    return re.search(rf"^\| {re.escape(name)} \| (.+?) \|$", DOC, re.M).group(1)
+
+
 def paragraph(heading):
     """The first paragraph after [heading], on one line."""
     i = DOC.index(heading) + len(heading)
@@ -73,8 +78,8 @@ def main():
     info = api.call("GET", f"/v1/apps/{APP_ID}/appInfos")["data"][0]
     loc = api.call("GET", f"/v1/appInfos/{info['id']}/appInfoLocalizations")["data"][0]
     patch(api, "appInfoLocalizations", loc["id"], {
-        "name": "Jotswift: Digital Planner",
-        "subtitle": "Notes, planners & journals",
+        "name": field("Name (30)"),
+        "subtitle": field("Subtitle (30)"),
         "privacyPolicyUrl": PRIVACY,
     })
     print("Name, subtitle and privacy URL")
@@ -110,8 +115,17 @@ def main():
 
     review = api.call("GET", f"/v1/appStoreVersions/{version['id']}/appStoreReviewDetail")["data"]
     attributes = {"notes": notes, "demoAccountRequired": False}
+    if review and review["attributes"].get("notes") == notes:
+        print("Review notes: unchanged")
+        return
     if review:
-        patch(api, "appStoreReviewDetails", review["id"], attributes)
+        # Apple asks for the whole contact again with any change; keep the
+        # one typed in App Store Connect.
+        contact = {k: v for k, v in review["attributes"].items() if k.startswith("contact") and v}
+        if len(contact) < 4:
+            sys.exit("Review notes not updated: add the review contact (name, email, phone) "
+                     "in App Store Connect first.")
+        patch(api, "appStoreReviewDetails", review["id"], {**attributes, **contact})
     else:
         api.create("appStoreReviewDetails", attributes,
                    {"appStoreVersion": a.rel("appStoreVersions", version["id"])})
