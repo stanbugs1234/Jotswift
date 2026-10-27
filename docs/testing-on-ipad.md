@@ -14,8 +14,8 @@ You need a Mac with Xcode, the iPad, and a USB cable.
 
 2. **Get the code:**
    ```sh
-   git clone https://github.com/stanbugs1234/Motley.git
-   cd Motley
+   git clone https://github.com/stanbugs1234/Jotswift.git
+   cd Jotswift
    flutter pub get
    ```
 
@@ -36,7 +36,7 @@ You need a Mac with Xcode, the iPad, and a USB cable.
 
 ## Run it
 
-In Terminal, in the `Motley` folder:
+In Terminal, in the `Jotswift` folder:
 
 ```sh
 flutter run --release

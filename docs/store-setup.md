@@ -136,7 +136,7 @@ appear on every device and on the web.
    ```
 2. Store both secrets in Firebase. They already exist with placeholder values (Firebase needs them to deploy any function). These commands replace the placeholders, asking you to paste each value:
    ```sh
-   cd ~/Motley
+   cd ~/Jotswift
    firebase functions:secrets:set REVENUECAT_WEBHOOK_AUTH   # the random password
    firebase functions:secrets:set REVENUECAT_SECRET_KEY     # the sk_… key
    ```
